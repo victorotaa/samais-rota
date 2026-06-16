@@ -1,0 +1,58 @@
+# Sistema visual — Estudos e templates HTML da Samais
+
+Padrão-regra para qualquer estudo/apresentação HTML da **Samais Gestão em Saúde**
+(institucional, diretoria, investidor). Derivado da identidade do vault Obsidian
+(no Google Drive) e validado com a diretoria. Reaproveitar este sistema em novos
+documentos.
+
+## Tokens (dark é o padrão)
+- Fundo `#0A0A0A` · superfícies `#131313` / `#1A1A1A` · divisórias `#262626`
+- Texto `#F4F1EA` · secundário `#D9D2C5` · muted `#9C9489` · dim `#615C53`
+- Destaque ouro `#B8954E` (soft `#D4B373`, deep `#8E7238`)
+- Selo funcional verde `#003611` (vivo `#1E7A4B`) — **só** para status/“validado”, nunca decoração
+- Versão light (impressão): fundo `#F4F1EA`, texto `#0A0A0A`, mesmo ouro
+
+## Tipografia
+- **Syne** (display/títulos) · **Inter** (corpo) · **JetBrains Mono** (labels, dados, paginação)
+
+## Logo
+- **Wordmark SVG dourado completo** no header desktop (nunca “Samais” em fonte genérica)
+- **Monograma SA+** no mobile (colapsado) e em capas/contracapas
+- SVGs oficiais no vault (Drive): `samais-logo-*.svg`, `samais-monograma-*.svg`, `samais-wordmark-*.svg`
+
+## Layout
+- **Menu fixo no topo** com logo + âncoras por seção; no mobile colapsa para SA+ + hambúrguer
+- Seções numeradas `01…N`; **respiro vertical real** (`section.wrap{padding-top/bottom}` —
+  a classe `.wrap` zera padding, então use seletor específico `section.wrap`, ~116/88/72px)
+- `scroll-margin-top` nas âncoras para a barra fixa não cobrir o topo
+- Faixas de foto **full-bleed** entre seções para ritmo
+- Cabeçalho de seção: eyebrow mono + título Syne à esquerda, label mono à direita (alinhado ao topo)
+- Footer-master: tagline *“Onde gestão se mede em vidas.”* (itálico) + paginação mono
+- Movimento sóbrio (fade ~200ms). Proibido: dissolve/swirl/push e transições “de PowerPoint”
+
+## Voz / copy
+- Primeira pessoa do singular **ou** impessoal técnico (evitar plural “nós”)
+- Cases sempre em **pretérito** (“operou”, “entregou”) + “atestado disponível para verificação formal”
+- Público investidor: **sem jargão/siglas** (moat, TAM, SKU, BDI, SPE, ATC, CDO, PMO, TMS…) — escrever em português claro
+- Vetado: “humanizado”, “excelência”, “acolhimento”
+- Tagline sempre como fecho
+
+## Imagens (banco Samais no Drive)
+- Fotos operacionais sóbrias: frota/viaturas, central de regulação, equipe
+- **Vetado**: dramaticidade (sirene, sangue, reanimação, paciente identificável)
+- Parceria/aperto de mãos: ok, **sutil** (baixa opacidade, sob overlay escuro)
+- Embutir hospedando no repo (servido pelo Vercel), não hotlink do Drive
+
+## Data viz / infográficos
+- SVG/CSS **puro**, sem bibliotecas; gold-on-black, sem chart-junk
+- Recorrentes: curva de receita acumulada, barras de composição/proporção, split de participação, selos de contagem
+- Reforçar números-chave visualmente; honestidade nos rótulos (base/escala explícita)
+
+## Disciplina de fontes
+- Separar **fato verificado** (fonte pública, citável) de **estimativa/premissa** (modelagem própria)
+- Seção “Premissas e fontes” com selos verde (verificado) / âmbar (estimativa)
+
+## Infra
+- Vault/identidade/banco de imagens: **Google Drive** (vault Obsidian)
+- Deploy: **Vercel**, team `samais` → `npx vercel --prod --scope samais`
+- Repos no padrão `samais-*`
