@@ -332,6 +332,73 @@
   .tbl th,.tbl td{border-bottom-color:rgba(255,255,255,.08)}
   .tbl tr.sub td,.tbl tr.tot td{background:rgba(255,255,255,.06)}
   @media (max-width:1100px){.strip .it,.card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart{border-radius:12px}}
+
+  /* ─────────── MOTION ─────────── */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .hero .tag,.hero h1,.hero-sub,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
+  .hero h1{animation-delay:.12s}
+  .hero-sub{animation-delay:.26s}
+  .hero-grid{animation-delay:.42s}
+  .hero .strip{animation-delay:.54s}
+  .reveal{opacity:0;transform:translateY(24px)}
+  .reveal.in{opacity:1;transform:none}
+  .card,.sku,.hz .h,.case,.risk .r,.opsviz,.splitviz,.donutviz,.chart,.bring,.tbl,.sec-head,.uof,.cta-box,.pull blockquote,.note{
+    transition:opacity .65s ease, transform .5s cubic-bezier(.22,.7,.3,1), box-shadow .3s ease, border-color .3s ease}
+  .card:hover,.sku:hover,.hz .h:hover,.case:hover,.risk .r:hover,.opsviz:hover,.donutviz:hover{
+    transform:translateY(-5px);border-color:rgba(184,149,78,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 28px 64px rgba(0,0,0,.55),0 0 0 1px rgba(184,149,78,.2)}
+  @media (prefers-reduced-motion:reduce){
+    .hero .tag,.hero h1,.hero-sub,.hero-grid,.hero .strip{opacity:1;animation:none}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* ─────────── ÍCONES (mono-linha ouro) ─────────── */
+  .card .ic{width:30px;height:30px;margin-bottom:18px}
+  .card .ic svg{width:100%;height:100%;display:block}
+
+  /* ─────────── FOLD: DOURADO ─────────── */
+  section.pull.fold-gold{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%);border-top:1px solid rgba(0,0,0,.22)}
+  .fold-gold blockquote{color:#1b1408}
+  .fold-gold blockquote em{color:#4a3815;font-style:italic}
+  .fold-gold .s{color:rgba(27,20,8,.55)}
+
+  /* ─────────── FOLD: LIGHT (impressão/ledger) ─────────── */
+  section.fold-light{background:#F4F1EA}
+  .fold-light h2{color:#0A0A0A}
+  .fold-light .sec-num{color:#8E7238}
+  .fold-light .lede,.fold-light p{color:#3a352d}
+  .fold-light .sec-head .right{color:#6b6358}
+  .fold-light .sec-head .right .acc{color:#8E7238}
+  .fold-light .tbl{background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.12);box-shadow:0 12px 34px rgba(0,0,0,.08);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .fold-light .tbl th{color:#6b6358;background:rgba(0,0,0,.045)}
+  .fold-light .tbl th,.fold-light .tbl td{border-bottom-color:rgba(0,0,0,.09)}
+  .fold-light .tbl td{color:#2c281f}
+  .fold-light .tbl td.num{color:#8E7238}
+  .fold-light .tbl tr.sub td{background:rgba(0,0,0,.035);color:#3a352d}
+  .fold-light .tbl tr.sub td.num{color:#8E7238}
+  .fold-light .tbl tr.tot td{background:rgba(184,149,78,.18);color:#6b531f}
+  .fold-light .tbl tr.tot td.num{color:#6b531f}
+
+  /* ─────────── DONUT ─────────── */
+  .donutviz{margin-top:8px;border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 50px rgba(0,0,0,.5);padding:26px 30px}
+  .donutviz .sv-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .donutviz .sv-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .donutviz .sv-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .donutviz .row{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  .donutviz svg{width:148px;height:148px;flex-shrink:0}
+  .donutviz .dlabel{font-family:var(--display);font-weight:600;font-size:25px;fill:var(--gold)}
+  .donutviz .dsub{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;fill:var(--muted)}
+  .donutviz .leg{display:flex;flex-direction:column;gap:14px}
+  .donutviz .leg .l{font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:11px;line-height:1.5}
+  .donutviz .leg .l i{width:12px;height:12px;flex-shrink:0;border-radius:3px}
+  .donutviz .leg .l i.g{background:var(--gold)}
+  .donutviz .leg .l i.m{background:#3a3a3a}
+  .donutviz .leg b{color:var(--text);font-weight:600}
+  .donutviz .leg em{color:var(--gold-soft);font-style:italic}
+  @media(max-width:560px){.donutviz .row{gap:22px;justify-content:center}}
 </style>
 </head>
 <body>
@@ -412,6 +479,7 @@
 
   <div class="g-3">
     <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11v9H2z"/><path d="M13 11h4l4 3.5V17h-8z"/><circle cx="6.5" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/></svg></div>
       <div class="tag">Força 01 · Oferta</div>
       <h3>Frota federal sem operador</h3>
       <div class="subtitle">Caminhos da Saúde · Novo PAC</div>
@@ -425,6 +493,7 @@
     </div>
 
     <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/><path d="M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg></div>
       <div class="tag">Força 02 · Custeio</div>
       <h3>Cofinanciamento recém-criado</h3>
       <div class="subtitle">Portaria GM/MS 11.164 · mai/2026</div>
@@ -438,6 +507,7 @@
     </div>
 
     <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 19a8.5 8.5 0 1 1 17 0"/><path d="M12 19l4.5-5.5"/><circle cx="12" cy="19" r="1.3" fill="#B8954E" stroke="none"/></svg></div>
       <div class="tag">Força 03 · Pressão</div>
       <h3>O modelo próprio se esgotou</h3>
       <div class="subtitle">Estrutural · independe de eleição</div>
@@ -583,7 +653,7 @@
 </section>
 
 <!-- 04 -->
-<section class="wrap" id="s04">
+<section class="wrap fold-light" id="s04">
   <div class="sec-head">
     <div class="left">
       <span class="sec-num">04 · A conta</span>
@@ -696,7 +766,7 @@
 </section>
 
 <!-- PULL -->
-<section class="wrap pull">
+<section class="wrap pull fold-gold">
   <blockquote>O custo de chegar tarde é alto.<br/>O custo de chegar <em>primeiro</em> é mensurável.</blockquote>
   <div class="s">— Tese de timing · Samais Transporte Sanitário</div>
 </section>
@@ -719,15 +789,19 @@
     <div class="it"><div class="n">~15–21%</div><div class="l">Participação implícita<br/>conforme a avaliação acordada</div></div>
   </div>
 
-  <div class="splitviz">
+  <div class="donutviz">
     <div class="sv-head"><span class="t">Participação na holding</span><span class="s">referência · aporte R$ 3 mi</span></div>
-    <div class="bar">
-      <div class="seg" style="flex:83 1 0;background:linear-gradient(90deg,var(--gold-deep),var(--gold));color:#0A0A0A;font-weight:500">Samais · atestados R$ 15 mi</div>
-      <div class="seg mul" style="flex:17 1 0;justify-content:flex-end">Investidor</div>
-    </div>
-    <div class="legend">
-      <span><i class="g"></i> Samais — atestados integralizados <em>(≈ 83%)</em></span>
-      <span><i class="m"></i> Investidor — capital R$ 2,5–4 mi <em>(≈ 14–21%)</em></span>
+    <div class="row">
+      <svg viewBox="0 0 120 120" role="img" aria-label="Participação: Samais 83%, investidor 17%">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#2a2a2a" stroke-width="15"/>
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#B8954E" stroke-width="15" stroke-dasharray="260.75 314.16" transform="rotate(-90 60 60)"/>
+        <text class="dlabel" x="60" y="58" text-anchor="middle">83%</text>
+        <text class="dsub" x="60" y="74" text-anchor="middle">SAMAIS</text>
+      </svg>
+      <div class="leg">
+        <div class="l"><i class="g"></i><span><b>Samais</b> — atestados integralizados <em>(≈ 83%)</em></span></div>
+        <div class="l"><i class="m"></i><span><b>Investidor</b> — capital R$ 2,5–4 mi <em>(≈ 14–21%)</em></span></div>
+      </div>
     </div>
   </div>
 
@@ -874,6 +948,18 @@
       }
       addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd);}},{passive:true});
       addEventListener('resize',upd); upd();
+    }
+
+    /* reveal on scroll */
+    if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+      document.querySelectorAll('.g-3,.sku-grid,.hz,.cases,.risk').forEach(function(g){
+        [].forEach.call(g.children,function(c,i){c.classList.add('reveal');c.style.transitionDelay=(i*0.07)+'s';});
+      });
+      ['.sec-head','.bring','.tbl','.splitviz','.donutviz','.chart','.opsviz','.uof','.cta-box','.pull blockquote','.note'].forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(e){e.classList.add('reveal');});
+      });
+      var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.06});
+      document.querySelectorAll('.reveal').forEach(function(e){rio.observe(e);});
     }
   })();
 </script>
