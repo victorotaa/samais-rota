@@ -82,4 +82,14 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
 - Deploy: **Vercel**, team `samais` → `npx vercel --prod --scope samais` (servir `index.html` na raiz)
 - Repos no padrão `samais-*`
 - Verificação visual: renderizar com Playwright headless em 1440/768/390px antes de publicar;
-  medir DOM quando houver dúvida de espaçamento (não confiar só no olho)
+  medir DOM quando houver dúvida de espaçamento (não confiar só no olho). Cuidado: `scroll-behavior:smooth`
+  atrapalha screenshots de teste — usar screenshot de elemento ou medir o DOM.
+
+## Dobras de cor & animação (regras)
+- **Dobras de cor full-bleed**: a cor (dourada/light) ocupa 100vw via `::before`
+  (`left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo segue na coluna central.
+  Nunca deixar a cor presa no max-width do `.wrap` (gera margens pretas).
+- **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (stroke-dashoffset),
+  donut varre, barras crescem (scaleX), count-up nos números.
+- **Stat boxes do hero com count-up** ao carregar.
+- Tudo sob `.js-anim` (só com JS e sem prefers-reduced-motion) para nunca esconder conteúdo.

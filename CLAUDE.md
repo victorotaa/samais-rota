@@ -63,3 +63,13 @@ documentos.
 - Vault/identidade/banco de imagens: **Google Drive** (vault Obsidian)
 - Deploy: **Vercel**, team `samais` → `npx vercel --prod --scope samais`
 - Repos no padrão `samais-*`
+
+## Dobras de cor & animação (regras)
+- **Dobras de cor full-bleed**: a cor (dourada/light) ocupa **100vw** (via `::before` com
+  `left:50%;margin-left:-50vw;width:100vw;z-index:-1`); o conteúdo segue na coluna central.
+  Nunca deixar a cor presa no `max-width` do `.wrap` — gera margens pretas nas laterais.
+- **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha via
+  `stroke-dashoffset`, donut varre, barras crescem por `scaleX`, e **count-up** nos números.
+- **Boxes de stat do hero com count-up** ao carregar.
+- Tudo sob classe `.js-anim` (aplicada só com JS ativo e sem `prefers-reduced-motion`),
+  para nunca esconder conteúdo se a animação não rodar.

@@ -356,6 +356,12 @@
   .card .ic{width:30px;height:30px;margin-bottom:18px}
   .card .ic svg{width:100%;height:100%;display:block}
 
+  /* folds full-bleed — a cor ocupa a largura total da viewport (conteúdo segue na coluna central) */
+  .fold-gold,.fold-light{position:relative}
+  .fold-gold::before,.fold-light::before{content:"";position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;z-index:-1}
+  .fold-light::before{background:#F4F1EA}
+  .fold-gold::before{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%)}
+
   /* ─────────── FOLD: DOURADO ─────────── */
   section.pull.fold-gold{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%);border-top:1px solid rgba(0,0,0,.22)}
   .fold-gold blockquote{color:#1b1408}
@@ -399,6 +405,35 @@
   .donutviz .leg b{color:var(--text);font-weight:600}
   .donutviz .leg em{color:var(--gold-soft);font-style:italic}
   @media(max-width:560px){.donutviz .row{gap:22px;justify-content:center}}
+
+  /* ─────────── GRÁFICOS: ANIMAÇÃO NO SCROLL ─────────── */
+  .js-anim .chart .ln{stroke-dasharray:760;stroke-dashoffset:760;transition:stroke-dashoffset 1.2s ease}
+  .js-anim .chart.anim .ln{stroke-dashoffset:0}
+  .js-anim .chart .ar{opacity:0;transition:opacity 1s ease .15s}
+  .js-anim .chart.anim .ar{opacity:1}
+  .js-anim .chart .dot,.js-anim .chart .vlab{opacity:0;transition:opacity .45s ease}
+  .js-anim .chart.anim .dot,.js-anim .chart.anim .vlab{opacity:1}
+  .js-anim .chart.anim .d1,.js-anim .chart.anim .v1{transition-delay:.35s}
+  .js-anim .chart.anim .d2,.js-anim .chart.anim .v2{transition-delay:.65s}
+  .js-anim .chart.anim .d3,.js-anim .chart.anim .v3{transition-delay:.95s}
+  .js-anim .donutviz .arc{stroke-dasharray:314.16;stroke-dashoffset:314.16;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+  .js-anim .donutviz.anim .arc{stroke-dashoffset:53.41}
+  .js-anim .uof .fill{transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.4,0,.2,1)}
+  .js-anim .uof.anim .fill{transform:scaleX(1)}
+  .js-anim .uof.anim .r:nth-child(1) .fill{transition-delay:.05s}
+  .js-anim .uof.anim .r:nth-child(2) .fill{transition-delay:.13s}
+  .js-anim .uof.anim .r:nth-child(3) .fill{transition-delay:.21s}
+  .js-anim .uof.anim .r:nth-child(4) .fill{transition-delay:.29s}
+  .js-anim .uof.anim .r:nth-child(5) .fill{transition-delay:.37s}
+  .js-anim .splitviz .bar{transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.4,0,.2,1)}
+  .js-anim .splitviz.anim .bar{transform:scaleX(1)}
+  .js-anim .opsviz .ops i{opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.4,.5,1)}
+  .js-anim .opsviz.anim .ops i{opacity:1;transform:none}
+  .js-anim .opsviz.anim .ops i:nth-child(2){transition-delay:.07s}
+  .js-anim .opsviz.anim .ops i:nth-child(3){transition-delay:.14s}
+  .js-anim .opsviz.anim .ops i:nth-child(4){transition-delay:.21s}
+  .js-anim .opsviz.anim .ops i:nth-child(5){transition-delay:.28s}
+  .js-anim .opsviz.anim .ops i:nth-child(6){transition-delay:.35s}
 </style>
 </head>
 <body>
@@ -711,16 +746,16 @@
       <text x="104" y="174" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">55</text>
       <text x="104" y="294" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">0</text>
       <!-- area + line -->
-      <path d="M170,272.5 L520,228.9 L870,91.5 L870,290 L170,290 Z" fill="url(#area)"/>
-      <path d="M170,272.5 L520,228.9 L870,91.5" fill="none" stroke="#B8954E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path class="ar" d="M170,272.5 L520,228.9 L870,91.5 L870,290 L170,290 Z" fill="url(#area)"/>
+      <path class="ln" d="M170,272.5 L520,228.9 L870,91.5" fill="none" stroke="#B8954E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       <!-- dots -->
-      <circle cx="170" cy="272.5" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
-      <circle cx="520" cy="228.9" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
-      <circle cx="870" cy="91.5" r="6" fill="#B8954E"/>
+      <circle class="dot d1" cx="170" cy="272.5" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle class="dot d2" cx="520" cy="228.9" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle class="dot d3" cx="870" cy="91.5" r="6" fill="#B8954E"/>
       <!-- value labels -->
-      <text x="170" y="255" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 8 mi</text>
-      <text x="520" y="211" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 28 mi</text>
-      <text x="870" y="73" text-anchor="end" font-family="Syne, serif" font-weight="600" font-size="20" fill="#B8954E">R$ 73–110 mi</text>
+      <text class="vlab v1" data-count x="170" y="255" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 8 mi</text>
+      <text class="vlab v2" data-count x="520" y="211" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 28 mi</text>
+      <text class="vlab v3" data-count x="870" y="73" text-anchor="end" font-family="Syne, serif" font-weight="600" font-size="20" fill="#B8954E">R$ 73–110 mi</text>
       <!-- x labels -->
       <text x="170" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">12 MESES</text>
       <text x="520" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">24 MESES</text>
@@ -794,8 +829,8 @@
     <div class="row">
       <svg viewBox="0 0 120 120" role="img" aria-label="Participação: Samais 83%, investidor 17%">
         <circle cx="60" cy="60" r="50" fill="none" stroke="#2a2a2a" stroke-width="15"/>
-        <circle cx="60" cy="60" r="50" fill="none" stroke="#B8954E" stroke-width="15" stroke-dasharray="260.75 314.16" transform="rotate(-90 60 60)"/>
-        <text class="dlabel" x="60" y="58" text-anchor="middle">83%</text>
+        <circle class="arc" cx="60" cy="60" r="50" fill="none" stroke="#B8954E" stroke-width="15" stroke-dasharray="260.75 314.16" transform="rotate(-90 60 60)"/>
+        <text class="dlabel" data-count x="60" y="58" text-anchor="middle">83%</text>
         <text class="dsub" x="60" y="74" text-anchor="middle">SAMAIS</text>
       </svg>
       <div class="leg">
@@ -950,8 +985,9 @@
       addEventListener('resize',upd); upd();
     }
 
-    /* reveal on scroll */
+    /* reveal + animação de gráficos + count-up */
     if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+      document.documentElement.classList.add('js-anim');
       document.querySelectorAll('.g-3,.sku-grid,.hz,.cases,.risk').forEach(function(g){
         [].forEach.call(g.children,function(c,i){c.classList.add('reveal');c.style.transitionDelay=(i*0.07)+'s';});
       });
@@ -960,6 +996,31 @@
       });
       var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.06});
       document.querySelectorAll('.reveal').forEach(function(e){rio.observe(e);});
+
+      function countUp(el,dur){
+        if(el.dataset.counted)return; el.dataset.counted='1';
+        var full=el.textContent, m=full.match(/(\d{1,3}(?:[.,]\d+)?)/);
+        if(!m)return;
+        var raw=m[1], parts=raw.split(/[.,]/), dec=parts[1]?parts[1].length:0, comma=raw.indexOf(',')>=0;
+        var target=parseFloat(raw.replace(/\./g,'').replace(',','.')), start=performance.now();
+        function fmt(v){var s=v.toFixed(dec); if(comma)s=s.replace('.',','); return s;}
+        function step(t){
+          var p=Math.min((t-start)/dur,1), e=1-Math.pow(1-p,3);
+          el.textContent= p<1 ? full.replace(raw,fmt(target*e)) : full;
+          if(p<1)requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      var cio=new IntersectionObserver(function(es){es.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('anim');
+          e.target.querySelectorAll('[data-count]').forEach(function(n){countUp(n,1200);});
+          cio.unobserve(e.target);
+        }});},{rootMargin:'0px 0px -12% 0px',threshold:.2});
+      document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz').forEach(function(e){cio.observe(e);});
+
+      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,1300);});},450);
     }
   })();
 </script>
