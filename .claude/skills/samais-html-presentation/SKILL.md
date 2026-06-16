@@ -92,11 +92,11 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
   senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (stroke-dashoffset),
   donut varre, barras crescem (scaleX), count-up nos números (~2s) — em todos os boxes e gráficos.
-- **Typing** no subtítulo do hero (~2s, caret piscante).
+- **Typing** na headline + subtítulo do hero (~2s, sequencial). Dobra light: linhas da tabela escalonadas (~2s).
 - **Embutir print de fonte pública oficial** (ex.: gov.br) como evidência junto à afirmação (moldura glass + link).
 - Tudo sob `.js-anim` (só com JS e sem prefers-reduced-motion) para nunca esconder conteúdo.
-- **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
-  refração via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium; fallback blur;
-  off no mobile). Mobile: **tabelas roláveis** (override do `overflow:hidden` do glass).
+- **Liquid glass**: refração via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium;
+  fallback blur; off no mobile). Mobile: **tabelas roláveis** (override do `overflow:hidden` do glass).
+  Sem brilho especular seguindo o mouse (removido por preferência).
 - **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos (não usar Hospital Dr. Anísio
   Figueiredo nem Santa Casa de Goioerê).

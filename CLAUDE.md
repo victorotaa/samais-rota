@@ -71,13 +71,14 @@ documentos.
   `z-index:0` — senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (`stroke-dashoffset`),
   donut varre, barras crescem (`scaleX`), **count-up** nos números (~2s) — em todos os boxes de stat e gráficos.
-- **Typing** no subtítulo do hero (~2s, com caret piscante).
+- **Typing** na headline e no subtítulo do hero (~2s, sequencial, com caret). Dobra light com
+  **linhas da tabela escalonadas** ao entrar (~2s).
 - **Embutir print de fonte pública oficial** (ex.: gov.br) como evidência junto à afirmação que embasa
   (moldura glass + cabeçalho "Fonte oficial" + link). Reforça veracidade da tese.
 - Tudo sob `.js-anim` (só com JS e sem `prefers-reduced-motion`) para nunca esconder conteúdo.
-- **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
-  refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium;
-  fallback = blur; desligada no mobile por performance). No mobile, **tabelas roláveis**
+- **Liquid glass**: refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)`
+  (Chromium; fallback = blur; desligada no mobile por performance). No mobile, **tabelas roláveis**
   (override do `overflow:hidden` do material glass — senão clipa as colunas da direita).
+  Sem brilho especular seguindo o mouse (removido por preferência da diretoria).
 - **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos. Não usar Hospital Dr. Anísio
   Figueiredo nem Santa Casa de Goioerê.

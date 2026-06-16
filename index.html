@@ -335,7 +335,7 @@
 
   /* ─────────── MOTION ─────────── */
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  .hero .tag,.hero h1,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
+  .hero .tag,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
   .hero h1{animation-delay:.12s}
   .hero-sub{animation-delay:.26s}
   .hero-grid{animation-delay:.42s}
@@ -438,12 +438,7 @@
   /* ─────────── GLASS INTERATIVO ─────────── */
   /* mobile: tabelas roláveis (sobrepõe o overflow:hidden do material glass) */
   @media(max-width:720px){.tbl{display:block;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}}
-  /* brilho especular que segue o ponteiro (mouse/touch) */
-  .card,.sku,.case,.risk .r,.opsviz,.splitviz,.chart,.donutviz,.bring,.hz .h{position:relative}
-  .card::after,.sku::after,.case::after,.risk .r::after,.opsviz::after,.splitviz::after,.chart::after,.donutviz::after,.bring::after,.hz .h::after{
-    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s ease;
-    background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.13),transparent 55%)}
-  .card:hover::after,.sku:hover::after,.case:hover::after,.risk .r:hover::after,.opsviz:hover::after,.splitviz:hover::after,.chart:hover::after,.donutviz:hover::after,.bring:hover::after,.hz .h:hover::after{opacity:1}
+  /* (brilho especular que seguia o ponteiro — removido a pedido) */
   /* refração: distorce o conteúdo atrás do vidro (Chromium; fallback = blur) */
   .card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it{backdrop-filter:blur(18px) saturate(145%) url(#glassDistort)}
   .topnav{backdrop-filter:blur(26px) saturate(175%) url(#glassDistort)}
@@ -459,9 +454,20 @@
   .srcshot img{display:block;width:100%;height:auto}
 
   /* ─────────── TYPING (hero) ─────────── */
-  .js-anim .hero-sub{visibility:hidden}
-  .hero-sub.typing::after{content:'▍';color:var(--gold);margin-left:2px;animation:caret .8s step-end infinite}
+  .js-anim .hero h1,.js-anim .hero-sub{visibility:hidden}
+  .typing::after{content:'';display:inline-block;width:.06em;height:1.02em;background:var(--gold);margin-left:.07em;vertical-align:-.12em;animation:caret .8s step-end infinite}
   @keyframes caret{50%{opacity:0}}
+  .srcwrap{margin:0 auto 56px}
+
+  /* ─────────── MOTION: dobra light (linhas escalonadas, ~2s) ─────────── */
+  .js-anim .fold-light .tbl tbody tr{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.7,.3,1)}
+  .js-anim .fold-light.rows-in .tbl tbody tr{opacity:1;transform:none}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(1){transition-delay:0s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(2){transition-delay:.26s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(3){transition-delay:.52s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(4){transition-delay:.78s}
+  .js-anim .fold-light.rows-in .tbl:last-of-type tbody tr:nth-child(1){transition-delay:1.08s}
+  .js-anim .fold-light.rows-in .tbl:last-of-type tbody tr:nth-child(2){transition-delay:1.34s}
 </style>
 </head>
 <body>
@@ -529,13 +535,12 @@
   </div>
 </section>
 
-<!-- BAND: frota -->
-<div class="band">
-  <img src="assets/viaturas.jpg" data-px="0.10" alt="Frota de veículos de transporte de pacientes entregue aos municípios">
-  <div class="cap"><div class="in">
-    <div class="e">Programa Caminhos da Saúde · Novo PAC</div>
-    <div class="t">3.300 veículos entregues aos municípios. A maioria chega sem quem opere.</div>
-  </div></div>
+<!-- FONTE: notícia oficial (antes da seção 01) -->
+<div class="wrap srcwrap">
+  <a class="srcshot" href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-inicia-entrega-de-3-3-mil-veiculos-para-transporte-de-pacientes-do-sus-em-todo-o-pais" target="_blank" rel="noopener">
+    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado 30/04/2026 ↗</span></div>
+    <img src="assets/noticia-3300.jpg" alt="Notícia do Ministério da Saúde: início da entrega de 3,3 mil veículos para transporte de pacientes do SUS" loading="lazy">
+  </a>
 </div>
 
 <!-- 01 -->
@@ -609,11 +614,6 @@
       <span><i class="g"></i> Mercado de interesse — radioterapia e hemodiálise <em>(≈ 45%)</em></span>
     </div>
   </div>
-
-  <a class="srcshot" href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-inicia-entrega-de-3-3-mil-veiculos-para-transporte-de-pacientes-do-sus-em-todo-o-pais" target="_blank" rel="noopener">
-    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado 30/04/2026 ↗</span></div>
-    <img src="assets/noticia-3300.jpg" alt="Notícia do Ministério da Saúde: início da entrega de 3,3 mil veículos para transporte de pacientes do SUS" loading="lazy">
-  </a>
 </section>
 
 <!-- BAND: central de regulação -->
@@ -1017,22 +1017,20 @@
       addEventListener('resize',upd); upd();
     }
 
-    /* brilho especular que segue o ponteiro */
-    document.querySelectorAll('.card,.sku,.case,.risk .r,.opsviz,.splitviz,.chart,.donutviz,.bring,.hz .h').forEach(function(c){
-      c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');},{passive:true});
-    });
-
     /* reveal + animação de gráficos + count-up */
     if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
       document.documentElement.classList.add('js-anim');
       document.querySelectorAll('.g-3,.sku-grid,.hz,.cases,.risk').forEach(function(g){
         [].forEach.call(g.children,function(c,i){c.classList.add('reveal');c.style.transitionDelay=(i*0.07)+'s';});
       });
-      ['.sec-head','.bring','.tbl','.splitviz','.donutviz','.chart','.opsviz','.uof','.cta-box','.pull blockquote','.note'].forEach(function(sel){
+      ['.sec-head','.bring','.splitviz','.donutviz','.chart','.opsviz','.uof','.cta-box','.pull blockquote','.note','.srcshot'].forEach(function(sel){
         document.querySelectorAll(sel).forEach(function(e){e.classList.add('reveal');});
       });
+      document.querySelectorAll('.tbl').forEach(function(e){if(!e.closest('.fold-light'))e.classList.add('reveal');});
       var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.06});
       document.querySelectorAll('.reveal').forEach(function(e){rio.observe(e);});
+      var fio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('rows-in');fio.unobserve(e.target);}});},{rootMargin:'0px 0px -10% 0px',threshold:.1});
+      document.querySelectorAll('.fold-light').forEach(function(e){fio.observe(e);});
 
       function countUp(el,dur){
         if(el.dataset.counted)return; el.dataset.counted='1';
@@ -1049,15 +1047,16 @@
         requestAnimationFrame(step);
       }
 
-      function typeWriter(el,dur){
+      function typeEl(el,dur){
         if(el.dataset.typed)return; el.dataset.typed='1';
-        var text=el.textContent; el.textContent=''; el.style.visibility='visible'; el.classList.add('typing');
-        var n=text.length, start=performance.now();
-        function step(t){
-          var p=Math.min((t-start)/dur,1);
-          el.textContent=text.slice(0,Math.round(p*n));
-          if(p<1)requestAnimationFrame(step); else el.classList.remove('typing');
-        }
+        var toks=[]; el.childNodes.forEach(function(nd){
+          if(nd.nodeType===3){nd.textContent.split('').forEach(function(c){toks.push(c);});}
+          else if(nd.nodeName==='BR'){toks.push('\n');}
+        });
+        function html(k){var s='';for(var i=0;i<k;i++){s+= toks[i]==='\n'?'<br>': toks[i].replace(/&/g,'&amp;').replace(/</g,'&lt;');}return s;}
+        el.textContent=''; el.style.visibility='visible'; el.classList.add('typing');
+        var n=toks.length, start=performance.now();
+        function step(t){var p=Math.min((t-start)/dur,1);el.innerHTML=html(Math.round(p*n));if(p<1)requestAnimationFrame(step);else{el.classList.remove('typing');el.innerHTML=html(n);}}
         requestAnimationFrame(step);
       }
 
@@ -1069,7 +1068,9 @@
         }});},{rootMargin:'0px 0px -12% 0px',threshold:.2});
       document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz,.strip').forEach(function(e){cio.observe(e);});
 
-      var hs=document.querySelector('.hero-sub'); if(hs)setTimeout(function(){typeWriter(hs,2000);},500);
+      var h1=document.querySelector('.hero h1'), hs=document.querySelector('.hero-sub');
+      if(h1)setTimeout(function(){typeEl(h1,2000);},200);
+      if(hs)setTimeout(function(){typeEl(hs,2300);},2300);
       setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,2000);});},450);
     }
   })();
