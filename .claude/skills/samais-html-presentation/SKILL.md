@@ -85,11 +85,16 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
   medir DOM quando houver dúvida de espaçamento (não confiar só no olho). Cuidado: `scroll-behavior:smooth`
   atrapalha screenshots de teste — usar screenshot de elemento ou medir o DOM.
 
-## Dobras de cor & animação (regras)
+## Dobras de cor, animação & glass interativo (regras)
 - **Dobras de cor full-bleed**: a cor (dourada/light) ocupa 100vw via `::before`
-  (`left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo segue na coluna central.
-  Nunca deixar a cor presa no max-width do `.wrap` (gera margens pretas).
+  (`left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo na coluna central.
+  ⚠️ O `body` não pode ter `background` (canvas no `html`) e a dobra precisa de `z-index:0` —
+  senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (stroke-dashoffset),
-  donut varre, barras crescem (scaleX), count-up nos números.
-- **Stat boxes do hero com count-up** ao carregar.
+  donut varre, barras crescem (scaleX), count-up nos números. Count-up do hero ~1,5s (perceptível).
 - Tudo sob `.js-anim` (só com JS e sem prefers-reduced-motion) para nunca esconder conteúdo.
+- **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
+  refração via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium; fallback blur;
+  off no mobile). Mobile: **tabelas roláveis** (override do `overflow:hidden` do glass).
+- **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos (não usar Hospital Dr. Anísio
+  Figueiredo nem Santa Casa de Goioerê).

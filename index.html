@@ -29,7 +29,7 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   html,body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;overflow-x:hidden}
-  body{padding:60px 0 120px}
+  body{padding:60px 0 120px;background:transparent}
   [id]{scroll-margin-top:78px}
 
   .wrap{max-width:1200px;margin:0 auto;padding:0 56px}
@@ -357,7 +357,7 @@
   .card .ic svg{width:100%;height:100%;display:block}
 
   /* folds full-bleed — a cor ocupa a largura total da viewport (conteúdo segue na coluna central) */
-  .fold-gold,.fold-light{position:relative}
+  .fold-gold,.fold-light{position:relative;z-index:0}
   .fold-gold::before,.fold-light::before{content:"";position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;z-index:-1}
   .fold-light::before{background:#F4F1EA}
   .fold-gold::before{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%)}
@@ -434,9 +434,33 @@
   .js-anim .opsviz.anim .ops i:nth-child(4){transition-delay:.21s}
   .js-anim .opsviz.anim .ops i:nth-child(5){transition-delay:.28s}
   .js-anim .opsviz.anim .ops i:nth-child(6){transition-delay:.35s}
+
+  /* ─────────── GLASS INTERATIVO ─────────── */
+  /* mobile: tabelas roláveis (sobrepõe o overflow:hidden do material glass) */
+  @media(max-width:720px){.tbl{display:block;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}}
+  /* brilho especular que segue o ponteiro (mouse/touch) */
+  .card,.sku,.case,.risk .r,.opsviz,.splitviz,.chart,.donutviz,.bring,.hz .h{position:relative}
+  .card::after,.sku::after,.case::after,.risk .r::after,.opsviz::after,.splitviz::after,.chart::after,.donutviz::after,.bring::after,.hz .h::after{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s ease;
+    background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.13),transparent 55%)}
+  .card:hover::after,.sku:hover::after,.case:hover::after,.risk .r:hover::after,.opsviz:hover::after,.splitviz:hover::after,.chart:hover::after,.donutviz:hover::after,.bring:hover::after,.hz .h:hover::after{opacity:1}
+  /* refração: distorce o conteúdo atrás do vidro (Chromium; fallback = blur) */
+  .card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it{backdrop-filter:blur(18px) saturate(145%) url(#glassDistort)}
+  .topnav{backdrop-filter:blur(26px) saturate(175%) url(#glassDistort)}
+  /* mobile: sem refração (performance), mantém o blur */
+  @media(max-width:720px){.card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it,.topnav{backdrop-filter:blur(16px) saturate(140%)}}
 </style>
 </head>
 <body>
+
+<!-- SVG filter: refração do liquid glass -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
+  <filter id="glassDistort" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="2" seed="7" result="n"/>
+    <feGaussianBlur in="n" stdDeviation="1.1" result="nb"/>
+    <feDisplacementMap in="SourceGraphic" in2="nb" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
 <!-- FIXED NAV -->
 <nav class="topnav">
@@ -620,18 +644,8 @@
       <div class="att">Atestado técnico disponível para verificação formal</div>
     </div>
     <div class="case">
-      <div class="h"><h4>Hospital Dr. Anísio Figueiredo</h4><span class="uf">Londrina · PR</span></div>
-      <p>Operou a gestão de uma unidade hospitalar de referência regional na rede municipal de Londrina — governança clínica e administrativa, com indicadores auditáveis.</p>
-      <div class="att">Atestado técnico disponível para verificação formal</div>
-    </div>
-    <div class="case">
       <div class="h"><h4>Ourinhos</h4><span class="uf">SP</span></div>
       <p>Operação documentada em saúde pública municipal — referência na trajetória da Samais, com responsabilidade técnica nominal.</p>
-      <div class="att">Atestado técnico disponível para verificação formal</div>
-    </div>
-    <div class="case">
-      <div class="h"><h4>Santa Casa de Goioerê</h4><span class="uf">PR</span></div>
-      <p>Operação documentada de gestão assistencial — repertório que se aplica direto à montagem da central e da frota de transporte sanitário.</p>
       <div class="att">Atestado técnico disponível para verificação formal</div>
     </div>
   </div>
@@ -917,7 +931,7 @@
     <div class="row"><div class="k">Portaria 11.164/2026</div><div class="v">Publicada em 11/05/2026; regulamenta o transporte de pacientes de radioterapia e hemodiálise. Impacto anual estimado de R$ 165,4 milhões. <span class="tag">verificado · CONASS/CONASEMS</span></div></div>
     <div class="row"><div class="k">Caminhos da Saúde</div><div class="v">Novo PAC · 3.300 veículos · R$ 1,4 bilhão · primeiras entregas em abr/2026. Cerca de 1.476 dedicados a radioterapia e hemodiálise; o restante é de uso múltiplo ou ambulância. <span class="tag">verificado · gov.br/saúde</span></div></div>
     <div class="row"><div class="k">Mercado endereçável</div><div class="v">R$ 1,2 bilhão por ano no Brasil — número da própria modelagem Samais. Projeções de R$ 11–18 bilhões de outros estudos não foram adotadas. <span class="tag amber">estimativa · casa</span></div></div>
-    <div class="row"><div class="k">Atestados e referências</div><div class="v">Oito atestados em SAMU 192 e regulação; referências CISNORPI, Hospital Dr. Anísio Figueiredo, Ourinhos e Santa Casa de Goioerê. Cerca de seis operadores no país têm atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
+    <div class="row"><div class="k">Atestados e referências</div><div class="v">Oito atestados em SAMU 192 e regulação; referências CISNORPI e Ourinhos. Cerca de seis operadores no país têm atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
     <div class="row"><div class="k">Estrutura societária</div><div class="v">Holding com a nova operação no grupo; a Samais integraliza atestados avaliados em R$ 15 milhões; o investidor aporta R$ 2,5–4 milhões em capital. Participação conforme a avaliação acordada. <span class="tag amber">em negociação</span></div></div>
     <div class="row"><div class="k">Projeção do negócio</div><div class="v">Receita acumulada em 36 meses de R$ 73–110 milhões; lucro de R$ 11–19 milhões. Cenário base a otimista, modelagem própria. <span class="tag amber">estimativa · modelagem</span></div></div>
   </div>
@@ -985,6 +999,11 @@
       addEventListener('resize',upd); upd();
     }
 
+    /* brilho especular que segue o ponteiro */
+    document.querySelectorAll('.card,.sku,.case,.risk .r,.opsviz,.splitviz,.chart,.donutviz,.bring,.hz .h').forEach(function(c){
+      c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');c.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');},{passive:true});
+    });
+
     /* reveal + animação de gráficos + count-up */
     if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
       document.documentElement.classList.add('js-anim');
@@ -1020,7 +1039,7 @@
         }});},{rootMargin:'0px 0px -12% 0px',threshold:.2});
       document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz').forEach(function(e){cio.observe(e);});
 
-      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,1300);});},450);
+      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,1500);});},450);
     }
   })();
 </script>

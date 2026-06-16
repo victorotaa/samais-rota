@@ -64,12 +64,17 @@ documentos.
 - Deploy: **Vercel**, team `samais` → `npx vercel --prod --scope samais`
 - Repos no padrão `samais-*`
 
-## Dobras de cor & animação (regras)
-- **Dobras de cor full-bleed**: a cor (dourada/light) ocupa **100vw** (via `::before` com
-  `left:50%;margin-left:-50vw;width:100vw;z-index:-1`); o conteúdo segue na coluna central.
-  Nunca deixar a cor presa no `max-width` do `.wrap` — gera margens pretas nas laterais.
-- **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha via
-  `stroke-dashoffset`, donut varre, barras crescem por `scaleX`, e **count-up** nos números.
-- **Boxes de stat do hero com count-up** ao carregar.
-- Tudo sob classe `.js-anim` (aplicada só com JS ativo e sem `prefers-reduced-motion`),
-  para nunca esconder conteúdo se a animação não rodar.
+## Dobras de cor, animação & glass interativo (regras)
+- **Dobras de cor full-bleed**: a cor (dourada/light) ocupa **100vw** (via `::before`
+  `left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo na coluna central.
+  ⚠️ O `body` **não** pode ter `background` (canvas fica no `html`) e a dobra precisa de
+  `z-index:0` — senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
+- **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (`stroke-dashoffset`),
+  donut varre, barras crescem (`scaleX`), **count-up** nos números. Count-up do hero ~1,5s (perceptível).
+- Tudo sob `.js-anim` (só com JS e sem `prefers-reduced-motion`) para nunca esconder conteúdo.
+- **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
+  refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium;
+  fallback = blur; desligada no mobile por performance). No mobile, **tabelas roláveis**
+  (override do `overflow:hidden` do material glass — senão clipa as colunas da direita).
+- **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos. Não usar Hospital Dr. Anísio
+  Figueiredo nem Santa Casa de Goioerê.
