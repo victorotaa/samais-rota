@@ -29,10 +29,13 @@ documentos.
 - Cabeçalho de seção: eyebrow mono + título Syne à esquerda, label mono à direita (alinhado ao topo)
 - Footer-master: tagline *“Onde gestão se mede em vidas.”* (itálico) + paginação mono
 - Movimento sóbrio (fade ~200ms). Proibido: dissolve/swirl/push e transições “de PowerPoint”
-- **Material liquid glass** (contemporâneo): superfícies translúcidas com `backdrop-filter:blur`,
-  borda `rgba(255,255,255,.10)`, brilho interno no topo e sombra suave; brilho ambiente radial
+- **Material liquid glass** (contemporâneo, referência Apple iOS 26 — não o flat da Meta/WhatsApp):
+  superfícies translúcidas com `backdrop-filter:blur(~22px)`, borda `rgba(255,255,255,.12)`,
+  brilho especular interno no topo, cantos ~18px e sombra profunda; brilho ambiente radial
   (ouro/verde) fixo no fundo para o vidro refratar. Header = só liquid glass (sem imagem).
   Foto de parceria/aperto de mãos reservada ao CTA de fechamento, sob vidro escuro.
+- **Parallax sutil** nas camadas de foto (hero, faixas full-bleed, fundo do CTA): translate no
+  scroll com `requestAnimationFrame`, headroom de ~20% e clamp; respeitar `prefers-reduced-motion`
 
 ## Voz / copy
 - Primeira pessoa do singular **ou** impessoal técnico (evitar plural “nós”)

@@ -37,7 +37,7 @@
   section.wrap{padding-top:116px;padding-bottom:116px}
 
   /* FIXED NAV */
-  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(18,18,20,.5);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);border-bottom:1px solid rgba(255,255,255,.09);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34)}
   .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
   .nav-brand .nav-wordmark{height:27px;width:auto;display:block}
   .nav-brand .nav-mono{height:26px;width:auto;display:none}
@@ -86,7 +86,7 @@
 
   /* HERO */
   .hero-section{position:relative;overflow:hidden;border-top:none}
-  .hero-bg{position:absolute;inset:0;background:url(assets/hero.jpg) center 42%/cover no-repeat;opacity:.30}
+  .hero-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/hero.jpg) center 42%/cover no-repeat;opacity:.30;will-change:transform}
   .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.74) 0%,rgba(10,10,10,.58) 42%,rgba(10,10,10,.96) 100%)}
   .hero-section > .wrap{position:relative;z-index:1}
   .hero{padding:72px 0 96px}
@@ -110,7 +110,7 @@
 
   /* FULL-BLEED PHOTO BAND */
   .band{position:relative;width:100%;height:clamp(240px,36vw,420px);overflow:hidden;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
-  .band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 62%;opacity:.55}
+  .band img{position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;object-fit:cover;object-position:center 62%;opacity:.55;will-change:transform}
   .band::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.94) 0%,rgba(10,10,10,.5) 52%,rgba(10,10,10,.82) 100%)}
   .band .cap{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end}
   .band .cap .in{max-width:1200px;margin:0 auto;width:100%;padding:0 56px 40px}
@@ -260,10 +260,10 @@
 
   /* CTA */
   .cta{border-top:1px solid var(--divider)}
-  .cta-box{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:64px 56px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 22px 60px rgba(0,0,0,.5)}
-  .cta-box::before{content:"";position:absolute;inset:0;background:url(assets/header-bg.png) center 40%/cover no-repeat;opacity:.42}
-  .cta-box::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,11,9,.6),rgba(10,10,10,.85))}
-  .cta-box > *{position:relative;z-index:1}
+  .cta-box{position:relative;overflow:hidden;isolation:isolate;border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:64px 56px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 26px 64px rgba(0,0,0,.55)}
+  .cta-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/header-bg.png) center 40%/cover no-repeat;opacity:.42;z-index:0;will-change:transform}
+  .cta-box::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,11,9,.58),rgba(10,10,10,.85));z-index:1}
+  .cta-box > :not(.cta-bg){position:relative;z-index:2}
   .cta-box h2{margin-bottom:18px}
   .cta-box .lede{max-width:62ch;margin-bottom:40px}
   .cta-actions{display:flex;align-items:center;gap:32px;flex-wrap:wrap;padding-top:32px;border-top:1px solid var(--divider)}
@@ -319,10 +319,10 @@
     radial-gradient(48% 42% at 8% 80%, rgba(30,122,75,.07), transparent 62%),
     radial-gradient(42% 38% at 50% 52%, rgba(212,179,115,.05), transparent 72%)}
   .card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.conf-box,.strip .it{
-    background:linear-gradient(140deg,rgba(255,255,255,.065),rgba(255,255,255,.02));
-    -webkit-backdrop-filter:blur(16px) saturate(135%);backdrop-filter:blur(16px) saturate(135%);
-    border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 14px 40px rgba(0,0,0,.42)}
+    background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.22), 0 18px 50px rgba(0,0,0,.5)}
   .strip{background:transparent;border:0;gap:16px}
   .note{border-radius:0 12px 12px 0;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
   .tbl{border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;
@@ -361,7 +361,7 @@
 
 <!-- HERO -->
 <section class="hero-section" id="top">
-  <div class="hero-bg"></div>
+  <div class="hero-bg" data-px="0.12"></div>
   <div class="wrap">
     <div class="hero">
       <div class="tag">Segundo Vertical Âncora · Captura de Mercado SUS</div>
@@ -392,7 +392,7 @@
 
 <!-- BAND: frota -->
 <div class="band">
-  <img src="assets/viaturas.jpg" alt="Frota de veículos de transporte de pacientes entregue aos municípios">
+  <img src="assets/viaturas.jpg" data-px="0.10" alt="Frota de veículos de transporte de pacientes entregue aos municípios">
   <div class="cap"><div class="in">
     <div class="e">Programa Caminhos da Saúde · Novo PAC</div>
     <div class="t">3.300 veículos entregues aos municípios. A maioria chega sem quem opere.</div>
@@ -471,7 +471,7 @@
 
 <!-- BAND: central de regulação -->
 <div class="band">
-  <img src="assets/central-regulacao.jpg" alt="Central de regulação Samais com operadores e painel de monitoramento">
+  <img src="assets/central-regulacao.jpg" data-px="0.10" alt="Central de regulação Samais com operadores e painel de monitoramento">
   <div class="cap"><div class="in">
     <div class="e">Central de Regulação Samais</div>
     <div class="t">A operação que o concorrente local não tem — e leva anos para construir.</div>
@@ -817,6 +817,7 @@
 <!-- CTA -->
 <section class="wrap cta" id="cta">
   <div class="cta-box">
+    <div class="cta-bg" data-px="0.10"></div>
     <span class="sec-num">Próximo passo</span>
     <h2>A janela é de 24 meses.<br/>Quem entra agora define o mercado.</h2>
     <p class="lede" style="margin-bottom:0">Em 15 dias entregamos o diagnóstico do mercado-alvo. Em seguida, a estrutura da holding e o plano de captura dos primeiros contratos. O capital entra; a operação começa a faturar nos primeiros meses.</p>
@@ -852,6 +853,28 @@
       });
     },{rootMargin:'-45% 0px -50% 0px'});
     document.querySelectorAll('section[id]').forEach(function(s){if(map[s.id])ob.observe(s);});
+
+    /* parallax */
+    var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(!reduce){
+      var px=[].slice.call(document.querySelectorAll('[data-px]'));
+      var tick=false;
+      function upd(){
+        var vh=innerHeight;
+        px.forEach(function(el){
+          var host=el.parentElement, r=host.getBoundingClientRect();
+          if(r.bottom<-300||r.top>vh+300)return;
+          var center=(r.top+r.height/2)-(vh/2);
+          var sp=parseFloat(el.getAttribute('data-px'))||0.12;
+          var head=host.offsetHeight*0.18;
+          var ty=center*-sp; if(ty>head)ty=head; if(ty<-head)ty=-head;
+          el.style.transform='translate3d(0,'+ty.toFixed(1)+'px,0)';
+        });
+        tick=false;
+      }
+      addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd);}},{passive:true});
+      addEventListener('resize',upd); upd();
+    }
   })();
 </script>
 </body>
