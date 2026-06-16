@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>ROTA — Samais Transporte Sanitário · Tese de Investimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --s1:#131313;
+    --s2:#1A1A1A;
+    --s3:#222;
+    --divider:#262626;
+    --gold:#B8954E;
+    --gold-soft:#D4B373;
+    --gold-deep:#8E7238;
+    --green:#1E7A4B;      /* selo funcional vivo p/ "validado" — derivado do #003611 institucional */
+    --green-deep:#003611; /* selo funcional institucional */
+    --amber:#B8804E;      /* atenção / ressalva */
+    --text:#F4F1EA;
+    --text-2:#D9D2C5;
+    --muted:#9C9489;
+    --dim:#615C53;
+    --display:'Syne', serif;
+    --body:'Inter', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;overflow-x:hidden}
+  body{padding:0 0 120px}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:0 56px}
+  section{padding:112px 0;border-top:1px solid var(--divider)}
+  section:first-of-type{border-top:none}
+
+  /* TYPE */
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(56px,11vw,176px);line-height:.85;letter-spacing:-.035em;color:var(--text)}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(30px,3.8vw,50px);line-height:1.06;letter-spacing:-.022em;margin-bottom:22px}
+  h3{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.22;letter-spacing:-.01em}
+  h4{font-family:var(--display);font-weight:600;font-size:16px;line-height:1.25;letter-spacing:-.005em;color:var(--text)}
+  p{font-size:15.5px;color:var(--text-2);font-weight:300;line-height:1.65}
+  .lede{font-size:17.5px;line-height:1.6;color:var(--text-2);max-width:74ch;font-weight:300}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+  em{font-style:italic;color:var(--gold-soft)}
+
+  .sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;display:block}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:64px;gap:64px}
+  .sec-head .left{max-width:64%}
+  .sec-head .right{max-width:32%;text-align:right;color:var(--muted);font-size:13px;line-height:1.65;font-family:var(--mono);letter-spacing:.04em}
+  .sec-head .right .acc{color:var(--gold);display:block;margin-top:6px}
+
+  /* HEADER */
+  header{padding:44px 0 0}
+  .head-bar{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .head-bar .logo{width:128px;height:auto;display:block;opacity:.92;flex-shrink:0}
+  .head-bar .meta{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:right;line-height:1.7}
+
+  /* HERO */
+  .hero{padding:80px 0 112px}
+  .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:32px}
+  .hero h1{margin:0}
+  .hero h1 sup{font-size:.16em;vertical-align:.7em;color:var(--gold);font-family:var(--mono);font-weight:500;letter-spacing:.16em;margin-left:14px;text-transform:uppercase}
+  .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(20px,2.2vw,27px);color:var(--gold-soft);letter-spacing:-.005em;line-height:1.35;max-width:780px;margin-top:40px}
+  .hero-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:64px;margin-top:76px;padding-top:52px;border-top:1px solid var(--divider)}
+  .hero-grid p{max-width:56ch}
+  .hero-grid .right{display:flex;align-items:flex-start;justify-content:flex-end}
+  .hero-grid .right .mono-icon{width:84px;opacity:.85}
+
+  /* ASK STRIP */
+  .ask{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider);margin-top:48px}
+  .ask .it{background:var(--bg);padding:32px 26px}
+  .ask .it .n{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.05;letter-spacing:-.02em;color:var(--gold);margin-bottom:12px}
+  .ask .it .l{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);line-height:1.7}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider)}
+  .kpi{background:var(--bg);padding:40px 28px}
+  .kpi .n{font-family:var(--display);font-weight:600;font-size:40px;line-height:1;letter-spacing:-.02em;color:var(--gold);margin-bottom:14px}
+  .kpi .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1.7}
+
+  /* WINDOWS (timing) */
+  .g-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{background:var(--s1);border:1px solid var(--divider);padding:36px}
+  .card .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:5px 12px;border:1px solid var(--gold-deep);margin-bottom:22px}
+  .card h3{margin-bottom:8px}
+  .card .subtitle{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:20px}
+  .card p{font-size:14px;line-height:1.65}
+  .card .specs{margin-top:26px;padding-top:22px;border-top:1px solid var(--divider);display:grid;gap:14px}
+  .card .specs .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+  .card .specs .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:var(--dim);text-transform:uppercase}
+  .card .specs .v{font-family:var(--mono);font-size:12px;color:var(--gold-soft);font-weight:500;text-align:right}
+
+  /* VALIDATED / SOURCE badge */
+  .src{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-top:18px}
+  .src::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.7)}
+  .src.amber{color:var(--amber)}
+  .src.amber::before{background:var(--amber);box-shadow:0 0 8px rgba(184,128,78,.6)}
+
+  /* ASSET / why us list */
+  .assets{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--divider);background:var(--s1)}
+  .assets .col{padding:44px 40px}
+  .assets .col + .col{border-left:1px solid var(--divider)}
+  .assets .col .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:24px;display:inline-block;padding:6px 14px;border:1px solid var(--gold-deep);color:var(--gold)}
+  .assets h4{font-size:16px;margin-bottom:20px}
+  .assets .row{padding:17px 0;border-bottom:1px dotted #2a2a2a;display:flex;justify-content:space-between;align-items:center;gap:24px}
+  .assets .row:last-child{border-bottom:none}
+  .assets .row .k{font-size:14px;color:var(--text-2);line-height:1.5;flex:1}
+  .assets .row .v{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;flex-shrink:0;text-align:right}
+
+  /* CASES */
+  .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:28px}
+  .case{background:var(--s1);border:1px solid var(--divider);padding:28px 30px}
+  .case .h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
+  .case .h h4{font-size:17px}
+  .case .h .uf{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+  .case p{font-size:13.5px;line-height:1.6;color:var(--muted)}
+  .case .att{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--green);margin-top:14px;display:flex;align-items:center;gap:8px}
+  .case .att::before{content:"→";color:var(--green);font-style:normal}
+
+  /* SKU */
+  .sku-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .sku{background:var(--s1);border:1px solid var(--divider);padding:34px 30px}
+  .sku .badge{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-deep);padding:5px 12px;display:inline-block;margin-bottom:18px}
+  .sku h3{font-size:21px;margin-bottom:10px}
+  .sku p{font-size:13.5px;line-height:1.6;color:var(--muted);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--divider)}
+  .sku .kv{display:grid;gap:11px}
+  .sku .kv .r{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+  .sku .kv .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  .sku .kv .v{font-family:var(--mono);font-size:12.5px;color:var(--gold-soft);font-weight:500;text-align:right}
+
+  /* MODEL note */
+  .note{display:flex;gap:18px;align-items:flex-start;margin-top:36px;padding:26px 28px;background:rgba(184,149,78,.05);border-left:2px solid var(--gold);font-size:14px;line-height:1.7;color:var(--text-2)}
+  .note .arrow{font-family:var(--display);font-size:22px;color:var(--gold);line-height:1;flex-shrink:0;font-weight:600}
+  .note strong{color:var(--gold);font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:inline-block;margin-right:8px}
+
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;border:1px solid var(--divider);margin-top:8px}
+  .tbl th,.tbl td{padding:17px 22px;font-size:13.5px;border-bottom:1px solid var(--divider);text-align:left;line-height:1.5}
+  .tbl th{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;background:var(--s1)}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td.num{font-family:var(--mono);text-align:right;color:var(--gold-soft);font-weight:500;white-space:nowrap}
+  .tbl tr.sub td{background:var(--s1);font-style:italic;color:var(--text-2)}
+  .tbl tr.sub td.num{color:var(--gold-soft)}
+  .tbl tr.tot td{background:var(--s2);color:var(--gold);font-weight:600}
+  .tbl tr.tot td.num{color:var(--gold);font-size:15px}
+
+  /* PROJECTION horizons */
+  .hz{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+  .hz .h{background:var(--s1);border:1px solid var(--divider);padding:34px 30px;position:relative}
+  .hz .h::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+  .hz .h .t{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+  .hz .h .pd{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:18px}
+  .hz .h h3{font-size:20px;margin-bottom:14px}
+  .hz .h p{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:18px}
+  .hz .h .kv{display:grid;gap:9px;padding-top:18px;border-top:1px solid var(--divider)}
+  .hz .h .kv .r{display:flex;justify-content:space-between;align-items:baseline}
+  .hz .h .kv .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .hz .h .kv .v{font-size:13px;color:var(--text);font-weight:600}
+
+  /* USE OF FUNDS bar */
+  .uof{display:grid;gap:14px;margin-top:8px}
+  .uof .r{display:grid;grid-template-columns:2.4fr 0.7fr;gap:24px;align-items:center;padding:16px 0;border-bottom:1px dotted #2a2a2a}
+  .uof .r:last-child{border-bottom:none}
+  .uof .lab{font-size:14px;color:var(--text-2)}
+  .uof .lab small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--dim);margin-top:4px;text-transform:uppercase}
+  .uof .pct{font-family:var(--mono);font-size:13px;color:var(--gold-soft);text-align:right;font-weight:500}
+
+  /* RISK */
+  .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .risk .r{background:var(--s1);border:1px solid var(--divider);padding:26px 28px}
+  .risk .r .c{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--amber);margin-bottom:10px;font-weight:500}
+  .risk .r h4{font-size:15px;margin-bottom:8px}
+  .risk .r .d{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--divider)}
+  .risk .r .m{font-size:13px;color:var(--text-2);line-height:1.55}
+  .risk .r .m::before{content:"↳ ";color:var(--green);font-family:var(--mono);font-size:11px}
+
+  /* PULL */
+  .pull{padding:120px 0 32px;text-align:center;border-top:none}
+  .pull blockquote{font-family:var(--display);font-weight:500;font-size:clamp(28px,4vw,46px);line-height:1.22;letter-spacing:-.015em;color:var(--text)}
+  .pull blockquote em{color:var(--gold);font-style:italic}
+  .pull .s{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted);margin-top:24px;text-transform:uppercase}
+
+  /* SOURCES */
+  .sources{margin-top:8px}
+  .sources .row{display:grid;grid-template-columns:1.1fr 2fr;gap:24px;padding:18px 0;border-bottom:1px dotted #2a2a2a;align-items:baseline}
+  .sources .row:last-child{border-bottom:none}
+  .sources .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+  .sources .v{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .sources .v .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-left:8px}
+  .sources .v .tag.amber{color:var(--amber)}
+
+  /* FOOTER */
+  footer{padding:56px 0 0;border-top:1px solid var(--divider);margin-top:96px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .foot .tl{font-family:var(--display);font-style:italic;font-weight:500;font-size:15px;color:var(--text-2)}
+  .foot .pg{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+  .foot .pg::before{content:"";width:6px;height:6px;background:var(--gold);border-radius:50%;box-shadow:0 0 12px var(--gold)}
+
+  /* RESPONSIVE */
+  @media (max-width:1100px){
+    .wrap{padding:0 40px}
+    section{padding:88px 0}
+    .sec-head{flex-direction:column;align-items:flex-start;margin-bottom:48px;gap:20px}
+    .sec-head .left,.sec-head .right{max-width:100%;text-align:left}
+    .kpis,.ask{grid-template-columns:repeat(2,1fr)}
+    .g-3,.sku-grid,.hz{grid-template-columns:1fr}
+    .assets,.cases,.risk{grid-template-columns:1fr}
+    .assets .col + .col{border-left:none;border-top:1px solid var(--divider)}
+    .hero-grid{grid-template-columns:1fr;gap:40px;margin-top:60px;padding-top:44px}
+    .hero-grid .right{justify-content:flex-start}
+    .uof .r{grid-template-columns:2fr 0.6fr;gap:16px}
+    .sources .row{grid-template-columns:1fr;gap:6px}
+  }
+  @media (max-width:720px){
+    .wrap{padding:0 28px}
+    .hero{padding:52px 0 76px}
+    .hero h1{font-size:clamp(52px,18vw,80px)}
+    h2{font-size:27px}
+    .kpis,.ask{grid-template-columns:1fr}
+    .tbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .head-bar .meta{text-align:left}
+    footer{margin-top:64px}
+    .foot{flex-direction:column;align-items:flex-start;gap:14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="wrap">
+  <div class="head-bar">
+    <svg class="logo" viewBox="0 0 595.3 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SAMAIS">
+      <path fill="#B8954E" d="M44,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM411.7,60.6h4.7c4.4,0,8.6,2.1,11.3,5.6l36.8,48.2h-11.7l-41-53.7ZM476.6,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM184.3,60.6h-12.4s24.4,33.7,24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3s10.8,14.9,10.8,14.9h13.1l-39.6-53.7ZM372.1,60.6h-12.4l24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3l10.8,14.9h13.1l-39.6-53.7ZM287.2,65.9l-23.3,32.3-23.9-32.4c-2.4-3.2-6.2-5.2-10.2-5.2h-6l33.5,46.6h7.2l27.8-37.7v44.8h11.7v-53.7h-6.6c-4.1,0-7.9,2-10.3,5.3Z"/>
+    </svg>
+    <div class="meta">Tese de Investimento · Confidencial<br/>Samais Transporte Sanitário · SPE · v1 · 2026.06</div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="wrap hero" style="border-top:none">
+  <div class="tag">Segundo Vertical Âncora · Captura de Mercado SUS</div>
+  <h1>ROTA<sup>TS</sup></h1>
+  <div class="hero-sub">A operadora de regulação que opera o gargalo do transporte sanitário público — com a mesma arquitetura que já administra SAMU&nbsp;192.</div>
+
+  <div class="hero-grid">
+    <div class="left">
+      <p>Pela primeira vez na história do SUS, o Ministério da Saúde comprou e ofertou frota de transporte sanitário diretamente a estados e municípios. A frota chega; o município não tem como operá-la em escala. A Samais — operadora de SAMU 192 com oito atestados de capacidade técnica — estrutura uma holding e integraliza esses atestados na nova operação para capturar a janela: <em>regula, agenda, roteiriza, executa e audita</em> a cadeia de transporte eletivo. O ângulo de defesa não é preço. É o atestado: apenas cerca de seis operadores no país podem disputar esses editais.</p>
+      <div class="src">Janela regulatória e de oferta confirmada em fonte pública federal</div>
+    </div>
+    <div class="right">
+      <svg class="mono-icon" viewBox="0 0 271 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samais SA+">
+        <path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="ask">
+    <div class="it"><div class="n">R$ 1,2 bi</div><div class="l">Mercado endereçável<br/>transporte sanitário público · Brasil</div></div>
+    <div class="it"><div class="n">≈ 6</div><div class="l">Operadores no país<br/>com atestado para competir</div></div>
+    <div class="it"><div class="n">R$ 15 mi</div><div class="l">Atestados Samais<br/>integralizados na holding</div></div>
+    <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte de capital<br/>do investidor sócio</div></div>
+  </div>
+</section>
+
+<!-- 01 · POR QUE AGORA -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">01 · Por que agora</span>
+      <h2>Três vetores convergindo<br/>simultaneamente.</h2>
+      <p class="lede">A maior transformação estrutural do segmento desde a criação do SAMU 192. Choque de oferta federal, cofinanciamento recém-criado e pressão estrutural por terceirização abrem uma janela mensurável — e que recompensa quem se posicionar primeiro.</p>
+    </div>
+    <div class="right">Tese de timing<br/><span class="acc">a janela é estreita por desenho</span></div>
+  </div>
+
+  <div class="g-3">
+    <div class="card">
+      <div class="tag">Vetor 01 · Oferta</div>
+      <h3>Frota federal sem operador</h3>
+      <div class="subtitle">Caminhos da Saúde · Novo PAC</div>
+      <p>O Ministério da Saúde iniciou, em abr/2026, a entrega de 3.300 veículos a estados e municípios — R$ 1,4 bilhão. Cada veículo precisa ser operado: pessoal, manutenção, combustível, prestação de contas. A maioria dos municípios não tem capacidade interna para isso.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Investimento federal</span><span class="v">R$ 1,4 bi</span></div>
+        <div class="row"><span class="k">Veículos no programa</span><span class="v">3.300</span></div>
+        <div class="row"><span class="k">Dedicados a radio/hemo</span><span class="v">≈ 1.476</span></div>
+      </div>
+      <div class="src">Confirmado · gov.br/saúde · abr/2026</div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Vetor 02 · Custeio</div>
+      <h3>Cofinanciamento recém-criado</h3>
+      <div class="subtitle">Portaria GM/MS 11.164 · mai/2026</div>
+      <p>Despesa que antes era 100% municipal passou a ter contrapartida federal para transporte de radioterapia e hemodiálise — deslocamentos acima de 50 km, raio até 500 km. Reduz a fricção orçamentária da contratação no exato momento da janela.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Impacto anual estimado</span><span class="v">R$ 165,4 mi</span></div>
+        <div class="row"><span class="k">Exercício 2026 (parcial)</span><span class="v">R$ 110,3 mi</span></div>
+        <div class="row"><span class="k">Base legal</span><span class="v">Lei 12.732/2012</span></div>
+      </div>
+      <div class="src">Confirmado · CONASS/CONASEMS · 11 mai 2026</div>
+    </div>
+
+    <div class="card">
+      <div class="tag">Vetor 03 · Pressão</div>
+      <h3>Esgotamento do modelo próprio</h3>
+      <div class="subtitle">Estrutural · independe de ciclo político</div>
+      <p>Restrições trabalhistas sobre jornada de motoristas municipais e o esgotamento operacional do modelo autônomo de transporte empurram a terceirização da operação — um driver que não depende de eleição e sustenta a demanda além da janela federal.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Marco de contratação</span><span class="v">Lei 14.133/2021</span></div>
+        <div class="row"><span class="k">Regra de operação</span><span class="v">Res. CIT 13/2017</span></div>
+        <div class="row"><span class="k">Vácuo competitivo</span><span class="v">Micro/locais</span></div>
+      </div>
+      <div class="src amber">Driver estrutural · leitura Samais</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="arrow">→</span>
+    <div><strong>Leitura honesta do número.</strong>Os 3.300 veículos do PAC não são todos de transporte eletivo: cerca de 1.824 são multiuso/ambulância e ≈1.476 dedicados a radioterapia e hemodiálise. O mercado endereçável imediato é o subconjunto eletivo somado à operação de frota cedida — não o total. A tese se sustenta no R$ 1,2 bi anualizado, não em projeções de TAM de dois dígitos de bilhão.</div>
+  </div>
+</section>
+
+<!-- 02 · POR QUE A SAMAIS -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">02 · Vantagem cumulativa</span>
+      <h2>O moat não é frota.<br/>É o atestado.</h2>
+      <p class="lede">O segmento é atendido hoje por operadoras de remoção privada focadas em planos de saúde e por microempresas locais sem estrutura técnica nem atestados. Apenas cerca de seis operadores no país reúnem atestados para disputar esses editais — a Samais é um deles, com oito ATCs. Um entrante novo levaria de três a cinco anos para construir histórico equivalente.</p>
+    </div>
+    <div class="right">Ativo competitivo<br/><span class="acc">8 ATCs · entre ≈6 qualificados no país</span></div>
+  </div>
+
+  <div class="assets">
+    <div class="col">
+      <div class="lbl">O que a Samais traz</div>
+      <h4>Capacidade já instalada e contratável</h4>
+      <div class="row"><div class="k">Atestados de capacidade técnica (SAMU 192 + Central de Regulação)</div><div class="v">08 ATCs</div></div>
+      <div class="row"><div class="k">Central de regulação 24/7 com responsabilidade técnica integral</div><div class="v">Em operação</div></div>
+      <div class="row"><div class="k">Co-piloto · inteligência clínico-operacional + dataset APH-BR</div><div class="v">Proprietário</div></div>
+      <div class="row"><div class="k">Cadeia de custódia digital · hash imutável por ocorrência</div><div class="v">Por design</div></div>
+      <div class="row"><div class="k">Equipe jurídico-regulatória e estrutura de garantia contratual</div><div class="v">Reaproveitável</div></div>
+      <div class="row"><div class="k">Cross-sell intra-portfólio · mesmo decisor público do SAMU</div><div class="v">CAC mínimo</div></div>
+    </div>
+    <div class="col">
+      <div class="lbl">O que o entrante não tem</div>
+      <h4>A barreira que elimina o concorrente local</h4>
+      <div class="row"><div class="k">Histórico técnico para editais com exigência de ATC</div><div class="v">3–5 anos</div></div>
+      <div class="row"><div class="k">Operação consorciada intermunicipal comprovada</div><div class="v">Ausente</div></div>
+      <div class="row"><div class="k">Plataforma própria de regulação e indicadores auditáveis</div><div class="v">Ausente</div></div>
+      <div class="row"><div class="k">Relacionamento institucional regional (SES · consórcios)</div><div class="v">Ausente</div></div>
+      <div class="row"><div class="k">Capacidade de prestação de contas a TCE/MP</div><div class="v">Frágil</div></div>
+      <div class="row"><div class="k">Estrutura de capital para garantia em contrato plurianual</div><div class="v">Ausente</div></div>
+    </div>
+  </div>
+
+  <div class="cases">
+    <div class="case">
+      <div class="h"><h4>CISNORPI</h4><span class="uf">Norte do PR</span></div>
+      <p>Operou gestão integrada de SAMU 192 para mais de vinte municípios consorciados — central regional de regulação, dimensionamento de frota e equipe, integração com hospitais de referência.</p>
+      <div class="att">Atestado técnico disponível em due diligence formal</div>
+    </div>
+    <div class="case">
+      <div class="h"><h4>Hospital Dr. Anísio Figueiredo</h4><span class="uf">Londrina · PR</span></div>
+      <p>Operou gestão hospitalar de unidade de referência regional na rede municipal de Londrina — governança clínica e administrativa integrada, indicadores auditáveis.</p>
+      <div class="att">Atestado técnico disponível em due diligence formal</div>
+    </div>
+    <div class="case">
+      <div class="h"><h4>Ourinhos</h4><span class="uf">SP</span></div>
+      <p>Operação documentada em saúde pública municipal — referência institucional na trajetória da Samais, com responsabilidade técnica nominal.</p>
+      <div class="att">Atestado técnico disponível em due diligence formal</div>
+    </div>
+    <div class="case">
+      <div class="h"><h4>Santa Casa de Goioerê</h4><span class="uf">PR</span></div>
+      <p>Operação documentada de gestão assistencial — repertório aplicável diretamente à estruturação de central e frota do vertical de transporte sanitário.</p>
+      <div class="att">Atestado técnico disponível em due diligence formal</div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · MODELO -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">03 · Modelo de negócio</span>
+      <h2>O governo fornece o veículo.<br/>A Samais opera.</h2>
+      <p class="lede">SPE controlada pela holding Samais, com governança independente e contabilidade segregada. O modelo preferencial minimiza CAPEX inicial: a frota chega via PAC/SESA; a Samais entrega pessoal, manutenção, combustível, regulação e prestação de contas. Receita recorrente, contratos plurianuais.</p>
+    </div>
+    <div class="right">Estrutura<br/><span class="acc">SPE · CAPEX mínimo · foco PR · SP · MG</span></div>
+  </div>
+
+  <div class="sku-grid">
+    <div class="sku">
+      <div class="badge">SKU 01</div>
+      <h3>ROTA Cidade</h3>
+      <p>Contrato integral de transporte sanitário eletivo municipal: central de regulação, frota mista, roteirização, prontuário de viagem e indicadores auditáveis. Municípios de 150–600 mil habitantes.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Ticket médio/mês</span><span class="v">R$ 148–238 mil</span></div>
+        <div class="r"><span class="k">Vigência típica</span><span class="v">48–60 meses</span></div>
+        <div class="r"><span class="k">Margem pós-impostos</span><span class="v">12–15%</span></div>
+      </div>
+    </div>
+    <div class="sku">
+      <div class="badge">SKU 02</div>
+      <h3>ROTA Hemodiálise</h3>
+      <p>Contrato específico de transporte de pacientes crônicos, faturado por sessão. Aproveita o cofinanciamento da Portaria 11.164/2026. Porta de entrada de menor atrito político e receita recorrente por paciente.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Ticket médio/mês</span><span class="v">R$ 60–110 mil</span></div>
+        <div class="r"><span class="k">Vigência típica</span><span class="v">24–36 meses</span></div>
+        <div class="r"><span class="k">Margem pós-impostos</span><span class="v">15–18%</span></div>
+      </div>
+    </div>
+    <div class="sku">
+      <div class="badge">SKU 03</div>
+      <h3>ROTA Consórcio</h3>
+      <p>Contrato regional cobrindo múltiplos municípios sob consórcio intermunicipal. Central compartilhada com ganho de escala. Replica o repertório consorciado já provado no SAMU (CISNORPI).</p>
+      <div class="kv">
+        <div class="r"><span class="k">Ticket médio/mês</span><span class="v">R$ 600 mil–1,2 mi</span></div>
+        <div class="r"><span class="k">Vigência típica</span><span class="v">60 meses</span></div>
+        <div class="r"><span class="k">Margem pós-impostos</span><span class="v">18–22%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="arrow">→</span>
+    <div><strong>Estratégia de portfólio.</strong>Entrar via Hemodiálise nos municípios resistentes — menor atrito, cofinanciamento federal. Entrar via Cidade onde o relacionamento Samais já é maduro. Multiplicar receita por contrato via Consórcio. Os três compartilham a mesma central de regulação e o mesmo aparato de governança.</div>
+  </div>
+</section>
+
+<!-- 04 · UNIT ECONOMICS -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">04 · Unit economics</span>
+      <h2>A conta de um<br/>contrato médio.</h2>
+      <p class="lede">Composição financeira de um contrato ROTA Cidade — referência de 300 mil habitantes, configuração enxuta, BDI Samais de 25%. A cessão de frota via PAC Saúde preserva ou amplia a margem ao reduzir o custo direto operacional.</p>
+    </div>
+    <div class="right">Referência<br/><span class="acc">Central · 2 vans · 1 PCD · 2 compactos</span></div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Componente</th><th style="text-align:right">Mensal</th><th style="text-align:right">Anual</th><th style="text-align:right">48 meses</th></tr></thead>
+    <tbody>
+      <tr><td>Receita contratual</td><td class="num">R$ 195.000</td><td class="num">R$ 2,34 mi</td><td class="num">R$ 9,36 mi</td></tr>
+      <tr><td>Custo direto operacional (CDO)</td><td class="num">R$ 154.000</td><td class="num">R$ 1,85 mi</td><td class="num">R$ 7,39 mi</td></tr>
+      <tr class="sub"><td>Resultado contratual (BDI 25%)</td><td class="num">R$ 41.000</td><td class="num">R$ 492 mil</td><td class="num">R$ 1,97 mi</td></tr>
+      <tr class="tot"><td>Margem líquida pós-impostos (12–15%)</td><td class="num">R$ 23–29 mil</td><td class="num">R$ 280–350 mil</td><td class="num">R$ 1,12–1,40 mi</td></tr>
+    </tbody>
+  </table>
+
+  <table class="tbl" style="margin-top:24px">
+    <thead><tr><th>Sensibilidade · frota cedida</th><th style="text-align:right">CDO mensal</th><th style="text-align:right">Receita possível</th><th style="text-align:right">Margem</th></tr></thead>
+    <tbody>
+      <tr><td>Sem frota cedida</td><td class="num">R$ 154.000</td><td class="num">R$ 195.000</td><td class="num">12–15%</td></tr>
+      <tr class="sub"><td>Com frota cedida (PAC Saúde)</td><td class="num">R$ 105–115 mil</td><td class="num">R$ 155–175 mil</td><td class="num">14–17%</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:18px;font-size:13.5px;color:var(--muted)">A frota cedida permite oferta mais competitiva em edital com preservação — ou expansão — da margem absoluta. É a alavanca que converte o choque de oferta federal em vantagem de preço sem perda de resultado.</p>
+</section>
+
+<!-- 05 · PROJEÇÃO -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">05 · Projeção 36 meses</span>
+      <h2>H1 testa. H2 adensa.<br/>H3 consolida.</h2>
+      <p class="lede">Três horizontes de desenvolvimento do segundo vertical âncora. O objetivo de H1 não é receita — é o contrato âncora que vira case e destrava a venda seguinte. Densidade regional reduz custo logístico e melhora a margem.</p>
+    </div>
+    <div class="right">Acumulado 36 meses<br/><span class="acc">receita R$ 73–110 mi · lucro R$ 11–19 mi</span></div>
+  </div>
+
+  <div class="hz">
+    <div class="h">
+      <div class="t">H1 · Fundação</div>
+      <div class="pd">Mês 1 ao 12</div>
+      <h3>Prova de tese</h3>
+      <p>Estruturação jurídica da SPE, plataforma operacional, frota inicial via cessão e captura do primeiro contrato âncora em PR/SP/MG. O entregável é um case replicável.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita contratada</span><span class="v">R$ 6–10 mi</span></div>
+        <div class="r"><span class="k">Contratos ativos</span><span class="v">4–7</span></div>
+        <div class="r"><span class="k">Margem líquida</span><span class="v">12–18%</span></div>
+      </div>
+    </div>
+    <div class="h">
+      <div class="t">H2 · Densidade</div>
+      <div class="pd">Mês 13 ao 24</div>
+      <h3>Escala regional</h3>
+      <p>A meta deixa de ser o contrato isolado e passa a ser a densidade geográfica. Lançamento do ROTA Hemodiálise e primeira negociação consorciada multi-município.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita anualizada</span><span class="v">R$ 15–25 mi</span></div>
+        <div class="r"><span class="k">Cross-sell SAMU</span><span class="v">5–8 municípios</span></div>
+        <div class="r"><span class="k">Margem</span><span class="v">16–22%</span></div>
+      </div>
+    </div>
+    <div class="h">
+      <div class="t">H3 · Consolidação</div>
+      <div class="pd">Mês 25 ao 36</div>
+      <h3>Posição estrutural</h3>
+      <p>Vantagem consolidada: atestados acumulados, contratos vigentes, relacionamento institucional regional. Dividendos a partir do ano 2; avaliação de saída via M&amp;A.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita acum. 36m</span><span class="v">R$ 73–110 mi</span></div>
+        <div class="r"><span class="k">Lucro acum. 36m</span><span class="v">R$ 11–19 mi</span></div>
+        <div class="r"><span class="k">Dividendos</span><span class="v">A partir do ano 2</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL -->
+<section class="wrap pull">
+  <blockquote>O custo de chegar tarde é alto.<br/>O custo de chegar <em>primeiro</em> é mensurável.</blockquote>
+  <div class="s">— Tese de timing · Samais Transporte Sanitário</div>
+</section>
+
+<!-- 06 · O ASK -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">06 · A rodada</span>
+      <h2>A estrutura.<br/>E o uso do capital.</h2>
+      <p class="lede">Constitui-se uma holding empresarial: a nova operação de transporte sanitário entra no grupo econômico. A Samais integraliza seus atestados — avaliados em R$ 15 mi — e o investidor sócio entra com o capital de giro e implantação. Não é capital de risco em mercado aberto: é capital de captura onde a Samais já tem qualificação acima da barreira de entrada.</p>
+    </div>
+    <div class="right">Termos<br/><span class="acc">holding · participação conforme avaliação acordada</span></div>
+  </div>
+
+  <div class="ask" style="margin-bottom:44px">
+    <div class="it"><div class="n">Holding</div><div class="l">Estrutura societária<br/>nova operação no grupo econômico</div></div>
+    <div class="it"><div class="n">R$ 15 mi</div><div class="l">Aporte Samais<br/>atestados integralizados</div></div>
+    <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte investidor<br/>referência R$ 3 mi · capital</div></div>
+    <div class="it"><div class="n">~15–21%</div><div class="l">Participação implícita<br/>função da avaliação acordada</div></div>
+  </div>
+
+  <div class="mono" style="margin-bottom:18px;color:var(--gold)">Aplicação do aporte de capital do investidor (≈ R$ 3 mi)</div>
+  <div class="uof">
+    <div class="r"><div class="lab">Estruturação jurídica e societária da SPE<small>blindagem contratual · governança · contabilidade segregada</small></div><div class="pct">8–12%</div></div>
+    <div class="r"><div class="lab">Plataforma de regulação, roteirização e integração<small>TMS próprio · indicadores auditáveis · prontuário de viagem</small></div><div class="pct">14–18%</div></div>
+    <div class="r"><div class="lab">Time comercial e de operações dedicado<small>gestão própria · sem rateio de cabeças-chave com o SAMU</small></div><div class="pct">22–28%</div></div>
+    <div class="r"><div class="lab">Capital de implantação e garantias contratuais<small>reserva operacional dos primeiros contratos · cauções de edital</small></div><div class="pct">28–34%</div></div>
+    <div class="r"><div class="lab">Frota complementar e contingência<small>cobertura onde a cessão federal não alcança · overflow de picos</small></div><div class="pct">14–20%</div></div>
+  </div>
+  <div class="src amber">Alocação preliminar · composição definitiva no memorial financeiro da SPE em due diligence</div>
+</section>
+
+<!-- 07 · RISCOS -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">07 · Riscos</span>
+      <h2>Lista honesta.<br/>Cada um com mitigação.</h2>
+      <p class="lede">A credibilidade da tese está na transparência dos riscos. Auditabilidade é o princípio da casa — aplicado também ao próprio plano de investimento.</p>
+    </div>
+    <div class="right">Postura<br/><span class="acc">mitigação explícita, não otimismo</span></div>
+  </div>
+
+  <div class="risk">
+    <div class="r">
+      <div class="c">R1 · Regulatório</div>
+      <h4>Reversão da janela federal pós-2026</h4>
+      <div class="d">A Portaria 11.164/2026 é instrumento da gestão federal atual e pode ser modificada após o ciclo eleitoral.</div>
+      <div class="m">Contratos longos (48–60 meses) assinados no biênio 2026–2027, fixando vigência além do ciclo.</div>
+    </div>
+    <div class="r">
+      <div class="c">R2 · Competitivo</div>
+      <h4>Entrada de locadoras nacionais</h4>
+      <div class="d">Players de frota podem precificar o vertical se enxergarem o mercado abrir.</div>
+      <div class="m">Velocidade. Densidade e atestados construídos em 24 meses criam barreira de relacionamento difícil de replicar.</div>
+    </div>
+    <div class="r">
+      <div class="c">R3 · Execução</div>
+      <h4>Atraso da plataforma própria</h4>
+      <div class="d">Sem a plataforma, o ROTA fica indistinguível de uma locadora com discurso elaborado.</div>
+      <div class="m">Gate rígido de protótipo + plataforma de mercado licenciável contratada em standby como fallback.</div>
+    </div>
+    <div class="r">
+      <div class="c">R4 · Interno</div>
+      <h4>Canibalização do SAMU</h4>
+      <div class="d">O SAMU continua sendo core; dispersão de liderança comprometeria os dois verticais.</div>
+      <div class="m">SPE com PMO e liderança dedicada desde o mês 1, fronteira de governança clara entre verticais.</div>
+    </div>
+    <div class="r">
+      <div class="c">R5 · Margem</div>
+      <h4>Pressão de BDI em edital</h4>
+      <div class="d">Editais técnico-econômicos podem forçar BDI abaixo de 25%.</div>
+      <div class="m">Venda por valor — plataforma, prontuário, indicadores — e alavanca da frota cedida para defender margem.</div>
+    </div>
+    <div class="r">
+      <div class="c">R6 · Político</div>
+      <h4>Resistência à terceirização</h4>
+      <div class="d">Em municípios com sindicato forte, terceirizar transporte é sensível.</div>
+      <div class="m">Posicionamento como complemento — absorção de rotas externas e rotas PAC — não substituição da operação municipal.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 · FONTES -->
+<section class="wrap">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">08 · Premissas e fontes</span>
+      <h2>O que está verificado<br/>e o que é estimativa.</h2>
+      <p class="lede">Distinção explícita entre fato regulatório confirmado em fonte pública e premissa interna de modelagem. Investidor não compra entusiasmo — compra rastreabilidade.</p>
+    </div>
+    <div class="right">Disciplina<br/><span class="acc">fato federal × premissa Samais</span></div>
+  </div>
+
+  <div class="sources">
+    <div class="row"><div class="k">Portaria 11.164/2026</div><div class="v">Publicada em 11/05/2026; altera a Portaria 8516/2025; regulamenta transporte sanitário para radioterapia e hemodiálise. Impacto anual estimado R$ 165,4 mi. <span class="tag">verificado · CONASS/CONASEMS</span></div></div>
+    <div class="row"><div class="k">Caminhos da Saúde</div><div class="v">Novo PAC · 3.300 veículos · R$ 1,4 bi · primeiras entregas abr/2026. ≈1.476 dedicados a radio/hemodiálise; restante multiuso/ambulância. <span class="tag">verificado · gov.br/saúde</span></div></div>
+    <div class="row"><div class="k">Mercado endereçável</div><div class="v">R$ 1,2 bi anualizado no Brasil — número da própria modelagem Samais (Pitch TSE). Estudos que citam R$ 11–18 bi não foram adotados. <span class="tag amber">premissa · casa</span></div></div>
+    <div class="row"><div class="k">8 ATCs · cases</div><div class="v">Atestados em SAMU 192 e Central de Regulação; cases CISNORPI, Hospital Dr. Anísio Figueiredo, Ourinhos, Santa Casa de Goioerê. Cerca de seis operadores no país reúnem atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
+    <div class="row"><div class="k">Estrutura societária</div><div class="v">Holding com a nova operação no grupo econômico; Samais integraliza atestados avaliados em R$ 15 mi; investidor aporta R$ 2,5–4 mi em capital. Participação conforme avaliação acordada. <span class="tag amber">em negociação</span></div></div>
+    <div class="row"><div class="k">Projeção do vertical</div><div class="v">Receita acumulada 36m R$ 73–110 mi; lucro R$ 11–19 mi. Cenário base a otimista, modelagem própria do vertical. <span class="tag amber">premissa · modelagem</span></div></div>
+    <div class="row"><div class="k">Unit economics</div><div class="v">Contrato médio R$ 195 mil/mês, CDO R$ 154 mil, BDI 25%. Faixas preliminares; valores definitivos por estudo municipal. <span class="tag amber">estimativa preliminar</span></div></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <div class="tl">Onde gestão se mede em vidas.</div>
+    <div class="pg">Samais Transporte Sanitário · SPE · Confidencial · Investidores · Jun/2026</div>
+  </div>
+</footer>
+
+</body>
+</html>
