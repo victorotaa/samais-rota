@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Transporte Sanitário — Samais · Tese de Investimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --s1:#131313;
+    --s2:#1A1A1A;
+    --divider:#262626;
+    --gold:#B8954E;
+    --gold-soft:#D4B373;
+    --gold-deep:#8E7238;
+    --green:#1E7A4B;
+    --amber:#B8804E;
+    --text:#F4F1EA;
+    --text-2:#D9D2C5;
+    --muted:#9C9489;
+    --dim:#615C53;
+    --display:'Syne', serif;
+    --body:'Inter', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;overflow-x:hidden}
+  body{padding:60px 0 120px;background:transparent}
+  [id]{scroll-margin-top:78px}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:0 56px}
+  section{border-top:1px solid var(--divider)}
+  section.wrap{padding-top:116px;padding-bottom:116px}
+
+  /* FIXED NAV */
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34)}
+  .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+  .nav-brand .nav-wordmark{height:27px;width:auto;display:block}
+  .nav-brand .nav-mono{height:26px;width:auto;display:none}
+  .nav-links{display:flex;align-items:center;gap:23px}
+  .nav-links a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .18s;white-space:nowrap}
+  .nav-links a:hover,.nav-links a.active{color:var(--gold)}
+  .nav-links a.nav-cta{color:var(--gold);border:1px solid var(--gold-deep);padding:8px 14px}
+  .nav-links a.nav-cta:hover{background:rgba(184,149,78,.1)}
+  .nav-ham{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px;margin-right:-8px}
+  .nav-ham span{display:block;width:22px;height:1.5px;background:var(--text);transition:transform .2s,opacity .2s}
+  .nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  .nav-ham.open span:nth-child(2){opacity:0}
+  .nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  @media (max-width:940px){
+    .nav-links{position:fixed;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(16,16,18,.82);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);border-bottom:1px solid rgba(255,255,255,.09);padding:6px 0;transform:translateY(-14px);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:calc(100vh - 60px);overflow-y:auto}
+    .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto}
+    .nav-links a{padding:16px clamp(20px,5vw,40px);font-size:12px;border-top:1px solid var(--divider)}
+    .nav-links a:first-child{border-top:none}
+    .nav-links a.nav-cta{border:0;border-top:1px solid var(--divider);padding:16px clamp(20px,5vw,40px)}
+    .nav-ham{display:flex}
+    .nav-brand .nav-wordmark{display:none}
+    .nav-brand .nav-mono{display:block}
+  }
+
+  /* TYPE */
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(44px,8.5vw,116px);line-height:.9;letter-spacing:-.03em;color:var(--text)}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,3.6vw,46px);line-height:1.08;letter-spacing:-.02em;margin-bottom:20px}
+  h3{font-family:var(--display);font-weight:600;font-size:21px;line-height:1.22;letter-spacing:-.01em}
+  h4{font-family:var(--display);font-weight:600;font-size:16px;line-height:1.25;color:var(--text)}
+  p{font-size:15.5px;color:var(--text-2);font-weight:300;line-height:1.65}
+  .lede{font-size:17px;line-height:1.62;color:var(--text-2);max-width:72ch;font-weight:300}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+  em{font-style:italic;color:var(--gold-soft)}
+
+  .sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:18px;display:block}
+  .sec-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:56px;gap:64px}
+  .sec-head .left{max-width:64%}
+  .sec-head .right{max-width:30%;text-align:right;color:var(--muted);font-size:12.5px;line-height:1.6;font-family:var(--mono);letter-spacing:.04em;padding-top:6px}
+  .sec-head .right .acc{color:var(--gold);display:block;margin-top:6px}
+
+  /* HEADER */
+  header{padding:40px 0 0}
+  .head-bar{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .head-bar .logo{width:124px;height:auto;display:block;opacity:.92;flex-shrink:0}
+  .head-bar .meta{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:right;line-height:1.7}
+
+  /* HERO */
+  .hero-section{position:relative;overflow:hidden;border-top:none}
+  .hero-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/hero.jpg) center 42%/cover no-repeat;opacity:.30;will-change:transform}
+  .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.74) 0%,rgba(10,10,10,.58) 42%,rgba(10,10,10,.96) 100%)}
+  .hero-section > .wrap{position:relative;z-index:1}
+  .hero{padding:72px 0 96px}
+  .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:30px}
+  .hero h1{margin:0}
+  .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(19px,2.1vw,26px);color:var(--gold-soft);letter-spacing:-.005em;line-height:1.38;max-width:740px;margin-top:36px}
+  .hero-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:64px;margin-top:64px;padding-top:48px;border-top:1px solid var(--divider)}
+  .hero-grid p{max-width:56ch}
+  .hero-grid .right{display:flex;align-items:flex-start;justify-content:flex-end}
+  .hero-grid .right .mono-icon{width:80px;opacity:.85}
+  .src{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-top:18px}
+  .src::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.7)}
+  .src.amber{color:var(--amber)}
+  .src.amber::before{background:var(--amber);box-shadow:0 0 8px rgba(184,128,78,.6)}
+
+  /* STAT STRIP */
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider);margin-top:48px}
+  .strip .it{background:var(--bg);padding:30px 26px}
+  .strip .it .n{font-family:var(--display);font-weight:600;font-size:29px;line-height:1.05;letter-spacing:-.02em;color:var(--gold);margin-bottom:12px}
+  .strip .it .l{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);line-height:1.7}
+
+  /* FULL-BLEED PHOTO BAND */
+  .band{position:relative;width:100%;height:clamp(240px,36vw,420px);overflow:hidden;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
+  .band img{position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;object-fit:cover;object-position:center 62%;opacity:.55;will-change:transform}
+  .band::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.94) 0%,rgba(10,10,10,.5) 52%,rgba(10,10,10,.82) 100%)}
+  .band .cap{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end}
+  .band .cap .in{max-width:1200px;margin:0 auto;width:100%;padding:0 56px 40px}
+  .band .cap .e{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .band .cap .t{font-family:var(--display);font-weight:600;font-size:clamp(20px,2.4vw,30px);line-height:1.2;color:var(--text);max-width:34ch;letter-spacing:-.01em}
+
+  /* CARDS (timing) */
+  .g-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .card{background:var(--s1);border:1px solid var(--divider);padding:34px}
+  .card .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:5px 12px;border:1px solid var(--gold-deep);margin-bottom:22px}
+  .card h3{margin-bottom:8px}
+  .card .subtitle{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:20px}
+  .card p{font-size:14px;line-height:1.65}
+  .card .specs{margin-top:26px;padding-top:22px;border-top:1px solid var(--divider);display:grid;gap:14px}
+  .card .specs .row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+  .card .specs .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;color:var(--dim);text-transform:uppercase}
+  .card .specs .v{font-family:var(--mono);font-size:12px;color:var(--gold-soft);font-weight:500;text-align:right}
+
+  /* NOTE */
+  .note{display:flex;gap:18px;align-items:flex-start;margin:44px 0 0;padding:26px 28px;background:rgba(184,149,78,.05);border-left:2px solid var(--gold);font-size:14px;line-height:1.7;color:var(--text-2)}
+  .note .arrow{font-family:var(--display);font-size:22px;color:var(--gold);line-height:1;flex-shrink:0;font-weight:600}
+  .note strong{color:var(--gold);font-weight:500;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:inline-block;margin-right:8px}
+
+  /* BRING (single panel) */
+  .bring{border:1px solid var(--divider);background:var(--s1);padding:44px 40px}
+  .bring .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:22px;display:inline-block;padding:6px 14px;border:1px solid var(--gold-deep);color:var(--gold)}
+  .bring h4{font-size:16px;margin-bottom:22px}
+  .bring .rows{display:grid;grid-template-columns:1fr 1fr;gap:0 56px}
+  .bring .row{padding:16px 0;border-bottom:1px dotted #2a2a2a;display:flex;justify-content:space-between;align-items:center;gap:20px}
+  .bring .row .k{font-size:14px;color:var(--text-2);line-height:1.5;flex:1}
+  .bring .row .v{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;flex-shrink:0;text-align:right}
+
+  /* CASES */
+  .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+  .case{background:var(--s1);border:1px solid var(--divider);padding:28px 30px}
+  .case .h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:10px}
+  .case .h h4{font-size:17px}
+  .case .h .uf{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+  .case p{font-size:13.5px;line-height:1.6;color:var(--muted)}
+  .case .att{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--green);margin-top:14px;display:flex;align-items:center;gap:8px}
+  .case .att::before{content:"\2192";color:var(--green);font-style:normal}
+
+  /* MODALIDADE (sku) */
+  .sku-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .sku{background:var(--s1);border:1px solid var(--divider);padding:34px 30px}
+  .sku .badge{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-deep);padding:5px 12px;display:inline-block;margin-bottom:18px}
+  .sku h3{font-size:21px;margin-bottom:10px}
+  .sku p{font-size:13.5px;line-height:1.6;color:var(--muted);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--divider)}
+  .sku .kv{display:grid;gap:11px}
+  .sku .kv .r{display:flex;justify-content:space-between;align-items:baseline;gap:14px}
+  .sku .kv .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+  .sku .kv .v{font-family:var(--mono);font-size:12.5px;color:var(--gold-soft);font-weight:500;text-align:right}
+
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;border:1px solid var(--divider);margin-top:8px}
+  .tbl th,.tbl td{padding:16px 22px;font-size:13.5px;border-bottom:1px solid var(--divider);text-align:left;line-height:1.5}
+  .tbl th{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;font-weight:500;background:var(--s1)}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td.num{font-family:var(--mono);text-align:right;color:var(--gold-soft);font-weight:500;white-space:nowrap}
+  .tbl tr.sub td{background:var(--s1);font-style:italic;color:var(--text-2)}
+  .tbl tr.sub td.num{color:var(--gold-soft)}
+  .tbl tr.tot td{background:var(--s2);color:var(--gold);font-weight:600}
+  .tbl tr.tot td.num{color:var(--gold);font-size:15px}
+
+  /* STAGES */
+  .hz{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+  .hz .h{background:var(--s1);border:1px solid var(--divider);padding:34px 30px;position:relative}
+  .hz .h::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+  .hz .h .t{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+  .hz .h .pd{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:18px}
+  .hz .h h3{font-size:20px;margin-bottom:14px}
+  .hz .h p{font-size:13px;line-height:1.6;color:var(--muted);margin-bottom:18px}
+  .hz .h .kv{display:grid;gap:9px;padding-top:18px;border-top:1px solid var(--divider)}
+  .hz .h .kv .r{display:flex;justify-content:space-between;align-items:baseline}
+  .hz .h .kv .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .hz .h .kv .v{font-size:13px;color:var(--text);font-weight:600}
+
+  /* USE OF FUNDS */
+  .uof{display:grid;gap:0;margin-top:8px}
+  .uof .r{display:grid;grid-template-columns:2fr 1fr 0.5fr;gap:24px;align-items:center;padding:18px 0;border-bottom:1px dotted #2a2a2a}
+  .uof .r:last-child{border-bottom:none}
+  .uof .lab{font-size:14.5px;color:var(--text-2)}
+  .uof .lab small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--dim);margin-top:5px;text-transform:uppercase;line-height:1.5}
+  .uof .pct{font-family:var(--mono);font-size:14px;color:var(--gold-soft);text-align:right;font-weight:500}
+
+  /* DATA VIZ — line chart */
+  .chart{border:1px solid var(--divider);background:var(--s1);padding:30px 32px;margin-top:8px}
+  .chart .ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .chart .ch-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .chart .ch-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .chart svg{display:block;width:100%;height:auto;margin-top:14px}
+
+  /* DATA VIZ — split bar */
+  .splitviz{margin-top:28px;border:1px solid var(--divider);background:var(--s1);padding:26px 30px}
+  .splitviz .sv-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+  .splitviz .sv-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .splitviz .sv-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .splitviz .bar{display:flex;height:44px;border:1px solid var(--divider);overflow:hidden}
+  .splitviz .seg{display:flex;align-items:center;padding:0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.03em;white-space:nowrap;overflow:hidden}
+  .splitviz .seg.mul{background:#242424;color:var(--muted)}
+  .splitviz .seg.gld{background:linear-gradient(90deg,var(--gold-deep),var(--gold));color:#0A0A0A;font-weight:500;justify-content:flex-end}
+  .splitviz .legend{display:flex;gap:30px;flex-wrap:wrap;margin-top:16px}
+  .splitviz .legend span{font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:9px}
+  .splitviz .legend i{width:10px;height:10px;flex-shrink:0}
+  .splitviz .legend i.m{background:#242424}
+  .splitviz .legend i.g{background:var(--gold)}
+  .splitviz .legend em{color:var(--gold-soft);font-style:italic}
+  @media(max-width:560px){.splitviz .seg{font-size:9px;padding:0 8px}.splitviz .legend{gap:14px}}
+
+  /* DATA VIZ — operadores */
+  .opsviz{margin-top:28px;border:1px solid var(--divider);background:var(--s1);padding:26px 30px}
+  .opsviz .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  .opsviz .ops{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .opsviz .ops i{width:48px;height:48px;border:1px solid var(--divider);background:#1a1a1a}
+  .opsviz .ops i.on{background:linear-gradient(135deg,var(--gold-soft),var(--gold-deep));border-color:var(--gold)}
+  .opsviz .cap{font-size:13.5px;color:var(--text-2);line-height:1.6}
+  .opsviz .cap b{color:var(--gold);font-weight:500}
+  @media(max-width:560px){.opsviz .ops i{width:38px;height:38px}}
+
+  /* DATA VIZ — barras de uso de capital */
+  .uof .track{height:8px;background:#1a1a1a;border:1px solid var(--divider);position:relative;overflow:hidden}
+  .uof .fill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--gold-deep),var(--gold))}
+
+  /* RISK */
+  .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .risk .r{background:var(--s1);border:1px solid var(--divider);padding:26px 28px}
+  .risk .r .c{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--amber);margin-bottom:10px;font-weight:500}
+  .risk .r h4{font-size:15px;margin-bottom:8px}
+  .risk .r .d{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--divider)}
+  .risk .r .m{font-size:13px;color:var(--text-2);line-height:1.55}
+  .risk .r .m::before{content:"\21B3 ";color:var(--green);font-family:var(--mono);font-size:11px}
+
+  /* PULL */
+  .pull{padding:108px 0 24px;text-align:center;border-top:1px solid var(--divider)}
+  .pull blockquote{font-family:var(--display);font-weight:500;font-size:clamp(28px,4vw,46px);line-height:1.22;letter-spacing:-.015em;color:var(--text)}
+  .pull blockquote em{color:var(--gold);font-style:italic}
+  .pull .s{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted);margin-top:24px;text-transform:uppercase}
+
+  /* SOURCES */
+  .sources{margin-top:8px}
+  .sources .row{display:grid;grid-template-columns:1.1fr 2fr;gap:24px;padding:18px 0;border-bottom:1px dotted #2a2a2a;align-items:baseline}
+  .sources .row:last-child{border-bottom:none}
+  .sources .k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
+  .sources .v{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .sources .v .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-left:8px}
+  .sources .v .tag.amber{color:var(--amber)}
+
+  /* CTA */
+  .cta{border-top:1px solid var(--divider)}
+  .cta-box{position:relative;overflow:hidden;isolation:isolate;border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:64px 56px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 26px 64px rgba(0,0,0,.55)}
+  .cta-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/header-bg.png) center 40%/cover no-repeat;opacity:.42;z-index:0;will-change:transform}
+  .cta-box::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,11,9,.58),rgba(10,10,10,.85));z-index:1}
+  .cta-box > :not(.cta-bg){position:relative;z-index:2}
+  .cta-box h2{margin-bottom:18px}
+  .cta-box .lede{max-width:62ch;margin-bottom:40px}
+  .cta-actions{display:flex;align-items:center;gap:32px;flex-wrap:wrap;padding-top:32px;border-top:1px solid var(--divider)}
+  .btn{display:inline-flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:16px 30px;text-decoration:none;font-weight:500;transition:background .2s}
+  .btn:hover{background:var(--gold-soft)}
+  .btn::after{content:"\2192"}
+  .cta-contact{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);line-height:1.85}
+  .cta-contact b{color:var(--text-2);font-weight:500}
+
+  /* FOOTER */
+  footer{padding:48px 0 0;border-top:1px solid var(--divider);margin-top:88px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .foot .tl{font-family:var(--display);font-style:italic;font-weight:500;font-size:15px;color:var(--text-2)}
+  .foot .pg{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+  .foot .pg::before{content:"";width:6px;height:6px;background:var(--gold);border-radius:50%;box-shadow:0 0 12px var(--gold)}
+
+  /* RESPONSIVE */
+  @media (max-width:1100px){
+    .wrap{padding:0 40px}
+    section.wrap{padding-top:88px;padding-bottom:88px}
+    .sec-head{flex-direction:column;align-items:flex-start;margin-bottom:44px;gap:18px}
+    .sec-head .left,.sec-head .right{max-width:100%;text-align:left;padding-top:0}
+    .strip{grid-template-columns:repeat(2,1fr)}
+    .g-3,.sku-grid,.hz{grid-template-columns:1fr}
+    .cases,.risk{grid-template-columns:1fr}
+    .bring .rows{grid-template-columns:1fr;gap:0}
+    .hero-grid{grid-template-columns:1fr;gap:36px;margin-top:52px;padding-top:40px}
+    .hero-grid .right{justify-content:flex-start}
+    .band .cap .in{padding:0 40px 32px}
+    .cta-box{padding:48px 40px}
+    .sources .row{grid-template-columns:1fr;gap:6px}
+  }
+  @media (max-width:720px){
+    .wrap{padding:0 28px}
+    section.wrap{padding-top:72px;padding-bottom:72px}
+    .hero{padding:48px 0 64px}
+    h2{font-size:26px}
+    .strip{grid-template-columns:1fr}
+    .uof .r{grid-template-columns:1.8fr 0.6fr;gap:14px}
+    .uof .track{display:none}
+    .tbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .band .cap .in{padding:0 28px 26px}
+    .head-bar .meta{text-align:left}
+    .cta-actions{gap:20px}
+    .cta-box{padding:40px 28px}
+    footer{margin-top:56px}
+    .foot{flex-direction:column;align-items:flex-start;gap:14px}
+  }
+
+  /* ─────────── LIQUID GLASS ─────────── */
+  body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+    radial-gradient(55% 45% at 82% 6%, rgba(184,149,78,.13), transparent 62%),
+    radial-gradient(48% 42% at 8% 80%, rgba(30,122,75,.07), transparent 62%),
+    radial-gradient(42% 38% at 50% 52%, rgba(212,179,115,.05), transparent 72%)}
+  .card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.conf-box,.strip .it{
+    background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.22), 0 18px 50px rgba(0,0,0,.5)}
+  .strip{background:transparent;border:0;gap:16px}
+  .note{border-radius:0 12px 12px 0;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  .tbl{border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;
+    -webkit-backdrop-filter:blur(16px) saturate(135%);backdrop-filter:blur(16px) saturate(135%);
+    background:linear-gradient(140deg,rgba(255,255,255,.05),rgba(255,255,255,.015))}
+  .tbl th{background:rgba(255,255,255,.05)}
+  .tbl th,.tbl td{border-bottom-color:rgba(255,255,255,.08)}
+  .tbl tr.sub td,.tbl tr.tot td{background:rgba(255,255,255,.06)}
+  @media (max-width:1100px){.strip .it,.card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart{border-radius:12px}}
+
+  /* ─────────── MOTION ─────────── */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .hero .tag,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
+  .hero h1{animation-delay:.12s}
+  .hero-sub{animation-delay:.26s}
+  .hero-grid{animation-delay:.42s}
+  .hero .strip{animation-delay:.54s}
+  .reveal{opacity:0;transform:translateY(24px)}
+  .reveal.in{opacity:1;transform:none}
+  .card,.sku,.hz .h,.case,.risk .r,.opsviz,.splitviz,.donutviz,.chart,.bring,.tbl,.sec-head,.uof,.cta-box,.pull blockquote,.note{
+    transition:opacity .65s ease, transform .5s cubic-bezier(.22,.7,.3,1), box-shadow .3s ease, border-color .3s ease}
+  .card:hover,.sku:hover,.hz .h:hover,.case:hover,.risk .r:hover,.opsviz:hover,.donutviz:hover{
+    transform:translateY(-5px);border-color:rgba(184,149,78,.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 28px 64px rgba(0,0,0,.55),0 0 0 1px rgba(184,149,78,.2)}
+  @media (prefers-reduced-motion:reduce){
+    .hero .tag,.hero h1,.hero-sub,.hero-grid,.hero .strip{opacity:1;animation:none}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* ─────────── ÍCONES (mono-linha ouro) ─────────── */
+  .card .ic{width:30px;height:30px;margin-bottom:18px}
+  .card .ic svg{width:100%;height:100%;display:block}
+
+  /* folds full-bleed — a cor ocupa a largura total da viewport (conteúdo segue na coluna central) */
+  .fold-gold,.fold-light{position:relative;z-index:0}
+  .fold-gold::before,.fold-light::before{content:"";position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;z-index:-1}
+  .fold-light::before{background:#F4F1EA}
+  .fold-gold::before{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%)}
+
+  /* ─────────── FOLD: DOURADO ─────────── */
+  section.pull.fold-gold{background:linear-gradient(135deg,#c9a85a 0%,#9b7937 100%);border-top:1px solid rgba(0,0,0,.22)}
+  .fold-gold blockquote{color:#1b1408}
+  .fold-gold blockquote em{color:#4a3815;font-style:italic}
+  .fold-gold .s{color:rgba(27,20,8,.55)}
+
+  /* ─────────── FOLD: LIGHT (impressão/ledger) ─────────── */
+  section.fold-light{background:#F4F1EA}
+  .fold-light h2{color:#0A0A0A}
+  .fold-light .sec-num{color:#8E7238}
+  .fold-light .lede,.fold-light p{color:#3a352d}
+  .fold-light .sec-head .right{color:#6b6358}
+  .fold-light .sec-head .right .acc{color:#8E7238}
+  .fold-light .tbl{background:rgba(0,0,0,.02);border:1px solid rgba(0,0,0,.12);box-shadow:0 12px 34px rgba(0,0,0,.08);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .fold-light .tbl th{color:#6b6358;background:rgba(0,0,0,.045)}
+  .fold-light .tbl th,.fold-light .tbl td{border-bottom-color:rgba(0,0,0,.09)}
+  .fold-light .tbl td{color:#2c281f}
+  .fold-light .tbl td.num{color:#8E7238}
+  .fold-light .tbl tr.sub td{background:rgba(0,0,0,.035);color:#3a352d}
+  .fold-light .tbl tr.sub td.num{color:#8E7238}
+  .fold-light .tbl tr.tot td{background:rgba(184,149,78,.18);color:#6b531f}
+  .fold-light .tbl tr.tot td.num{color:#6b531f}
+
+  /* ─────────── DONUT ─────────── */
+  .donutviz{margin-top:8px;border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 50px rgba(0,0,0,.5);padding:26px 30px}
+  .donutviz .sv-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .donutviz .sv-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .donutviz .sv-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .donutviz .row{display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+  .donutviz svg{width:148px;height:148px;flex-shrink:0}
+  .donutviz .dlabel{font-family:var(--display);font-weight:600;font-size:25px;fill:var(--gold)}
+  .donutviz .dsub{font-family:var(--mono);font-size:7.5px;letter-spacing:.18em;fill:var(--muted)}
+  .donutviz .leg{display:flex;flex-direction:column;gap:14px}
+  .donutviz .leg .l{font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:11px;line-height:1.5}
+  .donutviz .leg .l i{width:12px;height:12px;flex-shrink:0;border-radius:3px}
+  .donutviz .leg .l i.g{background:var(--gold)}
+  .donutviz .leg .l i.m{background:#3a3a3a}
+  .donutviz .leg b{color:var(--text);font-weight:600}
+  .donutviz .leg em{color:var(--gold-soft);font-style:italic}
+  @media(max-width:560px){.donutviz .row{gap:22px;justify-content:center}}
+
+  /* ─────────── GRÁFICOS: ANIMAÇÃO NO SCROLL ─────────── */
+  .js-anim .chart .ln{stroke-dasharray:760;stroke-dashoffset:760;transition:stroke-dashoffset 1.2s ease}
+  .js-anim .chart.anim .ln{stroke-dashoffset:0}
+  .js-anim .chart .ar{opacity:0;transition:opacity 1s ease .15s}
+  .js-anim .chart.anim .ar{opacity:1}
+  .js-anim .chart .dot,.js-anim .chart .vlab{opacity:0;transition:opacity .45s ease}
+  .js-anim .chart.anim .dot,.js-anim .chart.anim .vlab{opacity:1}
+  .js-anim .chart.anim .d1,.js-anim .chart.anim .v1{transition-delay:.35s}
+  .js-anim .chart.anim .d2,.js-anim .chart.anim .v2{transition-delay:.65s}
+  .js-anim .chart.anim .d3,.js-anim .chart.anim .v3{transition-delay:.95s}
+  .js-anim .donutviz .arc{stroke-dasharray:314.16;stroke-dashoffset:314.16;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)}
+  .js-anim .donutviz.anim .arc{stroke-dashoffset:53.41}
+  .js-anim .uof .fill{transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.4,0,.2,1)}
+  .js-anim .uof.anim .fill{transform:scaleX(1)}
+  .js-anim .uof.anim .r:nth-child(1) .fill{transition-delay:.05s}
+  .js-anim .uof.anim .r:nth-child(2) .fill{transition-delay:.13s}
+  .js-anim .uof.anim .r:nth-child(3) .fill{transition-delay:.21s}
+  .js-anim .uof.anim .r:nth-child(4) .fill{transition-delay:.29s}
+  .js-anim .uof.anim .r:nth-child(5) .fill{transition-delay:.37s}
+  .js-anim .splitviz .bar{transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.4,0,.2,1)}
+  .js-anim .splitviz.anim .bar{transform:scaleX(1)}
+  .js-anim .opsviz .ops i{opacity:0;transform:scale(.5);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.4,.5,1)}
+  .js-anim .opsviz.anim .ops i{opacity:1;transform:none}
+  .js-anim .opsviz.anim .ops i:nth-child(2){transition-delay:.07s}
+  .js-anim .opsviz.anim .ops i:nth-child(3){transition-delay:.14s}
+  .js-anim .opsviz.anim .ops i:nth-child(4){transition-delay:.21s}
+  .js-anim .opsviz.anim .ops i:nth-child(5){transition-delay:.28s}
+  .js-anim .opsviz.anim .ops i:nth-child(6){transition-delay:.35s}
+
+  /* ─────────── GLASS INTERATIVO ─────────── */
+  /* mobile: tabelas roláveis (sobrepõe o overflow:hidden do material glass) */
+  @media(max-width:720px){.tbl{display:block;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}}
+  /* (brilho especular que seguia o ponteiro — removido a pedido) */
+  /* refração: distorce o conteúdo atrás do vidro (Chromium; fallback = blur) */
+  .card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it{backdrop-filter:blur(18px) saturate(145%) url(#glassDistort)}
+  .topnav{backdrop-filter:blur(26px) saturate(175%) url(#glassDistort)}
+  /* mobile: sem refração (performance), mantém o blur */
+  @media(max-width:720px){.card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it,.topnav{backdrop-filter:blur(16px) saturate(140%)}}
+
+  /* ─────────── FONTE (print de notícia) ─────────── */
+  .srcshot{display:block;margin-top:28px;border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;text-decoration:none;background:linear-gradient(140deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 16px 44px rgba(0,0,0,.45);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+  .srcshot:hover{transform:translateY(-4px);border-color:rgba(184,149,78,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 56px rgba(0,0,0,.55)}
+  .srcshot-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:15px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .srcshot-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .srcshot-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .srcshot img{display:block;width:100%;height:auto}
+
+  /* ─────────── TYPING (hero) ─────────── */
+  .js-anim .hero h1,.js-anim .hero-sub{visibility:hidden}
+  .typing::after{content:'';display:inline-block;width:.06em;height:1.02em;background:var(--gold);margin-left:.07em;vertical-align:-.12em;animation:caret .8s step-end infinite}
+  @keyframes caret{50%{opacity:0}}
+  .srcwrap{margin:0 auto 56px}
+
+  /* ─────────── MOTION: dobra light (linhas escalonadas, ~2s) ─────────── */
+  .js-anim .fold-light .tbl tbody tr{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.7,.3,1)}
+  .js-anim .fold-light.rows-in .tbl tbody tr{opacity:1;transform:none}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(1){transition-delay:0s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(2){transition-delay:.26s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(3){transition-delay:.52s}
+  .js-anim .fold-light.rows-in .tbl:first-of-type tbody tr:nth-child(4){transition-delay:.78s}
+  .js-anim .fold-light.rows-in .tbl:last-of-type tbody tr:nth-child(1){transition-delay:1.08s}
+  .js-anim .fold-light.rows-in .tbl:last-of-type tbody tr:nth-child(2){transition-delay:1.34s}
+</style>
+</head>
+<body>
+
+<!-- SVG filter: refração do liquid glass -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
+  <filter id="glassDistort" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.013" numOctaves="2" seed="7" result="n"/>
+    <feGaussianBlur in="n" stdDeviation="1.1" result="nb"/>
+    <feDisplacementMap in="SourceGraphic" in2="nb" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<!-- FIXED NAV -->
+<nav class="topnav">
+  <a class="nav-brand" href="#top" aria-label="Samais — ir ao topo">
+    <svg class="nav-wordmark" viewBox="0 0 595.3 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SAMAIS">
+      <path fill="#B8954E" d="M44,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM411.7,60.6h4.7c4.4,0,8.6,2.1,11.3,5.6l36.8,48.2h-11.7l-41-53.7ZM476.6,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM184.3,60.6h-12.4s24.4,33.7,24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3s10.8,14.9,10.8,14.9h13.1l-39.6-53.7ZM372.1,60.6h-12.4l24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3l10.8,14.9h13.1l-39.6-53.7ZM287.2,65.9l-23.3,32.3-23.9-32.4c-2.4-3.2-6.2-5.2-10.2-5.2h-6l33.5,46.6h7.2l27.8-37.7v44.8h11.7v-53.7h-6.6c-4.1,0-7.9,2-10.3,5.3Z"/>
+    </svg>
+    <svg class="nav-mono" viewBox="0 0 271 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samais SA+">
+      <path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/>
+    </svg>
+  </a>
+  <div class="nav-links" id="navlinks">
+    <a href="#s01">Por que agora</a>
+    <a href="#s02">A Samais</a>
+    <a href="#s03">Modelo</a>
+    <a href="#s04">Números</a>
+    <a href="#s05">Plano</a>
+    <a href="#s06">A rodada</a>
+    <a href="#s07">Riscos</a>
+    <a href="#cta" class="nav-cta">Contato</a>
+  </div>
+  <button class="nav-ham" id="navham" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" id="top">
+  <div class="hero-bg" data-px="0.12"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="tag">Segundo Vertical Âncora · Captura de Mercado SUS</div>
+      <h1>Transporte<br/>Sanitário</h1>
+      <div class="hero-sub">A disciplina de regulação que já provamos no SAMU 192, aplicada ao transporte sanitário público.</div>
+
+      <div class="hero-grid">
+        <div class="left">
+          <p>Pela primeira vez, o Ministério da Saúde comprou e entregou frota de transporte sanitário direto a estados e municípios. A frota chega; o município não consegue operar em escala. A Samais — operadora de SAMU 192 com oito atestados de capacidade técnica — entra com a empresa dedicada que <em>regula, agenda, roteiriza, executa e audita</em> o transporte. A vantagem não é preço: é o atestado. Só cerca de seis operadores no país podem disputar esses contratos.</p>
+          <div class="src">Janela regulatória e de oferta confirmada em fonte pública federal</div>
+        </div>
+        <div class="right">
+          <svg class="mono-icon" viewBox="0 0 271 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samais SA+">
+            <path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="it"><div class="n">R$ 1,2 bi</div><div class="l">Mercado endereçável<br/>transporte sanitário público · Brasil</div></div>
+        <div class="it"><div class="n">≈ 6</div><div class="l">Operadores no país<br/>com atestado para competir</div></div>
+        <div class="it"><div class="n">R$ 15 mi</div><div class="l">Atestados Samais<br/>integralizados na holding</div></div>
+        <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte de capital<br/>do investidor sócio</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FONTE: notícia oficial (antes da seção 01) -->
+<div class="wrap srcwrap">
+  <a class="srcshot" href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-inicia-entrega-de-3-3-mil-veiculos-para-transporte-de-pacientes-do-sus-em-todo-o-pais" target="_blank" rel="noopener">
+    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado 30/04/2026 ↗</span></div>
+    <img src="assets/noticia-3300.jpg" alt="Notícia do Ministério da Saúde: início da entrega de 3,3 mil veículos para transporte de pacientes do SUS" loading="lazy">
+  </a>
+</div>
+
+<!-- 01 -->
+<section class="wrap" id="s01">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">01 · Por que agora</span>
+      <h2>Por que este é o momento.</h2>
+      <p class="lede">Três forças se alinham ao mesmo tempo: o governo federal entregou frota, criou cofinanciamento e pressiona pela terceirização da operação. É a maior transformação do setor desde a criação do SAMU 192 — e ela recompensa quem se posicionar primeiro.</p>
+    </div>
+    <div class="right">A janela é curta<br/><span class="acc">24 a 36 meses</span></div>
+  </div>
+
+  <div class="g-3">
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h11v9H2z"/><path d="M13 11h4l4 3.5V17h-8z"/><circle cx="6.5" cy="18.5" r="1.6"/><circle cx="17.5" cy="18.5" r="1.6"/></svg></div>
+      <div class="tag">Força 01 · Oferta</div>
+      <h3>Frota federal sem operador</h3>
+      <div class="subtitle">Caminhos da Saúde · Novo PAC</div>
+      <p>O Ministério da Saúde começou, em abril de 2026, a entregar 3.300 veículos a estados e municípios — R$ 1,4 bilhão. Cada veículo precisa ser operado: pessoal, manutenção, combustível, prestação de contas. A maioria dos municípios não tem como fazer isso por conta própria.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Investimento federal</span><span class="v">R$ 1,4 bi</span></div>
+        <div class="row"><span class="k">Veículos no programa</span><span class="v">3.300</span></div>
+        <div class="row"><span class="k">Para radio e hemodiálise</span><span class="v">≈ 1.476</span></div>
+      </div>
+      <div class="src">Confirmado · gov.br/saúde · abr/2026</div>
+    </div>
+
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/><path d="M5 11.5v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg></div>
+      <div class="tag">Força 02 · Custeio</div>
+      <h3>Cofinanciamento recém-criado</h3>
+      <div class="subtitle">Portaria GM/MS 11.164 · mai/2026</div>
+      <p>A despesa que antes era 100% municipal passou a ter contrapartida do governo federal para o transporte de pacientes de radioterapia e hemodiálise — em deslocamentos acima de 50 km. Isso tira o peso do orçamento municipal no exato momento da janela.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Impacto anual estimado</span><span class="v">R$ 165,4 mi</span></div>
+        <div class="row"><span class="k">Exercício 2026 (parcial)</span><span class="v">R$ 110,3 mi</span></div>
+        <div class="row"><span class="k">Base legal</span><span class="v">Lei 12.732/2012</span></div>
+      </div>
+      <div class="src">Confirmado · CONASS/CONASEMS · 11 mai 2026</div>
+    </div>
+
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 19a8.5 8.5 0 1 1 17 0"/><path d="M12 19l4.5-5.5"/><circle cx="12" cy="19" r="1.3" fill="#B8954E" stroke="none"/></svg></div>
+      <div class="tag">Força 03 · Pressão</div>
+      <h3>O modelo próprio se esgotou</h3>
+      <div class="subtitle">Estrutural · independe de eleição</div>
+      <p>Restrições trabalhistas sobre a jornada de motoristas municipais e o desgaste do modelo autônomo empurram a terceirização da operação. É uma pressão que não depende de ciclo político e sustenta a demanda mesmo depois da janela federal.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Marco de contratação</span><span class="v">Lei 14.133/2021</span></div>
+        <div class="row"><span class="k">Regra de operação</span><span class="v">Resolução CIT 13/2017</span></div>
+        <div class="row"><span class="k">Concorrência hoje</span><span class="v">Micro/locais</span></div>
+      </div>
+      <div class="src amber">Pressão estrutural · leitura Samais</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="arrow">→</span>
+    <div><strong>Leitura honesta do número.</strong>Os 3.300 veículos do programa não são todos de transporte eletivo: cerca de 1.824 são de uso múltiplo ou ambulância e ≈1.476 dedicados a radioterapia e hemodiálise. O mercado de interesse imediato é a parte eletiva somada à operação da frota cedida — não o total. A tese se sustenta no mercado de R$ 1,2 bilhão por ano, não em projeções na casa das dezenas de bilhões.</div>
+  </div>
+
+  <div class="splitviz">
+    <div class="sv-head"><span class="t">Composição do programa · 3.300 veículos</span><span class="s">Fonte · gov.br/saúde</span></div>
+    <div class="bar">
+      <div class="seg mul" style="flex:1824 1 0">1.824 · uso múltiplo / ambulância</div>
+      <div class="seg gld" style="flex:1476 1 0">1.476 · radio / hemodiálise</div>
+    </div>
+    <div class="legend">
+      <span><i class="m"></i> Fora do foco imediato — uso múltiplo e ambulância</span>
+      <span><i class="g"></i> Mercado de interesse — radioterapia e hemodiálise <em>(≈ 45%)</em></span>
+    </div>
+  </div>
+</section>
+
+<!-- BAND: central de regulação -->
+<div class="band">
+  <img src="assets/central-regulacao.jpg" data-px="0.10" alt="Central de regulação Samais com operadores e painel de monitoramento">
+  <div class="cap"><div class="in">
+    <div class="e">Central de Regulação Samais</div>
+    <div class="t">A operação que o concorrente local não tem — e leva anos para construir.</div>
+  </div></div>
+</div>
+
+<!-- 02 -->
+<section class="wrap" id="s02">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">02 · Vantagem cumulativa</span>
+      <h2>Por que a Samais —<br/>e não um concorrente.</h2>
+      <p class="lede">O setor é atendido hoje por empresas de remoção focadas em planos de saúde e por pequenas transportadoras locais sem estrutura técnica nem atestados. Apenas cerca de seis operadores no país reúnem atestados para disputar esses contratos — e a Samais é um deles, com oito. Um concorrente novo levaria de três a cinco anos para chegar lá.</p>
+    </div>
+    <div class="right">Ativo competitivo<br/><span class="acc">8 atestados · entre ~6 no país</span></div>
+  </div>
+
+  <div class="bring">
+    <div class="lbl">O que a Samais traz para a operação</div>
+    <h4>Capacidade já instalada e pronta para contratar</h4>
+    <div class="rows">
+      <div class="row"><div class="k">Oito atestados de capacidade técnica em SAMU 192 e regulação</div><div class="v">Comprovado</div></div>
+      <div class="row"><div class="k">Central de regulação 24/7 com responsabilidade técnica</div><div class="v">Em operação</div></div>
+      <div class="row"><div class="k">Tecnologia própria de regulação, roteirização e indicadores</div><div class="v">Proprietária</div></div>
+      <div class="row"><div class="k">Registro auditável de cada viagem, do pedido ao retorno</div><div class="v">Por padrão</div></div>
+      <div class="row"><div class="k">Equipe jurídica e estrutura de garantia para contrato público</div><div class="v">Reaproveitável</div></div>
+      <div class="row"><div class="k">Mesmo decisor público do SAMU — venda cruzada de baixo custo</div><div class="v">Vantagem</div></div>
+    </div>
+  </div>
+
+  <div class="opsviz">
+    <div class="t">Operadores com atestado para competir · Brasil</div>
+    <div class="ops"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="cap"><b>1 de ~6.</b> A Samais está entre os pouquíssimos operadores qualificados nacionalmente para disputar esses contratos.</div>
+  </div>
+
+  <div class="cases">
+    <div class="case">
+      <div class="h"><h4>CISNORPI</h4><span class="uf">Norte do PR</span></div>
+      <p>Operou a gestão integrada do SAMU 192 para mais de vinte municípios consorciados — central regional de regulação, frota, equipe e integração com hospitais de referência.</p>
+      <div class="att">Atestado técnico disponível para verificação formal</div>
+    </div>
+    <div class="case">
+      <div class="h"><h4>Ourinhos</h4><span class="uf">SP</span></div>
+      <p>Operação documentada em saúde pública municipal — referência na trajetória da Samais, com responsabilidade técnica nominal.</p>
+      <div class="att">Atestado técnico disponível para verificação formal</div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="wrap" id="s03">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">03 · Como funciona</span>
+      <h2>Como o negócio<br/>gera receita.</h2>
+      <p class="lede">O governo fornece o veículo; a Samais opera. Empresa dedicada dentro do grupo, com gestão e contabilidade próprias. O modelo preferido reduz o investimento inicial: a frota chega pelo programa federal, e a Samais entrega pessoal, manutenção, combustível, regulação e prestação de contas. Receita recorrente, contratos de vários anos.</p>
+    </div>
+    <div class="right">Estrutura<br/><span class="acc">investimento mínimo · foco PR · SP · MG</span></div>
+  </div>
+
+  <div class="sku-grid">
+    <div class="sku">
+      <div class="badge">Modalidade 01</div>
+      <h3>Cidade</h3>
+      <p>Contrato integral de transporte sanitário municipal: central de regulação, frota, roteirização, registro de viagem e indicadores. Para municípios de 150 a 600 mil habitantes.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Valor médio/mês</span><span class="v">R$ 148–238 mil</span></div>
+        <div class="r"><span class="k">Duração típica</span><span class="v">48–60 meses</span></div>
+        <div class="r"><span class="k">Margem líquida</span><span class="v">12–15%</span></div>
+      </div>
+    </div>
+    <div class="sku">
+      <div class="badge">Modalidade 02</div>
+      <h3>Hemodiálise</h3>
+      <p>Contrato específico de transporte de pacientes crônicos, pago por sessão. Usa o cofinanciamento federal da Portaria 11.164/2026. É a porta de entrada de menor atrito político e a receita mais recorrente.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Valor médio/mês</span><span class="v">R$ 60–110 mil</span></div>
+        <div class="r"><span class="k">Duração típica</span><span class="v">24–36 meses</span></div>
+        <div class="r"><span class="k">Margem líquida</span><span class="v">15–18%</span></div>
+      </div>
+    </div>
+    <div class="sku">
+      <div class="badge">Modalidade 03</div>
+      <h3>Consórcio</h3>
+      <p>Contrato regional cobrindo vários municípios sob um consórcio intermunicipal. Central compartilhada, com ganho de escala. Repete o que já provamos no SAMU consorciado (CISNORPI).</p>
+      <div class="kv">
+        <div class="r"><span class="k">Valor médio/mês</span><span class="v">R$ 600 mil–1,2 mi</span></div>
+        <div class="r"><span class="k">Duração típica</span><span class="v">60 meses</span></div>
+        <div class="r"><span class="k">Margem líquida</span><span class="v">18–22%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="arrow">→</span>
+    <div><strong>Como entramos.</strong>Pela Hemodiálise nos municípios mais resistentes — menor atrito e com dinheiro federal. Pela Cidade onde o relacionamento Samais já é forte. E pelo Consórcio para multiplicar a receita por contrato. As três modalidades usam a mesma central de regulação e a mesma estrutura de controle.</div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="wrap fold-light" id="s04">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">04 · A conta</span>
+      <h2>Quanto rende<br/>cada contrato.</h2>
+      <p class="lede">A composição de um contrato municipal médio — referência de 300 mil habitantes, em configuração enxuta. Quando a frota vem cedida pelo programa federal, o custo cai e a margem se mantém ou cresce.</p>
+    </div>
+    <div class="right">Referência<br/><span class="acc">central · 2 vans · 1 acessível · 2 compactos</span></div>
+  </div>
+
+  <table class="tbl">
+    <thead><tr><th>Componente</th><th style="text-align:right">Mensal</th><th style="text-align:right">Anual</th><th style="text-align:right">48 meses</th></tr></thead>
+    <tbody>
+      <tr><td>Receita do contrato</td><td class="num">R$ 195.000</td><td class="num">R$ 2,34 mi</td><td class="num">R$ 9,36 mi</td></tr>
+      <tr><td>Custo direto da operação</td><td class="num">R$ 154.000</td><td class="num">R$ 1,85 mi</td><td class="num">R$ 7,39 mi</td></tr>
+      <tr class="sub"><td>Resultado (encargos e margem · 25%)</td><td class="num">R$ 41.000</td><td class="num">R$ 492 mil</td><td class="num">R$ 1,97 mi</td></tr>
+      <tr class="tot"><td>Margem líquida após impostos (12–15%)</td><td class="num">R$ 23–29 mil</td><td class="num">R$ 280–350 mil</td><td class="num">R$ 1,12–1,40 mi</td></tr>
+    </tbody>
+  </table>
+
+  <table class="tbl" style="margin-top:24px">
+    <thead><tr><th>Efeito da frota cedida</th><th style="text-align:right">Custo mensal</th><th style="text-align:right">Receita possível</th><th style="text-align:right">Margem</th></tr></thead>
+    <tbody>
+      <tr><td>Sem frota cedida</td><td class="num">R$ 154.000</td><td class="num">R$ 195.000</td><td class="num">12–15%</td></tr>
+      <tr class="sub"><td>Com frota cedida (programa federal)</td><td class="num">R$ 105–115 mil</td><td class="num">R$ 155–175 mil</td><td class="num">14–17%</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:18px;font-size:13.5px;color:var(--muted)">A frota cedida deixa a proposta mais competitiva no edital sem perder margem. É a alavanca que transforma a entrega de veículos do governo em vantagem de preço para a Samais.</p>
+</section>
+
+<!-- 05 -->
+<section class="wrap" id="s05">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">05 · O plano</span>
+      <h2>O plano em<br/>três etapas.</h2>
+      <p class="lede">Primeiro provar, depois adensar a região, depois consolidar a posição. A etapa 1 não busca receita — busca o primeiro contrato que vira referência e abre os próximos. Adensar a região reduz custo e melhora a margem.</p>
+    </div>
+    <div class="right">Acumulado em 36 meses<br/><span class="acc">receita R$ 73–110 mi · lucro R$ 11–19 mi</span></div>
+  </div>
+
+  <div class="chart" style="margin-bottom:32px">
+    <div class="ch-head"><span class="t">Receita acumulada · cenário base</span><span class="s">R$ milhões · estimativa Samais</span></div>
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva de receita acumulada: 8, 28 e 91 milhões em 12, 24 e 36 meses">
+      <defs>
+        <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B8954E" stop-opacity=".34"/>
+          <stop offset="100%" stop-color="#B8954E" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- grid -->
+      <line x1="120" y1="50" x2="940" y2="50" stroke="#1f1f1f" stroke-width="1"/>
+      <line x1="120" y1="170" x2="940" y2="170" stroke="#1f1f1f" stroke-width="1"/>
+      <line x1="120" y1="290" x2="940" y2="290" stroke="#262626" stroke-width="1"/>
+      <text x="104" y="54" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">110</text>
+      <text x="104" y="174" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">55</text>
+      <text x="104" y="294" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">0</text>
+      <!-- area + line -->
+      <path class="ar" d="M170,272.5 L520,228.9 L870,91.5 L870,290 L170,290 Z" fill="url(#area)"/>
+      <path class="ln" d="M170,272.5 L520,228.9 L870,91.5" fill="none" stroke="#B8954E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- dots -->
+      <circle class="dot d1" cx="170" cy="272.5" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle class="dot d2" cx="520" cy="228.9" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle class="dot d3" cx="870" cy="91.5" r="6" fill="#B8954E"/>
+      <!-- value labels -->
+      <text class="vlab v1" data-count x="170" y="255" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 8 mi</text>
+      <text class="vlab v2" data-count x="520" y="211" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 28 mi</text>
+      <text class="vlab v3" data-count x="870" y="73" text-anchor="end" font-family="Syne, serif" font-weight="600" font-size="20" fill="#B8954E">R$ 73–110 mi</text>
+      <!-- x labels -->
+      <text x="170" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">12 MESES</text>
+      <text x="520" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">24 MESES</text>
+      <text x="870" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">36 MESES</text>
+    </svg>
+  </div>
+
+  <div class="hz">
+    <div class="h">
+      <div class="t">Etapa 1 · Provar</div>
+      <div class="pd">Mês 1 ao 12</div>
+      <h3>Primeiro contrato</h3>
+      <p>Montar a empresa, a plataforma e a frota inicial cedida, e fechar o primeiro contrato âncora em PR, SP ou MG. O resultado é uma referência que pode ser repetida.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita contratada</span><span class="v">R$ 6–10 mi</span></div>
+        <div class="r"><span class="k">Contratos ativos</span><span class="v">4–7</span></div>
+        <div class="r"><span class="k">Margem líquida</span><span class="v">12–18%</span></div>
+      </div>
+    </div>
+    <div class="h">
+      <div class="t">Etapa 2 · Adensar</div>
+      <div class="pd">Mês 13 ao 24</div>
+      <h3>Escala regional</h3>
+      <p>Sai do contrato isolado para a densidade na região. Lançamento da modalidade Hemodiálise e a primeira negociação de consórcio com vários municípios.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita no ano</span><span class="v">R$ 15–25 mi</span></div>
+        <div class="r"><span class="k">Venda cruzada SAMU</span><span class="v">5–8 municípios</span></div>
+        <div class="r"><span class="k">Margem</span><span class="v">16–22%</span></div>
+      </div>
+    </div>
+    <div class="h">
+      <div class="t">Etapa 3 · Consolidar</div>
+      <div class="pd">Mês 25 ao 36</div>
+      <h3>Posição firmada</h3>
+      <p>Vantagem consolidada: atestados acumulados, contratos vigentes e relacionamento regional. Dividendos a partir do ano 2 e avaliação de uma eventual venda da participação.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Receita acum. 36m</span><span class="v">R$ 73–110 mi</span></div>
+        <div class="r"><span class="k">Lucro acum. 36m</span><span class="v">R$ 11–19 mi</span></div>
+        <div class="r"><span class="k">Dividendos</span><span class="v">A partir do ano 2</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULL -->
+<section class="wrap pull fold-gold">
+  <blockquote>O custo de chegar tarde é alto.<br/>O custo de chegar <em>primeiro</em> é mensurável.</blockquote>
+  <div class="s">— Tese de timing · Samais Transporte Sanitário</div>
+</section>
+
+<!-- 06 -->
+<section class="wrap" id="s06">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">06 · A rodada</span>
+      <h2>A estrutura e<br/>o uso do capital.</h2>
+      <p class="lede">Monta-se uma holding: a nova operação de transporte sanitário entra no grupo. A Samais integraliza seus atestados — avaliados em R$ 15 milhões — e o investidor sócio entra com o capital de giro e de implantação. Não é capital de risco em mercado aberto: é capital de captura onde a Samais já está acima da barreira de entrada.</p>
+    </div>
+    <div class="right">Termos<br/><span class="acc">holding · participação conforme avaliação</span></div>
+  </div>
+
+  <div class="strip" style="margin-bottom:44px">
+    <div class="it"><div class="n">Holding</div><div class="l">Estrutura societária<br/>nova operação no grupo</div></div>
+    <div class="it"><div class="n">R$ 15 mi</div><div class="l">Aporte Samais<br/>atestados integralizados</div></div>
+    <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte investidor<br/>referência R$ 3 mi · capital</div></div>
+    <div class="it"><div class="n">~15–21%</div><div class="l">Participação implícita<br/>conforme a avaliação acordada</div></div>
+  </div>
+
+  <div class="donutviz">
+    <div class="sv-head"><span class="t">Participação na holding</span><span class="s">referência · aporte R$ 3 mi</span></div>
+    <div class="row">
+      <svg viewBox="0 0 120 120" role="img" aria-label="Participação: Samais 83%, investidor 17%">
+        <circle cx="60" cy="60" r="50" fill="none" stroke="#2a2a2a" stroke-width="15"/>
+        <circle class="arc" cx="60" cy="60" r="50" fill="none" stroke="#B8954E" stroke-width="15" stroke-dasharray="260.75 314.16" transform="rotate(-90 60 60)"/>
+        <text class="dlabel" data-count x="60" y="58" text-anchor="middle">83%</text>
+        <text class="dsub" x="60" y="74" text-anchor="middle">SAMAIS</text>
+      </svg>
+      <div class="leg">
+        <div class="l"><i class="g"></i><span><b>Samais</b> — atestados integralizados <em>(≈ 83%)</em></span></div>
+        <div class="l"><i class="m"></i><span><b>Investidor</b> — capital R$ 2,5–4 mi <em>(≈ 14–21%)</em></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mono" style="margin:36px 0 16px;color:var(--gold)">Onde o capital do investidor é aplicado (≈ R$ 3 milhões)</div>
+  <div class="uof">
+    <div class="r"><div class="lab">Montagem jurídica e societária da holding<small>blindagem contratual · governança · contabilidade própria</small></div><div class="track"><div class="fill" style="width:29%"></div></div><div class="pct">8–12%</div></div>
+    <div class="r"><div class="lab">Plataforma própria de regulação e roteirização<small>indicadores auditáveis · registro de viagem</small></div><div class="track"><div class="fill" style="width:46%"></div></div><div class="pct">14–18%</div></div>
+    <div class="r"><div class="lab">Time comercial e de operações dedicado<small>gestão própria, sem dividir pessoas-chave com o SAMU</small></div><div class="track"><div class="fill" style="width:71%"></div></div><div class="pct">22–28%</div></div>
+    <div class="r"><div class="lab">Capital de implantação e garantias de contrato<small>reserva dos primeiros contratos · cauções de edital</small></div><div class="track"><div class="fill" style="width:89%"></div></div><div class="pct">28–34%</div></div>
+    <div class="r"><div class="lab">Frota complementar e contingência<small>onde a frota cedida não alcança · picos de demanda</small></div><div class="track"><div class="fill" style="width:49%"></div></div><div class="pct">14–20%</div></div>
+  </div>
+  <div class="src amber">Distribuição preliminar · composição final no plano financeiro da operação, em due diligence</div>
+</section>
+
+<!-- 07 -->
+<section class="wrap" id="s07">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">07 · Riscos</span>
+      <h2>Os riscos — e como<br/>cada um é tratado.</h2>
+      <p class="lede">A credibilidade da tese está em mostrar os riscos com clareza. Operar com transparência é o princípio da casa — aplicado também ao próprio plano de investimento.</p>
+    </div>
+    <div class="right">Postura<br/><span class="acc">tratamento explícito, não otimismo</span></div>
+  </div>
+
+  <div class="risk">
+    <div class="r">
+      <div class="c">R1 · Regra federal</div>
+      <h4>Mudança da regra após 2026</h4>
+      <div class="d">A Portaria 11.164/2026 é da gestão federal atual e pode ser alterada depois das eleições.</div>
+      <div class="m">Contratos longos (48–60 meses) assinados em 2026–2027, com validade além do ciclo eleitoral.</div>
+    </div>
+    <div class="r">
+      <div class="c">R2 · Concorrência</div>
+      <h4>Entrada de grandes locadoras</h4>
+      <div class="d">Empresas nacionais de frota podem entrar se enxergarem o mercado abrir.</div>
+      <div class="m">Velocidade. Densidade e atestados construídos em 24 meses criam uma barreira difícil de copiar.</div>
+    </div>
+    <div class="r">
+      <div class="c">R3 · Execução</div>
+      <h4>Atraso da plataforma própria</h4>
+      <div class="d">Sem a plataforma, a operação fica parecida com a de uma transportadora comum.</div>
+      <div class="m">Meta clara de entrega + plataforma de mercado contratada de prontidão como reserva.</div>
+    </div>
+    <div class="r">
+      <div class="c">R4 · Interno</div>
+      <h4>Concorrer com o próprio SAMU</h4>
+      <div class="d">O SAMU continua sendo o principal negócio; dividir a liderança prejudicaria os dois.</div>
+      <div class="m">Liderança dedicada à nova operação desde o mês 1, com fronteira clara entre os negócios.</div>
+    </div>
+    <div class="r">
+      <div class="c">R5 · Margem</div>
+      <h4>Pressão de preço em edital</h4>
+      <div class="d">Editais podem forçar margem abaixo do previsto.</div>
+      <div class="m">Venda por valor — plataforma, registro, indicadores — e a alavanca da frota cedida para defender a margem.</div>
+    </div>
+    <div class="r">
+      <div class="c">R6 · Político</div>
+      <h4>Resistência à terceirização</h4>
+      <div class="d">Em municípios com sindicato forte, terceirizar o transporte é sensível.</div>
+      <div class="m">Posicionar como complemento — absorver rotas externas e do programa federal — não como substituição.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="wrap" id="s08">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">08 · Premissas e fontes</span>
+      <h2>O que está verificado,<br/>e o que é estimativa.</h2>
+      <p class="lede">Separação clara entre o fato confirmado em fonte pública e a premissa interna de modelagem. Investidor não compra entusiasmo — compra rastreabilidade.</p>
+    </div>
+    <div class="right">Disciplina<br/><span class="acc">fato federal × estimativa Samais</span></div>
+  </div>
+
+  <div class="sources">
+    <div class="row"><div class="k">Portaria 11.164/2026</div><div class="v">Publicada em 11/05/2026; regulamenta o transporte de pacientes de radioterapia e hemodiálise. Impacto anual estimado de R$ 165,4 milhões. <span class="tag">verificado · CONASS/CONASEMS</span></div></div>
+    <div class="row"><div class="k">Caminhos da Saúde</div><div class="v">Novo PAC · 3.300 veículos · R$ 1,4 bilhão · primeiras entregas em abr/2026. Cerca de 1.476 dedicados a radioterapia e hemodiálise; o restante é de uso múltiplo ou ambulância. <span class="tag">verificado · gov.br/saúde</span></div></div>
+    <div class="row"><div class="k">Mercado endereçável</div><div class="v">R$ 1,2 bilhão por ano no Brasil — número da própria modelagem Samais. Projeções de R$ 11–18 bilhões de outros estudos não foram adotadas. <span class="tag amber">estimativa · casa</span></div></div>
+    <div class="row"><div class="k">Atestados e referências</div><div class="v">Oito atestados em SAMU 192 e regulação; referências CISNORPI e Ourinhos. Cerca de seis operadores no país têm atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
+    <div class="row"><div class="k">Estrutura societária</div><div class="v">Holding com a nova operação no grupo; a Samais integraliza atestados avaliados em R$ 15 milhões; o investidor aporta R$ 2,5–4 milhões em capital. Participação conforme a avaliação acordada. <span class="tag amber">em negociação</span></div></div>
+    <div class="row"><div class="k">Projeção do negócio</div><div class="v">Receita acumulada em 36 meses de R$ 73–110 milhões; lucro de R$ 11–19 milhões. Cenário base a otimista, modelagem própria. <span class="tag amber">estimativa · modelagem</span></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="wrap cta" id="cta">
+  <div class="cta-box">
+    <div class="cta-bg" data-px="0.10"></div>
+    <span class="sec-num">Próximo passo</span>
+    <h2>A janela é de 24 meses.<br/>Quem entra agora define o mercado.</h2>
+    <p class="lede" style="margin-bottom:0">Em 15 dias entregamos o diagnóstico do mercado-alvo. Em seguida, a estrutura da holding e o plano de captura dos primeiros contratos. O capital entra; a operação começa a faturar nos primeiros meses.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <div class="tl">Onde gestão se mede em vidas.</div>
+    <div class="pg">Samais Transporte Sanitário · Confidencial · Investidores · Jun/2026</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var ham=document.getElementById('navham'), links=document.getElementById('navlinks');
+    ham.addEventListener('click',function(){
+      var open=links.classList.toggle('open');
+      ham.classList.toggle('open',open);
+      ham.setAttribute('aria-expanded',open?'true':'false');
+    });
+    links.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){links.classList.remove('open');ham.classList.remove('open');ham.setAttribute('aria-expanded','false');});
+    });
+    var map={};
+    document.querySelectorAll('.nav-links a').forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+    var ob=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active');});
+          var a=map[e.target.id]; if(a)a.classList.add('active');
+        }
+      });
+    },{rootMargin:'-45% 0px -50% 0px'});
+    document.querySelectorAll('section[id]').forEach(function(s){if(map[s.id])ob.observe(s);});
+
+    /* parallax */
+    var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if(!reduce){
+      var px=[].slice.call(document.querySelectorAll('[data-px]'));
+      var tick=false;
+      function upd(){
+        var vh=innerHeight;
+        px.forEach(function(el){
+          var host=el.parentElement, r=host.getBoundingClientRect();
+          if(r.bottom<-300||r.top>vh+300)return;
+          var center=(r.top+r.height/2)-(vh/2);
+          var sp=parseFloat(el.getAttribute('data-px'))||0.12;
+          var head=host.offsetHeight*0.18;
+          var ty=center*-sp; if(ty>head)ty=head; if(ty<-head)ty=-head;
+          el.style.transform='translate3d(0,'+ty.toFixed(1)+'px,0)';
+        });
+        tick=false;
+      }
+      addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd);}},{passive:true});
+      addEventListener('resize',upd); upd();
+    }
+
+    /* reveal + animação de gráficos + count-up */
+    if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+      document.documentElement.classList.add('js-anim');
+      document.querySelectorAll('.g-3,.sku-grid,.hz,.cases,.risk').forEach(function(g){
+        [].forEach.call(g.children,function(c,i){c.classList.add('reveal');c.style.transitionDelay=(i*0.07)+'s';});
+      });
+      ['.sec-head','.bring','.splitviz','.donutviz','.chart','.opsviz','.uof','.cta-box','.pull blockquote','.note','.srcshot'].forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(e){e.classList.add('reveal');});
+      });
+      document.querySelectorAll('.tbl').forEach(function(e){if(!e.closest('.fold-light'))e.classList.add('reveal');});
+      var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px',threshold:.06});
+      document.querySelectorAll('.reveal').forEach(function(e){rio.observe(e);});
+      var fio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('rows-in');fio.unobserve(e.target);}});},{rootMargin:'0px 0px -10% 0px',threshold:.1});
+      document.querySelectorAll('.fold-light').forEach(function(e){fio.observe(e);});
+
+      function countUp(el,dur){
+        if(el.dataset.counted)return; el.dataset.counted='1';
+        var full=el.textContent, m=full.match(/(\d{1,3}(?:[.,]\d+)?)/);
+        if(!m)return;
+        var raw=m[1], parts=raw.split(/[.,]/), dec=parts[1]?parts[1].length:0, comma=raw.indexOf(',')>=0;
+        var target=parseFloat(raw.replace(/\./g,'').replace(',','.')), start=performance.now();
+        function fmt(v){var s=v.toFixed(dec); if(comma)s=s.replace('.',','); return s;}
+        function step(t){
+          var p=Math.min((t-start)/dur,1), e=1-Math.pow(1-p,3);
+          el.textContent= p<1 ? full.replace(raw,fmt(target*e)) : full;
+          if(p<1)requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      function typeEl(el,dur){
+        if(el.dataset.typed)return; el.dataset.typed='1';
+        var toks=[]; el.childNodes.forEach(function(nd){
+          if(nd.nodeType===3){nd.textContent.split('').forEach(function(c){toks.push(c);});}
+          else if(nd.nodeName==='BR'){toks.push('\n');}
+        });
+        function html(k){var s='';for(var i=0;i<k;i++){s+= toks[i]==='\n'?'<br>': toks[i].replace(/&/g,'&amp;').replace(/</g,'&lt;');}return s;}
+        el.textContent=''; el.style.visibility='visible'; el.classList.add('typing');
+        var n=toks.length, start=performance.now();
+        function step(t){var p=Math.min((t-start)/dur,1);el.innerHTML=html(Math.round(p*n));if(p<1)requestAnimationFrame(step);else{el.classList.remove('typing');el.innerHTML=html(n);}}
+        requestAnimationFrame(step);
+      }
+
+      var cio=new IntersectionObserver(function(es){es.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('anim');
+          e.target.querySelectorAll('[data-count], .it .n').forEach(function(n){countUp(n,2000);});
+          cio.unobserve(e.target);
+        }});},{rootMargin:'0px 0px -12% 0px',threshold:.2});
+      document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz,.strip').forEach(function(e){cio.observe(e);});
+
+      var h1=document.querySelector('.hero h1'), hs=document.querySelector('.hero-sub');
+      if(h1)setTimeout(function(){typeEl(h1,2000);},200);
+      if(hs)setTimeout(function(){typeEl(hs,2300);},2300);
+      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,2000);});},450);
+    }
+  })();
+</script>
+</body>
+</html>
