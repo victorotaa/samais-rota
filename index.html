@@ -194,6 +194,30 @@
   .uof .lab small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--dim);margin-top:5px;text-transform:uppercase;line-height:1.5}
   .uof .pct{font-family:var(--mono);font-size:14px;color:var(--gold-soft);text-align:right;font-weight:500}
 
+  /* DATA VIZ — line chart */
+  .chart{border:1px solid var(--divider);background:var(--s1);padding:30px 32px;margin-top:8px}
+  .chart .ch-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .chart .ch-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .chart .ch-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .chart svg{display:block;width:100%;height:auto;margin-top:14px}
+
+  /* DATA VIZ — split bar */
+  .splitviz{margin-top:28px;border:1px solid var(--divider);background:var(--s1);padding:26px 30px}
+  .splitviz .sv-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+  .splitviz .sv-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .splitviz .sv-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+  .splitviz .bar{display:flex;height:44px;border:1px solid var(--divider);overflow:hidden}
+  .splitviz .seg{display:flex;align-items:center;padding:0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.03em;white-space:nowrap;overflow:hidden}
+  .splitviz .seg.mul{background:#242424;color:var(--muted)}
+  .splitviz .seg.gld{background:linear-gradient(90deg,var(--gold-deep),var(--gold));color:#0A0A0A;font-weight:500;justify-content:flex-end}
+  .splitviz .legend{display:flex;gap:30px;flex-wrap:wrap;margin-top:16px}
+  .splitviz .legend span{font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:9px}
+  .splitviz .legend i{width:10px;height:10px;flex-shrink:0}
+  .splitviz .legend i.m{background:#242424}
+  .splitviz .legend i.g{background:var(--gold)}
+  .splitviz .legend em{color:var(--gold-soft);font-style:italic}
+  @media(max-width:560px){.splitviz .seg{font-size:9px;padding:0 8px}.splitviz .legend{gap:14px}}
+
   /* RISK */
   .risk{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .risk .r{background:var(--s1);border:1px solid var(--divider);padding:26px 28px}
@@ -388,6 +412,18 @@
     <span class="arrow">→</span>
     <div><strong>Leitura honesta do número.</strong>Os 3.300 veículos do programa não são todos de transporte eletivo: cerca de 1.824 são de uso múltiplo ou ambulância e ≈1.476 dedicados a radioterapia e hemodiálise. O mercado de interesse imediato é a parte eletiva somada à operação da frota cedida — não o total. A tese se sustenta no mercado de R$ 1,2 bilhão por ano, não em projeções na casa das dezenas de bilhões.</div>
   </div>
+
+  <div class="splitviz">
+    <div class="sv-head"><span class="t">Composição do programa · 3.300 veículos</span><span class="s">Fonte · gov.br/saúde</span></div>
+    <div class="bar">
+      <div class="seg mul" style="flex:1824 1 0">1.824 · uso múltiplo / ambulância</div>
+      <div class="seg gld" style="flex:1476 1 0">1.476 · radio / hemodiálise</div>
+    </div>
+    <div class="legend">
+      <span><i class="m"></i> Fora do foco imediato — uso múltiplo e ambulância</span>
+      <span><i class="g"></i> Mercado de interesse — radioterapia e hemodiálise <em>(≈ 45%)</em></span>
+    </div>
+  </div>
 </section>
 
 <!-- BAND: central de regulação -->
@@ -537,6 +573,40 @@
       <p class="lede">Primeiro provar, depois adensar a região, depois consolidar a posição. A etapa 1 não busca receita — busca o primeiro contrato que vira referência e abre os próximos. Adensar a região reduz custo e melhora a margem.</p>
     </div>
     <div class="right">Acumulado em 36 meses<br/><span class="acc">receita R$ 73–110 mi · lucro R$ 11–19 mi</span></div>
+  </div>
+
+  <div class="chart" style="margin-bottom:32px">
+    <div class="ch-head"><span class="t">Receita acumulada · cenário base</span><span class="s">R$ milhões · estimativa Samais</span></div>
+    <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva de receita acumulada: 8, 28 e 91 milhões em 12, 24 e 36 meses">
+      <defs>
+        <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B8954E" stop-opacity=".34"/>
+          <stop offset="100%" stop-color="#B8954E" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- grid -->
+      <line x1="120" y1="50" x2="940" y2="50" stroke="#1f1f1f" stroke-width="1"/>
+      <line x1="120" y1="170" x2="940" y2="170" stroke="#1f1f1f" stroke-width="1"/>
+      <line x1="120" y1="290" x2="940" y2="290" stroke="#262626" stroke-width="1"/>
+      <text x="104" y="54" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">110</text>
+      <text x="104" y="174" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">55</text>
+      <text x="104" y="294" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="13" fill="#615C53">0</text>
+      <!-- area + line -->
+      <path d="M170,272.5 L520,228.9 L870,91.5 L870,290 L170,290 Z" fill="url(#area)"/>
+      <path d="M170,272.5 L520,228.9 L870,91.5" fill="none" stroke="#B8954E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- dots -->
+      <circle cx="170" cy="272.5" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle cx="520" cy="228.9" r="5.5" fill="#0A0A0A" stroke="#B8954E" stroke-width="2.5"/>
+      <circle cx="870" cy="91.5" r="6" fill="#B8954E"/>
+      <!-- value labels -->
+      <text x="170" y="255" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 8 mi</text>
+      <text x="520" y="211" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4B373">R$ 28 mi</text>
+      <text x="870" y="73" text-anchor="end" font-family="Syne, serif" font-weight="600" font-size="20" fill="#B8954E">R$ 73–110 mi</text>
+      <!-- x labels -->
+      <text x="170" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">12 MESES</text>
+      <text x="520" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">24 MESES</text>
+      <text x="870" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">36 MESES</text>
+    </svg>
   </div>
 
   <div class="hz">
