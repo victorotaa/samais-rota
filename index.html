@@ -335,7 +335,7 @@
 
   /* ─────────── MOTION ─────────── */
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  .hero .tag,.hero h1,.hero-sub,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
+  .hero .tag,.hero h1,.hero-grid,.hero .strip{opacity:0;animation:fadeUp .8s cubic-bezier(.22,.7,.3,1) forwards}
   .hero h1{animation-delay:.12s}
   .hero-sub{animation-delay:.26s}
   .hero-grid{animation-delay:.42s}
@@ -449,6 +449,19 @@
   .topnav{backdrop-filter:blur(26px) saturate(175%) url(#glassDistort)}
   /* mobile: sem refração (performance), mantém o blur */
   @media(max-width:720px){.card,.sku,.hz .h,.case,.risk .r,.bring,.splitviz,.opsviz,.chart,.donutviz,.strip .it,.topnav{backdrop-filter:blur(16px) saturate(140%)}}
+
+  /* ─────────── FONTE (print de notícia) ─────────── */
+  .srcshot{display:block;margin-top:28px;border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;text-decoration:none;background:linear-gradient(140deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 16px 44px rgba(0,0,0,.45);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+  .srcshot:hover{transform:translateY(-4px);border-color:rgba(184,149,78,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 56px rgba(0,0,0,.55)}
+  .srcshot-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:15px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .srcshot-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .srcshot-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .srcshot img{display:block;width:100%;height:auto}
+
+  /* ─────────── TYPING (hero) ─────────── */
+  .js-anim .hero-sub{visibility:hidden}
+  .hero-sub.typing::after{content:'▍';color:var(--gold);margin-left:2px;animation:caret .8s step-end infinite}
+  @keyframes caret{50%{opacity:0}}
 </style>
 </head>
 <body>
@@ -596,6 +609,11 @@
       <span><i class="g"></i> Mercado de interesse — radioterapia e hemodiálise <em>(≈ 45%)</em></span>
     </div>
   </div>
+
+  <a class="srcshot" href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-inicia-entrega-de-3-3-mil-veiculos-para-transporte-de-pacientes-do-sus-em-todo-o-pais" target="_blank" rel="noopener">
+    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado 30/04/2026 ↗</span></div>
+    <img src="assets/noticia-3300.jpg" alt="Notícia do Ministério da Saúde: início da entrega de 3,3 mil veículos para transporte de pacientes do SUS" loading="lazy">
+  </a>
 </section>
 
 <!-- BAND: central de regulação -->
@@ -1031,15 +1049,28 @@
         requestAnimationFrame(step);
       }
 
+      function typeWriter(el,dur){
+        if(el.dataset.typed)return; el.dataset.typed='1';
+        var text=el.textContent; el.textContent=''; el.style.visibility='visible'; el.classList.add('typing');
+        var n=text.length, start=performance.now();
+        function step(t){
+          var p=Math.min((t-start)/dur,1);
+          el.textContent=text.slice(0,Math.round(p*n));
+          if(p<1)requestAnimationFrame(step); else el.classList.remove('typing');
+        }
+        requestAnimationFrame(step);
+      }
+
       var cio=new IntersectionObserver(function(es){es.forEach(function(e){
         if(e.isIntersecting){
           e.target.classList.add('anim');
-          e.target.querySelectorAll('[data-count]').forEach(function(n){countUp(n,1200);});
+          e.target.querySelectorAll('[data-count], .it .n').forEach(function(n){countUp(n,2000);});
           cio.unobserve(e.target);
         }});},{rootMargin:'0px 0px -12% 0px',threshold:.2});
-      document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz').forEach(function(e){cio.observe(e);});
+      document.querySelectorAll('.chart,.donutviz,.uof,.splitviz,.opsviz,.strip').forEach(function(e){cio.observe(e);});
 
-      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,1500);});},450);
+      var hs=document.querySelector('.hero-sub'); if(hs)setTimeout(function(){typeWriter(hs,2000);},500);
+      setTimeout(function(){document.querySelectorAll('.hero .strip .it .n').forEach(function(n){countUp(n,2000);});},450);
     }
   })();
 </script>

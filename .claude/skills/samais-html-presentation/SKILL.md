@@ -91,7 +91,9 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
   ⚠️ O `body` não pode ter `background` (canvas no `html`) e a dobra precisa de `z-index:0` —
   senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (stroke-dashoffset),
-  donut varre, barras crescem (scaleX), count-up nos números. Count-up do hero ~1,5s (perceptível).
+  donut varre, barras crescem (scaleX), count-up nos números (~2s) — em todos os boxes e gráficos.
+- **Typing** no subtítulo do hero (~2s, caret piscante).
+- **Embutir print de fonte pública oficial** (ex.: gov.br) como evidência junto à afirmação (moldura glass + link).
 - Tudo sob `.js-anim` (só com JS e sem prefers-reduced-motion) para nunca esconder conteúdo.
 - **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
   refração via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium; fallback blur;

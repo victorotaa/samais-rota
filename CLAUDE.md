@@ -70,7 +70,10 @@ documentos.
   ⚠️ O `body` **não** pode ter `background` (canvas fica no `html`) e a dobra precisa de
   `z-index:0` — senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (`stroke-dashoffset`),
-  donut varre, barras crescem (`scaleX`), **count-up** nos números. Count-up do hero ~1,5s (perceptível).
+  donut varre, barras crescem (`scaleX`), **count-up** nos números (~2s) — em todos os boxes de stat e gráficos.
+- **Typing** no subtítulo do hero (~2s, com caret piscante).
+- **Embutir print de fonte pública oficial** (ex.: gov.br) como evidência junto à afirmação que embasa
+  (moldura glass + cabeçalho "Fonte oficial" + link). Reforça veracidade da tese.
 - Tudo sob `.js-anim` (só com JS e sem `prefers-reduced-motion`) para nunca esconder conteúdo.
 - **Liquid glass interativo**: brilho especular que segue o ponteiro (`--mx/--my` via `pointermove`);
   refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium;
