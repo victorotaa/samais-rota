@@ -100,3 +100,9 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
   Sem brilho especular seguindo o mouse (removido por preferência).
 - **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos (não usar Hospital Dr. Anísio
   Figueiredo nem Santa Casa de Goioerê).
+
+## Governança & reuso (consistência entre repos)
+- Todo repo Samais (`samais-*`) deve carregar este SKILL.md + o `CLAUDE.md` antes de qualquer HTML.
+- Fonte canônica: `victorotaa/samais-rota` (branch `main`). Evoluiu o sistema? Atualiza aqui e propaga (+ vault).
+- Novo repo: usar GitHub Template repository (recomendado) OU `bash scripts/samais-init.sh` (gh autenticado).
+  Ver `template/COMO-USAR.md`. Nome no padrão `samais-<contexto>`.

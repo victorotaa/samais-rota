@@ -82,3 +82,16 @@ documentos.
   Sem brilho especular seguindo o mouse (removido por preferência da diretoria).
 - **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos. Não usar Hospital Dr. Anísio
   Figueiredo nem Santa Casa de Goioerê.
+
+## Governança & reuso (consistência entre repos Samais)
+- **Regra:** todo repositório Samais (`samais-*`) deve carregar a identidade — este `CLAUDE.md` +
+  `.claude/skills/samais-html-presentation/SKILL.md` — **antes** de qualquer estudo/HTML. Sem isso, não começar.
+- **Fonte canônica:** `victorotaa/samais-rota` (branch `main`). É a referência única; ao evoluir o
+  sistema, atualizar aqui e propagar (e sincronizar a cópia do vault no Drive).
+- **Novo repo — dois caminhos:**
+  1. **Template repository (recomendado):** criar o repo a partir de um GitHub *Template repository*
+     (marcar em Settings → ☑ Template repository) que já contém `CLAUDE.md`, `.claude/skills/` e o `template.html`.
+     "Use this template" → o repo nasce com a identidade.
+  2. **Bootstrap:** num repo novo, rodar `bash scripts/samais-init.sh` (usa `gh` autenticado) para
+     puxar `CLAUDE.md` + a skill da fonte canônica. Ver `template/COMO-USAR.md`.
+- Repos no padrão de nome `samais-<contexto>` (ex.: `samais-<municipio>`).
