@@ -33,7 +33,8 @@
   [id]{scroll-margin-top:78px}
 
   .wrap{max-width:1200px;margin:0 auto;padding:0 56px}
-  section{padding:108px 0;border-top:1px solid var(--divider)}
+  section{border-top:1px solid var(--divider)}
+  section.wrap{padding-top:116px;padding-bottom:116px}
 
   /* FIXED NAV */
   .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(10,10,10,.85);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--divider)}
@@ -264,7 +265,7 @@
   /* RESPONSIVE */
   @media (max-width:1100px){
     .wrap{padding:0 40px}
-    section{padding:80px 0}
+    section.wrap{padding-top:88px;padding-bottom:88px}
     .sec-head{flex-direction:column;align-items:flex-start;margin-bottom:44px;gap:18px}
     .sec-head .left,.sec-head .right{max-width:100%;text-align:left;padding-top:0}
     .strip{grid-template-columns:repeat(2,1fr)}
@@ -279,6 +280,7 @@
   }
   @media (max-width:720px){
     .wrap{padding:0 28px}
+    section.wrap{padding-top:72px;padding-bottom:72px}
     .hero{padding:48px 0 64px}
     h2{font-size:26px}
     .strip{grid-template-columns:1fr}
