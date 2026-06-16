@@ -29,6 +29,10 @@ documentos.
 - Cabeçalho de seção: eyebrow mono + título Syne à esquerda, label mono à direita (alinhado ao topo)
 - Footer-master: tagline *“Onde gestão se mede em vidas.”* (itálico) + paginação mono
 - Movimento sóbrio (fade ~200ms). Proibido: dissolve/swirl/push e transições “de PowerPoint”
+- **Material liquid glass** (contemporâneo): superfícies translúcidas com `backdrop-filter:blur`,
+  borda `rgba(255,255,255,.10)`, brilho interno no topo e sombra suave; brilho ambiente radial
+  (ouro/verde) fixo no fundo para o vidro refratar. Header = só liquid glass (sem imagem).
+  Foto de parceria/aperto de mãos reservada ao CTA de fechamento, sob vidro escuro.
 
 ## Voz / copy
 - Primeira pessoa do singular **ou** impessoal técnico (evitar plural “nós”)
