@@ -119,6 +119,7 @@
 
   /* CARDS (timing) */
   .g-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .g-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   .card{background:var(--s1);border:1px solid var(--divider);padding:34px}
   .card .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding:5px 12px;border:1px solid var(--gold-deep);margin-bottom:22px}
   .card h3{margin-bottom:8px}
@@ -154,7 +155,7 @@
   .case .att::before{content:"\2192";color:var(--green);font-style:normal}
 
   /* MODALIDADE (sku) */
-  .sku-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .sku-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
   .sku{background:var(--s1);border:1px solid var(--divider);padding:34px 30px}
   .sku .badge{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-deep);padding:5px 12px;display:inline-block;margin-bottom:18px}
   .sku h3{font-size:21px;margin-bottom:10px}
@@ -287,7 +288,7 @@
     .sec-head{flex-direction:column;align-items:flex-start;margin-bottom:44px;gap:18px}
     .sec-head .left,.sec-head .right{max-width:100%;text-align:left;padding-top:0}
     .strip{grid-template-columns:repeat(2,1fr)}
-    .g-3,.sku-grid,.hz{grid-template-columns:1fr}
+    .g-3,.g-2,.sku-grid,.hz{grid-template-columns:1fr}
     .cases,.risk{grid-template-columns:1fr}
     .bring .rows{grid-template-columns:1fr;gap:0}
     .hero-grid{grid-template-columns:1fr;gap:36px;margin-top:52px;padding-top:40px}
@@ -515,7 +516,7 @@
 
       <div class="hero-grid">
         <div class="left">
-          <p>Pela primeira vez, o Ministério da Saúde comprou e entregou frota de transporte sanitário direto a estados e municípios. A frota chega; o município não consegue operar em escala. A Samais — operadora de SAMU 192 com oito atestados de capacidade técnica — entra com a empresa dedicada que <em>regula, agenda, roteiriza, executa e audita</em> o transporte. A vantagem não é preço: é o atestado. Só cerca de seis operadores no país podem disputar esses contratos.</p>
+          <p>Pela primeira vez, o transporte sanitário virou prioridade federal — e ele tem <em>duas frentes</em>. A <em>eletiva</em>: levar pacientes a hemodiálise, oncologia e consultas. E a <em>inter-hospitalar</em>: transferir pacientes entre hospitais, inclusive em UTI móvel — contratos estaduais grandes, que pouquíssimos conseguem operar. As duas exigem a mesma operação de regulação que a Samais já provou no SAMU 192. Onde o veículo é do governo, a operação é da Samais.</p>
           <div class="src">Janela regulatória e de oferta confirmada em fonte pública federal</div>
         </div>
         <div class="right">
@@ -526,7 +527,7 @@
       </div>
 
       <div class="strip">
-        <div class="it"><div class="n">R$ 1,2 bi</div><div class="l">Mercado endereçável<br/>transporte sanitário público · Brasil</div></div>
+        <div class="it"><div class="n">R$ 1,2 bi</div><div class="l">Mercado eletivo · Brasil<br/>(uma das duas frentes)</div></div>
         <div class="it"><div class="n">≈ 6</div><div class="l">Operadores no país<br/>com atestado para competir</div></div>
         <div class="it"><div class="n">R$ 15 mi</div><div class="l">Atestados Samais<br/>integralizados na holding</div></div>
         <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte de capital<br/>do investidor sócio</div></div>
@@ -547,12 +548,40 @@
 <section class="wrap" id="s01">
   <div class="sec-head">
     <div class="left">
-      <span class="sec-num">01 · Por que agora</span>
-      <h2>Por que este é o momento.</h2>
-      <p class="lede">Três forças se alinham ao mesmo tempo: o governo federal entregou frota, criou cofinanciamento e pressiona pela terceirização da operação. É a maior transformação do setor desde a criação do SAMU 192 — e ela recompensa quem se posicionar primeiro.</p>
+      <span class="sec-num">01 · O mercado</span>
+      <h2>Duas frentes do<br/>mesmo mercado.</h2>
+      <p class="lede">O transporte sanitário público tem duas frentes — a <em>eletiva</em> e a <em>inter-hospitalar</em>. As duas precisam da mesma operação de regulação e têm pouquíssimos operadores capazes. A Samais atua nas duas.</p>
     </div>
-    <div class="right">A janela é curta<br/><span class="acc">24 a 36 meses</span></div>
+    <div class="right">Posicionamento<br/><span class="acc">duas frentes · uma operação</span></div>
   </div>
+
+  <div class="g-2">
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l2-6 3 12 2-6h5"/></svg></div>
+      <div class="tag">Frente 01 · Eletivo</div>
+      <h3>Levar o paciente ao tratamento</h3>
+      <div class="subtitle">Caminhos da Saúde · municípios</div>
+      <p>Hemodiálise, oncologia, consultas e exames — para quem mora longe do serviço. O governo entregou frota nova e criou cofinanciamento; falta quem opere.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Mercado · Brasil</span><span class="v">R$ 1,2 bi/ano</span></div>
+        <div class="row"><span class="k">Janela federal</span><span class="v">24–36 meses</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#B8954E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h9v8H3z"/><path d="M12 10h4l3 3v2h-7z"/><circle cx="7" cy="16.5" r="1.4"/><circle cx="16" cy="16.5" r="1.4"/><path d="M6 9.5v3M4.5 11h3"/></svg></div>
+      <div class="tag">Frente 02 · Inter-hospitalar</div>
+      <h3>Transferir entre hospitais</h3>
+      <div class="subtitle">Estados e regiões · UTI móvel</div>
+      <p>Mover pacientes entre hospitais, inclusive graves em UTI móvel. São contratos estaduais grandes, com exigência técnica alta — e pouquíssimos qualificam.</p>
+      <div class="specs">
+        <div class="row"><span class="k">Um estado (ex.: RO)</span><span class="v">~R$ 73 mi/ano</span></div>
+        <div class="row"><span class="k">Operadores capazes</span><span class="v">≈ 6 no país</span></div>
+      </div>
+      <div class="src">Sinal de mercado · certame estadual RO (público)</div>
+    </div>
+  </div>
+
+  <div class="mono" style="margin:44px 0 4px;color:var(--gold)">O gatilho — por que a frente eletiva acelerou agora</div>
 
   <div class="g-3">
     <div class="card">
@@ -631,7 +660,7 @@
     <div class="left">
       <span class="sec-num">02 · Vantagem cumulativa</span>
       <h2>Por que a Samais —<br/>e não um concorrente.</h2>
-      <p class="lede">O setor é atendido hoje por empresas de remoção focadas em planos de saúde e por pequenas transportadoras locais sem estrutura técnica nem atestados. Apenas cerca de seis operadores no país reúnem atestados para disputar esses contratos — e a Samais é um deles, com oito. Um concorrente novo levaria de três a cinco anos para chegar lá.</p>
+      <p class="lede">O setor é atendido hoje por empresas de remoção focadas em planos de saúde e por pequenas transportadoras locais sem estrutura técnica nem atestados. Apenas cerca de seis operadores no país reúnem atestados para disputar esses contratos, eletivos e inter-hospitalares — e a Samais é um deles, com oito. Um concorrente novo levaria de três a cinco anos para chegar lá.</p>
     </div>
     <div class="right">Ativo competitivo<br/><span class="acc">8 atestados · entre ~6 no país</span></div>
   </div>
@@ -640,7 +669,8 @@
     <div class="lbl">O que a Samais traz para a operação</div>
     <h4>Capacidade já instalada e pronta para contratar</h4>
     <div class="rows">
-      <div class="row"><div class="k">Oito atestados de capacidade técnica em SAMU 192 e regulação</div><div class="v">Comprovado</div></div>
+      <div class="row"><div class="k">Oito atestados de capacidade técnica — SAMU 192, transferência inter-hospitalar e regulação</div><div class="v">Comprovado</div></div>
+      <div class="row"><div class="k">Ambulâncias e equipe para UTI móvel e suporte básico</div><div class="v">Pronta</div></div>
       <div class="row"><div class="k">Central de regulação 24/7 com responsabilidade técnica</div><div class="v">Em operação</div></div>
       <div class="row"><div class="k">Tecnologia própria de regulação, roteirização e indicadores</div><div class="v">Proprietária</div></div>
       <div class="row"><div class="k">Registro auditável de cada viagem, do pedido ao retorno</div><div class="v">Por padrão</div></div>
@@ -675,7 +705,7 @@
     <div class="left">
       <span class="sec-num">03 · Como funciona</span>
       <h2>Como o negócio<br/>gera receita.</h2>
-      <p class="lede">O governo fornece o veículo; a Samais opera. Empresa dedicada dentro do grupo, com gestão e contabilidade próprias. O modelo preferido reduz o investimento inicial: a frota chega pelo programa federal, e a Samais entrega pessoal, manutenção, combustível, regulação e prestação de contas. Receita recorrente, contratos de vários anos.</p>
+      <p class="lede">O governo fornece o veículo; a Samais opera — nas duas frentes, eletiva e inter-hospitalar. Empresa dedicada dentro do grupo, com gestão e contabilidade próprias. A frota chega pelo programa federal ou pelo estado, e a Samais entrega pessoal, manutenção, regulação e prestação de contas. Receita recorrente, contratos de vários anos.</p>
     </div>
     <div class="right">Estrutura<br/><span class="acc">investimento mínimo · foco PR · SP · MG</span></div>
   </div>
@@ -711,11 +741,21 @@
         <div class="r"><span class="k">Margem líquida</span><span class="v">18–22%</span></div>
       </div>
     </div>
+    <div class="sku">
+      <div class="badge">Modalidade 04</div>
+      <h3>Inter-hospitalar</h3>
+      <p>Transferência de pacientes entre hospitais, inclusive em UTI móvel, por contrato estadual ou regional. Exigência técnica alta — onde a Samais qualifica e a maioria não.</p>
+      <div class="kv">
+        <div class="r"><span class="k">Valor por contrato</span><span class="v">R$ 47–73 mi/ano</span></div>
+        <div class="r"><span class="k">Duração típica</span><span class="v">12–60 meses</span></div>
+        <div class="r"><span class="k">Escala</span><span class="v">estadual · ref. RO</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="note">
     <span class="arrow">→</span>
-    <div><strong>Como entramos.</strong>Pela Hemodiálise nos municípios mais resistentes — menor atrito e com dinheiro federal. Pela Cidade onde o relacionamento Samais já é forte. E pelo Consórcio para multiplicar a receita por contrato. As três modalidades usam a mesma central de regulação e a mesma estrutura de controle.</div>
+    <div><strong>Como entramos.</strong>Pela Hemodiálise nos municípios mais resistentes — menor atrito e com dinheiro federal. Pela Cidade onde o relacionamento Samais já é forte. Pelo Consórcio para multiplicar a receita. E no inter-hospitalar, pelos contratos estaduais — os maiores e de maior barreira. Todas as modalidades usam a mesma central de regulação e a mesma estrutura de controle.</div>
   </div>
 </section>
 
@@ -948,7 +988,9 @@
   <div class="sources">
     <div class="row"><div class="k">Portaria 11.164/2026</div><div class="v">Publicada em 11/05/2026; regulamenta o transporte de pacientes de radioterapia e hemodiálise. Impacto anual estimado de R$ 165,4 milhões. <span class="tag">verificado · CONASS/CONASEMS</span></div></div>
     <div class="row"><div class="k">Caminhos da Saúde</div><div class="v">Novo PAC · 3.300 veículos · R$ 1,4 bilhão · primeiras entregas em abr/2026. Cerca de 1.476 dedicados a radioterapia e hemodiálise; o restante é de uso múltiplo ou ambulância. <span class="tag">verificado · gov.br/saúde</span></div></div>
-    <div class="row"><div class="k">Mercado endereçável</div><div class="v">R$ 1,2 bilhão por ano no Brasil — número da própria modelagem Samais. Projeções de R$ 11–18 bilhões de outros estudos não foram adotadas. <span class="tag amber">estimativa · casa</span></div></div>
+    <div class="row"><div class="k">Mercado eletivo</div><div class="v">R$ 1,2 bilhão por ano no Brasil — número da própria modelagem Samais. Projeções de R$ 11–18 bilhões de outros estudos não foram adotadas. <span class="tag amber">estimativa · casa</span></div></div>
+    <div class="row"><div class="k">Mercado inter-hospitalar</div><div class="v">Segunda frente: transferência de pacientes entre hospitais. Um único estado (Rondônia) licitou teto de ~R$ 73 mi/ano; o mercado nacional é múltiplo disso. <span class="tag amber">estimativa · casa</span></div></div>
+    <div class="row"><div class="k">Caso Rondônia</div><div class="v">Pregão 90197/2024 · SESAU-RO · transporte inter-hospitalar (UTI móvel + suporte básico), 5 lotes. Vencedora com execução suspensa por decisão judicial; o MPRO recomendou anulação. Mostra o tamanho e a barreira da frente inter-hospitalar. <span class="tag">verificado · MPRO/TJRO/imprensa</span></div></div>
     <div class="row"><div class="k">Atestados e referências</div><div class="v">Oito atestados em SAMU 192 e regulação; referências CISNORPI e Ourinhos. Cerca de seis operadores no país têm atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
     <div class="row"><div class="k">Estrutura societária</div><div class="v">Holding com a nova operação no grupo; a Samais integraliza atestados avaliados em R$ 15 milhões; o investidor aporta R$ 2,5–4 milhões em capital. Participação conforme a avaliação acordada. <span class="tag amber">em negociação</span></div></div>
     <div class="row"><div class="k">Projeção do negócio</div><div class="v">Receita acumulada em 36 meses de R$ 73–110 milhões; lucro de R$ 11–19 milhões. Cenário base a otimista, modelagem própria. <span class="tag amber">estimativa · modelagem</span></div></div>
@@ -1020,7 +1062,7 @@
     /* reveal + animação de gráficos + count-up */
     if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
       document.documentElement.classList.add('js-anim');
-      document.querySelectorAll('.g-3,.sku-grid,.hz,.cases,.risk').forEach(function(g){
+      document.querySelectorAll('.g-3,.g-2,.sku-grid,.hz,.cases,.risk').forEach(function(g){
         [].forEach.call(g.children,function(c,i){c.classList.add('reveal');c.style.transitionDelay=(i*0.07)+'s';});
       });
       ['.sec-head','.bring','.splitviz','.donutviz','.chart','.opsviz','.uof','.cta-box','.pull blockquote','.note','.srcshot'].forEach(function(sel){
