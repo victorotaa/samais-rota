@@ -3,3 +3,9 @@ node_modules
 package.json
 package-lock.json
 shot*.js
+rec*.js
+news*.js
+dbg*.js
+measure*.js
+verify*.js
+*.webm
