@@ -386,10 +386,16 @@ var pacientes=[
   {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',trat:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,nec:'Menor — mãe'},
   {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',trat:'Fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,nec:'—'}
 ];
+/* autorização da regulação (TFD) — semeada por paciente */
+pacientes.forEach(function(p,i){p.aut={proc:'TFD-2026/01'+(40+i),val:'31/dez/2026'}});
+/* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.179): hemodiálise/radioterapia, >50 km e ≤500 km */
+function elegivelFederal(p){var d=DESTINOS[p.dest];return /hemodi|radio/i.test(p.trat)&&d.km>50&&d.km<=500}
+function viagemElegivel(v){return v.km>50&&v.km<=500&&v.pacientes.some(elegivelFederal)}
+
 var veiculos=[
-  {id:'ROTA-01',placa:'QLF-1A23',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar'},
-  {id:'ROTA-02',placa:'QLF-2B45',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças'},
-  {id:'ROTA-03',placa:'QLF-3C67',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima'}
+  {id:'ROTA-01',placa:'QLF-1A23',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
+  {id:'ROTA-02',placa:'QLF-2B45',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
+  {id:'ROTA-03',placa:'QLF-3C67',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
 ];
 var abastecimentos=[
   {vid:'ROTA-02',data:'06/jul',litros:78,km:520,valor:452.4},
@@ -474,6 +480,8 @@ function renderPainel(){
   var custo=abastecimentos.reduce(function(a,x){return a+x.valor},0)+kmSem*0.9;
 
   var alerts='';
+  veiculos.filter(function(x){return !x.cnes}).forEach(function(x){
+    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Registro CNES pendente — '+x.id+' ('+x.placa+').</b> Veículo do lote '+(x.origem||'federal')+' deve estar inscrito no CNES até <b>'+x.cnesPrazo+'</b> (60 dias do recebimento — Port. 11.164/2026). Sem CNES, as viagens não comprovam repasse.</div></div>';});
   veiculos.filter(function(x){return (x.proxRev-x.hod)<=2000}).forEach(function(x){
     alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Revisão próxima — '+x.id+' ('+x.placa+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.</div></div>';});
   if(faltas>0) alerts+='<div class="alert bad"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><b>'+faltas+' falta(s) registrada(s) nesta semana.</b> Faltas recorrentes devem ser reportadas à Central de Regulação para liberar a vaga a outro paciente.</div></div>';
@@ -498,6 +506,7 @@ function renderPainel(){
       kpi('Custo estimado',cv(custo,2,'R$ '),'','combustível + operação',icoCost)+
     '</div>'+
     '<div class="charts">'+
+      chartcard('Comprovação de uso · repasse federal','farol de suspensão (Port. 11.164/2026)', farolRepasse()) +
       chartcard('Ocupação média da frota','proporção assento/lotação', donut(ocup,'ocupação')) +
       chartcard('Km programado acumulado','curva da semana (ida e volta)', areaChart(cum,kmMax)) +
       chartcard('Consumo médio','km por litro · meta ≥ 6', gauge(kml,12)) +
@@ -555,6 +564,21 @@ function splitChart(pres,falt){
   return '<div class="split"><div class="track"><div class="seg-a" data-w="'+(pres/tot*100)+'"></div><div class="seg-b" data-w="'+(falt/tot*100)+'"></div></div>'+
     '<div class="lgd"><span><i style="background:var(--green-soft)"></i>Presenças · '+pres+'</span><span><i style="background:var(--red)"></i>Faltas · '+falt+'</span></div></div>';
 }
+function farolRepasse(){
+  /* RN-08: dias desde o último registro comprovado; 3 meses sem registro suspendem o repasse */
+  var idxHoje=DIAS.indexOf(HOJE),lastIdx=-1;
+  viagens.forEach(function(v){var l=lancamentos[v.id];if(l&&l.concluida){var di=DIAS.indexOf(v.dia);if(di>lastIdx)lastIdx=di}});
+  var dias=lastIdx>=0?(idxHoje-lastIdx):99;
+  var cor=dias<30?'var(--green-soft)':dias<=60?'var(--amber)':'var(--red)';
+  var rot=dias<30?'Em dia':dias<=60?'Atenção':'Risco de suspensão';
+  var pct=Math.min(dias/90*100,100);
+  return '<div style="display:flex;align-items:center;gap:16px;margin:8px 0 14px">'+
+    '<span style="width:16px;height:16px;border-radius:50%;background:'+cor+';box-shadow:0 0 14px '+cor+';flex-shrink:0"></span>'+
+    '<div><div style="font-family:var(--display);font-weight:600;font-size:21px;line-height:1.1">'+rot+'</div>'+
+    '<div class="sm mut" style="margin-top:2px">último registro há <b style="color:var(--text-2)">'+dias+' dia'+(dias===1?'':'s')+'</b></div></div></div>'+
+    '<div class="prop"><div class="item"><div class="lab"><span class="xs mut">janela de 90 dias</span><span class="mono-cell">'+dias+'/90</span></div><div class="bar"><div class="fill" data-w="'+pct.toFixed(0)+'" style="background:'+cor+'"></div></div></div></div>'+
+    '<div class="xs mut" style="margin-top:12px;line-height:1.55">3 meses consecutivos sem registro de uso suspendem o repasse federal. O lançamento das baixas é o que mantém o dinheiro fluindo.</div>';
+}
 function gDefs(){return '<svg width="0" height="0" style="position:absolute"><defs>'+
   '<linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gold-soft)"/><stop offset="1" stop-color="var(--gold-deep)"/></linearGradient>'+
   '<linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".38"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs></svg>'}
@@ -587,12 +611,13 @@ function renderPacientes(){
       '<td class="mono-cell">'+p.cns+'</td><td>'+esc(p.trat)+'</td>'+
       '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+DESTINOS[p.dest].nome.split(' —')[0]+'</div></td>'+
       '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
+      '<td><span class="mono-cell">'+p.aut.proc+'</span><div style="margin-top:4px">'+(elegivelFederal(p)?'<span class="pill2 p-green">elegível federal</span>':'<span class="pill2 p-dim">municipal</span>')+'</div></td>'+
       '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr onclick="verPaciente('+pacientes[i].id+')" style="cursor:pointer">'+html+'</tr>'}).join('');
   $('#v-pacientes').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
       '<button class="btn sm" onclick="novoPaciente()">+ Novo paciente</button></div>'+
     '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>A lista chega da Secretaria/Central de Regulação e é lançada aqui pelo gestor. Integração automática com o CADSUS fica para uma fase futura — por ora, cadastro manual por CNS.</div></div>'+
-    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Autorização</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 function novoPaciente(){
   openModal('Novo paciente','<div class="fgrid">'+fld('Nome completo','text','')+fld('Cartão SUS (CNS)','text','')+fld('Município','text','Floriano')+fld('Ponto de embarque','text','UBS Centro')+
@@ -607,7 +632,7 @@ function verPaciente(id){
   var trips=viagens.filter(function(v){return v.pacientes.some(function(q){return q.id===id})});
   var tr=trips.map(function(v){var st=statusViagem(v);
     return '<div class="between" style="padding:11px 0;border-top:1px solid var(--divider)"><div><span class="pill2 '+st.pill+'">'+st.txt+'</span> <span class="sm" style="color:var(--text-2)">'+DIA_NOME[v.dia]+' · '+v.hora+'</span><div class="xs mut" style="margin-top:3px">'+esc(v.destNome.split(' —')[0])+' · '+v.veic.id+'</div></div><span class="mono-cell">'+(v.km*2)+' km</span></div>'}).join('')||'<div class="empty">Sem viagens nesta semana</div>';
-  openModal(p.nome,'<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',DESTINOS[p.dest].nome.split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+'</div>'+
+  openModal(p.nome,'<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',DESTINOS[p.dest].nome.split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+info('Autorização (regulação)',p.aut.proc+' · válida até '+p.aut.val)+info('Cofinanciamento',elegivelFederal(p)?'Elegível federal (>50 km · Port. 11.164)':'Municipal (≤50 km ou fora do escopo)')+'</div>'+
     (p.nec!=='—'?'<div class="alert warn" style="margin:14px 0 0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Necessidade especial: <b>'+esc(p.nec)+'</b></div></div>':'')+
     '<div class="sublbl" style="margin:18px 0 2px">Viagens da semana ('+trips.length+')</div>'+tr,
     '<button class="btn ghost sm" onclick="closeModal()">Fechar</button>');
@@ -620,7 +645,8 @@ function verVeiculo(id){
   var kml=tl?(tk/tl).toFixed(1):'—';
   var falta=x.proxRev-x.hod, pctRev=Math.min(Math.max((x.revCada-falta)/x.revCada*100,0),100);
   var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+a.data+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
-  openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+'</div>'+
+  openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+info('CNES',x.cnes?x.cnes:'pendente — prazo '+x.cnesPrazo)+info('Origem',x.origem||'frota própria/locada')+'</div>'+
+    (!x.cnes?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Inscrever no CNES até <b>'+x.cnesPrazo+'</b> (60 dias do recebimento — Port. 11.164/2026).</div></div>':'')+
     '<div class="sublbl" style="margin:16px 0 8px">Próxima revisão · faltam '+fmt(falta)+' km ('+fmt(x.proxRev)+' km)</div>'+
     '<div class="prop"><div class="item"><div class="bar"><div class="fill" style="width:'+pctRev.toFixed(0)+'%"></div></div></div></div>'+
     (falta<=2000?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Revisão próxima — agende com a oficina.</div></div>':'')+
@@ -638,7 +664,7 @@ function renderProgramacao(){
   body+='<div class="row" style="flex-direction:column;gap:12px">';
   list.forEach(function(v){var st=statusViagem(v),ocup=Math.round(v.assentos/v.lot*100);
     body+='<div class="card glass pad"><div class="between" style="align-items:flex-start">'+
-      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span></div>'+
+      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span>'+(viagemElegivel(v)?'<span class="pill2 p-green">elegível federal · >50 km</span>':'')+'</div>'+
         '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div></div>'+
       '<div style="text-align:right"><div class="mono-cell">'+v.veic.id+' · '+v.veic.placa+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
         '<div style="margin-top:8px"><span class="pill2 '+(ocup>90?'p-red':ocup>60?'p-gold':'p-green')+'">'+v.assentos+'/'+v.lot+' assentos · '+ocup+'%</span></div></div></div>'+
@@ -656,11 +682,12 @@ function renderFrota(){
   var vrows=veiculos.map(function(x){var falta=x.proxRev-x.hod,al=falta<=2000;
     return '<tr onclick="verVeiculo(\''+x.id+'\')" style="cursor:pointer"><td><span class="nm">'+x.id+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+x.placa+'</td>'+
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
-      '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td></tr>';}).join('');
+      '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td>'+
+      '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+x.cnes+'</span>':'<span class="pill2 p-red">pendente · até '+x.cnesPrazo+'</span>')+'</td></tr>';}).join('');
   var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+a.data+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
   $('#v-frota').innerHTML=
     '<div class="sect-head between"><div><div class="sublbl">3 veículos · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
-    '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
+    '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th><th>CNES</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
     '<div class="between" style="margin-bottom:14px"><div><h3 class="blk">Abastecimentos</h3><div class="sublbl" style="margin-top:2px">lançados pelo gestor · consumo calculado automaticamente</div></div><button class="btn sm" onclick="novoAbastecimento()">+ Registrar abastecimento</button></div>'+
     '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Km desde o último</th><th>Consumo</th><th>Valor</th></tr></thead><tbody>'+arows+'</tbody></table></div></div>';
 }
@@ -678,15 +705,43 @@ function renderImpressos(){
     '<div class="between" style="margin-bottom:16px"><div><div class="sublbl">Prancheta A4 · margens de impressão · descartável após a baixa</div><h3 class="blk" style="font-size:18px;margin-top:4px">Impressos operacionais</h3></div>'+
       '<button class="btn sm solid" onclick="window.print()">⎙ Imprimir esta folha</button></div>'+
     '<div class="seg" style="margin-bottom:8px"><button class="'+(impMode==='manifesto'?'on':'')+'" onclick="impMode=\'manifesto\';renderImpressos()">Manifesto geral semanal</button>'+
-      '<button class="'+(impMode==='embarque'?'on':'')+'" onclick="impMode=\'embarque\';renderImpressos()">Folha de embarque / reembarque</button></div>'+
+      '<button class="'+(impMode==='embarque'?'on':'')+'" onclick="impMode=\'embarque\';renderImpressos()">Folha de embarque / reembarque</button>'+
+      '<button class="'+(impMode==='relatorio'?'on':'')+'" onclick="impMode=\'relatorio\';renderImpressos()">Relatório mensal de comprovação</button></div>'+
     (impMode==='embarque'?'<div class="row" style="margin:12px 0 18px;align-items:center;gap:10px"><span class="sublbl">Viagem:</span><select id="imp-viagem" style="max-width:340px;background:var(--input-bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px" onchange="renderPaper()">'+opts+'</select></div>':'<div style="height:14px"></div>')+
     '<div class="paper-shell"><div id="paperhost" style="width:100%"></div></div>'+
     '<div class="paper-note">Formato A4 (210 × 297 mm) · margens de impressão 14 mm · o botão acima imprime só esta folha</div>';
   renderPaper();
 }
 function renderPaper(){
-  var html=impMode==='manifesto'?paperManifesto():paperEmbarque($('#imp-viagem')?$('#imp-viagem').value:viagens[0].id);
+  var html=impMode==='manifesto'?paperManifesto():impMode==='relatorio'?paperRelatorio():paperEmbarque($('#imp-viagem')?$('#imp-viagem').value:viagens[0].id);
   $('#paperhost').innerHTML=html; $('#print-root').innerHTML=html;
+}
+function paperRelatorio(){
+  var concl=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
+  var eleg=viagens.filter(viagemElegivel);
+  var elegConcl=concl.filter(viagemElegivel);
+  var km=concl.reduce(function(a,v){return a+lancamentos[v.id].km},0);
+  var lit=concl.reduce(function(a,v){return a+lancamentos[v.id].litros},0);
+  var pres=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
+  var falt=concl.reduce(function(a,v){return a+lancamentos[v.id].faltas.length},0);
+  var diarias=concl.reduce(function(a,v){return a+(lancamentos[v.id].diarias||0)},0);
+  var custo=abastecimentos.reduce(function(a,x){return a+x.valor},0)+km*0.9;
+  var ocup=Math.round(viagens.reduce(function(a,v){return a+v.assentos/v.lot},0)/viagens.length*100);
+  var byV={};concl.forEach(function(v){var k=v.veic.id;(byV[k]=byV[k]||{n:0,km:0,lit:0}).n++;byV[k].km+=lancamentos[v.id].km;byV[k].lit+=lancamentos[v.id].litros});
+  var vr=veiculos.map(function(x){var d=byV[x.id]||{n:0,km:0,lit:0};
+    return '<tr><td>'+x.id+' · '+x.placa+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+x.cnesPrazo+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
+  return '<div class="paper">'+paperHead('RELATÓRIO MENSAL DE COMPROVAÇÃO')+
+    '<h4>Julho/2026 — parcial (semana 06–10)</h4>'+
+    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.179/2026.</div>'+
+    '<div class="meta"><div><span>Viagens realizadas</span>'+concl.length+' de '+viagens.length+' programadas</div>'+
+      '<div><span>Elegíveis federal (>50 km)</span>'+elegConcl.length+' realizadas · '+eleg.length+' programadas</div>'+
+      '<div><span>Km comprovado</span>'+fmt(km)+' km</div>'+
+      '<div><span>Taxa de ocupação média</span>'+ocup+'%</div></div>'+
+    '<table><thead><tr><th>Veículo</th><th>CNES</th><th>Viagens</th><th>Km</th><th>Combustível</th><th>Consumo</th></tr></thead><tbody>'+vr+'</tbody></table>'+
+    '<div class="meta" style="grid-template-columns:repeat(4,1fr);margin-top:12px"><div><span>Presenças conferidas</span>'+pres+'</div><div><span>Faltas</span>'+falt+'</div><div><span>Diárias / casa de apoio</span>'+diarias+'</div><div><span>Custo operacional</span>'+money(custo)+'</div></div>'+
+    '<div style="font-size:9.5px;color:#444;margin-top:14px;line-height:1.6">Declaro que as viagens acima foram realizadas e conferidas presencialmente mediante folha de embarque/reembarque assinada, arquivada até a baixa em sistema. Registros disponíveis para verificação formal.</div>'+
+    '<div class="pf"><div class="sig"><div class="ln">Gestor(a) local Samais</div></div><div class="sig"><div class="ln">Secretaria de Saúde — ciência</div></div></div>'+
+    '<div class="lgpd">Documento de prestação de contas — não contém dados nominais de pacientes. Detalhamento nominal disponível sob controle de acesso (LGPD).</div></div>';
 }
 function paperHead(doc){return '<div class="ph"><div class="wm">ROTA<small>Samais · Gestão de Transporte Sanitário</small></div><div class="doc">'+doc+'<br>Base Floriano — PI<br>Semana '+SEMANA+'</div></div>'}
 function paperManifesto(){
@@ -728,12 +783,12 @@ function renderLancamentos(){
 }
 function darBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0];
   var chks=v.pacientes.map(function(p){return '<label class="chk" style="margin-bottom:9px"><input type="checkbox" checked data-pid="'+p.id+'"> '+esc(p.nome)+'</label>'}).join('');
-  openModal('Baixa — '+v.rota.split('→')[1].trim(),'<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+'<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2))+fld('Combustível (L)','number','')+'</div>',
+  openModal('Baixa — '+v.rota.split('→')[1].trim(),'<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+'<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2))+fld('Combustível (L)','number','')+'<div class="field"><label>Diárias / casa de apoio</label><input type="number" id="bx-diarias" value="0"></div></div>',
     '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="confirmBaixa(\''+vid+'\')">Confirmar baixa</button>');
 }
 function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0],pres=[],falt=[];
   $$('#modal input[data-pid]').forEach(function(c){(c.checked?pres:falt).push(parseInt(c.dataset.pid))});
-  lancamentos[vid]={concluida:true,km:v.km*2,litros:Math.round(v.km/9),presentes:pres,faltas:falt};
+  lancamentos[vid]={concluida:true,km:v.km*2,litros:Math.round(v.km/9),presentes:pres,faltas:falt,diarias:parseInt(($('#bx-diarias')||{}).value)||0};
   closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s)');updateDots();render('lancamentos');
 }
 
@@ -742,7 +797,7 @@ function openReport(){
   openModal('Relatório à secretaria contratante','<p class="sm mut" style="margin-bottom:14px">Consolidado da semana '+SEMANA+' — Base Floriano — PI. Documento que o gestor entrega à Secretaria de Saúde e à Samais como prestação de contas.</p>'+
     '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens >50 km</div><div class="v">'+viagens.filter(function(v){return v.km>50}).length+'</div><div class="d">elegíveis a cofinanciamento</div></div></div>'+
     '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>As viagens acima de 50 km comprovadas na folha de embarque são a base do cofinanciamento federal (hemodiálise/radioterapia). O manifesto conferido é o documento que fatura.</div></div>',
-    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button><button class="btn solid sm" onclick="closeModal();toast(\'Relatório exportado (demo)\')">Exportar PDF</button>');
+    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button><button class="btn solid sm" onclick="closeModal();render(\'impressos\');impMode=\'relatorio\';renderImpressos()">Abrir versão A4 (imprimir)</button>');
 }
 
 /* =================== ÍCONES + UTILS =================== */
