@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ROTA — Gestão de Transporte Sanitário · Samais</title>
+<meta name="description" content="Console do gestor local: cadastro, programação, frota, impressos e prestação de contas do transporte sanitário. Protótipo Samais.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --s1:#131313; --s2:#17171A; --s3:#1E1E22; --divider:#262626; --line:#2E2E33;
+    --gold:#B8954E; --gold-soft:#D4B373; --gold-deep:#8E7238;
+    --green:#1E7A4B; --green-soft:#3fbf7f; --amber:#C79A55; --red:#C2544B; --blue:#5B86B3;
+    --text:#F4F1EA; --text-2:#D9D2C5; --muted:#9C9489; --dim:#615C53;
+    --display:'Syne',serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+    --sidew:238px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);font-weight:400;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;overflow:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 600px at 88% -10%,rgba(184,149,78,.08),transparent 60%),
+               radial-gradient(760px 520px at -6% 110%,rgba(30,122,75,.07),transparent 62%)}
+  button{font-family:inherit;cursor:pointer}
+  a{color:var(--gold-soft)}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#2c2c30;border-radius:8px;border:2px solid var(--bg)}
+
+  /* ============ LOGIN ============ */
+  #login{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(1100px 700px at 50% -10%,rgba(184,149,78,.10),transparent 55%),var(--bg)}
+  .login-card{width:100%;max-width:392px;background:linear-gradient(165deg,rgba(30,30,34,.6),rgba(18,18,20,.7));
+    -webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);
+    border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:38px 34px 32px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 30px 70px rgba(0,0,0,.55)}
+  .login-card .mono-logo{height:40px;margin-bottom:26px}
+  .login-card .kick{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .login-card h1{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.02em;line-height:1;margin-bottom:8px}
+  .login-card .sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .field input,.field select{width:100%;background:#0d0d0f;border:1px solid var(--line);border-radius:10px;padding:12px 13px;color:var(--text);font-family:var(--body);font-size:14px;outline:none;transition:border-color .16s}
+  .field input:focus,.field select:focus{border-color:var(--gold-deep)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--gold-deep);background:linear-gradient(180deg,rgba(184,149,78,.22),rgba(184,149,78,.09));color:var(--gold-soft);font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border-radius:10px;transition:background .16s,border-color .16s}
+  .btn:hover{background:rgba(184,149,78,.2);border-color:var(--gold)}
+  .btn.block{width:100%;margin-top:8px}
+  .btn.ghost{background:transparent;border-color:var(--line);color:var(--text-2)}
+  .btn.ghost:hover{border-color:var(--gold-deep);color:var(--gold-soft)}
+  .btn.sm{padding:8px 13px;font-size:11px;border-radius:8px}
+  .btn.solid{background:var(--gold);border-color:var(--gold);color:#1a1406}
+  .btn.solid:hover{background:var(--gold-soft)}
+  .login-note{margin-top:20px;padding-top:16px;border-top:1px solid var(--divider);font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--dim);line-height:1.7}
+
+  /* ============ APP SHELL ============ */
+  #app{display:none;position:relative;z-index:1;height:100vh;grid-template-columns:var(--sidew) 1fr;grid-template-rows:56px 1fr;
+    grid-template-areas:"side top" "side main"}
+  #app.on{display:grid}
+  .sidebar{grid-area:side;background:rgba(15,15,17,.72);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-right:1px solid var(--divider);display:flex;flex-direction:column;padding:18px 14px}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 8px 20px}
+  .sb-brand svg{height:26px}
+  .sb-brand .pn{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em;color:var(--text)}
+  .sb-brand .pn small{display:block;font-family:var(--mono);font-weight:400;font-size:8px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+  .sb-sec{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding:16px 10px 8px}
+  .navitem{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;transition:background .14s,color .14s;position:relative}
+  .navitem svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .navitem:hover{color:var(--text-2);background:rgba(255,255,255,.03)}
+  .navitem.active{color:var(--gold-soft);background:rgba(184,149,78,.1);border-color:rgba(184,149,78,.22)}
+  .navitem .dot{position:absolute;right:10px;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-family:var(--mono);font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600}
+  .sb-foot{margin-top:auto;padding:14px 10px 4px;border-top:1px solid var(--divider)}
+  .sb-foot .who{font-size:12.5px;color:var(--text-2);font-weight:600}
+  .sb-foot .base{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.04em;margin-top:2px}
+  .sb-foot .out{margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);background:none;border:0;padding:0}
+  .sb-foot .out:hover{color:var(--gold-soft)}
+
+  .topbar{grid-area:top;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 26px;background:rgba(15,15,17,.6);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--divider)}
+  .topbar .tt{display:flex;align-items:baseline;gap:12px}
+  .topbar .tt h2{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em}
+  .topbar .tt .crumb{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .topbar .rt{display:flex;align-items:center;gap:18px}
+  .topbar .rt .pill{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:7px}
+  .topbar .rt .pill b{color:var(--text-2);font-weight:500}
+  .topbar .rt .pill.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.7)}
+  .hamburger{display:none}
+
+  .main{grid-area:main;overflow-y:auto;padding:26px}
+  .view{display:none;animation:fade .22s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* ============ COMPONENTS ============ */
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .between{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .card{background:linear-gradient(165deg,rgba(28,28,31,.5),rgba(18,18,20,.6));-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.09);border-radius:15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 34px rgba(0,0,0,.32)}
+  .pad{padding:20px 22px}
+  h3.blk{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em;margin-bottom:3px}
+  .sublbl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+  .mut{color:var(--muted)} .sm{font-size:12.5px} .xs{font-size:11px}
+
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:14px;margin-bottom:20px}
+  .kpi{padding:18px 18px 16px}
+  .kpi .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px;margin-bottom:12px}
+  .kpi .k svg{width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:1.6}
+  .kpi .v{font-family:var(--display);font-weight:600;font-size:30px;line-height:1;letter-spacing:-.02em;color:var(--text)}
+  .kpi .v small{font-size:15px;color:var(--muted);font-weight:400;font-family:var(--body)}
+  .kpi .d{font-size:11.5px;color:var(--muted);margin-top:8px}
+  .kpi .d b{color:var(--green-soft);font-weight:600}
+  .kpi .d b.warn{color:var(--amber)} .kpi .d b.bad{color:var(--red)}
+
+  /* table */
+  .tbl-wrap{overflow-x:auto;border-radius:13px;border:1px solid var(--divider)}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+  thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;background:#141416;border-bottom:1px solid var(--divider);white-space:nowrap;font-weight:500}
+  tbody td{padding:12px 14px;border-bottom:1px solid rgba(38,38,38,.7);color:var(--text-2);vertical-align:middle}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover td{background:rgba(255,255,255,.018)}
+  td .nm{color:var(--text);font-weight:600}
+  .mono-cell{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+
+  /* badges/pills */
+  .pill2{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:100px;border:1px solid transparent;white-space:nowrap}
+  .pill2::before{content:"";width:6px;height:6px;border-radius:50%}
+  .p-green{color:var(--green-soft);background:rgba(30,122,75,.14);border-color:rgba(30,122,75,.34)} .p-green::before{background:var(--green-soft)}
+  .p-gold{color:var(--gold-soft);background:rgba(184,149,78,.12);border-color:rgba(184,149,78,.3)} .p-gold::before{background:var(--gold)}
+  .p-blue{color:#9cc0e6;background:rgba(91,134,179,.14);border-color:rgba(91,134,179,.32)} .p-blue::before{background:var(--blue)}
+  .p-red{color:#e08c84;background:rgba(194,84,75,.14);border-color:rgba(194,84,75,.32)} .p-red::before{background:var(--red)}
+  .p-dim{color:var(--muted);background:rgba(97,92,83,.12);border-color:rgba(97,92,83,.3)} .p-dim::before{background:var(--dim)}
+  .tag-mono{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.06em}
+
+  /* alerts */
+  .alert{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;border:1px solid;margin-bottom:12px;font-size:13px;line-height:1.5}
+  .alert svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .alert b{color:var(--text)}
+  .alert.warn{background:rgba(199,154,85,.08);border-color:rgba(199,154,85,.3);color:var(--text-2)} .alert.warn svg{stroke:var(--amber)}
+  .alert.bad{background:rgba(194,84,75,.08);border-color:rgba(194,84,75,.3);color:var(--text-2)} .alert.bad svg{stroke:var(--red)}
+
+  /* forms grid */
+  .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+  .fgrid .field{margin:0}
+  .chk{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--text-2)}
+  .chk input{width:16px;height:16px;accent-color:var(--gold)}
+
+  /* modal */
+  .modal-bg{display:none;position:fixed;inset:0;z-index:80;background:rgba(6,6,7,.62);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px}
+  .modal-bg.on{display:flex}
+  .modal{width:100%;max-width:560px;max-height:88vh;overflow-y:auto}
+  .modal .mh{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--divider)}
+  .modal .mh h3{font-family:var(--display);font-weight:600;font-size:17px}
+  .modal .x{background:none;border:0;color:var(--muted);font-size:22px;line-height:1}
+  .modal .x:hover{color:var(--gold-soft)}
+  .modal .mb{padding:22px}
+  .modal .mf{padding:16px 22px;border-top:1px solid var(--divider);display:flex;justify-content:flex-end;gap:10px}
+
+  .sect-head{margin-bottom:18px}
+  .sect-head h3{font-family:var(--display);font-weight:600;font-size:15px;color:var(--text-2);margin-bottom:2px}
+
+  .empty{padding:40px;text-align:center;color:var(--dim);font-family:var(--mono);font-size:12px;letter-spacing:.06em}
+
+  /* segmented */
+  .seg{display:inline-flex;background:#111113;border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px}
+  .seg button{background:none;border:0;color:var(--muted);font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border-radius:7px}
+  .seg button.on{background:rgba(184,149,78,.16);color:var(--gold-soft)}
+
+  /* mini bar chart */
+  .bars{display:flex;align-items:flex-end;gap:12px;height:130px;padding-top:10px}
+  .bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end}
+  .bars .b .bar{width:100%;max-width:38px;background:linear-gradient(180deg,var(--gold),var(--gold-deep));border-radius:6px 6px 0 0;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+  .bars .b .bl{font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.04em}
+  .bars .b .bv{font-family:var(--mono);font-size:10px;color:var(--text-2)}
+
+  /* PAPER (print preview) */
+  .paper{background:#fff;color:#111;border-radius:6px;padding:34px 36px;font-size:12px;line-height:1.4;box-shadow:0 20px 50px rgba(0,0,0,.5);max-width:820px;margin:0 auto}
+  .paper *{color:inherit}
+  .paper .ph{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:14px}
+  .paper .ph .wm{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.02em;color:#111}
+  .paper .ph .wm small{display:block;font-family:var(--mono);font-weight:500;font-size:8px;letter-spacing:.14em;color:#666;text-transform:uppercase;margin-top:2px}
+  .paper .ph .doc{text-align:right;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:#333;line-height:1.7}
+  .paper h4{font-family:var(--display);font-weight:700;font-size:15px;margin-bottom:3px;color:#111}
+  .paper .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px;font-size:10px}
+  .paper .meta div{border:1px solid #ccc;border-radius:4px;padding:6px 8px}
+  .paper .meta span{display:block;font-family:var(--mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:#777;margin-bottom:2px}
+  .paper table{min-width:0;font-size:10.5px}
+  .paper thead th{background:#f0ede6;color:#333;border-bottom:1px solid #111;padding:7px 8px;font-size:8px}
+  .paper tbody td{border-bottom:1px solid #ddd;color:#222;padding:7px 8px}
+  .paper .tick{width:34px;text-align:center;font-size:14px}
+  .paper .sign{border-bottom:1px solid #999;min-width:90px}
+  .paper .pf{margin-top:16px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;font-size:9px;color:#555}
+  .paper .pf .sig{text-align:center;min-width:200px}
+  .paper .pf .sig .ln{border-top:1px solid #333;margin-top:26px;padding-top:4px;font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:#444}
+  .paper .lgpd{margin-top:12px;font-family:var(--mono);font-size:7.5px;letter-spacing:.04em;color:#888;border-top:1px dashed #ccc;padding-top:8px}
+  .paper .wk{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;font-size:9.5px;margin-top:6px}
+  .paper .wk .d{border:1px solid #ccc;border-radius:4px;padding:7px}
+  .paper .wk .d .dh{font-family:var(--mono);font-weight:600;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#111;border-bottom:1px solid #ddd;padding-bottom:4px;margin-bottom:5px}
+  .paper .wk .d .tr{margin-bottom:5px} .paper .wk .d .tr b{font-size:9px}
+  .paper .veh-block{border:1px solid #ccc;border-radius:5px;padding:10px 12px;margin-bottom:10px}
+  .paper .veh-block .vh{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:#111;border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:7px}
+
+  #print-root{display:none}
+
+  /* responsive */
+  @media(max-width:820px){
+    body{overflow:auto}
+    #app.on{grid-template-columns:1fr;grid-template-rows:56px 1fr;grid-template-areas:"top" "main";height:auto;min-height:100vh}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:250px;z-index:60;transform:translateX(-100%);transition:transform .24s}
+    .sidebar.open{transform:none}
+    .hamburger{display:inline-flex;background:none;border:0;color:var(--text);padding:6px}
+    .hamburger svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+    .main{height:auto}
+    .topbar{padding:0 16px}
+    .topbar .rt,.topbar .crumb{display:none}
+    .topbar .tt h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .scrim{display:none;position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.5)}
+    .scrim.on{display:block}
+  }
+
+  /* PRINT */
+  @media print{
+    body{overflow:visible;background:#fff}
+    body::before,#login,#app{display:none!important}
+    #print-root{display:block!important}
+    .paper{box-shadow:none;border-radius:0;max-width:none;margin:0;padding:14px 4px}
+    @page{size:A4;margin:12mm}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login">
+  <div class="login-card">
+    <svg class="mono-logo" viewBox="0 0 271 175.9" role="img" aria-label="Samais"><path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/></svg>
+    <div class="kick">Samais · Gestão em Saúde</div>
+    <h1>ROTA</h1>
+    <div class="sub">Sistema de gestão de transporte sanitário — console do gestor local.</div>
+    <div class="field"><label>Base / contrato</label>
+      <select id="lg-base"><option>Floriano — PI</option><option>Caicó — RN</option><option>Aracati — CE</option></select></div>
+    <div class="field"><label>Gestor(a) responsável</label>
+      <input id="lg-user" value="Gestor(a) local" /></div>
+    <div class="field"><label>Senha</label>
+      <input type="password" value="••••••••" /></div>
+    <button class="btn solid block" id="lg-enter">Entrar no console</button>
+    <div class="login-note">Protótipo de demonstração · dados fictícios · nenhuma informação real de paciente. Perfil único: gestor local. Motoristas e assistentes operam via prancheta impressa.</div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <svg viewBox="0 0 271 175.9" role="img" aria-label="Samais SA+"><path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/></svg>
+      <div class="pn">ROTA<small>por Samais</small></div>
+    </div>
+    <nav id="nav">
+      <div class="sb-sec">Operação</div>
+      <a class="navitem active" data-view="painel"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Painel</a>
+      <a class="navitem" data-view="pacientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M17 8h4M19 6v4"/></svg> Pacientes</a>
+      <a class="navitem" data-view="programacao"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg> Programação</a>
+      <a class="navitem" data-view="frota"><svg viewBox="0 0 24 24"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.3h8.2A2 2 0 0 1 17 8l2 5"/><path d="M2 13h20v4H2z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg> Frota <span class="dot" id="dot-frota">1</span></a>
+      <div class="sb-sec">Controle</div>
+      <a class="navitem" data-view="impressos"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg> Impressos</a>
+      <a class="navitem" data-view="lancamentos"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Lançamentos <span class="dot" id="dot-lanc">2</span></a>
+    </nav>
+    <div class="sb-foot">
+      <div class="who" id="sb-who">Gestor(a) local</div>
+      <div class="base" id="sb-base">Base Floriano — PI</div>
+      <button class="out" id="logout">↩ Sair do console</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <header class="topbar">
+    <div class="tt">
+      <button class="hamburger" id="ham"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <span class="crumb" id="crumb">ROTA / Painel</span>
+      <h2 id="viewtitle">Painel da semana</h2>
+    </div>
+    <div class="rt">
+      <span class="pill" id="tb-week"><b>—</b></span>
+      <span class="pill live">Base ativa · <b id="tb-base">Floriano — PI</b></span>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="view on" id="v-painel"></section>
+    <section class="view" id="v-pacientes"></section>
+    <section class="view" id="v-programacao"></section>
+    <section class="view" id="v-frota"></section>
+    <section class="view" id="v-impressos"></section>
+    <section class="view" id="v-lancamentos"></section>
+  </main>
+</div>
+
+<!-- modal -->
+<div class="modal-bg" id="modalbg"><div class="card modal" id="modal"></div></div>
+<div id="print-root"></div>
+
+<script>
+/* =================== ESTADO (seed fictício) =================== */
+var DIAS=['seg','ter','qua','qui','sex'];
+var DIA_NOME={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta'};
+var HOJE='qua';
+var SEMANA='06–10/jul/2026';
+
+var DESTINOS={
+  dialise:{nome:'Clínica de Diálise — Floriano', km:8, tipo:'Local'},
+  teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km'},
+  picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km'}
+};
+
+var pacientes=[
+  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'—'},
+  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'Cadeirante'},
+  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',trat:'Radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,nec:'—'},
+  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',trat:'Radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,nec:'—'},
+  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',trat:'Quimioterapia',dest:'teresina',rec:['ter'],acomp:true,nec:'—'},
+  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',trat:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,nec:'—'},
+  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'—'},
+  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',trat:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,nec:'Maca — ambulância'},
+  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',trat:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,nec:'Menor — mãe'},
+  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',trat:'Fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,nec:'—'}
+];
+
+var veiculos=[
+  {id:'ROTA-01',placa:'QLF-1A23',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar'},
+  {id:'ROTA-02',placa:'QLF-2B45',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças'},
+  {id:'ROTA-03',placa:'QLF-3C67',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima'}
+];
+
+var abastecimentos=[
+  {vid:'ROTA-02',data:'06/jul',litros:78,km:520,valor:452.4},
+  {vid:'ROTA-01',data:'06/jul',litros:34,km:210,valor:197.2},
+  {vid:'ROTA-02',data:'08/jul',litros:80,km:508,valor:464.0},
+  {vid:'ROTA-01',data:'08/jul',litros:32,km:205,valor:185.6}
+];
+
+/* baixas já lançadas (seg e ter concluídas) */
+var lancamentos={}; /* preenchido após gerar programação */
+
+/* =================== PROGRAMAÇÃO (gerador) =================== */
+var viagens=[];
+function gerarProgramacao(){
+  viagens=[];
+  DIAS.forEach(function(dia){
+    var byDest={};
+    pacientes.forEach(function(p){ if(p.rec.indexOf(dia)>=0){ (byDest[p.dest]=byDest[p.dest]||[]).push(p); } });
+    Object.keys(byDest).forEach(function(dk){
+      var grp=byDest[dk], dest=DESTINOS[dk];
+      /* separa quem exige ambulância */
+      var amb=grp.filter(function(p){return /ambul/i.test(p.nec)});
+      var comuns=grp.filter(function(p){return !/ambul/i.test(p.nec)});
+      if(comuns.length){
+        var assentos=comuns.reduce(function(a,p){return a+1+(p.acomp?1:0)},0);
+        var veic = dk==='dialise' ? veiculos[0] : veiculos[1];
+        if(assentos>veic.lot) veic=veiculos[1];
+        viagens.push(mkViagem(dia,dk,dest,comuns,veic,assentos));
+      }
+      if(amb.length){
+        viagens.push(mkViagem(dia,dk,dest,amb,veiculos[2], amb.reduce(function(a,p){return a+1+(p.acomp?1:0)},0)));
+      }
+    });
+  });
+  /* semear baixas de seg e ter */
+  viagens.forEach(function(v){
+    if(v.dia==='seg'||v.dia==='ter'){
+      var faltou = (v.dia==='ter' && v.dest==='dialise'); /* injeta 1 falta terça diálise */
+      lancamentos[v.id]={
+        concluida:true,
+        km: Math.round(DESTINOS[v.dest].km*2*(0.98+ (v.id.length%3)*0.01)),
+        litros: v.veic.lot>7? 40+Math.round(DESTINOS[v.dest].km/8) : 12+Math.round(DESTINOS[v.dest].km/12),
+        presentes: faltou? v.pacientes.slice(0,-1).map(function(p){return p.id}) : v.pacientes.map(function(p){return p.id}),
+        faltas: faltou? [v.pacientes[v.pacientes.length-1].id] : []
+      };
+    }
+  });
+}
+var _seq=0;
+function mkViagem(dia,dk,dest,pax,veic,assentos){
+  _seq++;
+  var hora = dk==='dialise' ? '05:30' : (dk==='teresina'?'05:00':'06:00');
+  return {id:'V'+String(_seq).padStart(2,'0'),dia:dia,dest:dk,destNome:dest.nome,km:dest.km,
+    rota:'Floriano → '+dest.nome.split(' —')[0], hora:hora, veic:veic, mot:veic.mot, assist:veic.assist||'—',
+    pacientes:pax, assentos:assentos, lot:veic.lot};
+}
+
+/* =================== HELPERS =================== */
+function $(s,r){return (r||document).querySelector(s)}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+function idade(nasc){var p=nasc.split('/');var d=new Date(1971,0,1);return (2026-parseInt(p[2]))}
+function fmt(n){return n.toLocaleString('pt-BR')}
+function money(n){return 'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function statusViagem(v){
+  var l=lancamentos[v.id];
+  if(l&&l.concluida)return {k:'concluida',pill:'p-green',txt:'Concluída'};
+  if(v.dia===HOJE)return {k:'hoje',pill:'p-gold',txt:'Hoje'};
+  return {k:'prog',pill:'p-blue',txt:'Programada'};
+}
+
+/* =================== VIEWS =================== */
+var TITLES={painel:['Painel da semana','ROTA / Painel'],pacientes:['Pacientes cadastrados','ROTA / Pacientes'],
+  programacao:['Programação de viagens','ROTA / Programação'],frota:['Frota e abastecimento','ROTA / Frota'],
+  impressos:['Impressos operacionais','ROTA / Impressos'],lancamentos:['Lançamentos e baixa','ROTA / Lançamentos']};
+
+function render(view){
+  ['painel','pacientes','programacao','frota','impressos','lancamentos'].forEach(function(v){
+    $('#v-'+v).classList.toggle('on',v===view);
+  });
+  $$('.navitem').forEach(function(a){a.classList.toggle('active',a.dataset.view===view)});
+  $('#viewtitle').textContent=TITLES[view][0];
+  $('#crumb').textContent=TITLES[view][1];
+  if(view==='painel')renderPainel();
+  if(view==='pacientes')renderPacientes();
+  if(view==='programacao')renderProgramacao();
+  if(view==='frota')renderFrota();
+  if(view==='impressos')renderImpressos();
+  if(view==='lancamentos')renderLancamentos();
+  closeMenu();
+}
+function $$(s){return [].slice.call(document.querySelectorAll(s))}
+
+/* -------- PAINEL -------- */
+function renderPainel(){
+  var totV=viagens.length;
+  var concl=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
+  var kmSem=concl.reduce(function(a,v){return a+lancamentos[v.id].km},0);
+  var litSem=concl.reduce(function(a,v){return a+lancamentos[v.id].litros},0);
+  var faltas=concl.reduce(function(a,v){return a+lancamentos[v.id].faltas.length},0);
+  var presencas=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
+  var ocup=Math.round(viagens.reduce(function(a,v){return a+v.assentos/v.lot},0)/totV*100);
+  var kml=(kmSem/litSem)||0;
+  var custo=abastecimentos.reduce(function(a,x){return a+x.valor},0)+ kmSem*0.9;
+  var v=$('#v-painel');
+  v.innerHTML='';
+
+  /* alertas */
+  var alerts='';
+  var vAlert=veiculos.filter(function(x){return (x.proxRev-x.hod)<=2000});
+  vAlert.forEach(function(x){
+    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Revisão próxima — '+x.id+' ('+x.placa+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.</div></div>';
+  });
+  if(faltas>0) alerts+='<div class="alert bad"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><b>'+faltas+' falta(s) registrada(s) nesta semana.</b> Faltas recorrentes devem ser reportadas à Central de Regulação para liberar a vaga a outro paciente.</div></div>';
+
+  v.innerHTML=
+    '<div class="between" style="margin-bottom:18px">'+
+      '<div><div class="sublbl">Semana '+SEMANA+' · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Resumo operacional da semana</h3></div>'+
+      '<button class="btn sm ghost" onclick="openReport()">↗ Gerar relatório à secretaria</button>'+
+    '</div>'+
+    alerts+
+    '<div class="kpis">'+
+      kpi('Viagens na semana',totV,'<b>'+concl.length+'</b> concluídas · '+(totV-concl.length)+' programadas', icoRoute)+
+      kpi('Ocupação média',ocup+'<small>%</small>','assentos ocupados / lotação', icoUsers)+
+      kpi('Presenças / faltas',presencas+'<small> / '+faltas+'</small>','embarques conferidos', icoCheck)+
+      kpi('Km rodado',fmt(kmSem)+'<small> km</small>','na semana (viagens concluídas)', icoGauge)+
+      kpi('Consumo médio',kml.toFixed(1)+'<small> km/l</small>',litSem+' L abastecidos', icoFuel)+
+      kpi('Custo estimado',money(custo),'combustível + operação', icoCost)+
+    '</div>'+
+    '<div class="row" style="align-items:stretch">'+
+      '<div class="card pad" style="flex:2;min-width:300px">'+
+        '<div class="between"><div><h3 class="blk">Viagens por dia</h3><div class="sublbl" style="margin-top:2px">quantidade e ocupação</div></div></div>'+
+        barChart()+
+      '</div>'+
+      '<div class="card pad" style="flex:1;min-width:230px">'+
+        '<h3 class="blk">Composição por destino</h3><div class="sublbl" style="margin-top:2px;margin-bottom:14px">viagens da semana</div>'+
+        destList()+
+      '</div>'+
+    '</div>';
+}
+function kpi(k,val,d,ico){return '<div class="card kpi"><div class="k">'+ico+k+'</div><div class="v">'+val+'</div><div class="d">'+d+'</div></div>'}
+function barChart(){
+  var max=0,counts={};DIAS.forEach(function(d){counts[d]=viagens.filter(function(v){return v.dia===d}).length;if(counts[d]>max)max=counts[d]});
+  var h='<div class="bars">';
+  DIAS.forEach(function(d){var c=counts[d];h+='<div class="b"><div class="bv">'+c+'</div><div class="bar" style="height:'+(max?(c/max*100):3)+'%"></div><div class="bl">'+d+'</div></div>'});
+  return h+'</div>';
+}
+function destList(){
+  var by={};viagens.forEach(function(v){by[v.dest]=(by[v.dest]||0)+1});
+  var tot=viagens.length,h='';
+  Object.keys(DESTINOS).forEach(function(dk){
+    var c=by[dk]||0,pct=Math.round(c/tot*100);
+    h+='<div style="margin-bottom:14px"><div class="between" style="margin-bottom:6px"><span class="sm" style="color:var(--text-2)">'+DESTINOS[dk].nome.split(' —')[0]+'</span><span class="mono-cell">'+c+' · '+pct+'%</span></div>'+
+       '<div style="height:6px;background:#1c1c1f;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,var(--gold),var(--gold-deep))"></div></div></div>';
+  });
+  return h;
+}
+
+/* -------- PACIENTES -------- */
+function renderPacientes(){
+  var rows=pacientes.map(function(p){
+    return '<tr><td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+p.mun+' · '+esc(p.ponto)+'</div></td>'+
+      '<td class="mono-cell">'+p.cns+'</td>'+
+      '<td>'+esc(p.trat)+'</td>'+
+      '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+DESTINOS[p.dest].nome.split(' —')[0]+'</div></td>'+
+      '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
+      '<td class="sm">'+esc(p.nec)+'</td></tr>';
+  }).join('');
+  $('#v-pacientes').innerHTML=
+    '<div class="between" style="margin-bottom:18px">'+
+      '<div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
+      '<button class="btn sm" onclick="novoPaciente()">+ Novo paciente</button>'+
+    '</div>'+
+    '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>A lista chega da Secretaria/Central de Regulação e é lançada aqui pelo gestor. Integração automática com o CADSUS fica para uma fase futura — por ora, cadastro manual por CNS.</div></div>'+
+    '<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+function novoPaciente(){
+  openModal('Novo paciente','<div class="fgrid">'+
+    fld('Nome completo','text','')+fld('Cartão SUS (CNS)','text','')+
+    fld('Município','text','Floriano')+fld('Ponto de embarque','text','UBS Centro')+
+    selfld('Tratamento',['Hemodiálise','Radioterapia','Quimioterapia','Consulta especializada','Fisioterapia'])+
+    selfld('Destino',['Clínica de Diálise — Floriano','Teresina','Picos'])+
+    '</div><div style="margin-top:14px"><div class="sublbl" style="margin-bottom:8px">Recorrência</div><div class="row" style="gap:14px">'+
+      DIAS.map(function(d){return '<label class="chk"><input type="checkbox"> '+DIA_NOME[d]+'</label>'}).join('')+
+    '</div></div>'+
+    '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>',
+    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Paciente cadastrado (demo)\')">Salvar cadastro</button>');
+}
+
+/* -------- PROGRAMAÇÃO -------- */
+var progFiltro='todos';
+function renderProgramacao(){
+  var body=
+    '<div class="between" style="margin-bottom:18px">'+
+      '<div><div class="sublbl">Semana '+SEMANA+' · gerada a partir das recorrências dos pacientes</div><h3 class="blk" style="font-size:18px;margin-top:4px">Programação de viagens</h3></div>'+
+      '<button class="btn sm ghost" onclick="gerarProgramacao();render(\'programacao\');toast(\'Programação regenerada\')">↻ Regenerar da semana</button>'+
+    '</div>'+
+    '<div class="seg" style="margin-bottom:16px">'+
+      ['todos'].concat(DIAS).map(function(d){return '<button class="'+(progFiltro===d?'on':'')+'" onclick="progFiltro=\''+d+'\';renderProgramacao()">'+(d==='todos'?'Semana':DIA_NOME[d])+'</button>'}).join('')+
+    '</div>';
+  var list=viagens.filter(function(v){return progFiltro==='todos'||v.dia===progFiltro});
+  body+='<div class="row" style="flex-direction:column;gap:12px">';
+  list.forEach(function(v){
+    var st=statusViagem(v), ocup=Math.round(v.assentos/v.lot*100);
+    body+='<div class="card pad"><div class="between" style="align-items:flex-start">'+
+      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span></div>'+
+        '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div></div>'+
+      '<div style="text-align:right"><div class="mono-cell">'+v.veic.id+' · '+v.veic.placa+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
+        '<div style="margin-top:8px"><span class="pill2 '+(ocup>90?'p-red':ocup>60?'p-gold':'p-green')+'">'+v.assentos+'/'+v.lot+' assentos · '+ocup+'%</span></div></div>'+
+      '</div>'+
+      '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider);display:flex;gap:26px;flex-wrap:wrap">'+
+        '<div><div class="sublbl">Motorista</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+esc(v.mot)+'</div></div>'+
+        '<div><div class="sublbl">Assistente</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+esc(v.assist)+'</div></div>'+
+        '<div style="flex:1;min-width:180px"><div class="sublbl">Pacientes ('+v.pacientes.length+')</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+v.pacientes.map(function(p){return esc(p.nome.split(' ')[0]+' '+p.nome.split(' ')[1])}).join(', ')+'</div></div>'+
+        '<button class="btn sm ghost" style="align-self:center" onclick="imprimirEmbarque(\''+v.id+'\')">⎙ Folha de embarque</button>'+
+      '</div></div>';
+  });
+  body+='</div>';
+  $('#v-programacao').innerHTML=body;
+}
+
+/* -------- FROTA -------- */
+function renderFrota(){
+  var vrows=veiculos.map(function(x){
+    var falta=x.proxRev-x.hod, alerta=falta<=2000;
+    return '<tr><td><span class="nm">'+x.id+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td>'+
+      '<td class="mono-cell">'+x.placa+'</td>'+
+      '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td>'+
+      '<td class="mono-cell">'+fmt(x.hod)+' km</td>'+
+      '<td>'+(alerta?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td></tr>';
+  }).join('');
+  var arows=abastecimentos.slice().reverse().map(function(a){
+    var kml=(a.km/a.litros).toFixed(1);
+    return '<tr><td class="mono-cell">'+a.data+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+kml+' km/l</td><td>'+money(a.valor)+'</td></tr>';
+  }).join('');
+  $('#v-frota').innerHTML=
+    '<div class="sect-head between"><div><div class="sublbl">3 veículos · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
+    '<div class="card" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
+    '<div class="between" style="margin-bottom:14px"><div><h3 class="blk">Abastecimentos</h3><div class="sublbl" style="margin-top:2px">lançados pelo gestor · consumo calculado automaticamente</div></div>'+
+      '<button class="btn sm" onclick="novoAbastecimento()">+ Registrar abastecimento</button></div>'+
+    '<div class="card"><div class="tbl-wrap"><table><thead><tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Km desde o último</th><th>Consumo</th><th>Valor</th></tr></thead><tbody>'+arows+'</tbody></table></div></div>';
+}
+function novoAbastecimento(){
+  openModal('Registrar abastecimento','<div class="fgrid">'+
+    selfld('Veículo',veiculos.map(function(v){return v.id+' · '+v.placa}))+
+    fld('Litros','number','')+fld('Km rodados desde o último','number','')+fld('Valor (R$)','number','')+
+    '</div><div class="alert warn" style="margin-top:14px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Todo abastecimento deve ser lançado no sistema — é o que fecha o controle de consumo e sinaliza desvios.</div></div>',
+    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Abastecimento lançado (demo)\')">Lançar</button>');
+}
+
+/* -------- IMPRESSOS -------- */
+var impMode='manifesto';
+function renderImpressos(){
+  var opts=viagens.map(function(v){return '<option value="'+v.id+'">'+DIA_NOME[v.dia]+' · '+v.rota.split('→')[1].trim()+' · '+v.veic.id+'</option>'}).join('');
+  $('#v-impressos').innerHTML=
+    '<div class="between" style="margin-bottom:16px"><div><div class="sublbl">Prancheta A4 · descartável após a baixa</div><h3 class="blk" style="font-size:18px;margin-top:4px">Impressos operacionais</h3></div>'+
+      '<button class="btn sm solid" onclick="window.print()">⎙ Imprimir esta folha</button></div>'+
+    '<div class="seg" style="margin-bottom:8px"><button class="'+(impMode==='manifesto'?'on':'')+'" onclick="impMode=\'manifesto\';renderImpressos()">Manifesto geral semanal</button>'+
+      '<button class="'+(impMode==='embarque'?'on':'')+'" onclick="impMode=\'embarque\';renderImpressos()">Folha de embarque / reembarque</button></div>'+
+    (impMode==='embarque'?'<div class="row" style="margin:12px 0 18px;align-items:center;gap:10px"><span class="sublbl">Viagem:</span><select id="imp-viagem" style="max-width:340px;background:#0d0d0f;border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px" onchange="renderPaper()">'+opts+'</select></div>':'<div style="height:14px"></div>')+
+    '<div id="paperhost"></div>';
+  renderPaper();
+}
+function renderPaper(){
+  var host=$('#paperhost');
+  var html = impMode==='manifesto'? paperManifesto() : paperEmbarque($('#imp-viagem')?$('#imp-viagem').value:viagens[0].id);
+  host.innerHTML=html;
+  $('#print-root').innerHTML=html;
+}
+function paperHead(doc){
+  return '<div class="ph"><div class="wm">ROTA<small>Samais · Gestão de Transporte Sanitário</small></div>'+
+    '<div class="doc">'+doc+'<br>Base Floriano — PI<br>Semana '+SEMANA+'</div></div>';
+}
+function paperManifesto(){
+  var byVeic={};viagens.forEach(function(v){(byVeic[v.veic.id]=byVeic[v.veic.id]||[]).push(v)});
+  var blocks='';
+  Object.keys(byVeic).forEach(function(vid){
+    var vs=byVeic[vid],veic=vs[0].veic;
+    var wk=DIAS.map(function(d){
+      var day=vs.filter(function(v){return v.dia===d});
+      var inner=day.map(function(v){return '<div class="tr"><b>'+v.hora+'</b> '+v.rota.split('→')[1].trim()+' <span style="color:#777">('+v.pacientes.length+'p)</span></div>'}).join('')||'<span style="color:#bbb">—</span>';
+      return '<div class="d"><div class="dh">'+d+'</div>'+inner+'</div>';
+    }).join('');
+    blocks+='<div class="veh-block"><div class="vh"><span>'+veic.id+' · '+veic.placa+' · '+veic.tipo+'</span><span>Motorista: '+veic.mot+(veic.assist?' · Assist.: '+veic.assist:'')+'</span></div><div class="wk">'+wk+'</div></div>';
+  });
+  return '<div class="paper">'+paperHead('MANIFESTO GERAL SEMANAL')+
+    '<h4>Escala de viagens por veículo</h4><div style="font-size:10px;color:#666;margin-bottom:12px">Afixar no ponto de guarda dos veículos. Placa · rota · destino · horário.</div>'+
+    blocks+
+    '<div class="lgpd">Documento operacional interno — contém dados de saúde. Uso restrito à equipe Samais. Descartar de forma segura após a baixa no sistema (LGPD).</div>'+
+    '<div class="pf"><div>Emitido em 09/jul/2026 · ROTA · Samais</div><div class="sig"><div class="ln">Gestor(a) local responsável</div></div></div></div>';
+}
+function paperEmbarque(vid){
+  var v=viagens.filter(function(x){return x.id===vid})[0]||viagens[0];
+  var rows=v.pacientes.map(function(p,i){
+    return '<tr><td style="width:22px">'+(i+1)+'</td><td>'+esc(p.nome)+'</td><td>'+p.cns+'</td><td>'+(p.acomp?'Sim':'—')+'</td><td class="tick">☐</td><td class="tick">☐</td><td class="sign">&nbsp;</td></tr>';
+  }).join('');
+  return '<div class="paper">'+paperHead('FOLHA DE EMBARQUE / REEMBARQUE')+
+    '<h4>'+esc(v.rota)+'</h4>'+
+    '<div class="meta">'+
+      '<div><span>Data</span>'+DIA_NOME[v.dia]+' · '+v.hora+'</div>'+
+      '<div><span>Veículo / placa</span>'+v.veic.id+' · '+v.veic.placa+'</div>'+
+      '<div><span>Motorista</span>'+esc(v.mot)+'</div>'+
+      '<div><span>Assistente</span>'+esc(v.assist)+'</div>'+
+    '</div>'+
+    '<table><thead><tr><th>#</th><th>Paciente</th><th>Cartão SUS</th><th>Acomp.</th><th class="tick">Embarque</th><th class="tick">Reembarque</th><th>Assinatura</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div class="lgpd">Conferência presencial: marque o embarque na saída e o reembarque no retorno. Nenhum paciente pode ficar no destino sem registro. Descartar após a baixa no sistema (LGPD).</div>'+
+    '<div class="pf"><div>Total: '+v.pacientes.length+' paciente(s) · '+v.assentos+' assento(s)<br>Km previsto: '+(v.km*2)+' km (ida e volta)</div>'+
+      '<div class="sig"><div class="ln">Conferente (motorista / assistente)</div></div></div></div>';
+}
+
+/* -------- LANÇAMENTOS -------- */
+function renderLancamentos(){
+  var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE|| DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))});
+  var feitas=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
+  var body='<div class="sect-head"><div class="sublbl">O gestor recebe a prancheta e dá baixa · '+pend.length+' pendente(s)</div><h3 class="blk" style="font-size:18px;margin-top:4px">Lançamentos e baixa</h3></div>';
+  body+='<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Campo primeiro no papel, baixa depois — a operação não depende de conexão. O gestor lança presenças, faltas, km e combustível a partir da folha conferida.</div></div>';
+
+  if(pend.length){
+    body+='<h3 class="blk" style="margin-bottom:10px">Pendentes de baixa</h3><div class="row" style="flex-direction:column;gap:10px;margin-bottom:26px">';
+    pend.forEach(function(v){
+      body+='<div class="card pad between"><div><span class="pill2 p-gold">Aguardando baixa</span><h3 class="blk" style="margin-top:8px">'+esc(v.rota)+'</h3><div class="sm mut">'+DIA_NOME[v.dia]+' · '+v.veic.id+' · '+v.pacientes.length+' paciente(s)</div></div>'+
+        '<button class="btn sm solid" onclick="darBaixa(\''+v.id+'\')">Dar baixa</button></div>';
+    });
+    body+='</div>';
+  }
+  body+='<h3 class="blk" style="margin-bottom:10px">Concluídas nesta semana</h3><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Viagem</th><th>Dia</th><th>Presentes</th><th>Faltas</th><th>Km</th><th>Combustível</th></tr></thead><tbody>';
+  feitas.forEach(function(v){var l=lancamentos[v.id];
+    body+='<tr><td><span class="nm">'+esc(v.rota.split('→')[1].trim())+'</span><div class="xs mut">'+v.veic.id+'</div></td><td>'+DIA_NOME[v.dia]+'</td>'+
+      '<td>'+l.presentes.length+'</td><td>'+(l.faltas.length?'<span class="pill2 p-red">'+l.faltas.length+'</span>':'0')+'</td>'+
+      '<td class="mono-cell">'+l.km+' km</td><td class="mono-cell">'+l.litros+' L</td></tr>';
+  });
+  body+='</tbody></table></div></div>';
+  $('#v-lancamentos').innerHTML=body;
+}
+function darBaixa(vid){
+  var v=viagens.filter(function(x){return x.id===vid})[0];
+  var chks=v.pacientes.map(function(p){return '<label class="chk" style="margin-bottom:9px"><input type="checkbox" checked data-pid="'+p.id+'"> '+esc(p.nome)+'</label>'}).join('');
+  openModal('Baixa — '+v.rota.split('→')[1].trim(),
+    '<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+
+    '<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2))+fld('Combustível (L)','number','')+'</div>',
+    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="confirmBaixa(\''+vid+'\')">Confirmar baixa</button>');
+}
+function confirmBaixa(vid){
+  var v=viagens.filter(function(x){return x.id===vid})[0];
+  var pres=[],falt=[];
+  $$('#modal input[data-pid]').forEach(function(c){ (c.checked?pres:falt).push(parseInt(c.dataset.pid)) });
+  lancamentos[vid]={concluida:true,km:v.km*2,litros:Math.round(v.km/9),presentes:pres,faltas:falt};
+  closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s)');
+  updateDots();render('lancamentos');
+}
+
+/* =================== IMPRESSÃO folha via programação =================== */
+function imprimirEmbarque(vid){ render('impressos'); impMode='embarque'; renderImpressos();
+  var sel=$('#imp-viagem'); if(sel){sel.value=vid; renderPaper();} setTimeout(function(){window.print()},120); }
+
+/* =================== RELATÓRIO =================== */
+function openReport(){
+  openModal('Relatório à secretaria contratante',
+    '<p class="sm mut" style="margin-bottom:14px">Consolidado da semana '+SEMANA+' — Base Floriano — PI. Este é o documento que o gestor entrega à Secretaria de Saúde e à Samais como prestação de contas.</p>'+
+    '<div class="kpis" style="grid-template-columns:1fr 1fr">'+
+      kpi('Viagens',viagens.length,'na semana',icoRoute)+
+      kpi('Viagens >50 km',viagens.filter(function(v){return v.km>50}).length,'elegíveis a cofinanciamento',icoRoute)+
+    '</div>'+
+    '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>As viagens acima de 50 km comprovadas na folha de embarque são a base do cofinanciamento federal (hemodiálise/radioterapia). O manifesto conferido é o documento que fatura.</div></div>',
+    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button><button class="btn solid sm" onclick="closeModal();toast(\'Relatório exportado (demo)\')">Exportar PDF</button>');
+}
+
+/* =================== UI utils =================== */
+var icoRoute='<svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a4 4 0 0 0 0-8H9a4 4 0 0 1 0-8h7"/></svg>';
+var icoUsers='<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 8a3 3 0 0 1 0 6"/></svg>';
+var icoCheck='<svg viewBox="0 0 24 24"><path d="M20 7L10 17l-5-5"/></svg>';
+var icoGauge='<svg viewBox="0 0 24 24"><path d="M12 14l4-4M4 18a8 8 0 1 1 16 0"/></svg>';
+var icoFuel='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16"/><path d="M13 9h3l2 2v6a2 2 0 0 1-4 0"/></svg>';
+var icoCost='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg>';
+
+function fld(label,type,val){return '<div class="field"><label>'+label+'</label><input type="'+type+'" value="'+val+'"></div>'}
+function selfld(label,opts){return '<div class="field"><label>'+label+'</label><select>'+opts.map(function(o){return '<option>'+o+'</option>'}).join('')+'</select></div>'}
+function openModal(title,body,foot){
+  $('#modal').innerHTML='<div class="mh"><h3>'+title+'</h3><button class="x" onclick="closeModal()">×</button></div><div class="mb">'+body+'</div><div class="mf">'+(foot||'')+'</div>';
+  $('#modalbg').classList.add('on');
+}
+function closeModal(){$('#modalbg').classList.remove('on')}
+$('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
+function toast(msg){var t=el('div',null,msg);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:#17171a;border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
+function updateDots(){
+  var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;
+  var d=$('#dot-lanc'); if(pend){d.style.display='flex';d.textContent=pend}else{d.style.display='none'}
+}
+/* menu mobile */
+function closeMenu(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('on')}
+$('#ham').addEventListener('click',function(){$('#sidebar').classList.add('open');$('#scrim').classList.add('on')});
+$('#scrim').addEventListener('click',closeMenu);
+
+/* nav */
+$$('.navitem').forEach(function(a){a.addEventListener('click',function(){render(a.dataset.view)})});
+
+/* login */
+$('#lg-enter').addEventListener('click',function(){
+  var base=$('#lg-base').value, user=$('#lg-user').value||'Gestor(a) local';
+  $('#login').style.display='none'; $('#app').classList.add('on');
+  $('#sb-who').textContent=user; $('#sb-base').textContent='Base '+base; $('#tb-base').textContent=base;
+  $('#tb-week').innerHTML='Semana <b>'+SEMANA+'</b>';
+  gerarProgramacao(); updateDots(); render('painel');
+});
+$('#logout').addEventListener('click',function(){$('#app').classList.remove('on');$('#login').style.display='flex'});
+</script>
+</body>
+</html>
