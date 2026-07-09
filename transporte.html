@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Transporte Sanitário com Repasse Federal — Samais Gestão em Saúde</title>
+<meta name="description" content="Desde 2026 a União doa veículos e paga o custeio mensal do transporte de pacientes — para o município que comprovar gestão. A Samais entrega a operação e a comprovação.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --s1:#131313; --s2:#1A1A1A; --divider:#262626;
+    --gold:#B8954E; --gold-soft:#D4B373; --gold-deep:#8E7238;
+    --green:#1E7A4B; --amber:#C79A55;
+    --text:#F4F1EA; --text-2:#D9D2C5; --muted:#9C9489; --dim:#615C53;
+    --display:'Syne',serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(900px 620px at 85% -8%,rgba(184,149,78,.10),transparent 60%),
+               radial-gradient(760px 520px at 4% 110%,rgba(30,122,75,.08),transparent 62%)}
+  html,body{color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;overflow-x:hidden}
+  body{padding:60px 0 0;background:transparent}
+  [id]{scroll-margin-top:80px}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  section{border-top:1px solid var(--divider);position:relative;z-index:0}
+  section.wrap{padding-top:clamp(72px,9vw,110px);padding-bottom:clamp(72px,9vw,110px)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(38px,7vw,84px);line-height:.94;letter-spacing:-.03em}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.4vw,44px);line-height:1.08;letter-spacing:-.02em}
+  h3{font-family:var(--display);font-weight:600;font-size:19px;line-height:1.25;letter-spacing:-.01em}
+  p{font-size:15.5px;color:var(--text-2);line-height:1.66}
+  em{font-style:italic;color:var(--gold-soft)}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:block}
+  .sec-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:48px;gap:48px}
+  .sec-head .left{max-width:66%}
+  .sec-head .lede{font-size:16.5px;color:var(--text-2);max-width:68ch;margin-top:14px}
+  .sec-head .right{max-width:28%;text-align:right;color:var(--muted);font-size:12px;line-height:1.7;font-family:var(--mono);letter-spacing:.04em;padding-top:8px}
+  .sec-head .right .acc{color:var(--gold);display:block;margin-top:5px}
+  @media(max-width:820px){.sec-head{flex-direction:column;gap:12px}.sec-head .left{max-width:100%}.sec-head .right{text-align:left;max-width:100%}}
+
+  /* NAV */
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34)}
+  .nav-brand svg{height:26px;display:block}
+  .nav-brand .nav-mono{display:none;height:25px}
+  .nav-links{display:flex;align-items:center;gap:22px}
+  .nav-links a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .18s;white-space:nowrap}
+  .nav-links a:hover,.nav-links a.active{color:var(--gold)}
+  .nav-links a.nav-cta{color:var(--gold);border:1px solid var(--gold-deep);padding:8px 14px}
+  .nav-links a.nav-cta:hover{background:rgba(184,149,78,.1)}
+  .nav-ham{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+  .nav-ham span{display:block;width:22px;height:1.5px;background:var(--text);transition:transform .2s,opacity .2s}
+  .nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  .nav-ham.open span:nth-child(2){opacity:0}
+  .nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  @media(max-width:900px){
+    .nav-links{position:fixed;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(16,16,18,.92);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,.09);padding:6px 0;transform:translateY(-14px);opacity:0;pointer-events:none;transition:.22s}
+    .nav-links.open{transform:none;opacity:1;pointer-events:auto}
+    .nav-links a{padding:15px clamp(20px,5vw,40px);font-size:12px;border-top:1px solid var(--divider)}
+    .nav-links a:first-child{border-top:0}
+    .nav-ham{display:flex}
+    .nav-brand .nav-word{display:none}.nav-brand .nav-mono{display:block}
+  }
+
+  /* HERO */
+  .hero-section{position:relative;overflow:hidden;border-top:none}
+  .hero-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/hero.jpg) center 40%/cover no-repeat;opacity:.28;will-change:transform}
+  .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.78) 0%,rgba(10,10,10,.55) 45%,rgba(10,10,10,.97) 100%)}
+  .hero-section>.wrap{position:relative;z-index:1}
+  .hero{padding:76px 0 88px}
+  .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:28px}
+  .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.1vw,25px);color:var(--gold-soft);line-height:1.4;max-width:760px;margin-top:32px}
+  .hero p{max-width:64ch;margin-top:24px}
+  .typing::after{content:"";display:inline-block;width:.55ch;height:.95em;background:var(--gold);margin-left:4px;vertical-align:-.12em;animation:caret 1s steps(1) infinite}
+  @keyframes caret{50%{opacity:0}}
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider);margin-top:52px}
+  .strip .it{background:rgba(10,10,10,.88);padding:26px 22px}
+  .strip .it .n{font-family:var(--display);font-weight:600;font-size:27px;letter-spacing:-.02em;color:var(--gold);margin-bottom:10px;line-height:1.05}
+  .strip .it .l{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);line-height:1.7}
+  @media(max-width:820px){.strip{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.strip{grid-template-columns:1fr}}
+
+  /* GLASS CARDS */
+  .g-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .g-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:960px){.g-3,.g-4{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.g-3,.g-4{grid-template-columns:1fr}}
+  .card{background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:26px 24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 44px rgba(0,0,0,.4);transition:transform .22s,border-color .22s}
+  .card:hover{transform:translateY(-5px);border-color:rgba(184,149,78,.4)}
+  .card .ic{width:40px;height:40px;border-radius:11px;background:rgba(184,149,78,.12);border:1px solid rgba(184,149,78,.3);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .card .ic svg{width:20px;height:20px;stroke:#B8954E;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .card .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .card h3{margin-bottom:10px}
+  .card p{font-size:13.5px;line-height:1.6}
+  .card .big{font-family:var(--display);font-weight:600;font-size:30px;color:var(--gold-soft);letter-spacing:-.02em;line-height:1;margin:4px 0 10px}
+  .src{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#3fbf7f;margin-top:14px}
+  .src::before{content:"";width:6px;height:6px;border-radius:50%;background:#1E7A4B;box-shadow:0 0 8px rgba(30,122,75,.7)}
+
+  /* BAND */
+  .band{position:relative;width:100%;height:clamp(220px,32vw,380px);overflow:hidden;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
+  .band img{position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;object-fit:cover;opacity:.5;will-change:transform}
+  .band::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.94),rgba(10,10,10,.45) 55%,rgba(10,10,10,.85))}
+  .band .cap{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end}
+  .band .cap .in{max-width:1160px;margin:0 auto;width:100%;padding:0 clamp(20px,4vw,56px) 36px}
+  .band .cap .e{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  .band .cap .t{font-family:var(--display);font-weight:600;font-size:clamp(19px,2.3vw,28px);line-height:1.25;max-width:38ch;letter-spacing:-.01em}
+
+  /* ESTEIRA */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:st}
+  @media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:600px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;background:var(--s1);border:1px solid var(--divider);border-radius:14px;padding:22px 20px 20px}
+  .step::before{counter-increment:st;content:"0" counter(st);font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em;display:block;margin-bottom:12px}
+  .step h3{font-size:16px;margin-bottom:8px}
+  .step p{font-size:13px}
+
+  /* FOLD LIGHT (pilha de financiamento) */
+  .fold-light{position:relative;z-index:0;color:#0A0A0A;border-top:0}
+  .fold-light::before{content:"";position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;background:#F4F1EA;z-index:-1}
+  .fold-light h2,.fold-light h3{color:#0A0A0A}
+  .fold-light p{color:#3A362E}
+  .fold-light .sec-num{color:#8E7238}
+  .fold-light .sec-head .right{color:#6E675B}
+  .fold-light .sec-head .right .acc{color:#8E7238}
+  .ledger{background:#fff;border:1px solid #DED6C6;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(120,105,70,.16)}
+  .ledger table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+  .ledger th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#6E675B;background:#EFE9DC;text-align:left;padding:13px 18px;border-bottom:1px solid #DED6C6}
+  .ledger td{padding:15px 18px;border-bottom:1px solid #EAE3D4;color:#1c1a15}
+  .ledger tr:last-child td{border-bottom:0}
+  .ledger .pos{color:#1E7A4B;font-weight:600}
+  .ledger .neg{color:#8E7238;font-weight:600}
+  .ledger .tot td{background:#F7F3E9;font-weight:700;font-size:15.5px}
+  .ledger .mono-td{font-family:var(--mono);font-size:12px;color:#6E675B}
+  .tblwrap{overflow-x:auto}
+  .fold-light .note{margin-top:18px;font-size:12.5px;color:#6E675B;max-width:74ch}
+  .fl-rows tr{opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+  .rows-in .fl-rows tr{opacity:1;transform:none}
+
+  /* CONDIÇÕES (cofre) */
+  .lock{display:flex;gap:12px;align-items:flex-start;background:rgba(194,84,75,.07);border:1px solid rgba(194,84,75,.28);border-radius:14px;padding:18px 20px;margin-top:26px}
+  .lock svg{width:20px;height:20px;flex-shrink:0;stroke:#C2544B;fill:none;stroke-width:1.6;margin-top:2px}
+  .lock p{font-size:13.5px}
+
+  /* ROTA CTA */
+  .demo-box{background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.03));-webkit-backdrop-filter:blur(24px) saturate(155%);backdrop-filter:blur(24px) saturate(155%);border:1px solid rgba(184,149,78,.34);border-radius:20px;padding:clamp(28px,4vw,48px);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 26px 60px rgba(0,0,0,.45);display:flex;gap:40px;align-items:center;flex-wrap:wrap}
+  .demo-box .lft{flex:1;min-width:280px}
+  .demo-box h3{font-size:clamp(20px,2.4vw,28px);margin-bottom:12px}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#1a1406;background:var(--gold);border:1px solid var(--gold);padding:15px 26px;border-radius:12px;text-decoration:none;transition:background .18s,transform .18s}
+  .btn:hover{background:var(--gold-soft);transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:var(--gold-soft);border-color:var(--gold-deep)}
+  .btn.ghost:hover{background:rgba(184,149,78,.1)}
+  .feat{display:flex;flex-direction:column;gap:12px;min-width:250px}
+  .feat .f{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;color:var(--text-2)}
+  .feat .f::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);margin-top:7px;flex-shrink:0}
+
+  /* CASES */
+  .cases{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.cases{grid-template-columns:1fr}}
+
+  /* FONTES */
+  .fontes{display:flex;flex-direction:column;gap:10px}
+  .fontes a{display:flex;gap:12px;align-items:baseline;padding:13px 16px;background:var(--s1);border:1px solid var(--divider);border-radius:11px;text-decoration:none;transition:border-color .18s}
+  .fontes a:hover{border-color:var(--gold-deep)}
+  .fontes .fk{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#3fbf7f;white-space:nowrap;text-transform:uppercase}
+  .fontes .ft{font-size:13.5px;color:var(--text-2)}
+
+  /* CTA FINAL */
+  .cta-sec{position:relative;overflow:hidden}
+  .cta-bg{position:absolute;left:0;right:0;top:-18%;height:136%;background:url(assets/central-regulacao.jpg) center/cover no-repeat;opacity:.22;will-change:transform}
+  .cta-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.96),rgba(10,10,10,.78) 50%,rgba(10,10,10,.97))}
+  .cta-sec>.wrap{position:relative;z-index:1;text-align:center;padding-top:clamp(84px,10vw,128px);padding-bottom:clamp(84px,10vw,128px)}
+  .cta-sec h2{font-size:clamp(30px,4.4vw,54px);max-width:22ch;margin:0 auto 20px}
+  .cta-sec p{max-width:58ch;margin:0 auto 34px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--divider);padding:44px 0 56px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .tl{font-family:var(--display);font-style:italic;font-weight:500;font-size:18px;color:var(--gold-soft)}
+  .foot .pg{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.8}
+
+  /* reveal */
+  .js-anim .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .js-anim .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.typing::after{display:none}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a class="nav-brand" href="#top" aria-label="Samais">
+    <svg class="nav-word" viewBox="0 0 595.3 175.9" role="img" aria-label="SAMAIS"><path fill="#B8954E" d="M44,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM411.7,60.6h4.7c4.4,0,8.6,2.1,11.3,5.6l36.8,48.2h-11.7l-41-53.7ZM476.6,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM184.3,60.6h-12.4s24.4,33.7,24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3s10.8,14.9,10.8,14.9h13.1l-39.6-53.7ZM372.1,60.6h-12.4l24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3l10.8,14.9h13.1l-39.6-53.7ZM287.2,65.9l-23.3,32.3-23.9-32.4c-2.4-3.2-6.2-5.2-10.2-5.2h-6l33.5,46.6h7.2l27.8-37.7v44.8h11.7v-53.7h-6.6c-4.1,0-7.9,2-10.3,5.3Z"/></svg>
+    <svg class="nav-mono" viewBox="0 0 271 175.9" role="img" aria-label="SA+"><path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/></svg>
+  </a>
+  <div class="nav-links" id="navlinks">
+    <a href="#s01">O repasse</a>
+    <a href="#s02">As condições</a>
+    <a href="#s03">A operação</a>
+    <a href="#s04">O sistema</a>
+    <a href="#s05">Referências</a>
+    <a href="#cta" class="nav-cta">Falar com a Samais</a>
+  </div>
+  <button class="nav-ham" id="navham" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" id="top">
+  <div class="hero-bg" data-px="0.12"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="tag">Para prefeitos e secretários de saúde · Transporte de pacientes</div>
+      <h1 id="typeh1">O transporte de pacientes virou repasse federal.</h1>
+      <div class="hero-sub" id="typesub">Desde 2026, a União doa o veículo e paga o custeio mensal — para o município que comprovar gestão. A Samais entrega a operação e a comprovação.</div>
+      <p>Todo mês, pacientes de hemodiálise e de câncer do seu município viajam mais de 50 quilômetros até o tratamento. O Ministério da Saúde passou a financiar essas viagens: veículo doado, combustível, manutenção, seguro e equipe pagos com recurso federal. Mas o dinheiro tem uma condição — e é nela que a maioria dos municípios falha.</p>
+      <div class="strip">
+        <div class="it"><div class="n" data-count>3.300</div><div class="l">Veículos comprados pela União<br/>para doação a estados e municípios</div></div>
+        <div class="it"><div class="n">R$ 191 mi<span style="font-size:15px;color:var(--muted)">/ano</span></div><div class="l">Custeio federal novo por ano<br/>hemodiálise + radioterapia</div></div>
+        <div class="it"><div class="n">Mensal</div><div class="l">Repasse fundo a fundo,<br/>contínuo enquanto houver comprovação</div></div>
+        <div class="it"><div class="n" data-count>90</div><div class="l">Dias sem registro de uso<br/>e o repasse é suspenso</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 01 O REPASSE -->
+<section class="wrap" id="s01">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">01 · O novo financiamento</span>
+      <h2>A União paga.<br/>Em duas frentes.</h2>
+      <p class="lede">As Portarias GM/MS 11.164 e 11.179, de maio de 2026, criaram o financiamento federal do transporte de pacientes em hemodiálise e radioterapia que percorrem mais de 50 quilômetros até o tratamento. O desenho tem duas pernas — e as duas passam pelo seu município.</p>
+    </div>
+    <div class="right">Base legal<br/><span class="acc">Lei 12.732/2012 · art. 2º-A e 2º-B</span></div>
+  </div>
+  <div class="g-3">
+    <div class="card reveal">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.3h8.2A2 2 0 0 1 17 8l2 5"/><path d="M2 13h20v4H2z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg></div>
+      <div class="tag">Investimento</div>
+      <h3>O veículo chega doado</h3>
+      <p>Pelo programa Caminhos da Saúde, a União comprou 3.300 veículos — vans, micro-ônibus e ambulâncias — e os doa a estados e municípios. O município não paga pelo carro. O Piauí, por exemplo, recebeu 154 veículos em maio de 2026.</p>
+      <div class="src">Fato verificado · gov.br</div>
+    </div>
+    <div class="card reveal">
+      <div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg></div>
+      <div class="tag">Custeio</div>
+      <h3>A operação é paga todo mês</h3>
+      <p>O repasse mensal, fundo a fundo, cobre custo fixo e variável: combustível, manutenção, emplacamento, seguro e as pessoas que operam — motorista e gestão incluídos. A operação inteira cabe dentro do recurso federal.</p>
+      <div class="src">Fato verificado · Portaria 11.164/2026</div>
+    </div>
+    <div class="card reveal">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="tag">A condição</div>
+      <h3>Só continua para quem comprova</h3>
+      <p>O repasse se mantém enquanto o município registrar, mês a mês, as viagens realizadas nos sistemas do SUS. Três meses sem registro e o dinheiro para de vir. O veículo parado por mais de 60 dias pode ter a doação revogada.</p>
+      <div class="src">Fato verificado · Portarias 11.164 e 11.179</div>
+    </div>
+  </div>
+</section>
+
+<!-- BAND -->
+<div class="band">
+  <img src="assets/viaturas.jpg" data-px="0.10" alt="Frota de veículos de saúde alinhada">
+  <div class="cap"><div class="in">
+    <div class="e">A régua subiu</div>
+    <div class="t">O transporte de pacientes deixou de ser um serviço informal. Virou operação auditada, com dinheiro federal condicionado à gestão.</div>
+  </div></div>
+</div>
+
+<!-- 02 CONDIÇÕES -->
+<section class="wrap" id="s02">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">02 · As exigências</span>
+      <h2>Um cofre que abre —<br/>e tranca sozinho.</h2>
+      <p class="lede">Receber é simples. Continuar recebendo é o desafio: a portaria condiciona o repasse a quatro obrigações permanentes de gestão. É exatamente aqui que municípios perdem o benefício — e onde a Samais trabalha.</p>
+    </div>
+    <div class="right">Conformidade<br/><span class="acc">4 obrigações contínuas</span></div>
+  </div>
+  <div class="g-4">
+    <div class="card reveal"><div class="tag">Obrigação 1</div><div class="big">60 dias</div><p>para inscrever o veículo doado no cadastro nacional de estabelecimentos de saúde e colocá-lo em plena operação. Estourou o prazo: revogação da doação.</p></div>
+    <div class="card reveal"><div class="tag">Obrigação 2</div><div class="big">Gestão de frota</div><p>obrigatória e permanente: controle de quilometragem, custo operacional e taxa de ocupação de cada veículo. Não é boa prática — é exigência da portaria.</p></div>
+    <div class="card reveal"><div class="tag">Obrigação 3</div><div class="big">Registro mensal</div><p>de cada deslocamento realizado, comprovado nos sistemas do SUS. É a produção registrada que sustenta o repasse do mês seguinte.</p></div>
+    <div class="card reveal"><div class="tag">Obrigação 4</div><div class="big">Uso exclusivo</div><p>do veículo no transporte de pacientes, com prioridade para hemodiálise e radioterapia. Desvio de finalidade compromete a doação e o custeio.</p></div>
+  </div>
+  <div class="lock reveal">
+    <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <p><strong style="color:var(--text)">Três meses consecutivos sem registro de uso e o repasse é suspenso.</strong> Sem equipe dedicada, sem sistema e sem rotina de comprovação, o município recebe o veículo, perde o custeio — e ainda responde pela frota parada. O problema não é conseguir o benefício. É sustentá-lo.</p>
+  </div>
+</section>
+
+<!-- FOLD LIGHT: PILHA -->
+<section class="wrap fold-light" id="pilha">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">A conta que muda a conversa</span>
+      <h2>Quem paga o quê.</h2>
+      <p class="lede">Com a operação habilitada e comprovada, a estrutura de financiamento do transporte de pacientes fica assim:</p>
+    </div>
+    <div class="right">Leitura<br/><span class="acc">tesouro municipal aliviado</span></div>
+  </div>
+  <div class="ledger tblwrap">
+    <table>
+      <thead><tr><th>Componente da operação</th><th>Quem financia</th><th style="text-align:right">Efeito no caixa municipal</th></tr></thead>
+      <tbody class="fl-rows">
+        <tr><td>Veículos (vans, micro-ônibus, ambulâncias)</td><td class="mono-td">União · doação</td><td style="text-align:right" class="pos">zero investimento</td></tr>
+        <tr style="transition-delay:.12s"><td>Combustível, manutenção, seguro, emplacamento</td><td class="mono-td">Custeio federal mensal</td><td style="text-align:right" class="pos">coberto p/ fluxos acima de 50 km</td></tr>
+        <tr style="transition-delay:.24s"><td>Equipe da operação — motoristas e gestão</td><td class="mono-td">Custeio federal mensal</td><td style="text-align:right" class="pos">recursos humanos incluídos</td></tr>
+        <tr style="transition-delay:.36s"><td>Viagens locais e demais tratamentos (até 50 km)</td><td class="mono-td">Tesouro municipal · TFD</td><td style="text-align:right" class="neg">contrato dimensionado sob medida</td></tr>
+        <tr style="transition-delay:.48s" class="tot"><td>Gestão que habilita e sustenta tudo acima</td><td class="mono-td">Samais · contratada</td><td style="text-align:right">se paga com o repasse que protege</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Os valores unitários de custeio por veículo e rota constam dos anexos das portarias e variam por configuração — o estudo de viabilidade do seu município apresenta a conta exata, com as fontes citadas linha a linha. Estimativas são sempre identificadas como estimativas.</p>
+</section>
+
+<!-- 03 OPERAÇÃO -->
+<section class="wrap" id="s03">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">03 · A operação Samais</span>
+      <h2>Do nome autorizado<br/>ao repasse mantido.</h2>
+      <p class="lede">A Samais opera a esteira completa do transporte de pacientes — com método testado em operações de urgência e regulação, e com o papel como instrumento de campo: nenhuma etapa da ponta depende de sinal de celular no interior.</p>
+    </div>
+    <div class="right">Método<br/><span class="acc">campo no papel · prova no sistema</span></div>
+  </div>
+  <div class="steps">
+    <div class="step reveal"><h3>Recepção da lista autorizada</h3><p>A relação de pacientes chega da Central de Regulação ou da comissão de tratamento fora do domicílio — quem decide quem viaja é sempre o poder público.</p></div>
+    <div class="step reveal"><h3>Programação das rotas</h3><p>As viagens da semana nascem das recorrências de cada paciente — a hemodiálise, por exemplo, é três vezes por semana, todas as semanas. Veículo, motorista e assentos definidos com antecedência.</p></div>
+    <div class="step reveal"><h3>Manifesto e folha de embarque</h3><p>Impressos em A4 afixados no ponto dos veículos: placa, rota, destino, horário — e a lista nominal com espaço para conferência e assinatura.</p></div>
+    <div class="step reveal"><h3>Conferência de ida e volta</h3><p>Cada paciente é conferido no embarque e no retorno. Ninguém fica no destino sem registro. A folha assinada é a prova física de que a viagem aconteceu.</p></div>
+    <div class="step reveal"><h3>Baixa e controle fino</h3><p>O gestor local Samais lança presenças, faltas, quilometragem e combustível no sistema. Revisões de frota alertadas por quilometragem; consumo monitorado a cada abastecimento.</p></div>
+    <div class="step reveal"><h3>Comprovação que sustenta o repasse</h3><p>O relatório mensal consolida viagens, quilômetros e ocupação — pronto para o registro nos sistemas do SUS e para a prestação de contas. É o documento que mantém o dinheiro fluindo.</p></div>
+  </div>
+</section>
+
+<!-- 04 SISTEMA ROTA -->
+<section class="wrap" id="s04">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">04 · O sistema</span>
+      <h2>ROTA — a gestão exigida<br/>pela portaria, pronta.</h2>
+      <p class="lede">A portaria exige mecanismo de gestão de frota com controle de quilometragem, custo operacional e taxa de ocupação. O ROTA, sistema próprio da Samais, entrega exatamente isso — e está no ar para demonstração agora.</p>
+    </div>
+    <div class="right">Demonstração<br/><span class="acc">acesso imediato · sem cadastro</span></div>
+  </div>
+  <div class="demo-box reveal">
+    <div class="lft">
+      <div class="mono" style="color:var(--gold);margin-bottom:12px">rota · por samais</div>
+      <h3>Veja o sistema funcionando neste momento</h3>
+      <p style="margin-bottom:26px">Painel do gestor com indicadores da semana, farol de risco de suspensão do repasse, cadastro de pacientes com elegibilidade federal calculada, programação de viagens, controle de frota e os impressos em A4 — manifesto, folha de embarque e relatório mensal de comprovação.</p>
+      <a class="btn" href="rota-app.html" target="_blank" rel="noopener">Abrir a demonstração ↗</a>
+    </div>
+    <div class="feat">
+      <div class="f">Farol de suspensão: dias sem registro sempre visíveis</div>
+      <div class="f">Elegibilidade federal (acima de 50 km) marcada por viagem</div>
+      <div class="f">Prazo de 60 dias do cadastro nacional acompanhado por veículo</div>
+      <div class="f">Quilometragem, custo e ocupação — a tríade da portaria</div>
+      <div class="f">Relatório mensal de comprovação pronto para imprimir</div>
+    </div>
+  </div>
+</section>
+
+<!-- BAND 2 -->
+<div class="band">
+  <img src="assets/central-regulacao.jpg" data-px="0.10" alt="Central de regulação em operação">
+  <div class="cap"><div class="in">
+    <div class="e">Origem em urgência e regulação</div>
+    <div class="t">A disciplina de quem opera urgência médica, aplicada ao transporte que acontece todos os dias.</div>
+  </div></div>
+</div>
+
+<!-- 05 REFERÊNCIAS -->
+<section class="wrap" id="s05">
+  <div class="sec-head">
+    <div class="left">
+      <span class="sec-num">05 · Referências</span>
+      <h2>Operação provada.<br/>Fontes públicas.</h2>
+    </div>
+    <div class="right">Verificação<br/><span class="acc">atestados disponíveis</span></div>
+  </div>
+  <div class="cases" style="margin-bottom:44px">
+    <div class="card reveal">
+      <div class="tag">Case · Ourinhos — SP</div>
+      <h3>Operação de urgência municipal</h3>
+      <p>A Samais operou o serviço de atendimento móvel de urgência do município, com frota, equipes e regulação — entregando disciplina operacional e prestação de contas ao contratante público. Atestado disponível para verificação formal.</p>
+    </div>
+    <div class="card reveal">
+      <div class="tag">Case · CISNORPI — PI</div>
+      <h3>Operação consorciada no Piauí</h3>
+      <p>Em contrato com consórcio intermunicipal do norte do Piauí, a Samais entregou operação de saúde em escala regional — o mesmo arranjo institucional dos consórcios que hoje organizam o transporte de pacientes. Atestado disponível para verificação formal.</p>
+    </div>
+  </div>
+  <div class="mono" style="margin-bottom:14px;color:var(--muted)">Base normativa citada nesta página</div>
+  <div class="fontes reveal">
+    <a href="https://bvsms.saude.gov.br/bvs/saudelegis/sas/1999/prt0055_24_02_1999.html" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Portaria SAS/MS nº 55/1999 — Tratamento Fora do Domicílio (transporte e diárias)</span></a>
+    <a href="https://www.conass.org.br/conass-informa-n-80-2026-publicada-a-portaria-gm-n-11-164-que-altera-portaria-gm-ms-no-8516-de-23-de-outubro-de-2025-que-estabelece-modelo-de-financiamento-e-regras-para-os-servicos-de-r/" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Portaria GM/MS nº 11.164/2026 — custeio do transporte para radioterapia e hemodiálise acima de 50 km</span></a>
+    <a href="https://www.conass.org.br/conass-informa-n-83-2026-publicada-a-portaria-gm-n-11-179-que-dispoe-sobre-o-transporte-sanitario-para-apoio-ao-deslocamento-de-pacientes-em-tratamento-radioterapico-e-em-terapia-renal-sub/" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Portaria GM/MS nº 11.179/2026 — diretrizes de operacionalização e comprovação de uso</span></a>
+    <a href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-entrega-primeiros-47-veiculos-para-transporte-de-pacientes-do-sus-em-mg-e-anuncia-r-63-milhoes-para-o-estado" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Ministério da Saúde — programa Caminhos da Saúde: 3.300 veículos doados a estados e municípios</span></a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec" id="cta">
+  <div class="cta-bg" data-px="0.10"></div>
+  <div class="wrap">
+    <h2>Seu município já pode estar<br/>deixando repasse na mesa.</h2>
+    <p>A Samais produz, sem compromisso, o estudo de viabilidade do transporte de pacientes do seu município: demanda real, rotas, frota, a conta do custeio federal — e o desembolso líquido que sobra para o tesouro municipal. Com fontes citadas linha a linha.</p>
+    <div class="cta-row">
+      <a class="btn" href="rota-app.html" target="_blank" rel="noopener">Ver o sistema em operação ↗</a>
+      <a class="btn ghost" href="mailto:diretoria@samais.com.br?subject=Estudo%20de%20viabilidade%20%E2%80%94%20transporte%20de%20pacientes">Solicitar estudo do meu município</a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <div class="tl">Onde gestão se mede em vidas.</div>
+    <div class="pg">Samais · Gestão em Saúde<br/>Transporte Sanitário · 2026</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ham=document.getElementById('navham'),links=document.getElementById('navlinks');
+  ham.addEventListener('click',function(){var o=links.classList.toggle('open');ham.classList.toggle('open',o)});
+  links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('open');ham.classList.remove('open')})});
+  var map={};document.querySelectorAll('.nav-links a').forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+  new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){document.querySelectorAll('.nav-links a').forEach(function(x){x.classList.remove('active')});var a=map[e.target.id];if(a)a.classList.add('active')}})},{rootMargin:'-45% 0px -50% 0px'});
+
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce)return;
+  document.documentElement.classList.add('js-anim');
+
+  /* parallax */
+  var px=[].slice.call(document.querySelectorAll('[data-px]')),tick=false;
+  function upd(){var vh=innerHeight;px.forEach(function(el){var host=el.parentElement,r=host.getBoundingClientRect();if(r.bottom<-300||r.top>vh+300)return;var c=(r.top+r.height/2)-vh/2,sp=parseFloat(el.getAttribute('data-px'))||0.1,head=host.offsetHeight*0.18,ty=c*-sp;if(ty>head)ty=head;if(ty<-head)ty=-head;el.style.transform='translate3d(0,'+ty.toFixed(1)+'px,0)'});tick=false}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(upd)}},{passive:true});addEventListener('resize',upd);upd();
+
+  /* reveal */
+  var rio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px',threshold:.06});
+  document.querySelectorAll('.reveal').forEach(function(e,i){e.style.transitionDelay=(i%4*0.07)+'s';rio.observe(e)});
+  var fio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('rows-in');fio.unobserve(e.target)}})},{rootMargin:'0px 0px -10% 0px'});
+  document.querySelectorAll('.fold-light').forEach(function(e){fio.observe(e)});
+
+  /* count-up simples */
+  function countUp(el,dur){if(el.dataset.c)return;el.dataset.c='1';var full=el.textContent,m=full.match(/([\d.]+)/);if(!m)return;var raw=m[1],target=parseFloat(raw.replace(/\./g,'')),start=performance.now();
+    function fmt(v){return Math.round(v).toLocaleString('pt-BR')}
+    function step(t){var p=Math.min((t-start)/dur,1),e2=1-Math.pow(1-p,3);el.textContent=p<1?full.replace(raw,fmt(target*e2)):full;if(p<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step)}
+  var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('[data-count]').forEach(function(n){countUp(n,1800)});cio.unobserve(e.target)}})},{threshold:.3});
+  document.querySelectorAll('.strip').forEach(function(e){cio.observe(e)});
+
+  /* typing hero */
+  function typeEl(el,dur,done){var txt=el.textContent;el.textContent='';el.classList.add('typing');el.style.visibility='visible';var n=txt.length,start=performance.now();
+    function step(t){var p=Math.min((t-start)/dur,1);el.textContent=txt.slice(0,Math.round(p*n));if(p<1)requestAnimationFrame(step);else{el.classList.remove('typing');if(done)done()}}
+    requestAnimationFrame(step)}
+  var h1=document.getElementById('typeh1'),sub=document.getElementById('typesub');
+  setTimeout(function(){typeEl(h1,1900,function(){typeEl(sub,2100)})},250);
+})();
+</script>
+</body>
+</html>
