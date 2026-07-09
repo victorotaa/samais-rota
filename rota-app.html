@@ -225,8 +225,8 @@
   .seg button.on{background:rgba(184,149,78,.16);color:var(--gold-soft)}
 
   /* PAPER (A4 print preview) */
-  .paper-shell{display:flex;justify-content:center}
-  .paper{background:#fff;color:#111;width:210mm;max-width:100%;min-height:297mm;padding:15mm;font-size:11.5px;line-height:1.42;box-shadow:0 20px 60px rgba(0,0,0,.5);border-radius:2px}
+  .paper-shell{overflow-x:auto;padding-bottom:6px}
+  .paper{background:#fff;color:#111;width:210mm;min-height:297mm;margin:0 auto;padding:15mm;font-size:11.5px;line-height:1.42;box-shadow:0 20px 60px rgba(0,0,0,.5);border-radius:2px}
   .paper *{color:inherit}
   .paper .ph{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:14px}
   .paper .ph .wm{font-family:var(--display);font-weight:800;font-size:21px;letter-spacing:.02em;color:#111}
@@ -269,7 +269,6 @@
     .topbar .tt h2{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .scrim{display:none;position:fixed;inset:0;z-index:55;background:var(--scrim)}
     .scrim.on{display:block}
-    .paper{padding:10mm}
   }
 
   @media print{
@@ -584,11 +583,11 @@ function countUp(elm,dur){
 /* =================== PACIENTES =================== */
 function renderPacientes(){
   var rows=pacientes.map(function(p){
-    return '<tr><td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+p.mun+' · '+esc(p.ponto)+'</div></td>'+
+    return '<td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+p.mun+' · '+esc(p.ponto)+'</div></td>'+
       '<td class="mono-cell">'+p.cns+'</td><td>'+esc(p.trat)+'</td>'+
       '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+DESTINOS[p.dest].nome.split(' —')[0]+'</div></td>'+
       '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
-      '<td class="sm">'+esc(p.nec)+'</td></tr>';}).join('');
+      '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr onclick="verPaciente('+pacientes[i].id+')" style="cursor:pointer">'+html+'</tr>'}).join('');
   $('#v-pacientes').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
       '<button class="btn sm" onclick="novoPaciente()">+ Novo paciente</button></div>'+
@@ -601,6 +600,32 @@ function novoPaciente(){
     '<div style="margin-top:14px"><div class="sublbl" style="margin-bottom:8px">Recorrência</div><div class="row" style="gap:14px">'+DIAS.map(function(d){return '<label class="chk"><input type="checkbox"> '+DIA_NOME[d]+'</label>'}).join('')+'</div></div>'+
     '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>',
     '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Paciente cadastrado (demo)\')">Salvar cadastro</button>');
+}
+function info(k,v){return '<div class="field"><label>'+k+'</label><div style="padding:6px 0;color:var(--text-2);font-size:13.5px">'+esc(v)+'</div></div>'}
+function verPaciente(id){
+  var p=pacientes.filter(function(x){return x.id===id})[0];
+  var trips=viagens.filter(function(v){return v.pacientes.some(function(q){return q.id===id})});
+  var tr=trips.map(function(v){var st=statusViagem(v);
+    return '<div class="between" style="padding:11px 0;border-top:1px solid var(--divider)"><div><span class="pill2 '+st.pill+'">'+st.txt+'</span> <span class="sm" style="color:var(--text-2)">'+DIA_NOME[v.dia]+' · '+v.hora+'</span><div class="xs mut" style="margin-top:3px">'+esc(v.destNome.split(' —')[0])+' · '+v.veic.id+'</div></div><span class="mono-cell">'+(v.km*2)+' km</span></div>'}).join('')||'<div class="empty">Sem viagens nesta semana</div>';
+  openModal(p.nome,'<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',DESTINOS[p.dest].nome.split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+'</div>'+
+    (p.nec!=='—'?'<div class="alert warn" style="margin:14px 0 0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Necessidade especial: <b>'+esc(p.nec)+'</b></div></div>':'')+
+    '<div class="sublbl" style="margin:18px 0 2px">Viagens da semana ('+trips.length+')</div>'+tr,
+    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button>');
+}
+function verVeiculo(id){
+  var x=veiculos.filter(function(v){return v.id===id})[0];
+  var trips=viagens.filter(function(v){return v.veic.id===id});
+  var ab=abastecimentos.filter(function(a){return a.vid===id});
+  var tk=ab.reduce(function(a,b){return a+b.km},0),tl=ab.reduce(function(a,b){return a+b.litros},0);
+  var kml=tl?(tk/tl).toFixed(1):'—';
+  var falta=x.proxRev-x.hod, pctRev=Math.min(Math.max((x.revCada-falta)/x.revCada*100,0),100);
+  var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+a.data+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
+  openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+'</div>'+
+    '<div class="sublbl" style="margin:16px 0 8px">Próxima revisão · faltam '+fmt(falta)+' km ('+fmt(x.proxRev)+' km)</div>'+
+    '<div class="prop"><div class="item"><div class="bar"><div class="fill" style="width:'+pctRev.toFixed(0)+'%"></div></div></div></div>'+
+    (falta<=2000?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Revisão próxima — agende com a oficina.</div></div>':'')+
+    '<div class="sublbl" style="margin:18px 0 2px">Abastecimentos ('+ab.length+')</div>'+abList,
+    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button>');
 }
 
 /* =================== PROGRAMAÇÃO =================== */
@@ -629,7 +654,7 @@ function renderProgramacao(){
 /* =================== FROTA =================== */
 function renderFrota(){
   var vrows=veiculos.map(function(x){var falta=x.proxRev-x.hod,al=falta<=2000;
-    return '<tr><td><span class="nm">'+x.id+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+x.placa+'</td>'+
+    return '<tr onclick="verVeiculo(\''+x.id+'\')" style="cursor:pointer"><td><span class="nm">'+x.id+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+x.placa+'</td>'+
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
       '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td></tr>';}).join('');
   var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+a.data+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
