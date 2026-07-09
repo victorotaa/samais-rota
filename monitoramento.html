@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Radar de Transporte Sanitário — Samais · 12 municípios</title>
+<meta name="description" content="Monitoramento contínuo de veículos, portarias e licitações de transporte sanitário em 12 municípios do RN, PI e CE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A; --s1:#131313; --s2:#1A1A1A; --divider:#262626;
+    --gold:#B8954E; --gold-soft:#D4B373; --gold-deep:#8E7238;
+    --green:#1E7A4B; --green-deep:#003611; --amber:#C79A55;
+    --text:#F4F1EA; --text-2:#D9D2C5; --muted:#9C9489; --dim:#615C53;
+    --display:'Syne',serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;background:var(--bg)}
+  html::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(900px 600px at 82% -8%,rgba(184,149,78,.10),transparent 60%),
+               radial-gradient(760px 520px at 6% 108%,rgba(30,122,75,.09),transparent 62%)}
+  html,body{color:var(--text);font-family:var(--body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;letter-spacing:.005em;overflow-x:hidden}
+  body{padding:60px 0 120px;background:transparent}
+  [id]{scroll-margin-top:80px}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,56px)}
+  section{border-top:1px solid var(--divider)}
+  section.wrap{padding-top:clamp(64px,8vw,104px);padding-bottom:clamp(64px,8vw,104px)}
+
+  /* NAV */
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34)}
+  .nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+  .nav-brand .nav-wordmark{height:26px;width:auto;display:block}
+  .nav-brand .nav-mono{height:25px;width:auto;display:none}
+  .nav-links{display:flex;align-items:center;gap:22px}
+  .nav-links a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .18s;white-space:nowrap}
+  .nav-links a:hover,.nav-links a.active{color:var(--gold)}
+  .nav-scan{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--green);display:inline-flex;align-items:center;gap:7px}
+  .nav-scan::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.8);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .nav-ham{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px;margin-right:-8px}
+  .nav-ham span{display:block;width:22px;height:1.5px;background:var(--text);transition:transform .2s,opacity .2s}
+  .nav-ham.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+  .nav-ham.open span:nth-child(2){opacity:0}
+  .nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+  @media (max-width:860px){
+    .nav-links{position:fixed;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(16,16,18,.9);-webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);border-bottom:1px solid rgba(255,255,255,.09);padding:6px 0;transform:translateY(-14px);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s}
+    .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto}
+    .nav-links a{padding:15px clamp(20px,5vw,40px);font-size:12px;border-top:1px solid var(--divider)}
+    .nav-links a:first-child{border-top:none}
+    .nav-scan{padding:15px clamp(20px,5vw,40px);border-top:1px solid var(--divider)}
+    .nav-ham{display:flex}
+    .nav-brand .nav-wordmark{display:none}
+    .nav-brand .nav-mono{display:block}
+  }
+
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(40px,7.5vw,92px);line-height:.92;letter-spacing:-.03em;color:var(--text)}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.4vw,42px);line-height:1.08;letter-spacing:-.02em}
+  h3{font-family:var(--display);font-weight:600;font-size:20px;line-height:1.2;letter-spacing:-.01em}
+  p{font-size:15.5px;color:var(--text-2);font-weight:300;line-height:1.65}
+  em{font-style:italic;color:var(--gold-soft)}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+  .sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:16px;display:block}
+
+  /* HERO */
+  .hero{padding:52px 0 40px}
+  .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:26px}
+  .hero h1{margin:0}
+  .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(18px,2vw,24px);color:var(--gold-soft);line-height:1.4;max-width:720px;margin-top:30px}
+  .hero p{max-width:62ch;margin-top:26px}
+  .scanbar{display:flex;flex-wrap:wrap;gap:26px;align-items:baseline;margin-top:34px;padding-top:24px;border-top:1px solid var(--divider);font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted)}
+  .scanbar b{color:var(--text-2);font-weight:500}
+  .scanbar .live{color:var(--green)}
+
+  /* SUMMARY STRIP */
+  .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider);border-radius:14px;overflow:hidden;margin-top:40px}
+  .strip .it{background:#0d0d0d;padding:26px 24px}
+  .strip .it .n{font-family:var(--display);font-weight:600;font-size:34px;line-height:1;letter-spacing:-.02em;margin-bottom:12px}
+  .strip .it .l{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);line-height:1.7;display:flex;align-items:center;gap:8px}
+  .strip .it .l::before{content:"";width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .strip .c-conf .n{color:var(--green)} .strip .c-conf .l::before{background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.6)}
+  .strip .c-open .n{color:var(--amber)} .strip .c-open .l::before{background:var(--amber);box-shadow:0 0 8px rgba(199,154,85,.5)}
+  .strip .c-mon .n{color:var(--muted)} .strip .c-mon .l::before{background:var(--dim)}
+  @media(max-width:640px){.strip{grid-template-columns:1fr}}
+
+  /* SECTION HEAD */
+  .sec-head{margin-bottom:44px}
+  .sec-head h2{margin-bottom:14px}
+  .sec-head p{max-width:64ch}
+
+  /* UF GROUP */
+  .uf-group{margin-top:20px}
+  .uf-label{display:flex;align-items:center;gap:16px;margin:44px 0 22px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-soft)}
+  .uf-label::after{content:"";flex:1;height:1px;background:var(--divider)}
+  .uf-label span{color:var(--dim)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+
+  /* CARD (liquid glass) */
+  .mcard{position:relative;background:linear-gradient(160deg,rgba(30,30,32,.55),rgba(18,18,20,.62));-webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:24px 24px 22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.4);overflow:hidden}
+  .mcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dim)}
+  .mcard.st-confirmado::before{background:linear-gradient(180deg,var(--green),#0c4a2a)}
+  .mcard.st-aberto::before{background:linear-gradient(180deg,var(--gold),var(--gold-deep))}
+  .mcard.st-monitorando::before{background:var(--dim)}
+  .mc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+  .badge{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;border:1px solid transparent}
+  .badge::before{content:"";width:6px;height:6px;border-radius:50%}
+  .badge.st-confirmado{color:#5fce97;background:rgba(30,122,75,.14);border-color:rgba(30,122,75,.4)} .badge.st-confirmado::before{background:#3fbf7f;box-shadow:0 0 7px rgba(63,191,127,.7)}
+  .badge.st-aberto{color:var(--gold-soft);background:rgba(184,149,78,.12);border-color:rgba(184,149,78,.36)} .badge.st-aberto::before{background:var(--gold)}
+  .badge.st-monitorando{color:var(--muted);background:rgba(97,92,83,.12);border-color:rgba(97,92,83,.34)} .badge.st-monitorando::before{background:var(--dim)}
+  .mc-reg{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.5;padding-top:5px}
+  .mc-name{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .mc-name h3{color:var(--text)}
+  .mc-name .uf{font-family:var(--mono);font-size:10px;color:var(--gold);letter-spacing:.1em}
+  .mc-pop{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--muted);margin-bottom:18px}
+  .mc-sig-l{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .mc-sig{font-size:13.5px;line-height:1.55;color:var(--text-2)}
+  .mc-src{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;color:var(--gold);text-decoration:none;margin-top:12px;border-bottom:1px solid transparent;transition:border-color .18s}
+  .mc-src:hover{border-color:var(--gold-deep)}
+  .mc-src::after{content:"↗";font-size:10px}
+  .mc-watch{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);font-size:12.5px;line-height:1.5;color:var(--muted)}
+  .mc-watch b{color:var(--gold-soft);font-weight:500;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:5px}
+
+  /* METHOD */
+  .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:8px}
+  .mbox{background:var(--s1);border:1px solid var(--divider);border-radius:14px;padding:24px 22px}
+  .mbox .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .mbox p{font-size:13.5px}
+  .legend-row{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+  .legend-row .lg{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;color:var(--text-2)}
+  .legend-row .lg i{width:9px;height:9px;border-radius:50%;margin-top:6px;flex-shrink:0}
+  .legend-row .lg .g{background:var(--green)} .legend-row .lg .a{background:var(--amber)} .legend-row .lg .d{background:var(--dim)}
+  .legend-row .lg b{color:var(--text);font-weight:500}
+
+  /* FOOTER */
+  footer{padding:44px 0 0;border-top:1px solid var(--divider);margin-top:80px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot .tl{font-family:var(--display);font-style:italic;font-weight:500;font-size:18px;color:var(--gold-soft)}
+  .foot .pg{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-align:right;line-height:1.7}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a class="nav-brand" href="#top" aria-label="Samais — ir ao topo">
+    <svg class="nav-wordmark" viewBox="0 0 595.3 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SAMAIS">
+      <path fill="#B8954E" d="M44,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM411.7,60.6h4.7c4.4,0,8.6,2.1,11.3,5.6l36.8,48.2h-11.7l-41-53.7ZM476.6,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM184.3,60.6h-12.4s24.4,33.7,24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3s10.8,14.9,10.8,14.9h13.1l-39.6-53.7ZM372.1,60.6h-12.4l24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3l10.8,14.9h13.1l-39.6-53.7ZM287.2,65.9l-23.3,32.3-23.9-32.4c-2.4-3.2-6.2-5.2-10.2-5.2h-6l33.5,46.6h7.2l27.8-37.7v44.8h11.7v-53.7h-6.6c-4.1,0-7.9,2-10.3,5.3Z"/>
+    </svg>
+    <svg class="nav-mono" viewBox="0 0 271 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samais SA+">
+      <path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/>
+    </svg>
+  </a>
+  <div class="nav-links" id="navlinks">
+    <a href="#top">Radar</a>
+    <a href="#municipios">Municípios</a>
+    <a href="#metodo">Como funciona</a>
+    <span class="nav-scan" id="navscan">Varredura semanal</span>
+  </div>
+  <button class="nav-ham" id="navham" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section" id="top">
+  <div class="wrap">
+    <div class="hero">
+      <div class="tag">Radar operacional · Transporte sanitário · RN · PI · CE</div>
+      <h1>Radar dos doze.</h1>
+      <div class="hero-sub">Quando um veículo, uma portaria ou uma licitação de transporte de pacientes se move numa das doze praças, o radar registra — para que a Samais chegue antes.</div>
+      <p>Os veículos federais e os contratos de transporte não chegam todos no mesmo dia: cada município tem seu próprio calendário, definido por portaria, licitação e repasse. Este painel acompanha, semana a semana, o sinal concreto de cada praça em fonte pública — e sinaliza onde há movimento novo para agir.</p>
+      <div class="scanbar">
+        <span>Última varredura <b id="lastscan">—</b></span>
+        <span>Próxima <b id="nextscan">—</b></span>
+        <span class="live">● Monitorando 12 municípios · 3 estados</span>
+      </div>
+      <div class="strip">
+        <div class="it c-conf"><div class="n" id="n-conf">0</div><div class="l">Movimento confirmado</div></div>
+        <div class="it c-open"><div class="n" id="n-open">0</div><div class="l">Sinal em aberto</div></div>
+        <div class="it c-mon"><div class="n" id="n-mon">0</div><div class="l">Em monitoramento</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MUNICÍPIOS -->
+<section class="wrap" id="municipios">
+  <div class="sec-head">
+    <span class="sec-num">01 · Estado de cada praça</span>
+    <h2>Doze municípios,<br/>doze relógios.</h2>
+    <p>Cada ficha traz o último sinal encontrado em fonte pública, com data e link, e o que o radar vigia a seguir. Verde: movimento concreto confirmado. Âmbar: sinal em tramitação — licitação, cobrança do Ministério Público, recompetição. Cinza: sem novidade desde a última varredura.</p>
+  </div>
+  <div id="ufcontainer"></div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="wrap" id="metodo">
+  <div class="sec-head">
+    <span class="sec-num">02 · Como o radar funciona</span>
+    <h2>O que vigiamos,<br/>toda semana.</h2>
+    <p>Uma varredura automática lê, a cada semana, as fontes oficiais e a imprensa regional dos doze municípios, procurando qualquer movimento no transporte de pacientes. O que aparece de novo entra neste painel com data e link.</p>
+  </div>
+  <div class="method">
+    <div class="mbox"><div class="k">Veículos e programas</div><p>Destinação e entrega de veículos federais (o lote dos 154 do Piauí e equivalentes em RN e CE), o programa Caminhos da Saúde e o Novo PAC.</p></div>
+    <div class="mbox"><div class="k">Portarias e cofinanciamento</div><p>Portarias de cofinanciamento de transporte para hemodiálise, radioterapia e deslocamentos acima de 50 km — o dinheiro carimbado que viabiliza a operação.</p></div>
+    <div class="mbox"><div class="k">Licitações e contratos</div><p>Editais, pregões e registros de preços de transporte sanitário abertos por prefeituras, consórcios ou secretarias estaduais.</p></div>
+    <div class="mbox"><div class="k">Rede e regulação</div><p>Movimentos em policlínicas, hospitais regionais, consórcios e centrais de regulação que sinalizam nova demanda de transporte.</p></div>
+  </div>
+  <div class="legend-row">
+    <div class="lg"><i class="g"></i><div><b>Movimento confirmado.</b> Veículo, portaria ou contrato concreto e recente — a janela para agir está aberta agora.</div></div>
+    <div class="lg"><i class="a"></i><div><b>Sinal em aberto.</b> Há uma demanda contratada e mal resolvida, uma licitação em recompetição ou uma cobrança formal — o movimento está prestes a acontecer.</div></div>
+    <div class="lg"><i class="d"></i><div><b>Em monitoramento.</b> Sem sinal novo desde a última varredura — mantido sob observação pela dependência estrutural de transporte.</div></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <div class="tl">Onde gestão se mede em vidas.</div>
+    <div class="pg">Samais · Radar de Transporte Sanitário · Confidencial<br/><span id="footdate">—</span></div>
+  </div>
+</footer>
+
+<!-- DADOS DO RADAR — a rotina semanal edita SOMENTE este bloco -->
+<script id="radar-data" type="application/json">
+{
+  "atualizadoEm": "09/jul/2026",
+  "proximaVarredura": "seg, 13/jul/2026",
+  "municipios": [
+    {
+      "nome": "Mossoró", "uf": "RN", "regiao": "2ª Região · polo de urgência e oncologia", "pop": "264,6 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "2026",
+      "sinal": "Programa municipal próprio (PRAEM, 13 linhas) com falhas documentadas em 2024; edital aberto em 2026 para reorganizar rotas e agendamento.",
+      "fonte": "Imprensa regional + Prefeitura de Mossoró", "fonteUrl": "https://www.prefeiturademossoro.com.br/",
+      "observando": "Publicação e resultado do edital de reorganização do PRAEM."
+    },
+    {
+      "nome": "Apodi", "uf": "RN", "regiao": "Eixo Mossoró · hospital regional + SAMU", "pop": "36,1 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "2025–2026",
+      "sinal": "Licitação de transporte anulada por recomendação do Ministério Público (edital restritivo) em 2025; contrato de 2023 prorrogado cinco vezes até 2026.",
+      "fonte": "Ministério Público do RN", "fonteUrl": "https://www.mprn.mp.br/",
+      "observando": "Nova licitação de transporte após a anulação — janela de entrada."
+    },
+    {
+      "nome": "Assú", "uf": "RN", "regiao": "Vale do Açu · sede da VIII Região", "pop": "56,5 mil hab · Censo 2022",
+      "status": "confirmado", "sinalData": "abr–2026",
+      "sinal": "Frota própria renovada com ~30 veículos 0 km e pregão de R$ 1,23 mi para transporte adaptado intermunicipal; consórcio do Vale do Açu operante e policlínica no PAC.",
+      "fonte": "Prefeitura de Assú", "fonteUrl": "https://www.assu.rn.gov.br/",
+      "observando": "Operação do consórcio do Vale do Açu como porta de entrada regional."
+    },
+    {
+      "nome": "Campo Grande", "uf": "RN", "regiao": "Eixo Mossoró", "pop": "9,7 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "2026",
+      "sinal": "Consta entre os municípios com contratação de transporte de pacientes já publicada em fonte oficial no eixo Mossoró.",
+      "fonte": "Diário oficial municipal", "fonteUrl": "https://www.diariomunicipal.com.br/femurn/",
+      "observando": "Vigência e recompetição do contrato de transporte."
+    },
+    {
+      "nome": "Pau dos Ferros", "uf": "RN", "regiao": "Alto Oeste · polo de 37 municípios", "pop": "30,3 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "jul–2025",
+      "sinal": "Contrato municipal de transporte para Natal, Mossoró e Fortaleza vencido em julho de 2025 — recompetição aberta.",
+      "fonte": "Prefeitura de Pau dos Ferros", "fonteUrl": "https://www.paudosferros.rn.gov.br/",
+      "observando": "Abertura do novo edital de transporte interestadual de pacientes."
+    },
+    {
+      "nome": "Caicó", "uf": "RN", "regiao": "Seridó · 1ª policlínica consorciada do RN", "pop": "61,1 mil hab · Censo 2022",
+      "status": "confirmado", "sinalData": "2023–2026",
+      "sinal": "Locação de veículos para a Secretaria de Saúde e contratação de casa de apoio (hospedagem + transporte) para pacientes regulados; policlínica do Seridó operante (12 municípios) e hospital universitário federal contratado.",
+      "fonte": "Prefeitura de Caicó", "fonteUrl": "https://www.caico.rn.gov.br/",
+      "observando": "Renovação das locações e demanda da policlínica consorciada."
+    },
+    {
+      "nome": "Floriano", "uf": "PI", "regiao": "X Região · Hospital Regional Tibério Nunes", "pop": "62,0 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "2026",
+      "sinal": "Registro de preços para locação de veículos e ambulância; TFD municipal ampliado em +270 vagas; licitação estadual de R$ 39,26 mi (maternidade + ampliação) com propostas a partir de ago/2026.",
+      "fonte": "Portal da Transparência de Floriano + SESAPI", "fonteUrl": "https://www.floriano.pi.gov.br/",
+      "observando": "Distribuição, ao município, de veículos do lote federal dos 154."
+    },
+    {
+      "nome": "Picos", "uf": "PI", "regiao": "IX Região · Novo Hospital Regional (OSS)", "pop": "83,1 mil hab · Censo 2022",
+      "status": "confirmado", "sinalData": "mai–2026",
+      "sinal": "Indicado para receber micro-ônibus dentro do lote de 154 veículos federais destinados ao Piauí (Caminhos da Saúde / Novo PAC), para deslocamentos acima de 50 km.",
+      "fonte": "Portal O Dia / Governo do Piauí", "fonteUrl": "https://portalodia.com/noticias/piaui/piaui-recebera-154-veiculos-para-transporte-de-pacientes-do-sus-confira-municipios-beneficiados-457054.html",
+      "observando": "Entrega efetiva do micro-ônibus e definição do operador da rota."
+    },
+    {
+      "nome": "São Raimundo Nonato", "uf": "PI", "regiao": "XII Região · hospital regional (OSS)", "pop": "38,9 mil hab · Censo 2022",
+      "status": "monitorando", "sinalData": "2026",
+      "sinal": "Hospital regional e UPA sob gestão de organização social (SBCD); geografia crítica — Teresina a 523 km, Petrolina-PE a 302 km. Transporte contratado ainda não confirmado.",
+      "fonte": "SESAPI · chamamento OSS", "fonteUrl": "https://www.saude.pi.gov.br/",
+      "observando": "Definição do fluxo de referência (Teresina x Petrolina) e edital de transporte."
+    },
+    {
+      "nome": "Oeiras", "uf": "PI", "regiao": "XIII Região · Vale do Canindé (17 municípios)", "pop": "38,2 mil hab · Censo 2022",
+      "status": "monitorando", "sinalData": "2026",
+      "sinal": "Hospital Regional Deolindo Couto como referência para ~120 mil hab; sem hemodiálise/oncologia local — dependência de Picos, Floriano e Teresina. Sem sinal de transporte específico ainda.",
+      "fonte": "SESAPI", "fonteUrl": "https://www.saude.pi.gov.br/",
+      "observando": "Central de Diagnóstico prevista para 2026 e novos fluxos de referência."
+    },
+    {
+      "nome": "Dom Inocêncio", "uf": "PI", "regiao": "Caatinga · sem hospital local", "pop": "9,2 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "mai–2026",
+      "sinal": "Município extenso e disperso, sem hospital — dependência total de São Raimundo Nonato (>100 km). Perfil clássico e público-alvo dos 154 veículos federais para deslocamentos acima de 50 km.",
+      "fonte": "Governo do Piauí · Caminhos da Saúde", "fonteUrl": "https://www.parlamentopiaui.com.br/noticia/ministerio-da-saude-destina-154-veiculos-para-transporte-de-pacientes-do-sus-no-piaui",
+      "observando": "Inclusão do município na distribuição do lote federal."
+    },
+    {
+      "nome": "Aracati", "uf": "CE", "regiao": "Litoral Leste · consórcio de 4 municípios", "pop": "75,1 mil hab · Censo 2022",
+      "status": "aberto", "sinalData": "2022 e 2026",
+      "sinal": "Ministério Público cobra, desde 2022 e novamente em 2026, veículo dedicado para pacientes de hemodiálise; prefeitura opera com frota parcialmente locada e abriu pregões de locação em 2026.",
+      "fonte": "Ministério Público do CE", "fonteUrl": "https://www.mpce.mp.br/",
+      "observando": "Atendimento à cobrança do MP e pregões de locação em aberto."
+    }
+  ]
+}
+</script>
+
+<script>
+(function(){
+  /* mobile nav */
+  var ham=document.getElementById('navham'), links=document.getElementById('navlinks');
+  ham.addEventListener('click',function(){
+    var open=links.classList.toggle('open');
+    ham.classList.toggle('open',open);
+    ham.setAttribute('aria-expanded',open?'true':'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click',function(){links.classList.remove('open');ham.classList.remove('open');});
+  });
+
+  /* render radar */
+  var data=JSON.parse(document.getElementById('radar-data').textContent);
+  document.getElementById('lastscan').textContent=data.atualizadoEm;
+  document.getElementById('nextscan').textContent=data.proximaVarredura;
+  document.getElementById('footdate').textContent=data.atualizadoEm;
+
+  var UF={RN:'Rio Grande do Norte',PI:'Piauí',CE:'Ceará'};
+  var LABEL={confirmado:'Movimento confirmado',aberto:'Sinal em aberto',monitorando:'Em monitoramento'};
+  var counts={confirmado:0,aberto:0,monitorando:0};
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  var order=['RN','PI','CE'], groups={};
+  data.municipios.forEach(function(m){ (groups[m.uf]=groups[m.uf]||[]).push(m); counts[m.status]++; });
+
+  var cont=document.getElementById('ufcontainer'), html='';
+  order.forEach(function(uf){
+    if(!groups[uf])return;
+    html+='<div class="uf-group"><div class="uf-label">'+UF[uf]+' <span>· '+groups[uf].length+' município'+(groups[uf].length>1?'s':'')+'</span></div><div class="cards">';
+    groups[uf].forEach(function(m){
+      html+='<article class="mcard st-'+m.status+'">'
+        +'<div class="mc-top"><span class="badge st-'+m.status+'">'+LABEL[m.status]+'</span><span class="mc-reg">'+esc(m.regiao)+'</span></div>'
+        +'<div class="mc-name"><h3>'+esc(m.nome)+'</h3><span class="uf">'+m.uf+'</span></div>'
+        +'<div class="mc-pop">'+esc(m.pop)+'</div>'
+        +'<div class="mc-sig-l">Último sinal · '+esc(m.sinalData)+'</div>'
+        +'<div class="mc-sig">'+esc(m.sinal)+'</div>'
+        +(m.fonteUrl?'<a class="mc-src" href="'+encodeURI(m.fonteUrl)+'" target="_blank" rel="noopener">'+esc(m.fonte)+'</a>':'<span class="mc-src" style="border:0">'+esc(m.fonte)+'</span>')
+        +'<div class="mc-watch"><b>Observando</b>'+esc(m.observando)+'</div>'
+        +'</article>';
+    });
+    html+='</div></div>';
+  });
+  cont.innerHTML=html;
+
+  /* count-up dos totais */
+  function up(id,to){var el=document.getElementById(id),s=performance.now(),d=1100;
+    function step(t){var p=Math.min((t-s)/d,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);}
+  up('n-conf',counts.confirmado);up('n-open',counts.aberto);up('n-mon',counts.monitorando);
+})();
+</script>
+</body>
+</html>
