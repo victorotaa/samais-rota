@@ -66,12 +66,12 @@
     .nav-brand .nav-word{display:none}.nav-brand .nav-mono{display:block}
   }
 
-  /* HERO — vídeo fixado a scroll (o scroll controla o tempo do vídeo) */
-  .hero-pin{position:relative;height:260vh;border-top:none}
-  .hero-stage{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:flex-end}
+  /* HERO — estático por ora (scroll-scrub volta após aprovação dos frames 4K) */
+  .hero-pin{position:relative;height:100vh;min-height:560px;border-top:none}
+  .hero-stage{position:sticky;top:0;height:100vh;min-height:560px;overflow:hidden;display:flex;align-items:flex-end}
   .hero-stage video,.hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
-  .hero-poster{display:none}
-  .hero-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.62) 0%,rgba(10,10,10,.18) 42%,rgba(10,10,10,.94) 100%)}
+  .hero-poster{opacity:.72}
+  .hero-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.5) 0%,rgba(10,10,10,.08) 44%,rgba(10,10,10,.9) 100%)}
   .hero-inner{position:relative;z-index:2;width:100%;padding-bottom:11vh}
   .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:28px}
   .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.1vw,25px);color:var(--gold-soft);line-height:1.4;max-width:760px;margin-top:32px}
@@ -113,8 +113,8 @@
 
   /* BAND */
   .band{position:relative;width:100%;height:clamp(220px,32vw,380px);overflow:hidden;border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
-  .band img{position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;object-fit:cover;opacity:.5;will-change:transform}
-  .band::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.94),rgba(10,10,10,.45) 55%,rgba(10,10,10,.85))}
+  .band img{position:absolute;left:0;right:0;top:-20%;width:100%;height:140%;object-fit:cover;opacity:.82;will-change:transform}
+  .band::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,10,10,.82),rgba(10,10,10,.22) 55%,rgba(10,10,10,.6))}
   .band .cap{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end}
   .band .cap .in{max-width:1160px;margin:0 auto;width:100%;padding:0 clamp(20px,4vw,56px) 36px}
   .band .cap .e{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
@@ -193,8 +193,8 @@
 
   /* CTA FINAL */
   .cta-sec{position:relative;overflow:hidden}
-  .cta-bg{position:absolute;left:0;right:0;top:-18%;height:136%;background:url(assets/central-regulacao.jpg) center/cover no-repeat;opacity:.22;will-change:transform}
-  .cta-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.96),rgba(10,10,10,.78) 50%,rgba(10,10,10,.97))}
+  .cta-bg{position:absolute;left:0;right:0;top:-18%;height:136%;background:url(assets/central-regulacao.jpg) center/cover no-repeat;opacity:.45;will-change:transform}
+  .cta-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.92),rgba(10,10,10,.6) 50%,rgba(10,10,10,.94))}
   .cta-sec>.wrap{position:relative;z-index:1;text-align:center;padding-top:clamp(84px,10vw,128px);padding-bottom:clamp(84px,10vw,128px)}
   .cta-sec h2{font-size:clamp(30px,4.4vw,54px);max-width:22ch;margin:0 auto 20px}
   .cta-sec p{max-width:58ch;margin:0 auto 34px}
@@ -229,14 +229,10 @@
   <button class="nav-ham" id="navham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO: vídeo fixado a scroll -->
+<!-- HERO estático (vídeo scroll-scrub aguarda aprovação dos frames 4K) -->
 <section class="hero-pin" id="top">
   <div class="hero-stage">
-    <video id="herovid" muted playsinline preload="auto" poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122204_6e105790-09f7-4d48-8f2e-faba884270af.png">
-      <!-- TODO: baixar e embutir em assets/ (proxy do ambiente bloqueia o download; CDN público funciona no navegador) -->
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122757_d0656775-58c3-4283-b8cb-8b0d15ff225c.mp4" type="video/mp4">
-    </video>
-    <img class="hero-poster" src="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122656_9e9b0b56-9e5d-40d5-a7c5-72a55bf78005.png" alt="Equipe Samais ao lado de ambulância ao amanhecer no sertão" loading="eager">
+    <img class="hero-poster" src="assets/hero.jpg" alt="Operação de saúde Samais" loading="eager" style="display:block">
     <div class="hero-grad"></div>
     <div class="hero-inner wrap">
       <div class="tag">Para prefeitos e secretários de saúde · Transporte de pacientes</div>
