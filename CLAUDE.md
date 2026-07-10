@@ -83,11 +83,16 @@ documentos.
   (empilha em blocos com rótulo `data-l` via `td::before`, ou quebra de linha) — **nunca** `overflow-x:auto`.
   Regra: `document.documentElement.scrollWidth === clientWidth` em 390px. **Única exceção:** documento
   A4 absoluto (impresso), que fica fixo em 210mm e rola dentro do próprio contêiner (é papel, não template).
-- **Sem cases / sem atestados.** A Samais **ainda não tem** case, contrato provado ou atestado técnico.
-  **Proibido** inventar operação, citar Ourinhos, CISNORPI ou qualquer cliente/consórcio como referência,
-  ou usar "operação provada / atestado disponível". Nada de seção "Referências / cases" até existir o
-  **primeiro, com documento** — antes disso é especulação vazia. Citar **lei pública** (portarias, IBGE)
-  é permitido e incentivado; citar **track record próprio** não.
+- **Cases e atestados — reais, mas usados por contexto.** A Samais operou contratos reais e possui
+  **atestados de capacidade técnica raros** (poucas empresas os têm) em **SAMU 192, transferência
+  inter-hospitalar e regulação** — cases **Ourinhos** e **CISNORPI**. São ativos legítimos: usar em
+  materiais de **SAMU/urgência/regulação e na tese de investidor**. **NÃO** existe ainda case de
+  **transporte sanitário/transporte de pacientes** — em material desse serviço, a prova é o **sistema
+  ROTA (demo) + a lei pública** (portarias, IBGE), **não** os atestados de SAMU (não transportar a
+  credencial de um serviço para outro como se fosse experiência de transporte). **Nunca fabricar
+  narrativa operacional** além do que o atestado documenta — foi erro inventar "operou X com frota/
+  regulação/escala"; descrever case só com o que o documento sustenta. Vetado citar Hospital Dr. Anísio
+  Figueiredo e Santa Casa de Goioerê.
 - **Sem campos de contato em nenhum material.** Sem e-mail, telefone, WhatsApp, formulário, mailto ou CTA
   "fale conosco". A Samais é rastreável **apenas por contato de saída dela** — o material fecha com a tese
   ou com link para produto/demo (nunca pedindo que o leitor procure a Samais).

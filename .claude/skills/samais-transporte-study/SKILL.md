@@ -202,8 +202,10 @@ de tom, design system dark Samais, Partes numeradas):
   conformidade) → PARTE IV Composição do Valor Contratual → **PARTE V O sistema ROTA**
   (demo viva: samais-rota.vercel.app/rota-app.html — manifesto, folha de embarque,
   relatório mensal de comprovação) → PARTE VI Por que a Samais (capacidade técnica,
-  método, o sistema ROTA — **sem cases: a Samais ainda não tem contrato/atestado;
-  proibido inventar ou citar cliente**) → fecho pela tese.
+  método, o sistema ROTA — **a Samais tem atestados reais em SAMU/regulação, mas NÃO
+  há case de transporte ainda; aqui a prova é o sistema + a lei, não os atestados de
+  SAMU. Proibido apresentar credencial de SAMU como experiência de transporte ou
+  fabricar operação**) → fecho pela tese.
 - **OUTPUT B** `samais-transporte-dossie-[alvo]-[YYYY-MM].html` — interno/confidencial.
   Acrescenta: memória de cálculo por rota, premissas com selo verde/âmbar, análise
   competitiva, contexto político, riscos (inadimplência municipal, pregão direcionado,

@@ -199,7 +199,7 @@ Seções do OUTPUT A (ordem obrigatória):
 - **PARTE III — O Financiamento que Viabiliza** — cofinanciamento federal 50%, normativas, custo efetivo para o município. Tom: "isso é mais acessível do que parece"
 - **PARTE IV — Composição do Valor Contratual** — tabela BDI decomposto, memória de cálculo, valor mensal/anual/5 anos, argumento per capita/mês
 - **PARTE V — Tecnologia e Inovação: Samais CoPilot OS** — seção dedicada ao produto de IA, diferenciais vs. operação direta ou concorrentes, impacto em tempo-resposta e qualidade regulatória
-- **PARTE VI — Por Que a Samais** — capacidade técnica, método, tecnologia (CoPilot OS) e modelo de transição. **SEM cases/atestados** enquanto não houver o primeiro contrato com documento (proibido inventar operação ou citar cliente). Citar lei pública é ok; track record próprio não.
+- **PARTE VI — Por Que a Samais** — capacidade técnica, método, tecnologia (CoPilot OS) e modelo de transição, apoiada nos **atestados reais de SAMU 192, transferência inter-hospitalar e regulação** (cases Ourinhos e CISNORPI — este é o serviço que casa com esta skill). **Descrever cada case só com o que o atestado documenta — nunca fabricar operação/frota/escala não comprovada.**
 - **FECHO** — pela tese/valor. **Sem campo de contato** (nem reunião, e-mail, telefone, formulário): a Samais só é rastreável por contato de saída dela
 - **RODAPÉ** — "samais · gestão + saúde" + data + versão (SEM "confidencial")
 
