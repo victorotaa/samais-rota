@@ -96,10 +96,17 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
 - **Embutir print de fonte pública oficial** (ex.: gov.br) como evidência junto à afirmação (moldura glass + link).
 - Tudo sob `.js-anim` (só com JS e sem prefers-reduced-motion) para nunca esconder conteúdo.
 - **Liquid glass**: refração via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)` (Chromium;
-  fallback blur; off no mobile). Mobile: **tabelas roláveis** (override do `overflow:hidden` do glass).
-  Sem brilho especular seguindo o mouse (removido por preferência).
-- **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos (não usar Hospital Dr. Anísio
-  Figueiredo nem Santa Casa de Goioerê).
+  fallback blur; off no mobile). Sem brilho especular seguindo o mouse (removido por preferência).
+- **Mobile nunca tem scroll horizontal.** Tabela que não cabe **reflowa** (empilha em blocos com rótulo
+  `data-l` via `td::before`, ou quebra de linha) — **nunca** `overflow-x:auto`. Verificar
+  `scrollWidth === clientWidth` a 390px. Única exceção: documento **A4 absoluto** (impresso), fixo em 210mm,
+  que rola no próprio contêiner (papel, não template).
+- **Sem cases / sem atestados.** A Samais ainda não tem case, contrato provado ou atestado. **Proibido**
+  inventar operação ou citar Ourinhos/CISNORPI/qualquer cliente como referência; nada de "operação provada
+  / atestado disponível" nem seção "Referências" até existir o primeiro com documento. Citar **lei pública**
+  (portarias, IBGE) é permitido; citar track record próprio não.
+- **Sem campos de contato.** Nenhum material leva e-mail, telefone, WhatsApp, formulário, mailto ou CTA
+  "fale conosco" — a Samais só é rastreável por contato de saída dela. Fechar com a tese ou link para demo.
 
 ## Governança & reuso (consistência entre repos)
 - Todo repo Samais (`samais-*`) deve carregar este SKILL.md + o `CLAUDE.md` antes de qualquer HTML.

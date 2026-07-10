@@ -77,11 +77,20 @@ documentos.
   (moldura glass + cabeçalho "Fonte oficial" + link). Reforça veracidade da tese.
 - Tudo sob `.js-anim` (só com JS e sem `prefers-reduced-motion`) para nunca esconder conteúdo.
 - **Liquid glass**: refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)`
-  (Chromium; fallback = blur; desligada no mobile por performance). No mobile, **tabelas roláveis**
-  (override do `overflow:hidden` do material glass — senão clipa as colunas da direita).
+  (Chromium; fallback = blur; desligada no mobile por performance).
   Sem brilho especular seguindo o mouse (removido por preferência da diretoria).
-- **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos. Não usar Hospital Dr. Anísio
-  Figueiredo nem Santa Casa de Goioerê.
+- **Mobile nunca tem scroll horizontal.** Em templates/materiais, tabela que não cabe **reflowa**
+  (empilha em blocos com rótulo `data-l` via `td::before`, ou quebra de linha) — **nunca** `overflow-x:auto`.
+  Regra: `document.documentElement.scrollWidth === clientWidth` em 390px. **Única exceção:** documento
+  A4 absoluto (impresso), que fica fixo em 210mm e rola dentro do próprio contêiner (é papel, não template).
+- **Sem cases / sem atestados.** A Samais **ainda não tem** case, contrato provado ou atestado técnico.
+  **Proibido** inventar operação, citar Ourinhos, CISNORPI ou qualquer cliente/consórcio como referência,
+  ou usar "operação provada / atestado disponível". Nada de seção "Referências / cases" até existir o
+  **primeiro, com documento** — antes disso é especulação vazia. Citar **lei pública** (portarias, IBGE)
+  é permitido e incentivado; citar **track record próprio** não.
+- **Sem campos de contato em nenhum material.** Sem e-mail, telefone, WhatsApp, formulário, mailto ou CTA
+  "fale conosco". A Samais é rastreável **apenas por contato de saída dela** — o material fecha com a tese
+  ou com link para produto/demo (nunca pedindo que o leitor procure a Samais).
 
 ## Governança & reuso (consistência entre repos Samais)
 - **Regra:** todo repositório Samais (`samais-*`) deve carregar a identidade — este `CLAUDE.md` +

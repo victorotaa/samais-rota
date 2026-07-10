@@ -125,15 +125,26 @@
   .fold-light .sec-head .right{color:#6E675B}
   .fold-light .sec-head .right .acc{color:#8E7238}
   .ledger{background:#fff;border:1px solid #DED6C6;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(120,105,70,.16)}
-  .ledger table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+  .ledger table{width:100%;border-collapse:collapse;font-size:14.5px}
   .ledger th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#6E675B;background:#EFE9DC;text-align:left;padding:13px 18px;border-bottom:1px solid #DED6C6}
-  .ledger td{padding:15px 18px;border-bottom:1px solid #EAE3D4;color:#1c1a15}
+  .ledger td{padding:15px 18px;border-bottom:1px solid #EAE3D4;color:#1c1a15;vertical-align:top}
+  .ledger td.ef{text-align:right}
   .ledger tr:last-child td{border-bottom:0}
   .ledger .pos{color:#1E7A4B;font-weight:600}
   .ledger .neg{color:#8E7238;font-weight:600}
   .ledger .tot td{background:#F7F3E9;font-weight:700;font-size:15.5px}
   .ledger .mono-td{font-family:var(--mono);font-size:12px;color:#6E675B}
-  .tblwrap{overflow-x:auto}
+  /* mobile: sem scroll horizontal — a tabela reflowa em blocos empilhados com rótulos */
+  @media(max-width:600px){
+    .ledger table,.ledger tbody,.ledger tr,.ledger td{display:block;width:100%}
+    .ledger thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .ledger tr{padding:6px 0;border-bottom:1px solid #DED6C6}
+    .ledger tr:last-child{border-bottom:0}
+    .ledger td{border:0;padding:7px 18px;text-align:left!important}
+    .ledger td::before{content:attr(data-l);display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#9A9080;margin-bottom:3px}
+    .ledger .tot td{background:none}
+    .ledger .tot{background:#F7F3E9}
+  }
   .fold-light .note{margin-top:18px;font-size:12.5px;color:#6E675B;max-width:74ch}
   .fl-rows tr{opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
   .rows-in .fl-rows tr{opacity:1;transform:none}
@@ -199,8 +210,7 @@
     <a href="#s02">As condições</a>
     <a href="#s03">A operação</a>
     <a href="#s04">O sistema</a>
-    <a href="#s05">Referências</a>
-    <a href="#cta" class="nav-cta">Falar com a Samais</a>
+    <a href="#s05">Base normativa</a>
   </div>
   <button class="nav-ham" id="navham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
@@ -304,11 +314,11 @@
     <table>
       <thead><tr><th>Componente da operação</th><th>Quem financia</th><th style="text-align:right">Efeito no caixa municipal</th></tr></thead>
       <tbody class="fl-rows">
-        <tr><td>Veículos (vans, micro-ônibus, ambulâncias)</td><td class="mono-td">União · doação</td><td style="text-align:right" class="pos">zero investimento</td></tr>
-        <tr style="transition-delay:.12s"><td>Combustível, manutenção, seguro, emplacamento</td><td class="mono-td">Custeio federal mensal</td><td style="text-align:right" class="pos">coberto p/ fluxos acima de 50 km</td></tr>
-        <tr style="transition-delay:.24s"><td>Equipe da operação — motoristas e gestão</td><td class="mono-td">Custeio federal mensal</td><td style="text-align:right" class="pos">recursos humanos incluídos</td></tr>
-        <tr style="transition-delay:.36s"><td>Viagens locais e demais tratamentos (até 50 km)</td><td class="mono-td">Tesouro municipal · TFD</td><td style="text-align:right" class="neg">contrato dimensionado sob medida</td></tr>
-        <tr style="transition-delay:.48s" class="tot"><td>Gestão que habilita e sustenta tudo acima</td><td class="mono-td">Samais · contratada</td><td style="text-align:right">se paga com o repasse que protege</td></tr>
+        <tr><td data-l="Componente">Veículos (vans, micro-ônibus, ambulâncias)</td><td class="mono-td" data-l="Quem financia">União · doação</td><td class="ef pos" data-l="Efeito no caixa">zero investimento</td></tr>
+        <tr style="transition-delay:.12s"><td data-l="Componente">Combustível, manutenção, seguro, emplacamento</td><td class="mono-td" data-l="Quem financia">Custeio federal mensal</td><td class="ef pos" data-l="Efeito no caixa">coberto p/ fluxos acima de 50 km</td></tr>
+        <tr style="transition-delay:.24s"><td data-l="Componente">Equipe da operação — motoristas e gestão</td><td class="mono-td" data-l="Quem financia">Custeio federal mensal</td><td class="ef pos" data-l="Efeito no caixa">recursos humanos incluídos</td></tr>
+        <tr style="transition-delay:.36s"><td data-l="Componente">Viagens locais e demais tratamentos (até 50 km)</td><td class="mono-td" data-l="Quem financia">Tesouro municipal · TFD</td><td class="ef neg" data-l="Efeito no caixa">contrato dimensionado sob medida</td></tr>
+        <tr style="transition-delay:.48s" class="tot"><td data-l="Componente">Gestão que habilita e sustenta tudo acima</td><td class="mono-td" data-l="Quem financia">Samais · contratada</td><td class="ef" data-l="Efeito no caixa">se paga com o repasse que protege</td></tr>
       </tbody>
     </table>
   </div>
@@ -375,24 +385,12 @@
 <section class="wrap" id="s05">
   <div class="sec-head">
     <div class="left">
-      <span class="sec-num">05 · Referências</span>
-      <h2>Operação provada.<br/>Fontes públicas.</h2>
+      <span class="sec-num">05 · Base normativa</span>
+      <h2>Nada aqui é opinião.<br/>É a lei publicada.</h2>
+      <p class="lede">Cada afirmação desta página se apoia em norma federal vigente. As fontes, na íntegra:</p>
     </div>
-    <div class="right">Verificação<br/><span class="acc">atestados disponíveis</span></div>
+    <div class="right">Fontes<br/><span class="acc">portarias · Diário Oficial</span></div>
   </div>
-  <div class="cases" style="margin-bottom:44px">
-    <div class="card reveal">
-      <div class="tag">Case · Ourinhos — SP</div>
-      <h3>Operação de urgência municipal</h3>
-      <p>A Samais operou o serviço de atendimento móvel de urgência do município, com frota, equipes e regulação — entregando disciplina operacional e prestação de contas ao contratante público. Atestado disponível para verificação formal.</p>
-    </div>
-    <div class="card reveal">
-      <div class="tag">Case · CISNORPI — PI</div>
-      <h3>Operação consorciada no Piauí</h3>
-      <p>Em contrato com consórcio intermunicipal do norte do Piauí, a Samais entregou operação de saúde em escala regional — o mesmo arranjo institucional dos consórcios que hoje organizam o transporte de pacientes. Atestado disponível para verificação formal.</p>
-    </div>
-  </div>
-  <div class="mono" style="margin-bottom:14px;color:var(--muted)">Base normativa citada nesta página</div>
   <div class="fontes reveal">
     <a href="https://bvsms.saude.gov.br/bvs/saudelegis/sas/1999/prt0055_24_02_1999.html" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Portaria SAS/MS nº 55/1999 — Tratamento Fora do Domicílio (transporte e diárias)</span></a>
     <a href="https://www.conass.org.br/conass-informa-n-80-2026-publicada-a-portaria-gm-n-11-164-que-altera-portaria-gm-ms-no-8516-de-23-de-outubro-de-2025-que-estabelece-modelo-de-financiamento-e-regras-para-os-servicos-de-r/" target="_blank" rel="noopener"><span class="fk">● Verificado</span><span class="ft">Portaria GM/MS nº 11.164/2026 — custeio do transporte para radioterapia e hemodiálise acima de 50 km</span></a>
@@ -406,10 +404,9 @@
   <div class="cta-bg" data-px="0.10"></div>
   <div class="wrap">
     <h2>Seu município já pode estar<br/>deixando repasse na mesa.</h2>
-    <p>A Samais produz, sem compromisso, o estudo de viabilidade do transporte de pacientes do seu município: demanda real, rotas, frota, a conta do custeio federal — e o desembolso líquido que sobra para o tesouro municipal. Com fontes citadas linha a linha.</p>
+    <p>Enquanto o veículo doado não roda com gestão comprovada, o custeio federal não vem — ou vem e é suspenso. A Samais existe para operar essa esteira e manter o repasse fluindo. O sistema que faz isso está no ar, aberto para você ver funcionando agora.</p>
     <div class="cta-row">
       <a class="btn" href="rota-app.html" target="_blank" rel="noopener">Ver o sistema em operação ↗</a>
-      <a class="btn ghost" href="mailto:diretoria@samais.com.br?subject=Estudo%20de%20viabilidade%20%E2%80%94%20transporte%20de%20pacientes">Solicitar estudo do meu município</a>
     </div>
   </div>
 </section>
