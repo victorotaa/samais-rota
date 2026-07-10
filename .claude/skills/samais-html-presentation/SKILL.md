@@ -101,10 +101,12 @@ Qualquer pedido de "estudo", "apresentação", "deck", "one-pager", "landing" ou
   `data-l` via `td::before`, ou quebra de linha) — **nunca** `overflow-x:auto`. Verificar
   `scrollWidth === clientWidth` a 390px. Única exceção: documento **A4 absoluto** (impresso), fixo em 210mm,
   que rola no próprio contêiner (papel, não template).
-- **Sem cases / sem atestados.** A Samais ainda não tem case, contrato provado ou atestado. **Proibido**
-  inventar operação ou citar Ourinhos/CISNORPI/qualquer cliente como referência; nada de "operação provada
-  / atestado disponível" nem seção "Referências" até existir o primeiro com documento. Citar **lei pública**
-  (portarias, IBGE) é permitido; citar track record próprio não.
+- **Cases e atestados — reais, mas por contexto.** A Samais tem **atestados raros** em SAMU 192,
+  transferência inter-hospitalar e regulação (cases **Ourinhos** e **CISNORPI**) — usar em materiais de
+  SAMU/urgência/regulação e de investidor. **Não** há case de **transporte sanitário**: nesse serviço a
+  prova é o **sistema ROTA (demo) + a lei**, não os atestados de SAMU (não transportar credencial de um
+  serviço para outro). **Nunca fabricar narrativa operacional** além do que o atestado documenta. Vetado
+  Hospital Dr. Anísio Figueiredo e Santa Casa de Goioerê.
 - **Sem campos de contato.** Nenhum material leva e-mail, telefone, WhatsApp, formulário, mailto ou CTA
   "fale conosco" — a Samais só é rastreável por contato de saída dela. Fechar com a tese ou link para demo.
 
