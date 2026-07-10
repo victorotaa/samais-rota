@@ -201,17 +201,23 @@ de tom, design system dark Samais, Partes numeradas):
   repasse federal que a operação destrava** (pilha de financiamento + farol de
   conformidade) → PARTE IV Composição do Valor Contratual → **PARTE V O sistema ROTA**
   (demo viva: samais-rota.vercel.app/rota-app.html — manifesto, folha de embarque,
-  relatório mensal de comprovação) → PARTE VI Por que a Samais (cases: **apenas
-  Ourinhos e CISNORPI**, em pretérito, "atestado disponível para verificação formal")
-  → Próximos passos.
+  relatório mensal de comprovação) → PARTE VI Por que a Samais (capacidade técnica,
+  método, o sistema ROTA — **sem cases: a Samais ainda não tem contrato/atestado;
+  proibido inventar ou citar cliente**) → fecho pela tese.
 - **OUTPUT B** `samais-transporte-dossie-[alvo]-[YYYY-MM].html` — interno/confidencial.
   Acrescenta: memória de cálculo por rota, premissas com selo verde/âmbar, análise
   competitiva, contexto político, riscos (inadimplência municipal, pregão direcionado,
   frota doada a consórcio rival), verdict Go/Atenção/No-Go.
 
-**Regra desta skill:** toda proposta externa referencia a **demo ROTA** e o
-**relatório mensal de comprovação** como prova de capacidade — temos o sistema
-pronto, não a promessa de um.
+**Regras absolutas desta skill (herdadas do CLAUDE.md):**
+- **Prova de capacidade = a demo ROTA**, não track record. Toda proposta externa
+  referencia o sistema vivo (samais-rota.vercel.app/rota-app.html) e o relatório mensal
+  de comprovação. **Sem cases, sem atestados, sem "operação provada"** enquanto não
+  houver o primeiro contrato com documento.
+- **Sem campos de contato** em nenhum output — a Samais só é rastreável por contato de
+  saída dela. Fechar pela tese ou pelo link da demo.
+- **Mobile sem scroll horizontal:** tabelas (comparativos de município, memória de
+  cálculo) reflowam em blocos empilhados; nunca `overflow-x`.
 
 ### FASE 5 — Entrega
 
@@ -232,7 +238,7 @@ houver veículo doado) · próximo passo.
   portaria" sem cifra.
 - **Distância é lei:** o corte 50 km é rodoviário entre municípios — medir com fonte
   e guardar o print (evidência glass no estudo, padrão da casa).
-- **Voz:** impessoal técnico; cases em pretérito; sem "humanizado/excelência/
+- **Voz:** impessoal técnico; sem cases (não existem ainda); sem "humanizado/excelência/
   acolhimento"; tagline como fecho. Público prefeito/secretário: zero sigla sem
   explicação (TRS = hemodiálise; TFD = tratamento fora do domicílio).
 - **Sinergia:** se o alvo também tiver oportunidade SAMU/UPA/hospital, rodar as duas
