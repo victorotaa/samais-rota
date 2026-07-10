@@ -121,9 +121,24 @@ Confirmar ou extrair do contexto (perguntar se faltar 1, 2 ou 3):
   Gerar o frame A e **derivar o frame B a partir dele** (frame A como media de entrada +
   instrução de apenas mover câmera/pose, mantendo cena, luz, distância e personagens
   idênticos). Só animar depois de conferir os dois lado a lado.
+- **⚠️ Fluxo de aprovação de hero-vídeo (obrigatório):** (1) gerar frames em **4K**
+  (`resolution:"4k"`); (2) **aprovar frame A e frame B com Victor** antes de animar;
+  (3) só sob aval, animar em 4K (seedance/kling). Nada de vídeo em produção sem aprovação
+  dos frames.
+- **Claridade:** imagens de marca são **claras e luminosas** (golden hour bem exposto, céu
+  visível, veículo legível) — nunca afogadas em overlay escuro. No site, fundos com
+  opacidade ≥ .7 nas faixas e overlays leves; a imagem deve ser vista, não sugerida.
+- **Scroll-scrub (lição do bug):** ao implementar vídeo fixado a scroll, o estágio nunca
+  pode mostrar zona preta — manter o **frame final como poster por baixo do vídeo** (buracos
+  de seek caem no poster, não no preto), segurar o último frame ao completar (clamp do
+  currentTime) e reencodar o mp4 com keyframes densos (`ffmpeg -g 1`) antes de publicar.
 - Direção de arte fixa: sóbrio, editorial-documental, ouro sobre sombra (#B8954E),
   amanhecer/entardecer do sertão, equipe confiante (braços cruzados, sorriso contido).
   **Vetado:** maca, sirene acesa, sangue, drama, paciente identificável.
+- **Vestimenta da equipe (por contexto):** em material de TRANSPORTE SANITÁRIO a equipe
+  usa **jaleco/scrub neutro de enfermagem** (branco/limpo, sem faixas, sem marcações SAMU)
+  com **monograma SA+ dourado sutil no peito** (da identidade Samais). Uniforme SAMU **só**
+  em material de SAMU/urgência — não vestir a credencial de um serviço no outro.
 - Linguagem desta skill: van/micro-ônibus em rodovia, embarque digno, estrada do sertão,
   fachada de clínica de diálise. Imagens **embutidas no repo** (nunca hotlink).
 
