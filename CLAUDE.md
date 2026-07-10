@@ -69,6 +69,12 @@ documentos.
   `left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo na coluna central.
   ⚠️ O `body` **não** pode ter `background` (canvas fica no `html`) e a dobra precisa de
   `z-index:0` — senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
+- **Contraste em dobra light é obrigatório e auditado.** Dentro de `.fold-light`, TODO texto usa
+  tokens light (texto `#0A0A0A`/`#3A362E`/`#6E675B`, ouro **escuro** `#8E7238`/`#6F5A2C`) — nunca
+  tokens do tema dark (`--text`, `--text-2`, `--muted`, ouro claro). ⚠️ Bug clássico: seletor mais
+  específico do tema dark (ex. `.sec-head .lede{color:var(--text-2)}`) vence o override genérico
+  `.fold-light p` — sempre criar override explícito por classe (`.fold-light .lede`) e conferir a
+  dobra em screenshot antes de publicar (AA ≥ 4.5:1).
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (`stroke-dashoffset`),
   donut varre, barras crescem (`scaleX`), **count-up** nos números (~2s) — em todos os boxes de stat e gráficos.
 - **Typing** na headline e no subtítulo do hero (~2s, sequencial, com caret). Dobra light com
