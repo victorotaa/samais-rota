@@ -107,10 +107,25 @@ Confirmar ou extrair do contexto (perguntar se faltar 1, 2 ou 3):
 - Herda 2.5 e 2.6 da `samais-municipal-study` (prefeito, secretário, consórcio,
   SIOPS, CAUC).
 
-#### 2.6 Curadoria visual
-- Herda 2.8 da `samais-municipal-study`. Linguagem específica desta skill: van/
-  micro-ônibus em rodovia, paciente idoso embarcando (sem rosto identificável),
-  estrada do sertão, clínica de diálise (fachada). **Vetado:** maca, sirene, drama.
+#### 2.6 Curadoria visual — GERAR, não buscar
+- **Regra: imagens de marca são GERADAS via MCP do Higgsfield**, sempre com os
+  **elements treinados da conta** (viaturas e uniformes SAMU reais): `ambulancia-samu-real`,
+  `samu-uniforme-real`, `motolancia-samu-real`, `ambulancha-samu-real` + personagens de
+  equipe (masc/fem). Referências-fonte no Drive: pasta `1LJfWhToTh6Zvi4KnO6527hpC3zczd5V1`
+  (SAMAIS-Ref*, Manual IdV SAMU, Brand Bible).
+- Como usar: `generate_image` (nano banana / seedream) com `<<<element_id>>>` no prompt;
+  para vídeo, gerar frame inicial + final e animar com `generate_video` (kling/seedance,
+  roles start_image/end_image).
+- **⚠️ Coerência entre frames (regra de interpolação):** NUNCA gerar frame inicial e final
+  como imagens independentes — posições/enquadramento divergem e a interpolação "teleporta".
+  Gerar o frame A e **derivar o frame B a partir dele** (frame A como media de entrada +
+  instrução de apenas mover câmera/pose, mantendo cena, luz, distância e personagens
+  idênticos). Só animar depois de conferir os dois lado a lado.
+- Direção de arte fixa: sóbrio, editorial-documental, ouro sobre sombra (#B8954E),
+  amanhecer/entardecer do sertão, equipe confiante (braços cruzados, sorriso contido).
+  **Vetado:** maca, sirene acesa, sangue, drama, paciente identificável.
+- Linguagem desta skill: van/micro-ônibus em rodovia, embarque digno, estrada do sertão,
+  fachada de clínica de diálise. Imagens **embutidas no repo** (nunca hotlink).
 
 ### FASE 3 — Cálculo e Composição Comercial
 
@@ -120,7 +135,8 @@ Para cada fluxo origem→destino:
 
 ```
 assentos/dia   = pacientes do fluxo × (1 + %acompanhante) ÷ dias de tratamento/semana
-veículo        = van (7) | micro-ônibus (24) | ambulância A (1-2, só maca)
+veículo        = van Caminhos da Saúde (15 lugares, acessível) | micro-ônibus (29, acessível)
+                 | van comum locada (7) | ambulância A (1-2, só maca)
 viagens/mês    = frequência semanal × 4,33
 km/mês (fluxo) = km ida-volta × viagens/mês
 ```
@@ -159,6 +175,26 @@ paciente de maca **nunca** em veículo comum; ocupação-alvo do cenário Base =
 Herda **integralmente** a regra da `samais-municipal-study`: BDI decomposto **35%
 sobre CDO** (apresentado 38%, floor 37,5%), **nunca** "lucro/margem". Tabela pronta em
 `samais-municipal-study/references/composicao-preco.md`.
+
+#### 3.4-bis Simulador de repasse (seção obrigatória do estudo)
+
+Todo estudo traz a seção **"Simulador de repasse"** — a projeção do custeio federal que o
+município pode capturar, apresentada como cenário, nunca como promessa:
+
+```
+viagens elegíveis/mês = Σ (pacientes elegíveis do fluxo >50km × frequência × 4,33)
+km elegível/mês       = Σ (km ida-volta × viagens elegíveis)
+repasse projetado/mês = km elegível × valor-referência do anexo   ← PENDENTE DOU
+```
+
+Regras de apresentação:
+- Enquanto o valor unitário do anexo não for validado no DOU, apresentar **faixa** com selo
+  🟡 estimativa e a frase "valores unitários conforme anexo da Portaria — validação em curso";
+  a mecânica (mensal, condicionada a registro) apresenta-se como 🟢 verificada.
+- Ancorar sempre em casos observados (ver `references/repasses-observados.md`) para ordem
+  de grandeza honesta.
+- Nos materiais públicos (LP/site): **sem calculadora interativa** — simulador é peça de
+  estudo, entregue pelo gestor comercial, não widget.
 
 #### 3.5 Pilha de financiamento (exclusiva desta skill — o slide que fecha)
 

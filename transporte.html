@@ -41,8 +41,9 @@
   .sec-head .right .acc{color:var(--gold);display:block;margin-top:5px}
   @media(max-width:820px){.sec-head{flex-direction:column;gap:12px}.sec-head .left{max-width:100%}.sec-head .right{text-align:left;max-width:100%}}
 
-  /* NAV */
-  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34)}
+  /* NAV — colado no topo em repouso; descola em pill flutuante no scroll */
+  .topnav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px);background:rgba(20,20,22,.42);-webkit-backdrop-filter:blur(28px) saturate(175%);backdrop-filter:blur(28px) saturate(175%);border:1px solid transparent;border-bottom:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 34px rgba(0,0,0,.34);border-radius:0;transition:top .32s cubic-bezier(.3,.9,.3,1),left .32s cubic-bezier(.3,.9,.3,1),right .32s cubic-bezier(.3,.9,.3,1),border-radius .32s,height .32s,background .32s,border-color .32s,box-shadow .32s,padding .32s}
+  .topnav.float{top:12px;left:clamp(12px,2.5vw,32px);right:clamp(12px,2.5vw,32px);height:54px;border-radius:100px;padding:0 clamp(18px,2.6vw,30px);background:rgba(22,22,25,.55);border:1px solid rgba(255,255,255,.14);border-bottom-color:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 18px 50px rgba(0,0,0,.55)}
   .nav-brand svg{height:26px;display:block}
   .nav-brand .nav-mono{display:none;height:25px}
   .nav-links{display:flex;align-items:center;gap:22px}
@@ -56,7 +57,8 @@
   .nav-ham.open span:nth-child(2){opacity:0}
   .nav-ham.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
   @media(max-width:900px){
-    .nav-links{position:fixed;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(16,16,18,.92);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border-bottom:1px solid rgba(255,255,255,.09);padding:6px 0;transform:translateY(-14px);opacity:0;pointer-events:none;transition:.22s}
+    .nav-links{position:fixed;top:60px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(16,16,18,.92);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.09);border-top:0;padding:6px 0;transform:translateY(-14px);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s,top .32s,left .32s,right .32s,border-radius .32s}
+    .topnav.float .nav-links{top:76px;left:clamp(12px,2.5vw,32px);right:clamp(12px,2.5vw,32px);border-radius:22px;border-top:1px solid rgba(255,255,255,.09);overflow:hidden}
     .nav-links.open{transform:none;opacity:1;pointer-events:auto}
     .nav-links a{padding:15px clamp(20px,5vw,40px);font-size:12px;border-top:1px solid var(--divider)}
     .nav-links a:first-child{border-top:0}
@@ -64,15 +66,26 @@
     .nav-brand .nav-word{display:none}.nav-brand .nav-mono{display:block}
   }
 
-  /* HERO */
-  .hero-section{position:relative;overflow:hidden;border-top:none}
-  .hero-bg{position:absolute;left:0;right:0;top:-20%;height:140%;background:url(assets/hero.jpg) center 40%/cover no-repeat;opacity:.28;will-change:transform}
-  .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.78) 0%,rgba(10,10,10,.55) 45%,rgba(10,10,10,.97) 100%)}
-  .hero-section>.wrap{position:relative;z-index:1}
-  .hero{padding:76px 0 88px}
+  /* HERO — vídeo fixado a scroll (o scroll controla o tempo do vídeo) */
+  .hero-pin{position:relative;height:260vh;border-top:none}
+  .hero-stage{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:flex-end}
+  .hero-stage video,.hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 38%}
+  .hero-poster{display:none}
+  .hero-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.62) 0%,rgba(10,10,10,.18) 42%,rgba(10,10,10,.94) 100%)}
+  .hero-inner{position:relative;z-index:2;width:100%;padding-bottom:11vh}
   .hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:28px}
   .hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.1vw,25px);color:var(--gold-soft);line-height:1.4;max-width:760px;margin-top:32px}
-  .hero p{max-width:64ch;margin-top:24px}
+  .scroll-hint{display:flex;align-items:center;gap:10px;margin-top:44px;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  .scroll-hint::before{content:"";width:1px;height:34px;background:linear-gradient(180deg,var(--gold),transparent);animation:hint 2s ease-in-out infinite}
+  @keyframes hint{0%,100%{opacity:.4}50%{opacity:1}}
+  .hero-after{border-top:none;padding-top:56px!important}
+  .hero-after p{max-width:64ch}
+  @media(max-width:820px),(prefers-reduced-motion:reduce){
+    .hero-pin{height:auto}
+    .hero-stage{position:relative;height:88vh;min-height:520px}
+    .hero-stage video{display:none}
+    .hero-poster{display:block}
+  }
   .typing::after{content:"";display:inline-block;width:.55ch;height:.95em;background:var(--gold);margin-left:4px;vertical-align:-.12em;animation:caret 1s steps(1) infinite}
   @keyframes caret{50%{opacity:0}}
   .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--divider);border:1px solid var(--divider);margin-top:52px}
@@ -120,10 +133,11 @@
   .fold-light{position:relative;z-index:0;color:#0A0A0A;border-top:0}
   .fold-light::before{content:"";position:absolute;top:0;bottom:0;left:50%;margin-left:-50vw;width:100vw;background:#F4F1EA;z-index:-1}
   .fold-light h2,.fold-light h3{color:#0A0A0A}
-  .fold-light p{color:#3A362E}
-  .fold-light .sec-num{color:#8E7238}
+  .fold-light p,.fold-light .sec-head .lede{color:#3A362E}
+  .fold-light .sec-num{color:#6F5A2C}
   .fold-light .sec-head .right{color:#6E675B}
-  .fold-light .sec-head .right .acc{color:#8E7238}
+  .fold-light .sec-head .right .acc{color:#6F5A2C}
+  .fold-light .mono{color:#6E675B}
   .ledger{background:#fff;border:1px solid #DED6C6;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(120,105,70,.16)}
   .ledger table{width:100%;border-collapse:collapse;font-size:14.5px}
   .ledger th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#6E675B;background:#EFE9DC;text-align:left;padding:13px 18px;border-bottom:1px solid #DED6C6}
@@ -215,22 +229,30 @@
   <button class="nav-ham" id="navham" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO -->
-<section class="hero-section" id="top">
-  <div class="hero-bg" data-px="0.12"></div>
-  <div class="wrap">
-    <div class="hero">
+<!-- HERO: vídeo fixado a scroll -->
+<section class="hero-pin" id="top">
+  <div class="hero-stage">
+    <video id="herovid" muted playsinline preload="auto" poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122204_6e105790-09f7-4d48-8f2e-faba884270af.png">
+      <!-- TODO: baixar e embutir em assets/ (proxy do ambiente bloqueia o download; CDN público funciona no navegador) -->
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122757_d0656775-58c3-4283-b8cb-8b0d15ff225c.mp4" type="video/mp4">
+    </video>
+    <img class="hero-poster" src="https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260710_122656_9e9b0b56-9e5d-40d5-a7c5-72a55bf78005.png" alt="Equipe Samais ao lado de ambulância ao amanhecer no sertão" loading="eager">
+    <div class="hero-grad"></div>
+    <div class="hero-inner wrap">
       <div class="tag">Para prefeitos e secretários de saúde · Transporte de pacientes</div>
       <h1 id="typeh1">O transporte de pacientes virou repasse federal.</h1>
       <div class="hero-sub" id="typesub">Desde 2026, a União doa o veículo e paga o custeio mensal — para o município que comprovar gestão. A Samais entrega a operação e a comprovação.</div>
-      <p>Todo mês, pacientes de hemodiálise e de câncer do seu município viajam mais de 50 quilômetros até o tratamento. O Ministério da Saúde passou a financiar essas viagens: veículo doado, combustível, manutenção, seguro e equipe pagos com recurso federal. Mas o dinheiro tem uma condição — e é nela que a maioria dos municípios falha.</p>
-      <div class="strip">
-        <div class="it"><div class="n" data-count>3.300</div><div class="l">Veículos comprados pela União<br/>para doação a estados e municípios</div></div>
-        <div class="it"><div class="n">R$ 191 mi<span style="font-size:15px;color:var(--muted)">/ano</span></div><div class="l">Custeio federal novo por ano<br/>hemodiálise + radioterapia</div></div>
-        <div class="it"><div class="n">Mensal</div><div class="l">Repasse fundo a fundo,<br/>contínuo enquanto houver comprovação</div></div>
-        <div class="it"><div class="n" data-count>90</div><div class="l">Dias sem registro de uso<br/>e o repasse é suspenso</div></div>
-      </div>
+      <div class="scroll-hint">Role para continuar</div>
     </div>
+  </div>
+</section>
+<section class="wrap hero-after">
+  <p>Todo mês, pacientes de hemodiálise e de câncer do seu município viajam mais de 50 quilômetros até o tratamento. O Ministério da Saúde passou a financiar essas viagens: veículo doado, combustível, manutenção, seguro e equipe pagos com recurso federal. Mas o dinheiro tem uma condição — e é nela que a maioria dos municípios falha.</p>
+  <div class="strip">
+    <div class="it"><div class="n" data-count>3.300</div><div class="l">Veículos comprados pela União<br/>para doação a estados e municípios</div></div>
+    <div class="it"><div class="n">R$ 191 mi<span style="font-size:15px;color:var(--muted)">/ano</span></div><div class="l">Custeio federal novo por ano<br/>hemodiálise + radioterapia</div></div>
+    <div class="it"><div class="n">Mensal</div><div class="l">Repasse fundo a fundo,<br/>contínuo enquanto houver comprovação</div></div>
+    <div class="it"><div class="n" data-count>90</div><div class="l">Dias sem registro de uso<br/>e o repasse é suspenso</div></div>
   </div>
 </section>
 
@@ -421,6 +443,10 @@
 <script>
 (function(){
   var ham=document.getElementById('navham'),links=document.getElementById('navlinks');
+  /* pill flutuante: descola do topo assim que o scroll começa */
+  var nav=document.querySelector('.topnav'),navTick=false;
+  function navFloat(){nav.classList.toggle('float',scrollY>24);navTick=false}
+  addEventListener('scroll',function(){if(!navTick){navTick=true;requestAnimationFrame(navFloat)}},{passive:true});navFloat();
   ham.addEventListener('click',function(){var o=links.classList.toggle('open');ham.classList.toggle('open',o)});
   links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){links.classList.remove('open');ham.classList.remove('open')})});
   var map={};document.querySelectorAll('.nav-links a').forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
@@ -455,6 +481,26 @@
     requestAnimationFrame(step)}
   var h1=document.getElementById('typeh1'),sub=document.getElementById('typesub');
   setTimeout(function(){typeEl(h1,1900,function(){typeEl(sub,2100)})},250);
+
+  /* hero: scroll controla o tempo do vídeo (scrub) — só desktop, sem reduced-motion */
+  var vid=document.getElementById('herovid'),pin=document.querySelector('.hero-pin');
+  if(vid&&pin&&matchMedia('(min-width:821px)').matches){
+    vid.pause();
+    var dur=0;
+    vid.addEventListener('loadedmetadata',function(){dur=vid.duration});
+    var vTick=false;
+    function scrub(){
+      vTick=false;
+      if(!dur)return;
+      var r=pin.getBoundingClientRect(),total=r.height-innerHeight;
+      if(total<=0)return;
+      var p=Math.min(Math.max(-r.top/total,0),1);
+      var t=p*(dur-0.06);
+      if(Math.abs(vid.currentTime-t)>0.01)vid.currentTime=t;
+    }
+    addEventListener('scroll',function(){if(!vTick){vTick=true;requestAnimationFrame(scrub)}},{passive:true});
+    vid.addEventListener('loadedmetadata',scrub);
+  }
 })();
 </script>
 </body>

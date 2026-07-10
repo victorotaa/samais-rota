@@ -84,7 +84,14 @@ Registrar fonte e data para cada bloco.
 
 #### 2.8 **CURADORIA VISUAL**
 
-Executar `image_search` para cada município-alvo:
+**Imagens de marca (frota, equipe, regulação): GERAR via MCP do Higgsfield**, sempre com os
+elements treinados da conta (`ambulancia-samu-real`, `samu-uniforme-real`, `motolancia-samu-real`,
+`ambulancha-samu-real` + personagens de equipe). Referências-fonte: pasta do Drive
+`1LJfWhToTh6Zvi4KnO6527hpC3zczd5V1` (Manual IdV SAMU + Brand Bible). Uso: `generate_image` com
+`<<<element_id>>>` no prompt; direção de arte sóbria/editorial, ouro sobre sombra, sem drama.
+Imagens embutidas no repo, nunca hotlink.
+
+Para imagens **do município** (vistas, praças, hospitais), executar `image_search`:
 
 1. `[município] [UF] vista aérea drone` → **cover-hero** (capa)
 2. `[município] [UF] centro cidade praça` → **context-card** (seção de território)
