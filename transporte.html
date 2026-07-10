@@ -68,8 +68,8 @@
 
   /* HERO — pin estilo GSAP: o palco trava (fixed) enquanto o vídeo scrubba e,
      no último frame, pousa no fundo da seção com o conteúdo colado — sem zona preta.
-     .hero-pin fornece a distância de scroll (100vh de vídeo + 100vh de scrub). */
-  .hero-pin{position:relative;height:200vh;border-top:none}
+     .hero-pin fornece a distância de scroll (100vh de vídeo + 200vh de scrub travado). */
+  .hero-pin{position:relative;height:300vh;border-top:none}
   .hero-stage{position:relative;height:100vh;min-height:560px;overflow:hidden;display:flex;align-items:flex-end;background:radial-gradient(120% 90% at 70% 20%,rgba(184,149,78,.22),transparent 55%),linear-gradient(160deg,#1a1712,#0A0A0A 70%)}
   .hero-stage.is-fixed{position:fixed;top:0;left:0;right:0}       /* travada durante o scrub */
   .hero-stage.is-bottom{position:absolute;bottom:0;left:0;right:0} /* pousa no fundo do pin ao soltar */
