@@ -96,6 +96,7 @@
   .hero-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:64px;margin-top:64px;padding-top:48px;border-top:1px solid var(--divider)}
   .hero-grid p{max-width:56ch}
   .hero-grid .right{display:flex;align-items:flex-start;justify-content:flex-end}
+  .hero-grid .right.hasplayer{display:block}
   .hero-grid .right .mono-icon{width:80px;opacity:.85}
   .src{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-top:18px}
   .src::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(30,122,75,.7)}
@@ -448,7 +449,33 @@
 
   /* ─────────── FONTE (print de notícia) ─────────── */
   .srcshot{display:block;margin-top:28px;border:1px solid rgba(255,255,255,.12);border-radius:16px;overflow:hidden;text-decoration:none;background:linear-gradient(140deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 16px 44px rgba(0,0,0,.45);transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
-  .srcshot:hover{transform:translateY(-4px);border-color:rgba(184,149,78,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 56px rgba(0,0,0,.55)}
+  a.srcshot:hover{transform:translateY(-4px);border-color:rgba(184,149,78,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 56px rgba(0,0,0,.55)}
+
+  /* Player da hero — vidro líquido, mesma linguagem do resto da página.
+     Sem refração sobre o vídeo: deslocamento de pixel em imagem em movimento
+     lê como falha de codec, não como material. */
+  .heroplay{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 16px 44px rgba(0,0,0,.45)}
+  .heroplay video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#000}
+  .heroplay .pbtn{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;
+    border:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;
+    background:linear-gradient(180deg,rgba(10,10,10,.10),rgba(10,10,10,.52));
+    transition:background .3s ease}
+  .heroplay .pbtn:hover{background:linear-gradient(180deg,rgba(10,10,10,.02),rgba(10,10,10,.40))}
+  .heroplay .pbtn span{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+    backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 10px 30px rgba(0,0,0,.45);
+    transition:transform .35s ease}
+  .heroplay .pbtn:hover span{transform:scale(1.06)}
+  .heroplay .pbtn:focus-visible{outline:2px solid var(--gold);outline-offset:-4px}
+  .heroplay .pbtn svg{width:22px;height:22px;fill:var(--gold-soft);margin-left:4px}
+  .heroplay .plabel{position:absolute;left:18px;bottom:14px;z-index:2;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);transition:opacity .3s ease}
+  .heroplay.on .pbtn{display:none}
+  .heroplay.on .plabel{opacity:0}
+  @media(max-width:900px){.heroplay .pbtn span{width:56px;height:56px}.heroplay .pbtn svg{width:18px;height:18px}}
   .srcshot-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:15px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
   .srcshot-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
   .srcshot-head .s{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
@@ -519,15 +546,21 @@
           <p>Pela primeira vez, o transporte sanitário virou prioridade federal — e ele tem <em>duas frentes</em>. A <em>eletiva</em>: levar pacientes a hemodiálise, oncologia e consultas. E a <em>inter-hospitalar</em>: transferir pacientes entre hospitais, inclusive em UTI móvel — contratos estaduais grandes, que pouquíssimos conseguem operar. As duas exigem a mesma operação de regulação que a Samais já provou no SAMU 192. Onde o veículo é do governo, a operação é da Samais.</p>
           <div class="src">Janela regulatória e de oferta confirmada em fonte pública federal</div>
         </div>
-        <div class="right">
-          <svg class="mono-icon" viewBox="0 0 271 175.9" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Samais SA+">
-            <path fill="#B8954E" d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/>
-          </svg>
+        <div class="right hasplayer">
+          <div class="heroplay" id="hp">
+            <video id="hv" preload="none" playsinline poster="assets/viaturas.jpg" width="1280" height="720">
+              <source src="assets/rota.mp4" type="video/mp4">
+            </video>
+            <button class="pbtn" id="hpbtn" aria-label="Reproduzir o vídeo institucional do transporte sanitário">
+              <span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z"></path></svg></span>
+            </button>
+            <div class="plabel">Operação ROTA · 1min30</div>
+          </div>
         </div>
       </div>
 
       <div class="strip">
-        <div class="it"><div class="n">R$ 1,2 bi</div><div class="l">Mercado eletivo · Brasil<br/>(uma das duas frentes)</div></div>
+        <div class="it"><div class="n">R$ 2,5–3 bi</div><div class="l">Mercado endereçável · Brasil<br/>eletivo + inter-hospitalar (estimativa)</div></div>
         <div class="it"><div class="n">≈ 6</div><div class="l">Operadores no país<br/>com atestado para competir</div></div>
         <div class="it"><div class="n">R$ 15 mi</div><div class="l">Atestados Samais<br/>integralizados na holding</div></div>
         <div class="it"><div class="n">R$ 2,5–4 mi</div><div class="l">Aporte de capital<br/>do investidor sócio</div></div>
@@ -538,10 +571,10 @@
 
 <!-- FONTE: notícia oficial (antes da seção 01) -->
 <div class="wrap srcwrap">
-  <a class="srcshot" href="https://www.gov.br/saude/pt-br/assuntos/noticias/2026/abril/ministerio-da-saude-inicia-entrega-de-3-3-mil-veiculos-para-transporte-de-pacientes-do-sus-em-todo-o-pais" target="_blank" rel="noopener">
-    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado 30/04/2026 ↗</span></div>
+  <div class="srcshot">
+    <div class="srcshot-head"><span class="t">Fonte oficial · Ministério da Saúde</span><span class="s">gov.br · publicado em 30/04/2026</span></div>
     <img src="assets/noticia-3300.jpg" alt="Notícia do Ministério da Saúde: início da entrega de 3,3 mil veículos para transporte de pacientes do SUS" loading="lazy">
-  </a>
+  </div>
 </div>
 
 <!-- 01 -->
@@ -574,8 +607,8 @@
       <div class="subtitle">Estados e regiões · UTI móvel</div>
       <p>Mover pacientes entre hospitais, inclusive graves em UTI móvel. São contratos estaduais grandes, com exigência técnica alta — e pouquíssimos qualificam.</p>
       <div class="specs">
+        <div class="row"><span class="k">Mercado · Brasil (est.)</span><span class="v">R$ 1–2 bi/ano</span></div>
         <div class="row"><span class="k">Um estado (ex.: RO)</span><span class="v">~R$ 73 mi/ano</span></div>
-        <div class="row"><span class="k">Operadores capazes</span><span class="v">≈ 6 no país</span></div>
       </div>
       <div class="src">Sinal de mercado · certame estadual RO (público)</div>
     </div>
@@ -629,7 +662,7 @@
 
   <div class="note">
     <span class="arrow">→</span>
-    <div><strong>Leitura honesta do número.</strong>Os 3.300 veículos do programa não são todos de transporte eletivo: cerca de 1.824 são de uso múltiplo ou ambulância e ≈1.476 dedicados a radioterapia e hemodiálise. O mercado de interesse imediato é a parte eletiva somada à operação da frota cedida — não o total. A tese se sustenta no mercado de R$ 1,2 bilhão por ano, não em projeções na casa das dezenas de bilhões.</div>
+    <div><strong>Leitura honesta do número.</strong>Os 3.300 veículos do programa não são todos de transporte eletivo: cerca de 1.824 são de uso múltiplo ou ambulância e ≈1.476 dedicados a radioterapia e hemodiálise. O mercado de interesse imediato é a parte eletiva somada à operação da frota cedida — não o total. A frente eletiva sustenta a tese em R$ 1,2 bilhão por ano; somada à inter-hospitalar (estimada em R$ 1–2 bilhões, ancorada no caso de Rondônia), o endereçável fica em ~R$ 2,5–3 bilhões — ainda longe das projeções de dezenas de bilhões de outros estudos.</div>
   </div>
 
   <div class="splitviz">
@@ -802,7 +835,7 @@
   </div>
 
   <div class="chart" style="margin-bottom:32px">
-    <div class="ch-head"><span class="t">Receita acumulada · cenário base</span><span class="s">R$ milhões · estimativa Samais</span></div>
+    <div class="ch-head"><span class="t">Receita acumulada · cenário base</span><span class="s">R$ milhões · só frente eletiva · estimativa Samais</span></div>
     <svg viewBox="0 0 1000 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Curva de receita acumulada: 8, 28 e 91 milhões em 12, 24 e 36 meses">
       <defs>
         <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
@@ -833,6 +866,11 @@
       <text x="520" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">24 MESES</text>
       <text x="870" y="316" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" fill="#9C9489" letter-spacing="1">36 MESES</text>
     </svg>
+  </div>
+
+  <div class="note">
+    <span class="arrow">→</span>
+    <div><strong>O que esta curva ainda não inclui.</strong>O cenário base é construído só com a frente eletiva — contratos municipais. A inter-hospitalar entra como upside, fora da curva para manter o número conservador: um único contrato estadual (R$ 47–73 mi/ano) ao longo do seu prazo já supera toda a receita projetada para 36 meses.</div>
   </div>
 
   <div class="hz">
@@ -989,11 +1027,11 @@
     <div class="row"><div class="k">Portaria 11.164/2026</div><div class="v">Publicada em 11/05/2026; regulamenta o transporte de pacientes de radioterapia e hemodiálise. Impacto anual estimado de R$ 165,4 milhões. <span class="tag">verificado · CONASS/CONASEMS</span></div></div>
     <div class="row"><div class="k">Caminhos da Saúde</div><div class="v">Novo PAC · 3.300 veículos · R$ 1,4 bilhão · primeiras entregas em abr/2026. Cerca de 1.476 dedicados a radioterapia e hemodiálise; o restante é de uso múltiplo ou ambulância. <span class="tag">verificado · gov.br/saúde</span></div></div>
     <div class="row"><div class="k">Mercado eletivo</div><div class="v">R$ 1,2 bilhão por ano no Brasil — número da própria modelagem Samais. Projeções de R$ 11–18 bilhões de outros estudos não foram adotadas. <span class="tag amber">estimativa · casa</span></div></div>
-    <div class="row"><div class="k">Mercado inter-hospitalar</div><div class="v">Segunda frente: transferência de pacientes entre hospitais. Um único estado (Rondônia) licitou teto de ~R$ 73 mi/ano; o mercado nacional é múltiplo disso. <span class="tag amber">estimativa · casa</span></div></div>
+    <div class="row"><div class="k">Mercado inter-hospitalar</div><div class="v">Segunda frente: transferência de pacientes entre hospitais. Ancorado no caso de Rondônia (teto de ~R$ 73 mi/ano em um estado), o mercado nacional é estimado em R$ 1–2 bilhões por ano. Somado ao eletivo, o endereçável combinado fica em ~R$ 2,5–3 bilhões por ano. <span class="tag amber">estimativa · casa</span></div></div>
     <div class="row"><div class="k">Caso Rondônia</div><div class="v">Pregão 90197/2024 · SESAU-RO · transporte inter-hospitalar (UTI móvel + suporte básico), 5 lotes. Vencedora com execução suspensa por decisão judicial; o MPRO recomendou anulação. Mostra o tamanho e a barreira da frente inter-hospitalar. <span class="tag">verificado · MPRO/TJRO/imprensa</span></div></div>
     <div class="row"><div class="k">Atestados e referências</div><div class="v">Oito atestados em SAMU 192 e regulação; referências CISNORPI e Ourinhos. Cerca de seis operadores no país têm atestados para competir. <span class="tag">documentado · due diligence</span></div></div>
     <div class="row"><div class="k">Estrutura societária</div><div class="v">Holding com a nova operação no grupo; a Samais integraliza atestados avaliados em R$ 15 milhões; o investidor aporta R$ 2,5–4 milhões em capital. Participação conforme a avaliação acordada. <span class="tag amber">em negociação</span></div></div>
-    <div class="row"><div class="k">Projeção do negócio</div><div class="v">Receita acumulada em 36 meses de R$ 73–110 milhões; lucro de R$ 11–19 milhões. Cenário base a otimista, modelagem própria. <span class="tag amber">estimativa · modelagem</span></div></div>
+    <div class="row"><div class="k">Projeção do negócio</div><div class="v">Receita acumulada em 36 meses de R$ 73–110 milhões; lucro de R$ 11–19 milhões. Cenário base a otimista, modelagem própria — construído só com a frente eletiva. A frente inter-hospitalar é upside e não está somada à projeção. <span class="tag amber">estimativa · modelagem</span></div></div>
   </div>
 </section>
 
@@ -1016,6 +1054,17 @@
 
 <script>
   (function(){
+    var hp=document.getElementById('hp'), hv=document.getElementById('hv'), hb=document.getElementById('hpbtn');
+    if(hp&&hv&&hb){
+      hb.addEventListener('click',function(){
+        hp.classList.add('on');
+        hv.setAttribute('controls','');
+        hv.focus();
+        var pr=hv.play();
+        if(pr&&pr.catch){pr.catch(function(){});}
+      });
+    }
+
     var ham=document.getElementById('navham'), links=document.getElementById('navlinks');
     ham.addEventListener('click',function(){
       var open=links.classList.toggle('open');
