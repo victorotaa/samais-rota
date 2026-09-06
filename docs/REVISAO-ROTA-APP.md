@@ -32,7 +32,9 @@ O protótipo cumpre o que a spec promete para a Fase 1: é uma peça de demonstr
 
 Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeito** e **correção**.
 
-### 2.1 · Bloqueantes — corrigir antes de qualquer demonstração a cliente
+### 2.1 · Bloqueantes — **corrigidos** (PR seguinte a esta revisão)
+
+> Os quatro itens abaixo foram corrigidos e verificados por walkthrough automatizado: a baixa grava km = 777 / L = 55 / diárias = 3 exatamente como digitado e recusa km vazio; o relatório passa a contar paciente-deslocamento (3 realizados · 8 programados no seed, contra 6 "viagens elegíveis" antes); Ctrl+P fora de Impressos imprime um aviso com o caminho certo e nunca o último papel; o toast some na impressão. O texto original fica como registro do que estava errado e por quê.
 
 **B1 · A baixa descarta o que o gestor digita.**
 - Onde: `confirmBaixa()`, L789–791; `fld()`, L810.

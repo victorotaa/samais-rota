@@ -278,6 +278,7 @@
     #print-root{display:block!important}
     .paper{box-shadow:none;border-radius:0;width:auto;max-width:none;min-height:0;margin:0;padding:0}
     .paper-note{display:none}
+    .toast{display:none!important}
   }
   /* reduced motion */
   html:not(.js-anim) .arc-val,html:not(.js-anim) .line-draw{stroke-dashoffset:0!important}
@@ -390,7 +391,13 @@ var pacientes=[
 pacientes.forEach(function(p,i){p.aut={proc:'TFD-2026/01'+(40+i),val:'31/dez/2026'}});
 /* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.179): hemodiálise/radioterapia, >50 km e ≤500 km */
 function elegivelFederal(p){var d=DESTINOS[p.dest];return /hemodi|radio/i.test(p.trat)&&d.km>50&&d.km<=500}
-function viagemElegivel(v){return v.km>50&&v.km<=500&&v.pacientes.some(elegivelFederal)}
+/* A unidade de comprovação é o PACIENTE-DESLOCAMENTO, nunca a viagem: a portaria remunera
+   o deslocamento de cada paciente em radioterapia/hemodiálise. Uma viagem mista (radio +
+   quimio) "contém elegíveis" — não "é elegível". Contar viagens infla o relatório. */
+function elegiveisNaViagem(v){return v.pacientes.filter(elegivelFederal)}
+function contemElegiveis(v){return elegiveisNaViagem(v).length>0}
+function elegiveisRealizados(v){var l=lancamentos[v.id];if(!l||!l.concluida)return 0;
+  return v.pacientes.filter(function(p){return elegivelFederal(p)&&l.presentes.indexOf(p.id)>=0}).length}
 
 var veiculos=[
   {id:'ROTA-01',placa:'QLF-1A23',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
@@ -461,6 +468,7 @@ var TITLES={painel:['Painel da semana','ROTA / Painel'],pacientes:['Pacientes ca
   impressos:['Impressos operacionais','ROTA / Impressos'],lancamentos:['Lançamentos e baixa','ROTA / Lançamentos']};
 function render(view){
   ['painel','pacientes','programacao','frota','impressos','lancamentos'].forEach(function(v){$('#v-'+v).classList.toggle('on',v===view)});
+  if(view!=='impressos')$('#print-root').innerHTML='';   /* B3: nunca imprimir o último papel por engano */
   $$('.navitem').forEach(function(a){a.classList.toggle('active',a.dataset.view===view)});
   $('#viewtitle').textContent=TITLES[view][0];$('#crumb').textContent=TITLES[view][1];
   ({painel:renderPainel,pacientes:renderPacientes,programacao:renderProgramacao,frota:renderFrota,impressos:renderImpressos,lancamentos:renderLancamentos})[view]();
@@ -664,7 +672,7 @@ function renderProgramacao(){
   body+='<div class="row" style="flex-direction:column;gap:12px">';
   list.forEach(function(v){var st=statusViagem(v),ocup=Math.round(v.assentos/v.lot*100);
     body+='<div class="card glass pad"><div class="between" style="align-items:flex-start">'+
-      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span>'+(viagemElegivel(v)?'<span class="pill2 p-green">elegível federal · >50 km</span>':'')+'</div>'+
+      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' federal · >50 km</span>':''})()+'</div>'+
         '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div></div>'+
       '<div style="text-align:right"><div class="mono-cell">'+v.veic.id+' · '+v.veic.placa+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
         '<div style="margin-top:8px"><span class="pill2 '+(ocup>90?'p-red':ocup>60?'p-gold':'p-green')+'">'+v.assentos+'/'+v.lot+' assentos · '+ocup+'%</span></div></div></div>'+
@@ -718,8 +726,8 @@ function renderPaper(){
 }
 function paperRelatorio(){
   var concl=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
-  var eleg=viagens.filter(viagemElegivel);
-  var elegConcl=concl.filter(viagemElegivel);
+  var elegProg=viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0);
+  var elegReal=viagens.reduce(function(a,v){return a+elegiveisRealizados(v)},0);
   var km=concl.reduce(function(a,v){return a+lancamentos[v.id].km},0);
   var lit=concl.reduce(function(a,v){return a+lancamentos[v.id].litros},0);
   var pres=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
@@ -732,9 +740,9 @@ function paperRelatorio(){
     return '<tr><td>'+x.id+' · '+x.placa+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+x.cnesPrazo+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('RELATÓRIO MENSAL DE COMPROVAÇÃO')+
     '<h4>Julho/2026 — parcial (semana 06–10)</h4>'+
-    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.179/2026.</div>'+
+    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.179/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, acima de 50 km, com presença conferida.</div>'+
     '<div class="meta"><div><span>Viagens realizadas</span>'+concl.length+' de '+viagens.length+' programadas</div>'+
-      '<div><span>Elegíveis federal (>50 km)</span>'+elegConcl.length+' realizadas · '+eleg.length+' programadas</div>'+
+      '<div><span>Deslocamentos elegíveis · federal</span>'+elegReal+' realizados · '+elegProg+' programados</div>'+
       '<div><span>Km comprovado</span>'+fmt(km)+' km</div>'+
       '<div><span>Taxa de ocupação média</span>'+ocup+'%</div></div>'+
     '<table><thead><tr><th>Veículo</th><th>CNES</th><th>Viagens</th><th>Km</th><th>Combustível</th><th>Consumo</th></tr></thead><tbody>'+vr+'</tbody></table>'+
@@ -783,20 +791,25 @@ function renderLancamentos(){
 }
 function darBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0];
   var chks=v.pacientes.map(function(p){return '<label class="chk" style="margin-bottom:9px"><input type="checkbox" checked data-pid="'+p.id+'"> '+esc(p.nome)+'</label>'}).join('');
-  openModal('Baixa — '+v.rota.split('→')[1].trim(),'<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+'<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2))+fld('Combustível (L)','number','')+'<div class="field"><label>Diárias / casa de apoio</label><input type="number" id="bx-diarias" value="0"></div></div>',
+  openModal('Baixa — '+v.rota.split('→')[1].trim(),'<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+'<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2),'bx-km')+fld('Combustível (L)','number',String(Math.round(v.km/9)),'bx-litros')+'<div class="field"><label for="bx-diarias">Diárias / casa de apoio</label><input type="number" id="bx-diarias" value="0"></div></div>'+
+    '<div class="xs mut" style="margin-top:10px">Km e combustível vêm pré-preenchidos com o previsto — <b>substitua pelo que está na prancheta</b>. O que vale é o conferido no papel.</div>',
     '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="confirmBaixa(\''+vid+'\')">Confirmar baixa</button>');
 }
 function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0],pres=[],falt=[];
   $$('#modal input[data-pid]').forEach(function(c){(c.checked?pres:falt).push(parseInt(c.dataset.pid))});
-  lancamentos[vid]={concluida:true,km:v.km*2,litros:Math.round(v.km/9),presentes:pres,faltas:falt,diarias:parseInt(($('#bx-diarias')||{}).value)||0};
-  closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s)');updateDots();render('lancamentos');
+  /* B1: o que o gestor digitou é o registro. O previsto só serve de sugestão. */
+  var km=parseFloat(($('#bx-km')||{}).value), lit=parseFloat(($('#bx-litros')||{}).value), dia=parseInt(($('#bx-diarias')||{}).value);
+  if(!(km>0)){toast('Informe o km rodado conferido na prancheta');return}
+  if(!(lit>=0)){toast('Informe o combustível (0 se não abasteceu)');return}
+  lancamentos[vid]={concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0};
+  closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s) · '+fmt(km)+' km');updateDots();render('lancamentos');
 }
 
 /* =================== RELATÓRIO =================== */
 function openReport(){
   openModal('Relatório à secretaria contratante','<p class="sm mut" style="margin-bottom:14px">Consolidado da semana '+SEMANA+' — Base Floriano — PI. Documento que o gestor entrega à Secretaria de Saúde e à Samais como prestação de contas.</p>'+
-    '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens >50 km</div><div class="v">'+viagens.filter(function(v){return v.km>50}).length+'</div><div class="d">elegíveis a cofinanciamento</div></div></div>'+
-    '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>As viagens acima de 50 km comprovadas na folha de embarque são a base do cofinanciamento federal (hemodiálise/radioterapia). O manifesto conferido é o documento que fatura.</div></div>',
+    '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Deslocamentos elegíveis</div><div class="v">'+viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0)+'</div><div class="d">paciente-deslocamento · radio/hemodiálise · >50 km</div></div></div>'+
+    '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>Cada <b>paciente</b> em hemodiálise ou radioterapia transportado acima de 50 km, com presença conferida na folha de embarque, é um deslocamento comprovado para o cofinanciamento federal. A folha conferida é o documento que fatura — por paciente, não por viagem.</div></div>',
     '<button class="btn ghost sm" onclick="closeModal()">Fechar</button><button class="btn solid sm" onclick="closeModal();render(\'impressos\');impMode=\'relatorio\';renderImpressos()">Abrir versão A4 (imprimir)</button>');
 }
 
@@ -807,13 +820,18 @@ var icoCheck='<svg viewBox="0 0 24 24"><path d="M20 7L10 17l-5-5"/></svg>';
 var icoGauge='<svg viewBox="0 0 24 24"><path d="M12 14l4-4M4 18a8 8 0 1 1 16 0"/></svg>';
 var icoFuel='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16"/><path d="M13 9h3l2 2v6a2 2 0 0 1-4 0"/></svg>';
 var icoCost='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg>';
-function fld(l,t,v){return '<div class="field"><label>'+l+'</label><input type="'+t+'" value="'+v+'"></div>'}
+function fld(l,t,v,id){return '<div class="field"><label'+(id?' for="'+id+'"':'')+'>'+l+'</label><input type="'+t+'" value="'+esc(v).replace(/"/g,'&quot;')+'"'+(id?' id="'+id+'"':'')+'></div>'}
 function selfld(l,o){return '<div class="field"><label>'+l+'</label><select>'+o.map(function(x){return '<option>'+x+'</option>'}).join('')+'</select></div>'}
 function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3>'+t+'</h3><button class="x" onclick="closeModal()">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';$('#modalbg').classList.add('on')}
 function closeModal(){$('#modalbg').classList.remove('on')}
 $('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
-function toast(m){var t=el('div',null,m);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:var(--surface-solid);border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
+function toast(m){var t=el('div','toast',m);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:var(--surface-solid);border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
 function updateDots(){var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;var d=$('#dot-lanc');if(pend){d.style.display='flex';d.textContent=pend}else{d.style.display='none'}}
+
+/* B3: Ctrl+P fora da aba Impressos não pode sair em branco — sai um aviso com o caminho certo */
+window.addEventListener('beforeprint',function(){var pr=$('#print-root');if(pr.innerHTML.trim())return;pr.setAttribute('data-fallback','1');
+  pr.innerHTML='<div class="paper">'+paperHead('AVISO DE IMPRESSÃO')+'<h4>Nada a imprimir nesta tela</h4><div style="font-size:11px;color:#333;line-height:1.6;margin-top:8px">Os documentos oficiais do ROTA — manifesto semanal, folha de embarque/reembarque e relatório mensal de comprovação — saem pela aba <b>Impressos</b>. Painéis e listas não têm versão impressa por decisão de produto: o que vai ao papel é o que a ponta confere e assina.</div></div>'});
+window.addEventListener('afterprint',function(){var pr=$('#print-root');if(pr.getAttribute('data-fallback')){pr.removeAttribute('data-fallback');pr.innerHTML=''}});
 
 /* tema */
 function setTheme(mode){document.documentElement.setAttribute('data-theme',mode);
