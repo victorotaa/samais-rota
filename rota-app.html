@@ -368,6 +368,15 @@
 var DIAS=['seg','ter','qua','qui','sex'];
 var DIA_NOME={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta'};
 var HOJE='qua', SEMANA='06–10/jul/2026';
+/* A1 · O farol de repasse precisa de DATA, não de índice de dia da semana.
+   Cada dia da semana-demo tem data real; hojeISO() é o relógio da aplicação.
+   Fase 2: trocar o corpo de hojeISO() por new Date().toISOString().slice(0,10). */
+var DATA_SEMANA={seg:'2026-07-06',ter:'2026-07-07',qua:'2026-07-08',qui:'2026-07-09',sex:'2026-07-10'};
+function hojeISO(){return DATA_SEMANA[HOJE]}
+function diasEntre(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5)}
+var MES_CURTO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function fmtDia(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]}
+function fmtDataLonga(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]+'/'+d[0]}
 var REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 var DESTINOS={
@@ -375,22 +384,43 @@ var DESTINOS={
   teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km'},
   picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km'}
 };
+/* A2 · Regra de negócio nunca decide por regex em texto livre. Tratamento e
+   necessidade são CAMPOS TIPADOS; o texto na tela é rótulo derivado da chave.
+   "Radiologia" (exame) deixa de virar radioterapia; "Maca" sem a palavra
+   "ambulância" deixa de ir para o micro-ônibus. */
+var TRATAMENTOS={
+  hemodialise:{label:'Hemodiálise',elegivel:true},
+  radioterapia:{label:'Radioterapia',elegivel:true},
+  quimioterapia:{label:'Quimioterapia',elegivel:false},
+  consulta:{label:'Consulta especializada',elegivel:false},
+  fisioterapia:{label:'Fisioterapia',elegivel:false}
+};
+var NECESSIDADES={
+  nenhuma:{label:'—',ambulancia:false},
+  cadeirante:{label:'Cadeirante',ambulancia:false},
+  maca:{label:'Maca — ambulância',ambulancia:true},
+  menor:{label:'Menor — acompanhante responsável',ambulancia:false}
+};
+function tratLabel(p){return p.esp||TRATAMENTOS[p.tratKey].label}
+function necLabel(p){return NECESSIDADES[p.necKey].label}
+function exigeAmbulancia(p){return NECESSIDADES[p.necKey].ambulancia}
+
 var pacientes=[
-  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'—'},
-  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'Cadeirante'},
-  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',trat:'Radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,nec:'—'},
-  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',trat:'Radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,nec:'—'},
-  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',trat:'Quimioterapia',dest:'teresina',rec:['ter'],acomp:true,nec:'—'},
-  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',trat:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,nec:'—'},
-  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',trat:'Hemodiálise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,nec:'—'},
-  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',trat:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,nec:'Maca — ambulância'},
-  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',trat:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,nec:'Menor — mãe'},
-  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',trat:'Fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,nec:'—'}
+  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma'},
+  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'cadeirante'},
+  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,necKey:'nenhuma'},
+  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',tratKey:'radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,necKey:'nenhuma'},
+  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'quimioterapia',dest:'teresina',rec:['ter'],acomp:true,necKey:'nenhuma'},
+  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,necKey:'nenhuma'},
+  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma'},
+  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'hemodialise',esp:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,necKey:'maca'},
+  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,necKey:'menor'},
+  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,necKey:'nenhuma'}
 ];
-/* autorização da regulação (TFD) — semeada por paciente */
-pacientes.forEach(function(p,i){p.aut={proc:'TFD-2026/01'+(40+i),val:'31/dez/2026'}});
+/* autorização da regulação (TFD) + rótulos derivados das chaves — nunca digitados solto */
+pacientes.forEach(function(p,i){p.aut={proc:'TFD-2026/01'+(40+i),val:'31/dez/2026'};p.trat=tratLabel(p);p.nec=necLabel(p)});
 /* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.179): hemodiálise/radioterapia, >50 km e ≤500 km */
-function elegivelFederal(p){var d=DESTINOS[p.dest];return /hemodi|radio/i.test(p.trat)&&d.km>50&&d.km<=500}
+function elegivelFederal(p){var d=DESTINOS[p.dest];return TRATAMENTOS[p.tratKey].elegivel&&d.km>50&&d.km<=500}
 /* A unidade de comprovação é o PACIENTE-DESLOCAMENTO, nunca a viagem: a portaria remunera
    o deslocamento de cada paciente em radioterapia/hemodiálise. Uma viagem mista (radio +
    quimio) "contém elegíveis" — não "é elegível". Contar viagens infla o relatório. */
@@ -398,22 +428,75 @@ function elegiveisNaViagem(v){return v.pacientes.filter(elegivelFederal)}
 function contemElegiveis(v){return elegiveisNaViagem(v).length>0}
 function elegiveisRealizados(v){var l=lancamentos[v.id];if(!l||!l.concluida)return 0;
   return v.pacientes.filter(function(p){return elegivelFederal(p)&&l.presentes.indexOf(p.id)>=0}).length}
+/* A5 · Ocupação PROGRAMADA é planejamento; ocupação REALIZADA é comprovação.
+   A portaria pede o mecanismo de gestão de frota sobre quem de fato embarcou —
+   só a realizada vai ao relatório. */
+function assentosRealizados(v){var l=lancamentos[v.id];if(!l||!l.concluida)return 0;
+  return v.pacientes.reduce(function(a,p){return a+(l.presentes.indexOf(p.id)>=0?1+(p.acomp?1:0):0)},0)}
+function ocupProgramada(lista){var t=lista.length;if(!t)return 0;
+  return Math.round(lista.reduce(function(a,v){return a+v.assentos/v.lot},0)/t*100)}
+function ocupRealizada(lista){var c=lista.filter(function(v){var l=lancamentos[v.id];return l&&l.concluida});
+  if(!c.length)return 0;
+  return Math.round(c.reduce(function(a,v){return a+assentosRealizados(v)/v.lot},0)/c.length*100)}
 
+/* A3 · classe é campo tipado; a alocação escolhe por CAPACIDADE, nunca por índice fixo */
 var veiculos=[
-  {id:'ROTA-01',placa:'QLF-1A23',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
-  {id:'ROTA-02',placa:'QLF-2B45',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
-  {id:'ROTA-03',placa:'QLF-3C67',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
+  {id:'ROTA-01',placa:'QLF-1A23',classe:'van',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
+  {id:'ROTA-02',placa:'QLF-2B45',classe:'micro',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
+  {id:'ROTA-03',placa:'QLF-3C67',classe:'ambulancia',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
 ];
+/* A4 · o custo por km não é número mágico: é parâmetro do contrato da base,
+   visível ao gestor e substituível na implantação pelo valor do modelo Samais. */
+var CONFIG={custoKmVariavel:0.90, custoKmFonte:'parâmetro da base · definido no contrato'};
 var abastecimentos=[
-  {vid:'ROTA-02',data:'06/jul',litros:78,km:520,valor:452.4},
-  {vid:'ROTA-01',data:'06/jul',litros:34,km:210,valor:197.2},
-  {vid:'ROTA-02',data:'08/jul',litros:80,km:508,valor:464.0},
-  {vid:'ROTA-01',data:'08/jul',litros:32,km:205,valor:185.6}
+  {vid:'ROTA-02',data:'2026-07-06',litros:78,km:520,valor:452.4},
+  {vid:'ROTA-01',data:'2026-07-06',litros:34,km:210,valor:197.2},
+  {vid:'ROTA-02',data:'2026-07-08',litros:80,km:508,valor:464.0},
+  {vid:'ROTA-01',data:'2026-07-08',litros:32,km:205,valor:185.6}
 ];
+function datasDaSemana(){return DIAS.map(function(d){return DATA_SEMANA[d]})}
+function abastecimentosNoPeriodo(datas){return abastecimentos.filter(function(a){return datas.indexOf(a.data)>=0})}
+/* A4 · custo do PERÍODO — combustível lançado no período + km do período × custo/km da base */
+function custoPeriodo(datas,km){
+  return abastecimentosNoPeriodo(datas).reduce(function(a,x){return a+x.valor},0)+km*CONFIG.custoKmVariavel;
+}
 var lancamentos={};
 
 /* =================== PROGRAMAÇÃO =================== */
 var viagens=[],_seq=0;
+function assentosDe(grp){return grp.reduce(function(a,p){return a+1+(p.acomp?1:0)},0)}
+/* A3 · Escolhe o MENOR veículo que comporta o grupo. Se nenhum comporta, quebra em
+   quantas viagens forem necessárias no maior veículo — nunca sai viagem acima de 100%
+   de lotação, e a frota é lida por classe/capacidade, não por posição no array. */
+/* Classe preferida por perfil do trajeto: intermunicipal longo vai de micro-ônibus
+   (mais conforto e assistente a bordo), local vai de van. A capacidade é filtro,
+   não critério — nunca manda 24 lugares para levar 3 pessoas ao posto da esquina,
+   nem 252 km numa van porque coube. */
+function classePreferida(dk){return DESTINOS[dk].km>50?'micro':'van'}
+function alocarComuns(grp,dk){
+  var frota=veiculos.filter(function(v){return v.classe!=='ambulancia'}).sort(function(a,b){return a.lot-b.lot});
+  if(!frota.length) return [];
+  var need=assentosDe(grp), pref=classePreferida(dk);
+  var cabe=frota.filter(function(v){return v.classe===pref&&v.lot>=need})[0]
+        || frota.filter(function(v){return v.lot>=need})[0];
+  if(cabe) return [{pax:grp,veic:cabe,assentos:need}];
+  var maior=frota[frota.length-1], blocos=[], atual=[], cap=0;
+  grp.forEach(function(p){var s=1+(p.acomp?1:0);
+    if(cap+s>maior.lot&&atual.length){blocos.push(atual);atual=[];cap=0}
+    atual.push(p);cap+=s});
+  if(atual.length)blocos.push(atual);
+  return blocos.map(function(b){return {pax:b,veic:maior,assentos:assentosDe(b)}});
+}
+function alocarAmbulancia(grp){
+  var amb=veiculos.filter(function(v){return v.classe==='ambulancia'}).sort(function(a,b){return a.lot-b.lot});
+  if(!amb.length) return [];
+  var maior=amb[amb.length-1], blocos=[], atual=[], cap=0;
+  grp.forEach(function(p){var s=1+(p.acomp?1:0);
+    if(cap+s>maior.lot&&atual.length){blocos.push(atual);atual=[];cap=0}
+    atual.push(p);cap+=s});
+  if(atual.length)blocos.push(atual);
+  return blocos.map(function(b){return {pax:b,veic:maior,assentos:assentosDe(b)}});
+}
 function gerarProgramacao(){
   viagens=[];_seq=0;
   DIAS.forEach(function(dia){
@@ -421,21 +504,16 @@ function gerarProgramacao(){
     pacientes.forEach(function(p){ if(p.rec.indexOf(dia)>=0){ (byDest[p.dest]=byDest[p.dest]||[]).push(p); } });
     Object.keys(byDest).forEach(function(dk){
       var grp=byDest[dk], dest=DESTINOS[dk];
-      var amb=grp.filter(function(p){return /ambul/i.test(p.nec)});
-      var comuns=grp.filter(function(p){return !/ambul/i.test(p.nec)});
-      if(comuns.length){
-        var assentos=comuns.reduce(function(a,p){return a+1+(p.acomp?1:0)},0);
-        var veic = dk==='dialise' ? veiculos[0] : veiculos[1];
-        if(assentos>veic.lot) veic=veiculos[1];
-        viagens.push(mkViagem(dia,dk,dest,comuns,veic,assentos));
-      }
-      if(amb.length) viagens.push(mkViagem(dia,dk,dest,amb,veiculos[2], amb.reduce(function(a,p){return a+1+(p.acomp?1:0)},0)));
+      var amb=grp.filter(exigeAmbulancia);
+      var comuns=grp.filter(function(p){return !exigeAmbulancia(p)});
+      if(comuns.length) alocarComuns(comuns,dk).forEach(function(b){viagens.push(mkViagem(dia,dk,dest,b.pax,b.veic,b.assentos))});
+      if(amb.length) alocarAmbulancia(amb).forEach(function(b){viagens.push(mkViagem(dia,dk,dest,b.pax,b.veic,b.assentos))});
     });
   });
   viagens.forEach(function(v){
     if(v.dia==='seg'||v.dia==='ter'){
       var faltou=(v.dia==='ter'&&v.dest==='dialise');
-      lancamentos[v.id]={concluida:true,km:v.km*2,
+      lancamentos[v.id]={concluida:true,km:v.km*2,data:DATA_SEMANA[v.dia],
         litros: v.veic.lot>7? 40+Math.round(v.km/8) : 12+Math.round(v.km/12),
         presentes: faltou? v.pacientes.slice(0,-1).map(function(p){return p.id}) : v.pacientes.map(function(p){return p.id}),
         faltas: faltou? [v.pacientes[v.pacientes.length-1].id] : []};
@@ -483,9 +561,9 @@ function renderPainel(){
   var litSem=concl.reduce(function(a,v){return a+lancamentos[v.id].litros},0);
   var faltas=concl.reduce(function(a,v){return a+lancamentos[v.id].faltas.length},0);
   var presencas=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
-  var ocup=Math.round(viagens.reduce(function(a,v){return a+v.assentos/v.lot},0)/totV*100);
+  var ocupProg=ocupProgramada(viagens), ocupReal=ocupRealizada(viagens);
   var kml=+(kmSem/litSem).toFixed(1)||0;
-  var custo=abastecimentos.reduce(function(a,x){return a+x.valor},0)+kmSem*0.9;
+  var custo=custoPeriodo(datasDaSemana(),kmSem);
 
   var alerts='';
   veiculos.filter(function(x){return !x.cnes}).forEach(function(x){
@@ -507,15 +585,15 @@ function renderPainel(){
     alerts+
     '<div class="kpis">'+
       kpi('Viagens na semana',cv(totV,0),'',(concl.length)+' concluídas · '+(totV-concl.length)+' programadas',icoRoute)+
-      kpi('Ocupação média',cv(ocup,0),'%','assentos / lotação',icoUsers)+
+      kpi('Ocupação realizada',cv(ocupReal,0),'%','quem embarcou · programada: '+ocupProg+'%',icoUsers)+
       kpi('Presenças',cv(presencas,0),'','faltas: '+faltas,icoCheck)+
       kpi('Km rodado',cv(kmSem,0),' km','viagens concluídas',icoGauge)+
       kpi('Consumo médio',cv(kml,1),' km/l',litSem+' L abastecidos',icoFuel)+
-      kpi('Custo estimado',cv(custo,2,'R$ '),'','combustível + operação',icoCost)+
+      kpi('Custo estimado',cv(custo,2,'R$ '),'','combustível da semana + km × R$ '+CONFIG.custoKmVariavel.toFixed(2).replace('.',','),icoCost)+
     '</div>'+
     '<div class="charts">'+
       chartcard('Comprovação de uso · repasse federal','farol de suspensão (Port. 11.164/2026)', farolRepasse()) +
-      chartcard('Ocupação média da frota','proporção assento/lotação', donut(ocup,'ocupação')) +
+      chartcard('Ocupação realizada','assentos ocupados / lotação · viagens concluídas', donut(ocupReal,'realizada')) +
       chartcard('Km programado acumulado','curva da semana (ida e volta)', areaChart(cum,kmMax)) +
       chartcard('Consumo médio','km por litro · meta ≥ 6', gauge(kml,12)) +
       chartcard('Viagens por dia','distribuição semanal', barsChart(counts), 'span2') +
@@ -572,18 +650,25 @@ function splitChart(pres,falt){
   return '<div class="split"><div class="track"><div class="seg-a" data-w="'+(pres/tot*100)+'"></div><div class="seg-b" data-w="'+(falt/tot*100)+'"></div></div>'+
     '<div class="lgd"><span><i style="background:var(--green-soft)"></i>Presenças · '+pres+'</span><span><i style="background:var(--red)"></i>Faltas · '+falt+'</span></div></div>';
 }
+/* RN-08 · dias corridos desde o último registro comprovado, por DATA.
+   3 meses consecutivos sem registro suspendem o repasse federal. */
+function diasSemRegistro(){
+  var ultima=null;
+  viagens.forEach(function(v){var l=lancamentos[v.id];
+    if(l&&l.concluida&&l.data&&(!ultima||l.data>ultima)) ultima=l.data});
+  return {ultima:ultima, dias:ultima?diasEntre(ultima,hojeISO()):null};
+}
 function farolRepasse(){
-  /* RN-08: dias desde o último registro comprovado; 3 meses sem registro suspendem o repasse */
-  var idxHoje=DIAS.indexOf(HOJE),lastIdx=-1;
-  viagens.forEach(function(v){var l=lancamentos[v.id];if(l&&l.concluida){var di=DIAS.indexOf(v.dia);if(di>lastIdx)lastIdx=di}});
-  var dias=lastIdx>=0?(idxHoje-lastIdx):99;
-  var cor=dias<30?'var(--green-soft)':dias<=60?'var(--amber)':'var(--red)';
-  var rot=dias<30?'Em dia':dias<=60?'Atenção':'Risco de suspensão';
+  var r=diasSemRegistro(), semRegistro=(r.dias===null), dias=semRegistro?90:r.dias;
+  var cor=semRegistro?'var(--red)':dias<30?'var(--green-soft)':dias<=60?'var(--amber)':'var(--red)';
+  var rot=semRegistro?'Sem registro':dias<30?'Em dia':dias<=60?'Atenção':'Risco de suspensão';
   var pct=Math.min(dias/90*100,100);
+  var linha=semRegistro?'nenhuma viagem comprovada nesta base':
+    'último registro em <b style="color:var(--text-2)">'+fmtDataLonga(r.ultima)+'</b> · há '+dias+' dia'+(dias===1?'':'s');
   return '<div style="display:flex;align-items:center;gap:16px;margin:8px 0 14px">'+
     '<span style="width:16px;height:16px;border-radius:50%;background:'+cor+';box-shadow:0 0 14px '+cor+';flex-shrink:0"></span>'+
     '<div><div style="font-family:var(--display);font-weight:600;font-size:21px;line-height:1.1">'+rot+'</div>'+
-    '<div class="sm mut" style="margin-top:2px">último registro há <b style="color:var(--text-2)">'+dias+' dia'+(dias===1?'':'s')+'</b></div></div></div>'+
+    '<div class="sm mut" style="margin-top:2px">'+linha+'</div></div></div>'+
     '<div class="prop"><div class="item"><div class="lab"><span class="xs mut">janela de 90 dias</span><span class="mono-cell">'+dias+'/90</span></div><div class="bar"><div class="fill" data-w="'+pct.toFixed(0)+'" style="background:'+cor+'"></div></div></div></div>'+
     '<div class="xs mut" style="margin-top:12px;line-height:1.55">3 meses consecutivos sem registro de uso suspendem o repasse federal. O lançamento das baixas é o que mantém o dinheiro fluindo.</div>';
 }
@@ -629,7 +714,9 @@ function renderPacientes(){
 }
 function novoPaciente(){
   openModal('Novo paciente','<div class="fgrid">'+fld('Nome completo','text','')+fld('Cartão SUS (CNS)','text','')+fld('Município','text','Floriano')+fld('Ponto de embarque','text','UBS Centro')+
-    selfld('Tratamento',['Hemodiálise','Radioterapia','Quimioterapia','Consulta especializada','Fisioterapia'])+selfld('Destino',['Clínica de Diálise — Floriano','Teresina','Picos'])+'</div>'+
+    selfld('Tratamento',Object.keys(TRATAMENTOS).map(function(k){return TRATAMENTOS[k].label}))+
+    selfld('Necessidade especial',Object.keys(NECESSIDADES).map(function(k){return NECESSIDADES[k].label==='—'?'Nenhuma':NECESSIDADES[k].label}))+
+    selfld('Destino',Object.keys(DESTINOS).map(function(k){return DESTINOS[k].nome.split(' —')[0]}))+'</div>'+
     '<div style="margin-top:14px"><div class="sublbl" style="margin-bottom:8px">Recorrência</div><div class="row" style="gap:14px">'+DIAS.map(function(d){return '<label class="chk"><input type="checkbox"> '+DIA_NOME[d]+'</label>'}).join('')+'</div></div>'+
     '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>',
     '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Paciente cadastrado (demo)\')">Salvar cadastro</button>');
@@ -652,7 +739,7 @@ function verVeiculo(id){
   var tk=ab.reduce(function(a,b){return a+b.km},0),tl=ab.reduce(function(a,b){return a+b.litros},0);
   var kml=tl?(tk/tl).toFixed(1):'—';
   var falta=x.proxRev-x.hod, pctRev=Math.min(Math.max((x.revCada-falta)/x.revCada*100,0),100);
-  var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+a.data+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
+  var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+fmtDia(a.data)+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
   openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+info('CNES',x.cnes?x.cnes:'pendente — prazo '+x.cnesPrazo)+info('Origem',x.origem||'frota própria/locada')+'</div>'+
     (!x.cnes?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Inscrever no CNES até <b>'+x.cnesPrazo+'</b> (60 dias do recebimento — Port. 11.164/2026).</div></div>':'')+
     '<div class="sublbl" style="margin:16px 0 8px">Próxima revisão · faltam '+fmt(falta)+' km ('+fmt(x.proxRev)+' km)</div>'+
@@ -673,7 +760,9 @@ function renderProgramacao(){
   list.forEach(function(v){var st=statusViagem(v),ocup=Math.round(v.assentos/v.lot*100);
     body+='<div class="card glass pad"><div class="between" style="align-items:flex-start">'+
       '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' federal · >50 km</span>':''})()+'</div>'+
-        '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div></div>'+
+        '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div>'+
+        (function(){var irmas=viagens.filter(function(x){return x.dia===v.dia&&x.dest===v.dest&&x.veic.classe===v.veic.classe});
+          return irmas.length>1?'<div class="xs mut" style="margin-top:4px">viagem '+(irmas.indexOf(v)+1)+' de '+irmas.length+' — grupo excedeu a lotação e foi dividido</div>':''})()+'</div>'+
       '<div style="text-align:right"><div class="mono-cell">'+v.veic.id+' · '+v.veic.placa+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
         '<div style="margin-top:8px"><span class="pill2 '+(ocup>90?'p-red':ocup>60?'p-gold':'p-green')+'">'+v.assentos+'/'+v.lot+' assentos · '+ocup+'%</span></div></div></div>'+
       '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider);display:flex;gap:26px;flex-wrap:wrap">'+
@@ -692,7 +781,7 @@ function renderFrota(){
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
       '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td>'+
       '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+x.cnes+'</span>':'<span class="pill2 p-red">pendente · até '+x.cnesPrazo+'</span>')+'</td></tr>';}).join('');
-  var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+a.data+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
+  var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+fmtDia(a.data)+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
   $('#v-frota').innerHTML=
     '<div class="sect-head between"><div><div class="sublbl">3 veículos · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
     '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th><th>CNES</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
@@ -733,8 +822,8 @@ function paperRelatorio(){
   var pres=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
   var falt=concl.reduce(function(a,v){return a+lancamentos[v.id].faltas.length},0);
   var diarias=concl.reduce(function(a,v){return a+(lancamentos[v.id].diarias||0)},0);
-  var custo=abastecimentos.reduce(function(a,x){return a+x.valor},0)+km*0.9;
-  var ocup=Math.round(viagens.reduce(function(a,v){return a+v.assentos/v.lot},0)/viagens.length*100);
+  var custo=custoPeriodo(datasDaSemana(),km);
+  var ocupReal=ocupRealizada(viagens), ocupProg=ocupProgramada(viagens);
   var byV={};concl.forEach(function(v){var k=v.veic.id;(byV[k]=byV[k]||{n:0,km:0,lit:0}).n++;byV[k].km+=lancamentos[v.id].km;byV[k].lit+=lancamentos[v.id].litros});
   var vr=veiculos.map(function(x){var d=byV[x.id]||{n:0,km:0,lit:0};
     return '<tr><td>'+x.id+' · '+x.placa+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+x.cnesPrazo+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
@@ -744,9 +833,10 @@ function paperRelatorio(){
     '<div class="meta"><div><span>Viagens realizadas</span>'+concl.length+' de '+viagens.length+' programadas</div>'+
       '<div><span>Deslocamentos elegíveis · federal</span>'+elegReal+' realizados · '+elegProg+' programados</div>'+
       '<div><span>Km comprovado</span>'+fmt(km)+' km</div>'+
-      '<div><span>Taxa de ocupação média</span>'+ocup+'%</div></div>'+
+      '<div><span>Taxa de ocupação realizada</span>'+ocupReal+'% <span style="color:#777">(programada '+ocupProg+'%)</span></div></div>'+
     '<table><thead><tr><th>Veículo</th><th>CNES</th><th>Viagens</th><th>Km</th><th>Combustível</th><th>Consumo</th></tr></thead><tbody>'+vr+'</tbody></table>'+
     '<div class="meta" style="grid-template-columns:repeat(4,1fr);margin-top:12px"><div><span>Presenças conferidas</span>'+pres+'</div><div><span>Faltas</span>'+falt+'</div><div><span>Diárias / casa de apoio</span>'+diarias+'</div><div><span>Custo operacional</span>'+money(custo)+'</div></div>'+
+    '<div style="font-size:9px;color:#777;margin-top:6px">Custo = combustível lançado no período + quilometragem comprovada × R$ '+CONFIG.custoKmVariavel.toFixed(2).replace('.',',')+'/km ('+CONFIG.custoKmFonte+'). Ocupação realizada considera os assentos efetivamente ocupados nas viagens concluídas.</div>'+
     '<div style="font-size:9.5px;color:#444;margin-top:14px;line-height:1.6">Declaro que as viagens acima foram realizadas e conferidas presencialmente mediante folha de embarque/reembarque assinada, arquivada até a baixa em sistema. Registros disponíveis para verificação formal.</div>'+
     '<div class="pf"><div class="sig"><div class="ln">Gestor(a) local Samais</div></div><div class="sig"><div class="ln">Secretaria de Saúde — ciência</div></div></div>'+
     '<div class="lgpd">Documento de prestação de contas — não contém dados nominais de pacientes. Detalhamento nominal disponível sob controle de acesso (LGPD).</div></div>';
@@ -801,7 +891,7 @@ function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[
   var km=parseFloat(($('#bx-km')||{}).value), lit=parseFloat(($('#bx-litros')||{}).value), dia=parseInt(($('#bx-diarias')||{}).value);
   if(!(km>0)){toast('Informe o km rodado conferido na prancheta');return}
   if(!(lit>=0)){toast('Informe o combustível (0 se não abasteceu)');return}
-  lancamentos[vid]={concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0};
+  lancamentos[vid]={concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0,data:hojeISO()};
   closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s) · '+fmt(km)+' km');updateDots();render('lancamentos');
 }
 

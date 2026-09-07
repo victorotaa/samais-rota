@@ -60,7 +60,13 @@ Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeit
 - Efeito: folha oficial de embarque impressa com um balão de notificação em cima.
 - Correção: dar classe `.toast` e `display:none` em `@media print`; ou não disparar toast antes de imprimir.
 
-### 2.2 · Altos — corrigir na Fase 1.5
+### 2.2 · Altos — **corrigidos**
+
+> Os cinco itens abaixo foram corrigidos e verificados. O farol passa a medir data (5 / 45 / 75 dias produzem verde / âmbar / vermelho); tratamento e necessidade viraram campos tipados, e "Radiologia" deixou de ser contada como radioterapia; a alocação escolhe por perfil de trajeto **e** capacidade, com quebra automática — quarenta pacientes extras num destino geram quatro viagens de 24/24, 24/24, 24/24 e 10/24, nenhuma acima da lotação; o custo passa a somar só o combustível do período mais km × custo/km declarado em `CONFIG`; e a ocupação separa programada (39%) de realizada (35%), com só a realizada no relatório. O texto original fica como registro.
+>
+> **Um achado durante a correção:** alocar só por capacidade mandava as viagens de 252 km para a van de sete lugares, porque cabia. O código original tinha uma intenção não declarada — trajeto intermunicipal vai de micro-ônibus, que é onde há assistente a bordo. A regra final preserva essa preferência por perfil de trajeto e usa a capacidade como filtro, não como critério.
+
+### 2.2-bis · Altos — texto original do achado
 
 **A1 · O farol de suspensão não mede dias.**
 - Onde: `farolRepasse()`, L569–571.
