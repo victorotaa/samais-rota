@@ -13,7 +13,9 @@
     --bg:#0A0A0A; --divider:#262626; --line:#2E2E33; --track:#1c1c20;
     --gold:#B8954E; --gold-soft:#D4B373; --gold-deep:#8E7238;
     --green:#1E7A4B; --green-soft:#3fbf7f; --amber:#C79A55; --red:#C2544B; --blue:#5B86B3;
-    --text:#F4F1EA; --text-2:#D9D2C5; --muted:#9C9489; --dim:#615C53;
+    /* M5 · --dim reprovava AA (2,98:1 no escuro, 2,25:1 no claro). Os rotulos
+       em mono sao justamente os mais dificeis de ler — subiram para faixa AA. */
+    --text:#F4F1EA; --text-2:#D9D2C5; --muted:#9C9489; --dim:#8A8377;
     --display:'Syne',serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
     --sidew:238px;
     /* material */
@@ -34,7 +36,7 @@
     --bg:#F1ECE1; --divider:#DED6C6; --line:#D2C9B6; --track:#E2DACA;
     --gold:#8E7238; --gold-soft:#A6843F; --gold-deep:#6F5A2C;
     --green:#1E7A4B; --green-soft:#1a6b41; --amber:#9A7433; --red:#B24A41; --blue:#456C97;
-    --text:#0A0A0A; --text-2:#3A362E; --muted:#6E675B; --dim:#A79E8C;
+    --text:#0A0A0A; --text-2:#3A362E; --muted:#6E675B; --dim:#6E675B;
     --glass:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.4));
     --glass-border:rgba(0,0,0,.09);
     --glass-hi:rgba(255,255,255,.85);
@@ -93,7 +95,8 @@
   .sb-brand .pn{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em;color:var(--text)}
   .sb-brand .pn small{display:block;font-family:var(--mono);font-weight:400;font-size:8px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-top:1px}
   .sb-sec{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding:16px 10px 8px}
-  .navitem{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;transition:background .14s,color .14s;position:relative;cursor:pointer}
+  .navitem{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;border:1px solid transparent;transition:background .14s,color .14s;position:relative;cursor:pointer;width:100%;background:none;text-align:left;font-family:inherit}
+  .navitem:focus-visible,.themebtn:focus-visible,.hamburger:focus-visible,.btn:focus-visible,.seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   .navitem svg{width:17px;height:17px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
   .navitem:hover{color:var(--text-2);background:var(--hover)}
   .navitem.active{color:var(--gold-soft);background:rgba(184,149,78,.1);border-color:var(--gold-line)}
@@ -153,6 +156,8 @@
   .ch-h .sublbl{margin-top:2px}
   .center-metric{text-align:center}
   .center-metric .cm{font-family:var(--display);font-weight:600;font-size:34px;letter-spacing:-.02em;color:var(--gold-soft);line-height:1}
+  :root[data-theme="light"] .center-metric .cm{color:var(--gold-deep)}
+  :root[data-theme="light"] a{color:#6F5A2C}
   .center-metric .cl{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 
   /* svg chart animation */
@@ -186,6 +191,7 @@
   tbody td{padding:12px 14px;border-bottom:1px solid var(--divider);color:var(--text-2);vertical-align:middle}
   tbody tr:last-child td{border-bottom:0}
   tbody tr:hover td{background:var(--hover)}
+  tbody tr[tabindex]:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
   td .nm{color:var(--text);font-weight:600}
   .mono-cell{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 
@@ -287,6 +293,13 @@
 <body>
 
 <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+  <!-- M4 · gradientes definidos uma unica vez: repetir gDefs() em cada grafico
+       criava varios id="gGold" no mesmo documento — HTML invalido que so
+       funcionava porque o navegador usa o primeiro. -->
+  <defs>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gold-soft)"/><stop offset="1" stop-color="var(--gold-deep)"/></linearGradient>
+    <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".38"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></linearGradient>
+  </defs>
   <filter id="glassDistort" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
     <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="n"/>
     <feGaussianBlur in="n" stdDeviation="1.1" result="nb"/>
@@ -301,10 +314,10 @@
     <div class="kick">Samais · Gestão em Saúde</div>
     <h1>ROTA</h1>
     <div class="sub">Sistema de gestão de transporte sanitário — console do gestor local.</div>
-    <div class="field"><label>Base / contrato</label>
+    <div class="field"><label for="lg-base">Base / contrato</label>
       <select id="lg-base"><option>Floriano — PI</option><option>Caicó — RN</option><option>Aracati — CE</option></select></div>
-    <div class="field"><label>Gestor(a) responsável</label><input id="lg-user" value="Gestor(a) local" /></div>
-    <div class="field"><label>Senha</label><input type="password" value="••••••••" /></div>
+    <div class="field"><label for="lg-user">Gestor(a) responsável</label><input id="lg-user" value="Gestor(a) local" /></div>
+    <div class="field"><label for="lg-pass">Senha</label><input id="lg-pass" type="password" placeholder="qualquer senha — protótipo" autocomplete="off" /></div>
     <button class="btn solid block" id="lg-enter">Entrar no console</button>
     <div class="login-note">Protótipo de demonstração · dados fictícios · nenhuma informação real de paciente. Perfil único: gestor local. Motoristas e assistentes operam via prancheta impressa.</div>
   </div>
@@ -312,20 +325,20 @@
 
 <!-- ===== APP ===== -->
 <div id="app">
-  <aside class="sidebar glass" id="sidebar">
+  <aside class="sidebar glass refract" id="sidebar">
     <div class="sb-brand">
       <svg viewBox="0 0 271 175.9" role="img" aria-label="Samais SA+"><path d="M44.8,106.6l4.9-4.9c6.3,3.6,18.1,8.8,33.7,8.8s25.4-3.2,25.4-11.1-14.2-9.6-24.3-9.8c-16.2-.2-35.3-2.8-35.3-14.1s17.3-16.3,32.6-16.3,27,3.2,34,6.5l-4.4,4.9c-6.7-3.1-17.1-6-28.8-6s-22.8,1.7-22.8,9.6,17,7.7,24.7,7.9c15.9.2,35.3,3.2,35.3,16.9s-20.1,17.1-35.8,17.1-31.5-5.3-39.3-9.4ZM168.7,60.7h-13.1l25,33.6h-42.3c-3.2,0-6.3,1.5-8.2,4.1l-11.7,15.8h7.5l7.9-10.7c1.9-2.6,5-4.1,8.2-4.1h42.2l10.8,14.8h13.1l-39.5-53.6ZM226.2,60.7h-10.4v-10.4h-10v10.4h-10.4v10h10.4v10.4h10v-10.4h10.4v-10Z"/></svg>
       <div class="pn">ROTA<small>por Samais</small></div>
     </div>
     <nav id="nav">
       <div class="sb-sec">Operação</div>
-      <a class="navitem active" data-view="painel"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Painel</a>
-      <a class="navitem" data-view="pacientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M17 8h4M19 6v4"/></svg> Pacientes</a>
-      <a class="navitem" data-view="programacao"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg> Programação</a>
-      <a class="navitem" data-view="frota"><svg viewBox="0 0 24 24"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.3h8.2A2 2 0 0 1 17 8l2 5"/><path d="M2 13h20v4H2z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg> Frota <span class="dot" id="dot-frota">1</span></a>
+      <button type="button" class="navitem active" data-view="painel"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Painel</button>
+      <button type="button" class="navitem" data-view="pacientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M17 8h4M19 6v4"/></svg> Pacientes</button>
+      <button type="button" class="navitem" data-view="programacao"><svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg> Programação</button>
+      <button type="button" class="navitem" data-view="frota"><svg viewBox="0 0 24 24"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.3h8.2A2 2 0 0 1 17 8l2 5"/><path d="M2 13h20v4H2z"/><circle cx="6.5" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg> Frota <span class="dot" id="dot-frota" hidden>0</span></button>
       <div class="sb-sec">Controle</div>
-      <a class="navitem" data-view="impressos"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg> Impressos</a>
-      <a class="navitem" data-view="lancamentos"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Lançamentos <span class="dot" id="dot-lanc">2</span></a>
+      <button type="button" class="navitem" data-view="impressos"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg> Impressos</button>
+      <button type="button" class="navitem" data-view="lancamentos"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Lançamentos <span class="dot" id="dot-lanc" hidden>0</span></button>
     </nav>
     <div class="sb-foot">
       <div class="who" id="sb-who">Gestor(a) local</div>
@@ -338,14 +351,15 @@
   </aside>
   <div class="scrim" id="scrim"></div>
 
-  <header class="topbar glass">
+  <header class="topbar glass refract">
     <div class="tt">
-      <button class="hamburger" id="ham"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <button class="hamburger" id="ham" type="button" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
       <span class="crumb" id="crumb">ROTA / Painel</span>
       <h2 id="viewtitle">Painel da semana</h2>
     </div>
     <div class="rt">
       <span class="pill" id="tb-week"><b>—</b></span>
+      <span class="pill" title="Prototipo: a semana e o dia de hoje sao fixos para demonstracao">Data simulada · <b>08/jul/2026</b></span>
       <span class="pill live">Base ativa · <b id="tb-base">Floriano — PI</b></span>
     </div>
   </header>
@@ -360,7 +374,7 @@
   </main>
 </div>
 
-<div class="modal-bg" id="modalbg"><div class="glass modal" id="modal"></div></div>
+<div class="modal-bg" id="modalbg"><div class="glass modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" tabindex="-1"></div></div>
 <div id="print-root"></div>
 
 <script>
@@ -463,7 +477,7 @@ function custoPeriodo(datas,km){
 var lancamentos={};
 
 /* =================== PROGRAMAÇÃO =================== */
-var viagens=[],_seq=0;
+var viagens=[];
 function assentosDe(grp){return grp.reduce(function(a,p){return a+1+(p.acomp?1:0)},0)}
 /* A3 · Escolhe o MENOR veículo que comporta o grupo. Se nenhum comporta, quebra em
    quantas viagens forem necessárias no maior veículo — nunca sai viagem acima de 100%
@@ -498,7 +512,7 @@ function alocarAmbulancia(grp){
   return blocos.map(function(b){return {pax:b,veic:maior,assentos:assentosDe(b)}});
 }
 function gerarProgramacao(){
-  viagens=[];_seq=0;
+  viagens=[];
   DIAS.forEach(function(dia){
     var byDest={};
     pacientes.forEach(function(p){ if(p.rec.indexOf(dia)>=0){ (byDest[p.dest]=byDest[p.dest]||[]).push(p); } });
@@ -521,9 +535,13 @@ function gerarProgramacao(){
   });
 }
 function mkViagem(dia,dk,dest,pax,veic,assentos){
-  _seq++;
+  /* M6 · ID derivado do CONTEÚDO. Sequencial por ordem de iteração fazia um
+     paciente novo na segunda deslocar todos os IDs, e os lançamentos passavam
+     a apontar para viagens erradas. O sufixo só existe quando a viagem foi
+     dividida por lotação. */
+  var base=dia+'-'+dk+'-'+veic.id, n=viagens.filter(function(v){return v.chave===base}).length;
   var hora= dk==='dialise'?'05:30':(dk==='teresina'?'05:00':'06:00');
-  return {id:'V'+String(_seq).padStart(2,'0'),dia:dia,dest:dk,destNome:dest.nome,km:dest.km,
+  return {id:base+(n?'-'+(n+1):''),chave:base,dia:dia,dest:dk,destNome:dest.nome,km:dest.km,
     rota:'Floriano → '+dest.nome.split(' —')[0],hora:hora,veic:veic,mot:veic.mot,assist:veic.assist||'—',
     pacientes:pax,assentos:assentos,lot:veic.lot};
 }
@@ -674,9 +692,8 @@ function farolRepasse(){
     '<div class="prop"><div class="item"><div class="lab"><span class="xs mut">janela de 90 dias</span><span class="mono-cell">'+dias+'/90</span></div><div class="bar"><div class="fill" data-w="'+pct.toFixed(0)+'" style="background:'+cor+'"></div></div></div></div>'+
     '<div class="xs mut" style="margin-top:12px;line-height:1.55">3 meses consecutivos sem registro de uso suspendem o repasse federal. O lançamento das baixas é o que mantém o dinheiro fluindo.</div>';
 }
-function gDefs(){return '<svg width="0" height="0" style="position:absolute"><defs>'+
-  '<linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--gold-soft)"/><stop offset="1" stop-color="var(--gold-deep)"/></linearGradient>'+
-  '<linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".38"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs></svg>'}
+/* M4 · os gradientes vivem no <svg> do topo do documento; aqui nao se redefine nada */
+function gDefs(){return ''}
 
 function paintCharts(){
   var animate=!REDUCE;
@@ -707,7 +724,7 @@ function renderPacientes(){
       '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+esc(DESTINOS[p.dest].nome.split(' —')[0])+'</div></td>'+
       '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
       '<td><span class="mono-cell">'+esc(p.aut.proc)+'</span><div style="margin-top:4px">'+(elegivelFederal(p)?'<span class="pill2 p-green">elegível federal</span>':'<span class="pill2 p-dim">municipal</span>')+'</div></td>'+
-      '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr data-act="ver-paciente" data-arg="'+esc(pacientes[i].id)+'" style="cursor:pointer">'+html+'</tr>'}).join('');
+      '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr data-act="ver-paciente" data-arg="'+esc(pacientes[i].id)+'" tabindex="0" role="button" aria-label="Abrir ficha de '+esc(pacientes[i].nome)+'" style="cursor:pointer">'+html+'</tr>'}).join('');
   $('#v-pacientes').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
       '<button class="btn sm" data-act="novo-paciente">+ Novo paciente</button></div>'+
@@ -779,7 +796,7 @@ function renderProgramacao(){
 /* =================== FROTA =================== */
 function renderFrota(){
   var vrows=veiculos.map(function(x){var falta=x.proxRev-x.hod,al=falta<=2000;
-    return '<tr data-act="ver-veiculo" data-arg="'+esc(x.id)+'" style="cursor:pointer"><td><span class="nm">'+esc(x.id)+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+esc(x.placa)+'</td>'+
+    return '<tr data-act="ver-veiculo" data-arg="'+esc(x.id)+'" tabindex="0" role="button" aria-label="Abrir ficha do veiculo '+esc(x.id)+'" style="cursor:pointer"><td><span class="nm">'+esc(x.id)+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+esc(x.placa)+'</td>'+
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
       '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td>'+
       '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+esc(x.cnes)+'</span>':'<span class="pill2 p-red">pendente · até '+esc(x.cnesPrazo)+'</span>')+'</td></tr>';}).join('');
@@ -857,7 +874,10 @@ function paperManifesto(){
     '<div class="pf"><div>Emitido em 09/jul/2026 · ROTA · Samais</div><div class="sig"><div class="ln">Gestor(a) local responsável</div></div></div></div>';
 }
 function paperEmbarque(vid){
-  var v=viagens.filter(function(x){return x.id===vid})[0]||viagens[0];
+  var v=viagens.filter(function(x){return x.id===vid})[0];
+  /* L6 · cair em viagens[0] imprimia a folha errada em silencio — pior que nao imprimir */
+  if(!v) return '<div class="paper">'+paperHead('FOLHA DE EMBARQUE / REEMBARQUE')+
+    '<h4>Viagem nao encontrada</h4><div style="font-size:11px;color:#333;margin-top:8px">A viagem selecionada nao existe mais na programacao desta semana — provavelmente a programacao foi regenerada. Volte a aba Impressos e escolha a viagem novamente.</div></div>';
   var rows=v.pacientes.map(function(p,i){return '<tr><td style="width:22px">'+(i+1)+'</td><td>'+esc(p.nome)+'</td><td>'+esc(p.cns)+'</td><td>'+(p.acomp?'Sim':'—')+'</td><td class="tick">☐</td><td class="tick">☐</td><td class="sign">&nbsp;</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('FOLHA DE EMBARQUE / REEMBARQUE')+'<h4>'+esc(v.rota)+'</h4>'+
     '<div class="meta"><div><span>Data</span>'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</div><div><span>Veículo / placa</span>'+esc(v.veic.id)+' · '+esc(v.veic.placa)+'</div><div><span>Motorista</span>'+esc(v.mot)+'</div><div><span>Assistente</span>'+esc(v.assist)+'</div></div>'+
@@ -914,11 +934,30 @@ var icoFuel='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16"/><
 var icoCost='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg>';
 function fld(l,t,v,id){return '<div class="field"><label'+(id?' for="'+id+'"':'')+'>'+esc(l)+'</label><input type="'+t+'" value="'+esc(v).replace(/"/g,'&quot;')+'"'+(id?' id="'+id+'"':'')+'></div>'}
 function selfld(l,o){return '<div class="field"><label>'+esc(l)+'</label><select>'+o.map(function(x){return '<option>'+esc(x)+'</option>'}).join('')+'</select></div>'}
-function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3>'+esc(t)+'</h3><button class="x" data-act="fechar-modal" aria-label="Fechar">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';$('#modalbg').classList.add('on')}
-function closeModal(){$('#modalbg').classList.remove('on')}
+function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3 id="modal-titulo">'+esc(t)+'</h3><button class="x" data-act="fechar-modal" aria-label="Fechar">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';_focoAnterior=document.activeElement;
+  $('#modalbg').classList.add('on');
+  var alvo=$('#modal input,#modal select,#modal textarea,#modal button')||$('#modal');
+  setTimeout(function(){try{alvo.focus()}catch(e){}},0);}
+/* M3 · Modal é diálogo: Esc fecha, o foco entra ao abrir e volta ao disparador
+   ao fechar, e o leitor de tela anuncia título e modalidade. */
+var _focoAnterior=null;
+function closeModal(){
+  $('#modalbg').classList.remove('on');
+  if(_focoAnterior&&_focoAnterior.focus){try{_focoAnterior.focus()}catch(e){}}
+  _focoAnterior=null;
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'&&$('#modalbg').classList.contains('on')){e.preventDefault();closeModal()}
+});
 $('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
 function toast(m){var t=el('div','toast',m);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:var(--surface-solid);border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
-function updateDots(){var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;var d=$('#dot-lanc');if(pend){d.style.display='flex';d.textContent=pend}else{d.style.display='none'}}
+function badge(el,n){if(!el)return;if(n){el.hidden=false;el.style.display='flex';el.textContent=n}else{el.hidden=true;el.style.display='none'}}
+function updateDots(){
+  var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;
+  /* L2 · o badge da frota era fixo no HTML; agora conta o que de fato pede ação */
+  var frota=veiculos.filter(function(x){return !x.cnes||(x.proxRev-x.hod)<=2000}).length;
+  badge($('#dot-lanc'),pend); badge($('#dot-frota'),frota);
+}
 
 /* M2 · Nenhum handler inline: o markup declara a AÇÃO, o JS resolve.
    É o que permite Content-Security-Policy sem 'unsafe-inline' — e desacopla
@@ -949,6 +988,14 @@ function despachar(atributo,valorDoCampo){return function(e){
   fn(valorDoCampo?alvo.value:alvo.getAttribute('data-arg'),alvo,e);
 }}
 document.addEventListener('click',despachar('data-act',false));
+/* M3 · linha de tabela com acao nao e botao nativo: Enter e Espaco precisam
+   disparar o mesmo caminho, senao o console so funciona com mouse. */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  var alvo=e.target&&e.target.closest?e.target.closest('[data-act][tabindex]'):null;
+  if(!alvo)return;
+  e.preventDefault(); alvo.click();
+});
 document.addEventListener('change',despachar('data-act-change',true));
 
 /* B3: Ctrl+P fora da aba Impressos não pode sair em branco — sai um aviso com o caminho certo */
