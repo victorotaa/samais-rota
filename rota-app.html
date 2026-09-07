@@ -534,7 +534,9 @@ function $$(s){return [].slice.call(document.querySelectorAll(s))}
 function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
 function fmt(n){return n.toLocaleString('pt-BR')}
 function money(n){return 'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+/* M1 · esc() e o unico caminho de dado para o HTML. Escapa aspas tambem: sem
+   isso protege texto mas nao atributo, que e onde a injecao passa. */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function statusViagem(v){var l=lancamentos[v.id];
   if(l&&l.concluida)return {pill:'p-green',txt:'Concluída'};
   if(v.dia===HOJE)return {pill:'p-gold',txt:'Hoje'};
@@ -567,9 +569,9 @@ function renderPainel(){
 
   var alerts='';
   veiculos.filter(function(x){return !x.cnes}).forEach(function(x){
-    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Registro CNES pendente — '+x.id+' ('+x.placa+').</b> Veículo do lote '+(x.origem||'federal')+' deve estar inscrito no CNES até <b>'+x.cnesPrazo+'</b> (60 dias do recebimento — Port. 11.164/2026). Sem CNES, as viagens não comprovam repasse.</div></div>';});
+    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Registro CNES pendente — '+esc(x.id)+' ('+esc(x.placa)+').</b> Veículo do lote '+esc(x.origem||'federal')+' deve estar inscrito no CNES até <b>'+esc(x.cnesPrazo)+'</b> (60 dias do recebimento — Port. 11.164/2026). Sem CNES, as viagens não comprovam repasse.</div></div>';});
   veiculos.filter(function(x){return (x.proxRev-x.hod)<=2000}).forEach(function(x){
-    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Revisão próxima — '+x.id+' ('+x.placa+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.</div></div>';});
+    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Revisão próxima — '+esc(x.id)+' ('+esc(x.placa)+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.</div></div>';});
   if(faltas>0) alerts+='<div class="alert bad"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><b>'+faltas+' falta(s) registrada(s) nesta semana.</b> Faltas recorrentes devem ser reportadas à Central de Regulação para liberar a vaga a outro paciente.</div></div>';
 
   /* dados p/ gráficos */
@@ -581,7 +583,7 @@ function renderPainel(){
 
   $('#v-painel').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">Semana '+SEMANA+' · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Resumo operacional da semana</h3></div>'+
-      '<button class="btn sm ghost" onclick="openReport()">↗ Gerar relatório à secretaria</button></div>'+
+      '<button class="btn sm ghost" data-act="relatorio">↗ Gerar relatório à secretaria</button></div>'+
     alerts+
     '<div class="kpis">'+
       kpi('Viagens na semana',cv(totV,0),'',(concl.length)+' concluídas · '+(totV-concl.length)+' programadas',icoRoute)+
@@ -643,7 +645,7 @@ function barsChart(counts){
 }
 function propChart(byDest,tot){
   return '<div class="prop">'+Object.keys(DESTINOS).map(function(dk){var c=byDest[dk]||0,pct=Math.round(c/tot*100);
-    return '<div class="item"><div class="lab"><span>'+DESTINOS[dk].nome.split(' —')[0]+'</span><span class="mono-cell">'+c+' · '+pct+'%</span></div><div class="bar"><div class="fill" data-w="'+pct+'"></div></div></div>'}).join('')+'</div>';
+    return '<div class="item"><div class="lab"><span>'+esc(DESTINOS[dk].nome.split(' —')[0])+'</span><span class="mono-cell">'+c+' · '+pct+'%</span></div><div class="bar"><div class="fill" data-w="'+pct+'"></div></div></div>'}).join('')+'</div>';
 }
 function splitChart(pres,falt){
   var tot=pres+falt||1;
@@ -700,15 +702,15 @@ function countUp(elm,dur){
 /* =================== PACIENTES =================== */
 function renderPacientes(){
   var rows=pacientes.map(function(p){
-    return '<td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+p.mun+' · '+esc(p.ponto)+'</div></td>'+
-      '<td class="mono-cell">'+p.cns+'</td><td>'+esc(p.trat)+'</td>'+
-      '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+DESTINOS[p.dest].nome.split(' —')[0]+'</div></td>'+
+    return '<td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+esc(p.mun)+' · '+esc(p.ponto)+'</div></td>'+
+      '<td class="mono-cell">'+esc(p.cns)+'</td><td>'+esc(p.trat)+'</td>'+
+      '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+esc(DESTINOS[p.dest].nome.split(' —')[0])+'</div></td>'+
       '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
-      '<td><span class="mono-cell">'+p.aut.proc+'</span><div style="margin-top:4px">'+(elegivelFederal(p)?'<span class="pill2 p-green">elegível federal</span>':'<span class="pill2 p-dim">municipal</span>')+'</div></td>'+
-      '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr onclick="verPaciente('+pacientes[i].id+')" style="cursor:pointer">'+html+'</tr>'}).join('');
+      '<td><span class="mono-cell">'+esc(p.aut.proc)+'</span><div style="margin-top:4px">'+(elegivelFederal(p)?'<span class="pill2 p-green">elegível federal</span>':'<span class="pill2 p-dim">municipal</span>')+'</div></td>'+
+      '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr data-act="ver-paciente" data-arg="'+esc(pacientes[i].id)+'" style="cursor:pointer">'+html+'</tr>'}).join('');
   $('#v-pacientes').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
-      '<button class="btn sm" onclick="novoPaciente()">+ Novo paciente</button></div>'+
+      '<button class="btn sm" data-act="novo-paciente">+ Novo paciente</button></div>'+
     '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>A lista chega da Secretaria/Central de Regulação e é lançada aqui pelo gestor. Integração automática com o CADSUS fica para uma fase futura — por ora, cadastro manual por CNS.</div></div>'+
     '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Autorização</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
@@ -719,18 +721,18 @@ function novoPaciente(){
     selfld('Destino',Object.keys(DESTINOS).map(function(k){return DESTINOS[k].nome.split(' —')[0]}))+'</div>'+
     '<div style="margin-top:14px"><div class="sublbl" style="margin-bottom:8px">Recorrência</div><div class="row" style="gap:14px">'+DIAS.map(function(d){return '<label class="chk"><input type="checkbox"> '+DIA_NOME[d]+'</label>'}).join('')+'</div></div>'+
     '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>',
-    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Paciente cadastrado (demo)\')">Salvar cadastro</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="demo-paciente-salvo">Salvar cadastro</button>');
 }
-function info(k,v){return '<div class="field"><label>'+k+'</label><div style="padding:6px 0;color:var(--text-2);font-size:13.5px">'+esc(v)+'</div></div>'}
+function info(k,v){return '<div class="field"><label>'+esc(k)+'</label><div style="padding:6px 0;color:var(--text-2);font-size:13.5px">'+esc(v)+'</div></div>'}
 function verPaciente(id){
   var p=pacientes.filter(function(x){return x.id===id})[0];
   var trips=viagens.filter(function(v){return v.pacientes.some(function(q){return q.id===id})});
   var tr=trips.map(function(v){var st=statusViagem(v);
-    return '<div class="between" style="padding:11px 0;border-top:1px solid var(--divider)"><div><span class="pill2 '+st.pill+'">'+st.txt+'</span> <span class="sm" style="color:var(--text-2)">'+DIA_NOME[v.dia]+' · '+v.hora+'</span><div class="xs mut" style="margin-top:3px">'+esc(v.destNome.split(' —')[0])+' · '+v.veic.id+'</div></div><span class="mono-cell">'+(v.km*2)+' km</span></div>'}).join('')||'<div class="empty">Sem viagens nesta semana</div>';
+    return '<div class="between" style="padding:11px 0;border-top:1px solid var(--divider)"><div><span class="pill2 '+st.pill+'">'+st.txt+'</span> <span class="sm" style="color:var(--text-2)">'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</span><div class="xs mut" style="margin-top:3px">'+esc(v.destNome.split(' —')[0])+' · '+esc(v.veic.id)+'</div></div><span class="mono-cell">'+(v.km*2)+' km</span></div>'}).join('')||'<div class="empty">Sem viagens nesta semana</div>';
   openModal(p.nome,'<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',DESTINOS[p.dest].nome.split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+info('Autorização (regulação)',p.aut.proc+' · válida até '+p.aut.val)+info('Cofinanciamento',elegivelFederal(p)?'Elegível federal (>50 km · Port. 11.164)':'Municipal (≤50 km ou fora do escopo)')+'</div>'+
     (p.nec!=='—'?'<div class="alert warn" style="margin:14px 0 0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Necessidade especial: <b>'+esc(p.nec)+'</b></div></div>':'')+
     '<div class="sublbl" style="margin:18px 0 2px">Viagens da semana ('+trips.length+')</div>'+tr,
-    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button>');
 }
 function verVeiculo(id){
   var x=veiculos.filter(function(v){return v.id===id})[0];
@@ -741,35 +743,35 @@ function verVeiculo(id){
   var falta=x.proxRev-x.hod, pctRev=Math.min(Math.max((x.revCada-falta)/x.revCada*100,0),100);
   var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+fmtDia(a.data)+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
   openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+info('CNES',x.cnes?x.cnes:'pendente — prazo '+x.cnesPrazo)+info('Origem',x.origem||'frota própria/locada')+'</div>'+
-    (!x.cnes?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Inscrever no CNES até <b>'+x.cnesPrazo+'</b> (60 dias do recebimento — Port. 11.164/2026).</div></div>':'')+
+    (!x.cnes?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Inscrever no CNES até <b>'+esc(x.cnesPrazo)+'</b> (60 dias do recebimento — Port. 11.164/2026).</div></div>':'')+
     '<div class="sublbl" style="margin:16px 0 8px">Próxima revisão · faltam '+fmt(falta)+' km ('+fmt(x.proxRev)+' km)</div>'+
     '<div class="prop"><div class="item"><div class="bar"><div class="fill" style="width:'+pctRev.toFixed(0)+'%"></div></div></div></div>'+
     (falta<=2000?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Revisão próxima — agende com a oficina.</div></div>':'')+
     '<div class="sublbl" style="margin:18px 0 2px">Abastecimentos ('+ab.length+')</div>'+abList,
-    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button>');
 }
 
 /* =================== PROGRAMAÇÃO =================== */
 var progFiltro='todos';
 function renderProgramacao(){
   var body='<div class="between" style="margin-bottom:18px"><div><div class="sublbl">Semana '+SEMANA+' · gerada a partir das recorrências dos pacientes</div><h3 class="blk" style="font-size:18px;margin-top:4px">Programação de viagens</h3></div>'+
-    '<button class="btn sm ghost" onclick="gerarProgramacao();render(\'programacao\');toast(\'Programação regenerada\')">↻ Regenerar da semana</button></div>'+
-    '<div class="seg" style="margin-bottom:16px">'+['todos'].concat(DIAS).map(function(d){return '<button class="'+(progFiltro===d?'on':'')+'" onclick="progFiltro=\''+d+'\';renderProgramacao()">'+(d==='todos'?'Semana':DIA_NOME[d])+'</button>'}).join('')+'</div>';
+    '<button class="btn sm ghost" data-act="regenerar">↻ Regenerar da semana</button></div>'+
+    '<div class="seg" style="margin-bottom:16px">'+['todos'].concat(DIAS).map(function(d){return '<button class="'+(progFiltro===d?'on':'')+'" data-act="filtro-dia" data-arg="'+d+'">'+(d==='todos'?'Semana':DIA_NOME[d])+'</button>'}).join('')+'</div>';
   var list=viagens.filter(function(v){return progFiltro==='todos'||v.dia===progFiltro});
   body+='<div class="row" style="flex-direction:column;gap:12px">';
   list.forEach(function(v){var st=statusViagem(v),ocup=Math.round(v.assentos/v.lot*100);
     body+='<div class="card glass pad"><div class="between" style="align-items:flex-start">'+
-      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+v.hora+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' federal · >50 km</span>':''})()+'</div>'+
-        '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+DESTINOS[v.dest].tipo+' · '+v.km+' km · '+esc(v.destNome)+'</div>'+
+      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' federal · >50 km</span>':''})()+'</div>'+
+        '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+esc(DESTINOS[v.dest].tipo)+' · '+v.km+' km · '+esc(v.destNome)+'</div>'+
         (function(){var irmas=viagens.filter(function(x){return x.dia===v.dia&&x.dest===v.dest&&x.veic.classe===v.veic.classe});
           return irmas.length>1?'<div class="xs mut" style="margin-top:4px">viagem '+(irmas.indexOf(v)+1)+' de '+irmas.length+' — grupo excedeu a lotação e foi dividido</div>':''})()+'</div>'+
-      '<div style="text-align:right"><div class="mono-cell">'+v.veic.id+' · '+v.veic.placa+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
+      '<div style="text-align:right"><div class="mono-cell">'+esc(v.veic.id)+' · '+esc(v.veic.placa)+'</div><div class="xs mut" style="margin-top:2px">'+esc(v.veic.tipo)+'</div>'+
         '<div style="margin-top:8px"><span class="pill2 '+(ocup>90?'p-red':ocup>60?'p-gold':'p-green')+'">'+v.assentos+'/'+v.lot+' assentos · '+ocup+'%</span></div></div></div>'+
       '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--divider);display:flex;gap:26px;flex-wrap:wrap">'+
         '<div><div class="sublbl">Motorista</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+esc(v.mot)+'</div></div>'+
         '<div><div class="sublbl">Assistente</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+esc(v.assist)+'</div></div>'+
         '<div style="flex:1;min-width:180px"><div class="sublbl">Pacientes ('+v.pacientes.length+')</div><div class="sm" style="color:var(--text-2);margin-top:3px">'+v.pacientes.map(function(p){return esc(p.nome.split(' ')[0]+' '+p.nome.split(' ')[1])}).join(', ')+'</div></div>'+
-        '<button class="btn sm ghost" style="align-self:center" onclick="imprimirEmbarque(\''+v.id+'\')">⎙ Folha de embarque</button></div></div>';});
+        '<button class="btn sm ghost" style="align-self:center" data-act="imprimir-embarque" data-arg="'+esc(v.id)+'">⎙ Folha de embarque</button></div></div>';});
   body+='</div>';
   $('#v-programacao').innerHTML=body;
 }
@@ -777,34 +779,34 @@ function renderProgramacao(){
 /* =================== FROTA =================== */
 function renderFrota(){
   var vrows=veiculos.map(function(x){var falta=x.proxRev-x.hod,al=falta<=2000;
-    return '<tr onclick="verVeiculo(\''+x.id+'\')" style="cursor:pointer"><td><span class="nm">'+x.id+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+x.placa+'</td>'+
+    return '<tr data-act="ver-veiculo" data-arg="'+esc(x.id)+'" style="cursor:pointer"><td><span class="nm">'+esc(x.id)+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+esc(x.placa)+'</td>'+
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
       '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td>'+
-      '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+x.cnes+'</span>':'<span class="pill2 p-red">pendente · até '+x.cnesPrazo+'</span>')+'</td></tr>';}).join('');
-  var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+fmtDia(a.data)+'</td><td><span class="nm">'+a.vid+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
+      '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+esc(x.cnes)+'</span>':'<span class="pill2 p-red">pendente · até '+esc(x.cnesPrazo)+'</span>')+'</td></tr>';}).join('');
+  var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+fmtDia(a.data)+'</td><td><span class="nm">'+esc(a.vid)+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
   $('#v-frota').innerHTML=
     '<div class="sect-head between"><div><div class="sublbl">3 veículos · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
     '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th><th>CNES</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
-    '<div class="between" style="margin-bottom:14px"><div><h3 class="blk">Abastecimentos</h3><div class="sublbl" style="margin-top:2px">lançados pelo gestor · consumo calculado automaticamente</div></div><button class="btn sm" onclick="novoAbastecimento()">+ Registrar abastecimento</button></div>'+
+    '<div class="between" style="margin-bottom:14px"><div><h3 class="blk">Abastecimentos</h3><div class="sublbl" style="margin-top:2px">lançados pelo gestor · consumo calculado automaticamente</div></div><button class="btn sm" data-act="novo-abastecimento">+ Registrar abastecimento</button></div>'+
     '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Km desde o último</th><th>Consumo</th><th>Valor</th></tr></thead><tbody>'+arows+'</tbody></table></div></div>';
 }
 function novoAbastecimento(){
   openModal('Registrar abastecimento','<div class="fgrid">'+selfld('Veículo',veiculos.map(function(v){return v.id+' · '+v.placa}))+fld('Litros','number','')+fld('Km rodados desde o último','number','')+fld('Valor (R$)','number','')+'</div>'+
     '<div class="alert warn" style="margin-top:14px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Todo abastecimento deve ser lançado no sistema — é o que fecha o controle de consumo e sinaliza desvios.</div></div>',
-    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="closeModal();toast(\'Abastecimento lançado (demo)\')">Lançar</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="demo-abastecimento-salvo">Lançar</button>');
 }
 
 /* =================== IMPRESSOS =================== */
 var impMode='manifesto';
 function renderImpressos(){
-  var opts=viagens.map(function(v){return '<option value="'+v.id+'">'+DIA_NOME[v.dia]+' · '+v.rota.split('→')[1].trim()+' · '+v.veic.id+'</option>'}).join('');
+  var opts=viagens.map(function(v){return '<option value="'+esc(v.id)+'">'+DIA_NOME[v.dia]+' · '+esc(v.rota.split('→')[1].trim())+' · '+esc(v.veic.id)+'</option>'}).join('');
   $('#v-impressos').innerHTML=
     '<div class="between" style="margin-bottom:16px"><div><div class="sublbl">Prancheta A4 · margens de impressão · descartável após a baixa</div><h3 class="blk" style="font-size:18px;margin-top:4px">Impressos operacionais</h3></div>'+
-      '<button class="btn sm solid" onclick="window.print()">⎙ Imprimir esta folha</button></div>'+
-    '<div class="seg" style="margin-bottom:8px"><button class="'+(impMode==='manifesto'?'on':'')+'" onclick="impMode=\'manifesto\';renderImpressos()">Manifesto geral semanal</button>'+
-      '<button class="'+(impMode==='embarque'?'on':'')+'" onclick="impMode=\'embarque\';renderImpressos()">Folha de embarque / reembarque</button>'+
-      '<button class="'+(impMode==='relatorio'?'on':'')+'" onclick="impMode=\'relatorio\';renderImpressos()">Relatório mensal de comprovação</button></div>'+
-    (impMode==='embarque'?'<div class="row" style="margin:12px 0 18px;align-items:center;gap:10px"><span class="sublbl">Viagem:</span><select id="imp-viagem" style="max-width:340px;background:var(--input-bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px" onchange="renderPaper()">'+opts+'</select></div>':'<div style="height:14px"></div>')+
+      '<button class="btn sm solid" data-act="imprimir">⎙ Imprimir esta folha</button></div>'+
+    '<div class="seg" style="margin-bottom:8px"><button class="'+(impMode==='manifesto'?'on':'')+'" data-act="modo-impresso" data-arg="manifesto">Manifesto geral semanal</button>'+
+      '<button class="'+(impMode==='embarque'?'on':'')+'" data-act="modo-impresso" data-arg="embarque">Folha de embarque / reembarque</button>'+
+      '<button class="'+(impMode==='relatorio'?'on':'')+'" data-act="modo-impresso" data-arg="relatorio">Relatório mensal de comprovação</button></div>'+
+    (impMode==='embarque'?'<div class="row" style="margin:12px 0 18px;align-items:center;gap:10px"><span class="sublbl">Viagem:</span><select id="imp-viagem" style="max-width:340px;background:var(--input-bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px" data-act-change="render-paper">'+opts+'</select></div>':'<div style="height:14px"></div>')+
     '<div class="paper-shell"><div id="paperhost" style="width:100%"></div></div>'+
     '<div class="paper-note">Formato A4 (210 × 297 mm) · margens de impressão 14 mm · o botão acima imprime só esta folha</div>';
   renderPaper();
@@ -826,7 +828,7 @@ function paperRelatorio(){
   var ocupReal=ocupRealizada(viagens), ocupProg=ocupProgramada(viagens);
   var byV={};concl.forEach(function(v){var k=v.veic.id;(byV[k]=byV[k]||{n:0,km:0,lit:0}).n++;byV[k].km+=lancamentos[v.id].km;byV[k].lit+=lancamentos[v.id].litros});
   var vr=veiculos.map(function(x){var d=byV[x.id]||{n:0,km:0,lit:0};
-    return '<tr><td>'+x.id+' · '+x.placa+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+x.cnesPrazo+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
+    return '<tr><td>'+esc(x.id)+' · '+esc(x.placa)+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+esc(x.cnesPrazo)+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('RELATÓRIO MENSAL DE COMPROVAÇÃO')+
     '<h4>Julho/2026 — parcial (semana 06–10)</h4>'+
     '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.179/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, acima de 50 km, com presença conferida.</div>'+
@@ -847,18 +849,18 @@ function paperManifesto(){
   var blocks='';
   Object.keys(byVeic).forEach(function(vid){var vs=byVeic[vid],veic=vs[0].veic;
     var wk=DIAS.map(function(d){var day=vs.filter(function(v){return v.dia===d});
-      var inner=day.map(function(v){return '<div class="tr"><b>'+v.hora+'</b> '+v.rota.split('→')[1].trim()+' <span style="color:#777">('+v.pacientes.length+'p)</span></div>'}).join('')||'<span style="color:#bbb">—</span>';
+      var inner=day.map(function(v){return '<div class="tr"><b>'+esc(v.hora)+'</b> '+esc(v.rota.split('→')[1].trim())+' <span style="color:#777">('+v.pacientes.length+'p)</span></div>'}).join('')||'<span style="color:#bbb">—</span>';
       return '<div class="d"><div class="dh">'+d+'</div>'+inner+'</div>';}).join('');
-    blocks+='<div class="veh-block"><div class="vh"><span>'+veic.id+' · '+veic.placa+' · '+veic.tipo+'</span><span>Motorista: '+veic.mot+(veic.assist?' · Assist.: '+veic.assist:'')+'</span></div><div class="wk">'+wk+'</div></div>';});
+    blocks+='<div class="veh-block"><div class="vh"><span>'+esc(veic.id)+' · '+esc(veic.placa)+' · '+esc(veic.tipo)+'</span><span>Motorista: '+esc(veic.mot)+(veic.assist?' · Assist.: '+esc(veic.assist):'')+'</span></div><div class="wk">'+wk+'</div></div>';});
   return '<div class="paper">'+paperHead('MANIFESTO GERAL SEMANAL')+'<h4>Escala de viagens por veículo</h4><div style="font-size:10px;color:#666;margin-bottom:12px">Afixar no ponto de guarda dos veículos. Placa · rota · destino · horário.</div>'+blocks+
     '<div class="lgpd">Documento operacional interno — contém dados de saúde. Uso restrito à equipe Samais. Descartar de forma segura após a baixa no sistema (LGPD).</div>'+
     '<div class="pf"><div>Emitido em 09/jul/2026 · ROTA · Samais</div><div class="sig"><div class="ln">Gestor(a) local responsável</div></div></div></div>';
 }
 function paperEmbarque(vid){
   var v=viagens.filter(function(x){return x.id===vid})[0]||viagens[0];
-  var rows=v.pacientes.map(function(p,i){return '<tr><td style="width:22px">'+(i+1)+'</td><td>'+esc(p.nome)+'</td><td>'+p.cns+'</td><td>'+(p.acomp?'Sim':'—')+'</td><td class="tick">☐</td><td class="tick">☐</td><td class="sign">&nbsp;</td></tr>'}).join('');
+  var rows=v.pacientes.map(function(p,i){return '<tr><td style="width:22px">'+(i+1)+'</td><td>'+esc(p.nome)+'</td><td>'+esc(p.cns)+'</td><td>'+(p.acomp?'Sim':'—')+'</td><td class="tick">☐</td><td class="tick">☐</td><td class="sign">&nbsp;</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('FOLHA DE EMBARQUE / REEMBARQUE')+'<h4>'+esc(v.rota)+'</h4>'+
-    '<div class="meta"><div><span>Data</span>'+DIA_NOME[v.dia]+' · '+v.hora+'</div><div><span>Veículo / placa</span>'+v.veic.id+' · '+v.veic.placa+'</div><div><span>Motorista</span>'+esc(v.mot)+'</div><div><span>Assistente</span>'+esc(v.assist)+'</div></div>'+
+    '<div class="meta"><div><span>Data</span>'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</div><div><span>Veículo / placa</span>'+esc(v.veic.id)+' · '+esc(v.veic.placa)+'</div><div><span>Motorista</span>'+esc(v.mot)+'</div><div><span>Assistente</span>'+esc(v.assist)+'</div></div>'+
     '<table><thead><tr><th>#</th><th>Paciente</th><th>Cartão SUS</th><th>Acomp.</th><th class="tick">Embarque</th><th class="tick">Reembarque</th><th>Assinatura</th></tr></thead><tbody>'+rows+'</tbody></table>'+
     '<div class="lgpd">Conferência presencial: marque o embarque na saída e o reembarque no retorno. Nenhum paciente pode ficar no destino sem registro. Descartar após a baixa no sistema (LGPD).</div>'+
     '<div class="pf"><div>Total: '+v.pacientes.length+' paciente(s) · '+v.assentos+' assento(s)<br>Km previsto: '+(v.km*2)+' km (ida e volta)</div><div class="sig"><div class="ln">Conferente (motorista / assistente)</div></div></div></div>';
@@ -872,18 +874,18 @@ function renderLancamentos(){
   var body='<div class="sect-head"><div class="sublbl">O gestor recebe a prancheta e dá baixa · '+pend.length+' pendente(s)</div><h3 class="blk" style="font-size:18px;margin-top:4px">Lançamentos e baixa</h3></div>'+
     '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Campo primeiro no papel, baixa depois — a operação não depende de conexão. O gestor lança presenças, faltas, km e combustível a partir da folha conferida.</div></div>';
   if(pend.length){body+='<h3 class="blk" style="margin-bottom:10px">Pendentes de baixa</h3><div class="row" style="flex-direction:column;gap:10px;margin-bottom:26px">';
-    pend.forEach(function(v){body+='<div class="card glass pad between"><div><span class="pill2 p-gold">Aguardando baixa</span><h3 class="blk" style="margin-top:8px">'+esc(v.rota)+'</h3><div class="sm mut">'+DIA_NOME[v.dia]+' · '+v.veic.id+' · '+v.pacientes.length+' paciente(s)</div></div><button class="btn sm solid" onclick="darBaixa(\''+v.id+'\')">Dar baixa</button></div>'});
+    pend.forEach(function(v){body+='<div class="card glass pad between"><div><span class="pill2 p-gold">Aguardando baixa</span><h3 class="blk" style="margin-top:8px">'+esc(v.rota)+'</h3><div class="sm mut">'+DIA_NOME[v.dia]+' · '+esc(v.veic.id)+' · '+v.pacientes.length+' paciente(s)</div></div><button class="btn sm solid" data-act="dar-baixa" data-arg="'+esc(v.id)+'">Dar baixa</button></div>'});
     body+='</div>';}
   body+='<h3 class="blk" style="margin-bottom:10px">Concluídas nesta semana</h3><div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Viagem</th><th>Dia</th><th>Presentes</th><th>Faltas</th><th>Km</th><th>Combustível</th></tr></thead><tbody>';
-  feitas.forEach(function(v){var l=lancamentos[v.id];body+='<tr><td><span class="nm">'+esc(v.rota.split('→')[1].trim())+'</span><div class="xs mut">'+v.veic.id+'</div></td><td>'+DIA_NOME[v.dia]+'</td><td>'+l.presentes.length+'</td><td>'+(l.faltas.length?'<span class="pill2 p-red">'+l.faltas.length+'</span>':'0')+'</td><td class="mono-cell">'+l.km+' km</td><td class="mono-cell">'+l.litros+' L</td></tr>'});
+  feitas.forEach(function(v){var l=lancamentos[v.id];body+='<tr><td><span class="nm">'+esc(v.rota.split('→')[1].trim())+'</span><div class="xs mut">'+esc(v.veic.id)+'</div></td><td>'+DIA_NOME[v.dia]+'</td><td>'+l.presentes.length+'</td><td>'+(l.faltas.length?'<span class="pill2 p-red">'+l.faltas.length+'</span>':'0')+'</td><td class="mono-cell">'+l.km+' km</td><td class="mono-cell">'+l.litros+' L</td></tr>'});
   body+='</tbody></table></div></div>';
   $('#v-lancamentos').innerHTML=body;
 }
 function darBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0];
-  var chks=v.pacientes.map(function(p){return '<label class="chk" style="margin-bottom:9px"><input type="checkbox" checked data-pid="'+p.id+'"> '+esc(p.nome)+'</label>'}).join('');
+  var chks=v.pacientes.map(function(p){return '<label class="chk" style="margin-bottom:9px"><input type="checkbox" checked data-pid="'+esc(p.id)+'"> '+esc(p.nome)+'</label>'}).join('');
   openModal('Baixa — '+v.rota.split('→')[1].trim(),'<div class="sublbl" style="margin-bottom:10px">Presença (desmarque quem faltou)</div>'+chks+'<div class="fgrid" style="margin-top:16px">'+fld('Km rodado (ida e volta)','number',String(v.km*2),'bx-km')+fld('Combustível (L)','number',String(Math.round(v.km/9)),'bx-litros')+'<div class="field"><label for="bx-diarias">Diárias / casa de apoio</label><input type="number" id="bx-diarias" value="0"></div></div>'+
     '<div class="xs mut" style="margin-top:10px">Km e combustível vêm pré-preenchidos com o previsto — <b>substitua pelo que está na prancheta</b>. O que vale é o conferido no papel.</div>',
-    '<button class="btn ghost sm" onclick="closeModal()">Cancelar</button><button class="btn solid sm" onclick="confirmBaixa(\''+vid+'\')">Confirmar baixa</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="confirmar-baixa" data-arg="'+esc(vid)+'">Confirmar baixa</button>');
 }
 function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[0],pres=[],falt=[];
   $$('#modal input[data-pid]').forEach(function(c){(c.checked?pres:falt).push(parseInt(c.dataset.pid))});
@@ -900,7 +902,7 @@ function openReport(){
   openModal('Relatório à secretaria contratante','<p class="sm mut" style="margin-bottom:14px">Consolidado da semana '+SEMANA+' — Base Floriano — PI. Documento que o gestor entrega à Secretaria de Saúde e à Samais como prestação de contas.</p>'+
     '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Deslocamentos elegíveis</div><div class="v">'+viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0)+'</div><div class="d">paciente-deslocamento · radio/hemodiálise · >50 km</div></div></div>'+
     '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>Cada <b>paciente</b> em hemodiálise ou radioterapia transportado acima de 50 km, com presença conferida na folha de embarque, é um deslocamento comprovado para o cofinanciamento federal. A folha conferida é o documento que fatura — por paciente, não por viagem.</div></div>',
-    '<button class="btn ghost sm" onclick="closeModal()">Fechar</button><button class="btn solid sm" onclick="closeModal();render(\'impressos\');impMode=\'relatorio\';renderImpressos()">Abrir versão A4 (imprimir)</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button><button class="btn solid sm" data-act="abrir-relatorio-a4">Abrir versão A4 (imprimir)</button>');
 }
 
 /* =================== ÍCONES + UTILS =================== */
@@ -910,13 +912,44 @@ var icoCheck='<svg viewBox="0 0 24 24"><path d="M20 7L10 17l-5-5"/></svg>';
 var icoGauge='<svg viewBox="0 0 24 24"><path d="M12 14l4-4M4 18a8 8 0 1 1 16 0"/></svg>';
 var icoFuel='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16"/><path d="M13 9h3l2 2v6a2 2 0 0 1-4 0"/></svg>';
 var icoCost='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg>';
-function fld(l,t,v,id){return '<div class="field"><label'+(id?' for="'+id+'"':'')+'>'+l+'</label><input type="'+t+'" value="'+esc(v).replace(/"/g,'&quot;')+'"'+(id?' id="'+id+'"':'')+'></div>'}
-function selfld(l,o){return '<div class="field"><label>'+l+'</label><select>'+o.map(function(x){return '<option>'+x+'</option>'}).join('')+'</select></div>'}
-function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3>'+t+'</h3><button class="x" onclick="closeModal()">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';$('#modalbg').classList.add('on')}
+function fld(l,t,v,id){return '<div class="field"><label'+(id?' for="'+id+'"':'')+'>'+esc(l)+'</label><input type="'+t+'" value="'+esc(v).replace(/"/g,'&quot;')+'"'+(id?' id="'+id+'"':'')+'></div>'}
+function selfld(l,o){return '<div class="field"><label>'+esc(l)+'</label><select>'+o.map(function(x){return '<option>'+esc(x)+'</option>'}).join('')+'</select></div>'}
+function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3>'+esc(t)+'</h3><button class="x" data-act="fechar-modal" aria-label="Fechar">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';$('#modalbg').classList.add('on')}
 function closeModal(){$('#modalbg').classList.remove('on')}
 $('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
 function toast(m){var t=el('div','toast',m);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:var(--surface-solid);border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
 function updateDots(){var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;var d=$('#dot-lanc');if(pend){d.style.display='flex';d.textContent=pend}else{d.style.display='none'}}
+
+/* M2 · Nenhum handler inline: o markup declara a AÇÃO, o JS resolve.
+   É o que permite Content-Security-Policy sem 'unsafe-inline' — e desacopla
+   o HTML dos nomes globais. */
+var ACOES={
+  'relatorio':function(){openReport()},
+  'novo-paciente':function(){novoPaciente()},
+  'ver-paciente':function(a){verPaciente(+a)},
+  'ver-veiculo':function(a){verVeiculo(a)},
+  'novo-abastecimento':function(){novoAbastecimento()},
+  'regenerar':function(){gerarProgramacao();render('programacao');toast('Programação regenerada')},
+  'filtro-dia':function(a){progFiltro=a;renderProgramacao()},
+  'modo-impresso':function(a){impMode=a;renderImpressos()},
+  'imprimir':function(){window.print()},
+  'imprimir-embarque':function(a){imprimirEmbarque(a)},
+  'dar-baixa':function(a){darBaixa(a)},
+  'confirmar-baixa':function(a){confirmBaixa(a)},
+  'fechar-modal':function(){closeModal()},
+  'demo-paciente-salvo':function(){closeModal();toast('Paciente cadastrado (demo)')},
+  'demo-abastecimento-salvo':function(){closeModal();toast('Abastecimento lançado (demo)')},
+  'abrir-relatorio-a4':function(){closeModal();render('impressos');impMode='relatorio';renderImpressos()},
+  'render-paper':function(){renderPaper()}
+};
+function despachar(atributo,valorDoCampo){return function(e){
+  var alvo=e.target&&e.target.closest?e.target.closest('['+atributo+']'):null; if(!alvo)return;
+  var fn=ACOES[alvo.getAttribute(atributo)]; if(!fn)return;
+  if(!valorDoCampo)e.preventDefault();
+  fn(valorDoCampo?alvo.value:alvo.getAttribute('data-arg'),alvo,e);
+}}
+document.addEventListener('click',despachar('data-act',false));
+document.addEventListener('change',despachar('data-act-change',true));
 
 /* B3: Ctrl+P fora da aba Impressos não pode sair em branco — sai um aviso com o caminho certo */
 window.addEventListener('beforeprint',function(){var pr=$('#print-root');if(pr.innerHTML.trim())return;pr.setAttribute('data-fallback','1');

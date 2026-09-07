@@ -94,7 +94,21 @@ Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeit
 - Efeito: a portaria pede taxa de ocupação como mecanismo de gestão de frota; o que importa é quem **embarcou** (presentes ÷ lotação). Hoje uma viagem com 8 programados e 5 presentes conta 8.
 - Correção: duas métricas com nome distinto — "ocupação programada" (planejamento) e "ocupação realizada" (comprovação). Só a segunda vai ao relatório.
 
-### 2.3 · Médios — dívida que a Fase 2 herda se não for tratada
+### 2.3 · Médios — **M1, M2 e a CSP corrigidos**
+
+> **M2 · zero handler inline.** Os 21 `onclick`/`onchange` viraram `data-act` / `data-arg` resolvidos por um registro de ações e dois listeners delegados. O markup deixou de conhecer nomes globais.
+>
+> **CSP ligada**, que era o motivo de M2 existir: `default-src 'self'`, `script-src` com hash SHA-256 do bloco inline, `connect-src 'none'`, `object-src 'none'`, `form-action 'none'`, `frame-ancestors 'none'`. Verificada servindo com os headers reais: nenhuma violação, e a delegação continua funcionando sob a política.
+>
+> ⚠️ **O hash da CSP muda a cada alteração no `<script>` inline.** Recalcular antes de publicar, ou a página perde o JavaScript inteiro. É o mesmo procedimento já documentado para `rota-proposta`.
+>
+> **M1 · escape por padrão.** `esc()` passa a escapar aspas — sem isso protegia texto mas não atributo, que é por onde a injeção entra — e todas as 48 interpolações de dado passaram a atravessá-lo, incluindo os rótulos e as opções de `fld`, `selfld` e `info`.
+>
+> **O teste que fechou o item.** Injetei um paciente e um veículo hostis (`<img src=x onerror>` em nome, CNS, município, processo, placa, tipo, origem, prazo CNES, e `" onmouseover="` para quebrar atributo) e percorri as quinze telas e modais. A primeira rodada executou **três payloads** — o campo-a-campo tinha deixado passar `x.origem`, `DESTINOS[dk].nome` e as opções de `selfld`, exatamente o risco que esta revisão previu. Depois de fechá-los: **zero execuções, zero nós injetados, zero atributos de evento**, e o payload aparece como texto escapado na tela.
+>
+> O que **não** foi feito: o caminho único de render (item 17 do backlog). O escape hoje é correto em todos os sítios, mas continua sendo por sítio — a garantia estrutural vem quando a camada de render for reconstruída contra a API, na Fase 2.
+
+### 2.3-bis · Médios — texto original do achado
 
 **M1 · HTML montado por concatenação com escape parcial.**
 - Onde: 11 `innerHTML`; `esc()` (L452) aplicada a alguns campos e não a outros (`cns`, `placa`, `id`, `data`, `cnesPrazo`, nomes de destino passam sem escape); `fld()` (L810) injeta `value="…"` sem escape; `esc()` não trata aspas, então não protege atributos.
