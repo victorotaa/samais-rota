@@ -142,7 +142,28 @@ Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeit
 **M7 · Refração declarada, nunca usada.**
 - `.refract` (L63) não aparece em nenhum elemento. A spec (RF-08) e o `CLAUDE.md` prometem refração no desktop; ou aplica-se `.refract` ao sidebar/topbar, ou remove-se a regra e a promessa.
 
-### 2.4 · Baixos — higiene
+### 2.3-ter · Médios de acabamento — **corrigidos**
+
+> **M3 · acessibilidade.** Os itens do menu viraram `<button type="button">` — operam com Enter e Espaço, verificado. O modal ganhou `role="dialog"`, `aria-modal`, `aria-labelledby`, foco no primeiro campo ao abrir, **Esc fecha** e o foco volta ao disparador. Linhas de tabela clicáveis ganharam `tabindex`, `role="button"` e rótulo, com Enter/Espaço disparando o mesmo caminho do clique. Anéis de foco visíveis em botões, menu e linhas.
+>
+> **M4 · gradientes SVG.** `gGold` e `gArea` passam a existir **uma vez**, no `<svg>` do topo. Antes `gDefs()` era repetido em cada gráfico e o documento carregava vários elementos com o mesmo `id` — HTML inválido que só funcionava porque o navegador usa o primeiro. Verificado: um nó de cada.
+>
+> **M5 · contraste.** `--dim` reprovava AA nos dois temas — 2,98:1 no escuro e 2,25:1 no claro — e é a cor dos rótulos em mono, os mais difíceis de ler. Agora **5,27:1 e 4,75:1**. O número central do donut no tema claro passou para o ouro profundo, e os links para `#6F5A2C` (5,61:1), porque o ouro claro dava 3,86:1 — suficiente para texto grande, insuficiente para texto pequeno.
+>
+> **M6 · IDs de viagem por conteúdo.** Deixam de ser `V01…` por ordem de iteração e passam a ser `dia-destino-veículo`, com sufixo só quando a viagem foi dividida por lotação. Verificado no cenário que era o risco: inserir um paciente na segunda-feira preserva **os 14 IDs** e não deixa nenhum lançamento órfão. Antes, deslocava todos.
+>
+> **M7 · refração.** A classe `.refract` estava declarada e não era usada em lugar nenhum — a doutrina prometia refração no desktop e a página não entregava. Aplicada ao sidebar e à topbar.
+
+### 2.4 · Baixos — **higiene aplicada**
+
+> **L1** · A data simulada passa a ser declarada na topbar ("Data simulada · 08/jul/2026"), em vez de o visitante supor que é hoje.
+> **L2** · O badge da Frota era o número `1` fixo no HTML. Agora conta o que de fato pede ação — CNES pendente ou revisão a ≤ 2.000 km — e some quando não há nada.
+> **L3** · A senha pré-preenchida com `••••••••` saiu: campo vazio com marcador "qualquer senha — protótipo". Em demo pública, credencial falsa preenchida dá a impressão de credencial real.
+> **L6** · Imprimir uma viagem que não existe mais na programação passa a emitir um aviso explicando o que aconteceu, em vez de imprimir a folha errada em silêncio.
+>
+> **L4** (favicon) e **L5** (registro da decisão sobre `min-width` nas tabelas do app) seguem abertos — cosméticos, sem efeito operacional.
+
+### 2.4-bis · Baixos — texto original do achado
 
 - **L1** · Datas fixas: `HOJE='qua'`, `SEMANA='06–10/jul/2026'` (L369), "Emitido em 09/jul/2026" no manifesto (L757). Aceitável na demo; documentar como tal na tela.
 - **L2** · `dot-frota` fixo em "1" no HTML (L324); só `dot-lanc` é atualizado (L816).
