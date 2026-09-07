@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Base** | `docs/ROTA-SPEC.md` §7 e §9 · `docs/REVISAO-ROTA-APP.md` |
-| **Estado** | Fundação entregue e verificada em PostgreSQL 16 · API e migração do front pendentes |
+| **Estado** | Fundação, camada de dados e testes entregues · API, autenticação e PDF pendentes de infraestrutura |
 | **Uso** | Interno Samais |
 
 ---
@@ -82,11 +82,32 @@ Em produção: **região Brasil**, sem exceção. Dado sensível de saúde, LGPD
 
 ## 3 · O que vem a seguir, em ordem
 
-### 3.1 · Camada de dados no front — o pré-requisito de tudo
+### 3.1 · Camada de dados no front — ✅ **entregue**
 
-Hoje o console lê `pacientes`, `veiculos`, `viagens` como variáveis globais. Antes de qualquer API, essas leituras precisam passar por um módulo único, com a mesma assinatura que a API terá. Com isso, trocar seed por rede vira mudança de uma implementação, não reescrita das telas.
+O console não lê mais coleções soltas no carregamento. Existe um repositório, `Dados`, que delega a uma **fonte**:
 
-É o item 17 do backlog da revisão — *separar derivação de render* — e continua sendo o maior débito estrutural do protótipo.
+```
+carregar()                   -> {destinos, pacientes, veiculos, abastecimentos, lancamentos, config}
+salvarPaciente(p)            -> paciente com id
+salvarAbastecimento(a)       -> abastecimento com id
+salvarBaixa(viagemId, dados) -> lançamento gravado
+salvarProgramacao(viagens)   -> void
+```
+
+Hoje a fonte é `FonteSeed`, que serve de um objeto `SEED` — **dado, não código**. Amanhã é `FonteAPI`, com a mesma assinatura. Trocar a fonte é trocar uma implementação; as telas não mudam.
+
+Duas consequências que importam:
+
+- **O seed virou dado imutável.** `FonteSeed.carregar()` devolve cópia profunda; a sessão nunca escreve no seed. Verificado em teste.
+- **O script carrega fora do navegador.** Toda a fiação de DOM foi para `iniciarUI()`, chamada só quando existe `document`. É o que torna as regras testáveis sem browser.
+
+### 3.1-bis · Testes das regras — ✅ **entregue**
+
+`testes/regras.test.mjs`, **30 asserções**, sem navegador e sem dependência: `node testes/regras.test.mjs`.
+
+Cobre o que carrega risco regulatório — elegibilidade nos quatro cantos (8 km, 252 km, 600 km, tratamento não elegível), alocação por perfil e capacidade, quebra por lotação, estabilidade dos IDs sob inserção, os três estados do farol mais o caso sem registro nenhum, custo do período, ocupação programada × realizada, e o escape.
+
+É a metade que faltava do item 17: as funções que decidem dinheiro público deixaram de depender de um browser para serem verificadas.
 
 ### 3.2 · API fina
 

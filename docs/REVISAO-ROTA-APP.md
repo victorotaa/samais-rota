@@ -161,7 +161,10 @@ Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeit
 > **L3** · A senha pré-preenchida com `••••••••` saiu: campo vazio com marcador "qualquer senha — protótipo". Em demo pública, credencial falsa preenchida dá a impressão de credencial real.
 > **L6** · Imprimir uma viagem que não existe mais na programação passa a emitir um aviso explicando o que aconteceu, em vez de imprimir a folha errada em silêncio.
 >
-> **L4** (favicon) e **L5** (registro da decisão sobre `min-width` nas tabelas do app) seguem abertos — cosméticos, sem efeito operacional.
+> **L4** · Favicon adicionado — `favicon.svg` com o monograma, referenciado no `<head>`. Era o único 404 do console.
+> **L5** · Decisão registrada: as tabelas do **console** usam `min-width` com rolagem interna no contêiner, e isso é deliberado. A regra do `CLAUDE.md` — tabela reflowa, nunca `overflow-x` — vale para **material de leitura**: estudo, proposta, apresentação, onde o leitor rola a página e a tabela é conteúdo. No console o operador compara colunas lado a lado (placa, hodômetro, revisão, CNES); empilhar em blocos destrói a comparação, que é a razão de a tabela existir. A rolagem fica **dentro** do contêiner e nunca arrasta a página — verificado em 390 e 320px em todas as suítes.
+>
+> Com isso o backlog da revisão está **inteiramente fechado**.
 
 ### 2.4-bis · Baixos — texto original do achado
 
@@ -311,7 +314,7 @@ Só abrir o backend quando: B1–B4 corrigidos · A1–A5 corrigidos · M1 e M2 
 | 14 | M1 · render com escape por padrão | 4 h | antes da 2 |
 | 15 | M2 · delegação de eventos, sem `onclick` inline | 3 h | antes da 2 |
 | 16 | M6 · IDs de viagem por conteúdo | 1 h | antes da 2 |
-| 17 | Separar derivação de render + testes em Node | 1 dia | antes da 2 |
+| 17 | ~~Separar derivação de render + testes em Node~~ | ✅ | camada de dados + 30 asserções em `testes/regras.test.mjs` |
 | 18 | `package.json` versionado | 5 min | agora |
 | 19 | `transporte.html` · trazer os ativos do cloudfront para `assets/` | 30 min | agora, da sua máquina |
 | 20 | M7, L1–L6 | 1 h | quando couber |
