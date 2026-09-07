@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ROTA — Gestão de Transporte Sanitário · Samais</title>
 <meta name="description" content="Console do gestor local: cadastro, programação, frota, impressos e prestação de contas do transporte sanitário. Protótipo Samais.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -391,13 +392,12 @@ function diasEntre(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T
 var MES_CURTO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 function fmtDia(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]}
 function fmtDataLonga(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]+'/'+d[0]}
-var REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
+/* Fase 2 · o script precisa carregar fora do navegador para ser testado em Node.
+   Nada no escopo de modulo pode assumir DOM. */
+var NAVEGADOR = typeof document !== 'undefined';
+var REDUCE = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-var DESTINOS={
-  dialise:{nome:'Clínica de Diálise — Floriano', km:8, tipo:'Local'},
-  teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km'},
-  picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km'}
-};
+var DESTINOS={};
 /* A2 · Regra de negócio nunca decide por regex em texto livre. Tratamento e
    necessidade são CAMPOS TIPADOS; o texto na tela é rótulo derivado da chave.
    "Radiologia" (exame) deixa de virar radioterapia; "Maca" sem a palavra
@@ -419,20 +419,9 @@ function tratLabel(p){return p.esp||TRATAMENTOS[p.tratKey].label}
 function necLabel(p){return NECESSIDADES[p.necKey].label}
 function exigeAmbulancia(p){return NECESSIDADES[p.necKey].ambulancia}
 
-var pacientes=[
-  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma'},
-  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'cadeirante'},
-  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,necKey:'nenhuma'},
-  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',tratKey:'radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,necKey:'nenhuma'},
-  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'quimioterapia',dest:'teresina',rec:['ter'],acomp:true,necKey:'nenhuma'},
-  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,necKey:'nenhuma'},
-  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma'},
-  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'hemodialise',esp:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,necKey:'maca'},
-  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,necKey:'menor'},
-  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,necKey:'nenhuma'}
-];
+var pacientes=[];
 /* autorização da regulação (TFD) + rótulos derivados das chaves — nunca digitados solto */
-pacientes.forEach(function(p,i){p.aut={proc:'TFD-2026/01'+(40+i),val:'31/dez/2026'};p.trat=tratLabel(p);p.nec=necLabel(p)});
+/* rotulos e autorizacao vem do seed, aplicados por FonteSeed.carregar */
 /* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.179): hemodiálise/radioterapia, >50 km e ≤500 km */
 function elegivelFederal(p){var d=DESTINOS[p.dest];return TRATAMENTOS[p.tratKey].elegivel&&d.km>50&&d.km<=500}
 /* A unidade de comprovação é o PACIENTE-DESLOCAMENTO, nunca a viagem: a portaria remunera
@@ -454,20 +443,111 @@ function ocupRealizada(lista){var c=lista.filter(function(v){var l=lancamentos[v
   return Math.round(c.reduce(function(a,v){return a+assentosRealizados(v)/v.lot},0)/c.length*100)}
 
 /* A3 · classe é campo tipado; a alocação escolhe por CAPACIDADE, nunca por índice fixo */
-var veiculos=[
-  {id:'ROTA-01',placa:'QLF-1A23',classe:'van',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
-  {id:'ROTA-02',placa:'QLF-2B45',classe:'micro',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
-  {id:'ROTA-03',placa:'QLF-3C67',classe:'ambulancia',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
-];
+var veiculos=[];
 /* A4 · o custo por km não é número mágico: é parâmetro do contrato da base,
    visível ao gestor e substituível na implantação pelo valor do modelo Samais. */
 var CONFIG={custoKmVariavel:0.90, custoKmFonte:'parâmetro da base · definido no contrato'};
-var abastecimentos=[
+var abastecimentos=[];
+/* ═══════════════════════════════════════════════════════════════════
+   SEED — dado ficticio da demonstracao. E DADO, nao codigo: a fonte real
+   devolve exatamente esta forma. Nenhum paciente real vive aqui.
+   ═══════════════════════════════════════════════════════════════════ */
+var SEED={
+  destinos:{
+  dialise:{nome:'Clínica de Diálise — Floriano', km:8, tipo:'Local'},
+  teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km'},
+  picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km'}
+},
+  pacientes:[
+  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0140',val:'31/dez/2026'}},
+  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'cadeirante',aut:{proc:'TFD-2026/0141',val:'31/dez/2026'}},
+  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0142',val:'31/dez/2026'}},
+  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',tratKey:'radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0143',val:'31/dez/2026'}},
+  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'quimioterapia',dest:'teresina',rec:['ter'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0144',val:'31/dez/2026'}},
+  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0145',val:'31/dez/2026'}},
+  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0146',val:'31/dez/2026'}},
+  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'hemodialise',esp:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,necKey:'maca',aut:{proc:'TFD-2026/0147',val:'31/dez/2026'}},
+  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,necKey:'menor',aut:{proc:'TFD-2026/0148',val:'31/dez/2026'}},
+  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0149',val:'31/dez/2026'}}
+],
+  veiculos:[
+  {id:'ROTA-01',placa:'QLF-1A23',classe:'van',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
+  {id:'ROTA-02',placa:'QLF-2B45',classe:'micro',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
+  {id:'ROTA-03',placa:'QLF-3C67',classe:'ambulancia',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
+],
+  abastecimentos:[
   {vid:'ROTA-02',data:'2026-07-06',litros:78,km:520,valor:452.4},
   {vid:'ROTA-01',data:'2026-07-06',litros:34,km:210,valor:197.2},
   {vid:'ROTA-02',data:'2026-07-08',litros:80,km:508,valor:464.0},
   {vid:'ROTA-01',data:'2026-07-08',litros:32,km:205,valor:185.6}
-];
+],
+  lancamentos:{},
+  config:{custoKmVariavel:0.90, custoKmFonte:'parametro da base · definido no contrato'}
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   CAMADA DE DADOS · Fase 2, item 3.1
+   As telas nao sabem de onde o dado vem. Toda CARGA e toda ESCRITA passam
+   por Dados, que delega a uma FONTE. Hoje a fonte e o seed em memoria;
+   amanha e a API — mesma assinatura, mesma semantica, sem tocar em render.
+   Trocar a fonte e trocar uma implementacao, nao reescrever as telas.
+
+   Contrato que a FonteAPI tera de honrar:
+     carregar()                        -> {destinos, pacientes, veiculos, abastecimentos, lancamentos, config}
+     salvarPaciente(p)                 -> paciente com id
+     salvarAbastecimento(a)            -> abastecimento com id
+     salvarBaixa(viagemId, dados)      -> lancamento gravado
+     salvarProgramacao(viagens)        -> void
+   Toda escrita da fonte real abre transacao, grava em `auditoria` junto, e
+   deixa o RLS decidir de qual base o dado e.
+   ═══════════════════════════════════════════════════════════════════ */
+function FonteSeed(seed){ this.seed=seed; }
+FonteSeed.prototype.carregar=function(){
+  /* copia profunda: o seed e imutavel, o estado de sessao e derivado dele */
+  var d=JSON.parse(JSON.stringify(this.seed));
+  d.pacientes.forEach(function(p){p.trat=tratLabel(p);p.nec=necLabel(p)});
+  return d;
+};
+FonteSeed.prototype.salvarPaciente=function(p){
+  if(!p.id) p.id='p-'+(Date.now().toString(36));
+  return p;
+};
+FonteSeed.prototype.salvarAbastecimento=function(a){ return a; };
+FonteSeed.prototype.salvarBaixa=function(viagemId,dados){ return dados; };
+FonteSeed.prototype.salvarProgramacao=function(){ /* seed nao persiste programacao */ };
+
+var Dados={
+  fonte:null,
+  abrir:function(fonte){
+    this.fonte=fonte;
+    var d=fonte.carregar();
+    DESTINOS=d.destinos;
+    pacientes=d.pacientes;
+    veiculos=d.veiculos;
+    abastecimentos=d.abastecimentos;
+    lancamentos=d.lancamentos||{};
+    if(d.config) CONFIG=d.config;
+    return this;
+  },
+  salvarBaixa:function(viagemId,dados){
+    var gravado=this.fonte.salvarBaixa(viagemId,dados);
+    lancamentos[viagemId]=gravado;
+    return gravado;
+  },
+  salvarAbastecimento:function(a){
+    var gravado=this.fonte.salvarAbastecimento(a);
+    abastecimentos.push(gravado);
+    return gravado;
+  },
+  salvarPaciente:function(p){
+    var gravado=this.fonte.salvarPaciente(p);
+    gravado.trat=tratLabel(gravado); gravado.nec=necLabel(gravado);
+    pacientes.push(gravado);
+    return gravado;
+  },
+  salvarProgramacao:function(v){ this.fonte.salvarProgramacao(v); }
+};
+
 function datasDaSemana(){return DIAS.map(function(d){return DATA_SEMANA[d]})}
 function abastecimentosNoPeriodo(datas){return abastecimentos.filter(function(a){return datas.indexOf(a.data)>=0})}
 /* A4 · custo do PERÍODO — combustível lançado no período + km do período × custo/km da base */
@@ -913,7 +993,7 @@ function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[
   var km=parseFloat(($('#bx-km')||{}).value), lit=parseFloat(($('#bx-litros')||{}).value), dia=parseInt(($('#bx-diarias')||{}).value);
   if(!(km>0)){toast('Informe o km rodado conferido na prancheta');return}
   if(!(lit>=0)){toast('Informe o combustível (0 se não abasteceu)');return}
-  lancamentos[vid]={concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0,data:hojeISO()};
+  Dados.salvarBaixa(vid,{concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0,data:hojeISO()});
   closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s) · '+fmt(km)+' km');updateDots();render('lancamentos');
 }
 
@@ -946,10 +1026,8 @@ function closeModal(){
   if(_focoAnterior&&_focoAnterior.focus){try{_focoAnterior.focus()}catch(e){}}
   _focoAnterior=null;
 }
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'&&$('#modalbg').classList.contains('on')){e.preventDefault();closeModal()}
-});
-$('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
+/* Esc ligado em iniciarUI() */
+/* ligado em iniciarUI() */
 function toast(m){var t=el('div','toast',m);t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:120;background:var(--surface-solid);border:1px solid var(--gold-deep);color:var(--gold-soft);font-family:var(--mono);font-size:12px;padding:12px 18px;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5)';document.body.appendChild(t);setTimeout(function(){t.style.transition='opacity .3s';t.style.opacity='0';setTimeout(function(){t.remove()},300)},1900)}
 function badge(el,n){if(!el)return;if(n){el.hidden=false;el.style.display='flex';el.textContent=n}else{el.hidden=true;el.style.display='none'}}
 function updateDots(){
@@ -987,47 +1065,79 @@ function despachar(atributo,valorDoCampo){return function(e){
   if(!valorDoCampo)e.preventDefault();
   fn(valorDoCampo?alvo.value:alvo.getAttribute('data-arg'),alvo,e);
 }}
-document.addEventListener('click',despachar('data-act',false));
-/* M3 · linha de tabela com acao nao e botao nativo: Enter e Espaco precisam
-   disparar o mesmo caminho, senao o console so funciona com mouse. */
-document.addEventListener('keydown',function(e){
-  if(e.key!=='Enter'&&e.key!==' ')return;
-  var alvo=e.target&&e.target.closest?e.target.closest('[data-act][tabindex]'):null;
-  if(!alvo)return;
-  e.preventDefault(); alvo.click();
-});
-document.addEventListener('change',despachar('data-act-change',true));
+/* despacho e teclado ligados em iniciarUI() */
 
 /* B3: Ctrl+P fora da aba Impressos não pode sair em branco — sai um aviso com o caminho certo */
-window.addEventListener('beforeprint',function(){var pr=$('#print-root');if(pr.innerHTML.trim())return;pr.setAttribute('data-fallback','1');
-  pr.innerHTML='<div class="paper">'+paperHead('AVISO DE IMPRESSÃO')+'<h4>Nada a imprimir nesta tela</h4><div style="font-size:11px;color:#333;line-height:1.6;margin-top:8px">Os documentos oficiais do ROTA — manifesto semanal, folha de embarque/reembarque e relatório mensal de comprovação — saem pela aba <b>Impressos</b>. Painéis e listas não têm versão impressa por decisão de produto: o que vai ao papel é o que a ponta confere e assina.</div></div>'});
-window.addEventListener('afterprint',function(){var pr=$('#print-root');if(pr.getAttribute('data-fallback')){pr.removeAttribute('data-fallback');pr.innerHTML=''}});
+function _antesDeImprimir(){var pr=$('#print-root');if(pr.innerHTML.trim())return;pr.setAttribute('data-fallback','1');
+  pr.innerHTML='<div class="paper">'+paperHead('AVISO DE IMPRESSÃO')+'<h4>Nada a imprimir nesta tela</h4><div style="font-size:11px;color:#333;line-height:1.6;margin-top:8px">Os documentos oficiais do ROTA — manifesto semanal, folha de embarque/reembarque e relatório mensal de comprovação — saem pela aba <b>Impressos</b>. Painéis e listas não têm versão impressa por decisão de produto: o que vai ao papel é o que a ponta confere e assina.</div></div>'}
+function _depoisDeImprimir(){var pr=$('#print-root');if(pr.getAttribute('data-fallback')){pr.removeAttribute('data-fallback');pr.innerHTML=''}}
 
 /* tema */
 function setTheme(mode){document.documentElement.setAttribute('data-theme',mode);
   $('#themelbl').textContent=mode==='light'?'Escuro':'Claro';
   $('#themeico').innerHTML=mode==='light'?'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
   try{localStorage.setItem('rota-theme',mode)}catch(e){}}
-$('#themebtn').addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='light'?'dark':'light')});
+/* tema ligado em iniciarUI() */
 
 /* menu mobile */
 function closeMenu(){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('on')}
-$('#ham').addEventListener('click',function(){$('#sidebar').classList.add('open');$('#scrim').classList.add('on')});
-$('#scrim').addEventListener('click',closeMenu);
-$$('.navitem').forEach(function(a){a.addEventListener('click',function(){render(a.dataset.view)})});
+/* ═══════════════════════════════════════════════════════════════════
+   Fiacao da interface — o unico bloco que toca o DOM no carregamento.
+   Fora do navegador nada disso roda, e as regras continuam testaveis.
+   ═══════════════════════════════════════════════════════════════════ */
+function iniciarUI(){
+  $('#modalbg').addEventListener('click',function(e){if(e.target===this)closeModal()});
+  document.addEventListener('click',despachar('data-act',false));
+  document.addEventListener('change',despachar('data-act-change',true));
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    var alvo=e.target&&e.target.closest?e.target.closest('[data-act][tabindex]'):null;
+    if(!alvo)return;
+    e.preventDefault(); alvo.click();
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&$('#modalbg').classList.contains('on')){e.preventDefault();closeModal()}
+  });
+  window.addEventListener('beforeprint',_antesDeImprimir);
+  window.addEventListener('afterprint',_depoisDeImprimir);
+  $('#themebtn').addEventListener('click',function(){setTheme(document.documentElement.getAttribute('data-theme')==='light'?'dark':'light')});
+  $('#ham').addEventListener('click',function(){$('#sidebar').classList.add('open');$('#scrim').classList.add('on')});
+  $('#scrim').addEventListener('click',closeMenu);
+  $$('.navitem').forEach(function(a){a.addEventListener('click',function(){render(a.dataset.view)})});
+  $('#lg-enter').addEventListener('click',function(){
+    var base=$('#lg-base').value,user=$('#lg-user').value||'Gestor(a) local';
+    $('#login').style.display='none';$('#app').classList.add('on');
+    $('#sb-who').textContent=user;$('#sb-base').textContent='Base '+base;$('#tb-base').textContent=base;$('#tb-week').innerHTML='Semana <b>'+SEMANA+'</b>';
+    Dados.abrir(new FonteSeed(SEED));
+    gerarProgramacao();updateDots();render('painel');
+  });
+  $('#logout').addEventListener('click',function(){$('#app').classList.remove('on');$('#login').style.display='flex'});
+  if(!REDUCE)document.documentElement.classList.add('js-anim');
+  try{var st=localStorage.getItem('rota-theme');if(st)setTheme(st);}catch(e){}
+}
+if(NAVEGADOR) iniciarUI();
 
-/* login */
-$('#lg-enter').addEventListener('click',function(){
-  var base=$('#lg-base').value,user=$('#lg-user').value||'Gestor(a) local';
-  $('#login').style.display='none';$('#app').classList.add('on');
-  $('#sb-who').textContent=user;$('#sb-base').textContent='Base '+base;$('#tb-base').textContent=base;$('#tb-week').innerHTML='Semana <b>'+SEMANA+'</b>';
-  gerarProgramacao();updateDots();render('painel');
-});
-$('#logout').addEventListener('click',function(){$('#app').classList.remove('on');$('#login').style.display='flex'});
-
-/* init */
-if(!REDUCE)document.documentElement.classList.add('js-anim');
-try{var st=localStorage.getItem('rota-theme');if(st)setTheme(st);}catch(e){}
+/* ═══════════════════════════════════════════════════════════════════
+   Superficie exportada — o que os testes em Node exercitam, e o contrato
+   que a FonteAPI da Fase 2 tera de honrar.
+   ═══════════════════════════════════════════════════════════════════ */
+var ROTA={
+  Dados:Dados, FonteSeed:FonteSeed, SEED:SEED,
+  abrirSeed:function(){ return Dados.abrir(new FonteSeed(SEED)) },
+  regras:{
+    elegivelFederal:elegivelFederal, elegiveisNaViagem:elegiveisNaViagem,
+    elegiveisRealizados:elegiveisRealizados, assentosRealizados:assentosRealizados,
+    ocupProgramada:ocupProgramada, ocupRealizada:ocupRealizada,
+    custoPeriodo:custoPeriodo, diasSemRegistro:diasSemRegistro,
+    alocarComuns:alocarComuns, alocarAmbulancia:alocarAmbulancia,
+    classePreferida:classePreferida, assentosDe:assentosDe,
+    gerarProgramacao:gerarProgramacao, diasEntre:diasEntre, esc:esc,
+    exigeAmbulancia:exigeAmbulancia, tratLabel:tratLabel
+  },
+  estado:function(){return {pacientes:pacientes,veiculos:veiculos,viagens:viagens,
+    lancamentos:lancamentos,abastecimentos:abastecimentos,destinos:DESTINOS,config:CONFIG}}
+};
+if(typeof module!=='undefined'&&module.exports) module.exports=ROTA;
 </script>
 </body>
 </html>
