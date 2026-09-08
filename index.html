@@ -475,6 +475,12 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);transition:opacity .3s ease}
   .heroplay.on .pbtn{display:none}
   .heroplay.on .plabel{opacity:0}
+
+  /* .on esconde o rotulo porque o video ja esta rodando. Enquanto ele
+     carrega, porem, o rotulo e o unico canal que diz que algo esta
+     acontecendo — sem esta excecao, 'Carregando…' fica invisivel
+     justamente durante a espera que ele existe para explicar. */
+  .heroplay.on.carregando .plabel{opacity:1}
   @media(max-width:900px){.heroplay .pbtn span{width:56px;height:56px}.heroplay .pbtn svg{width:18px;height:18px}}
   .srcshot-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:15px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
   .srcshot-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
@@ -548,7 +554,7 @@
         </div>
         <div class="right hasplayer">
           <div class="heroplay" id="hp">
-            <video id="hv" preload="none" playsinline poster="assets/viaturas.jpg" width="1280" height="720">
+            <video id="hv" preload="metadata" playsinline poster="assets/viaturas.jpg" width="1280" height="720">
               <source src="assets/rota.mp4" type="video/mp4">
             </video>
             <button class="pbtn" id="hpbtn" aria-label="Reproduzir o vídeo institucional do transporte sanitário">
@@ -1056,13 +1062,46 @@
   (function(){
     var hp=document.getElementById('hp'), hv=document.getElementById('hv'), hb=document.getElementById('hpbtn');
     if(hp&&hv&&hb){
+      var rotulo=hp.querySelector('.plabel'), rotuloOriginal=rotulo?rotulo.textContent:'';
+      var vigia=null;
+      function devolverBotao(msg){
+        if(vigia){clearTimeout(vigia);vigia=null}
+        hp.classList.remove('on');hp.classList.remove('carregando');
+        hv.removeAttribute('controls');
+        if(rotulo) rotulo.textContent=msg||rotuloOriginal;
+      }
+      /* O caso que mais dói nao e o play() que rejeita: e o que nao
+         rejeita, nao emite erro e nunca comeca — foi o que este player
+         fazia quando o navegador nao conseguia decodificar. Sem vigia, a
+         hero fica em 'Carregando…' para sempre e o clique parece morto. */
+      function carregando(){
+        hp.classList.add('carregando');
+        if(rotulo) rotulo.textContent='Carregando…';
+        if(vigia) clearTimeout(vigia);
+        vigia=setTimeout(function(){ devolverBotao('Toque de novo para reproduzir') },10000);
+      }
       hb.addEventListener('click',function(){
-        hp.classList.add('on');
+        /* controles antes do play: se o play nao vingar, ainda ha o
+           controle nativo do navegador para tentar de novo */
         hv.setAttribute('controls','');
+        hp.classList.add('on');
+        carregando();
         hv.focus();
         var pr=hv.play();
-        if(pr&&pr.catch){pr.catch(function(){});}
+        if(pr&&pr.catch){
+          /* engolir o erro aqui foi o que fez o clique parecer morto:
+             o botao sumia, nada se movia e nada explicava por que */
+          pr.catch(function(){ devolverBotao('Toque de novo para reproduzir') });
+        }
       });
+      hv.addEventListener('playing',function(){
+        if(vigia){clearTimeout(vigia);vigia=null}
+        hp.classList.add('on');hp.classList.remove('carregando');
+        if(rotulo) rotulo.textContent=rotuloOriginal;
+      });
+      hv.addEventListener('waiting',carregando);
+      hv.addEventListener('stalled',carregando);
+      hv.addEventListener('error',function(){ devolverBotao('Vídeo indisponível') });
     }
 
     var ham=document.getElementById('navham'), links=document.getElementById('navlinks');
