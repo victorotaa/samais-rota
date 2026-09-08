@@ -77,6 +77,17 @@ psql -d rota -v ON_ERROR_STOP=1 -f supabase/migrations/0001_auditoria_hash_chain
 psql -d rota -f supabase/testes/rls_e_auditoria.sql   # a prova
 ```
 
+### Subir a API
+
+O papel de conexão **não pode ser o dono do banco** — é a diferença entre ter isolamento e achar que tem:
+
+```bash
+psql -d rota -c "create role rota_api login password '...' in role rota_app;"
+DATABASE_URL='postgres://rota_api:...@host:5432/rota' node api/servidor.mjs
+```
+
+A API confere isso na subida e recusa papel superusuário ou com `BYPASSRLS`, dizendo como criar o certo. Também recusa subir se `verificar_isolamento()` acusar tabela fora do padrão.
+
 Em produção: **região Brasil**, sem exceção. Dado sensível de saúde, LGPD art. 11.
 
 ---
