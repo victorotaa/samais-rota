@@ -17,6 +17,7 @@ Três arquivos, aplicados e testados contra um PostgreSQL 16 real — não só e
 | `supabase/schema.sql` | 14 tabelas, 6 tipos enumerados, 2 views de derivação, RLS em todas as tabelas |
 | `supabase/migrations/0001_auditoria_hash_chain.sql` | Auditoria append-only com cadeia de hash e função de verificação |
 | `supabase/testes/rls_e_auditoria.sql` | A prova das duas garantias, reproduzível em um banco limpo |
+| `supabase/testes/assercoes.sql` | As mesmas garantias em forma de `assert` — é o que o CI roda |
 
 ### O que a prova demonstra
 
@@ -108,6 +109,22 @@ Duas consequências que importam:
 Cobre o que carrega risco regulatório — elegibilidade nos quatro cantos (8 km, 252 km, 600 km, tratamento não elegível), alocação por perfil e capacidade, quebra por lotação, estabilidade dos IDs sob inserção, os três estados do farol mais o caso sem registro nenhum, custo do período, ocupação programada × realizada, e o escape.
 
 É a metade que faltava do item 17: as funções que decidem dinheiro público deixaram de depender de um browser para serem verificadas.
+
+### 3.1-ter · Verificação automática — ✅ **entregue**
+
+`.github/workflows/verificar.yml` roda em todo push e todo PR, em dois trabalhos:
+
+**Front.** `node scripts/csp-hash.mjs` confere o hash de cada script inline contra o `vercel.json`; `node testes/regras.test.mjs` roda as 30 asserções; um `grep` recusa `onclick` inline reintroduzido.
+
+**Banco.** Sobe um `postgres:16`, aplica schema e migração e roda `supabase/testes/assercoes.sql` — 8 grupos de asserção que **decidem**, ao contrário de `rls_e_auditoria.sql`, que demonstra e imprime. A suite foi validada por sabotagem: desligar a RLS de `pacientes`, afrouxar o teto de 500 km, remover o gatilho de imutabilidade e remover o encadeamento fazem o CI ficar vermelho, cada um com a mensagem certa.
+
+#### O bug que essa conferência encontrou
+
+O header de CSP vale para `/(.*)` — **todas** as páginas — mas carregava só o hash do `rota-app.html`. As outras quatro (`index`, `municipios`, `transporte`, `monitoramento`) têm script inline próprio e estavam com o **JavaScript recusado em produção**: menu, âncoras de navegação e o botão de play do vídeo da hero da página de pitch não funcionavam. Confirmado no Chromium com o header real, corrigido, e reconferido — zero recusas nas cinco páginas.
+
+O `transporte.html` também tinha as três mídias do CloudFront bloqueadas por `img-src 'self' data:`. O host entrou em `img-src` e `media-src` como paliativo; o certo continua sendo trazer os arquivos para `assets/`, que daqui não dá (o egresso para o CloudFront é bloqueado).
+
+**Quando a API entrar, `connect-src 'none'` precisa passar a apontar a origem dela** — hoje o valor é deliberado, porque o console não fala com ninguém.
 
 ### 3.2 · API fina
 

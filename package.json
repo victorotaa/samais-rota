@@ -1,0 +1,16 @@
+{
+  "name": "samais-rota",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ROTA — páginas institucionais e console de despacho do transporte sanitário Samais",
+  "type": "module",
+  "scripts": {
+    "test": "node testes/regras.test.mjs",
+    "csp": "node scripts/csp-hash.mjs",
+    "csp:write": "node scripts/csp-hash.mjs --write",
+    "verificar": "npm run csp && npm test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
