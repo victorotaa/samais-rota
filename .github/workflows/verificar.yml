@@ -31,6 +31,8 @@ jobs:
         run: node testes/regras.test.mjs
       - name: Autenticação — vetores das RFC 4226, 4648 e 6238
         run: node testes/auth.test.mjs
+      - name: FonteAPI — a segunda implementação do contrato de dados
+        run: node testes/fonte-api.test.mjs
       - name: Sem onclick inline (a delegação de eventos é decisão da revisão M2)
         run: |
           if grep -n 'onclick=' -- *.html; then
@@ -69,6 +71,8 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0001_auditoria_hash_chain.sql
       - name: Migração da autenticação
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0002_autenticacao.sql
+      - name: Migração do isolamento forçado
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0003_forcar_rls.sql
       - name: Asserções — RLS, paciente-deslocamento, numeração, cadeia de hash
         run: psql -v ON_ERROR_STOP=1 -f supabase/testes/assercoes.sql
       - uses: actions/setup-node@v4
@@ -80,3 +84,7 @@ jobs:
         run: node testes/login.e2e.mjs
         env:
           DATABASE_URL: postgres://postgres:rota@localhost:5432/rota
+      - name: API de ponta a ponta — isolamento entre municípios pela HTTP
+        run: node testes/api.e2e.mjs
+        env:
+          DATABASE_URL: postgres://postgres:rota@localhost:5432/postgres

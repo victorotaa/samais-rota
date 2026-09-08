@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Base** | `docs/ROTA-SPEC.md` §7 e §9 · `docs/REVISAO-ROTA-APP.md` |
-| **Estado** | Fundação, camada de dados e testes entregues · API, autenticação e PDF pendentes de infraestrutura |
+| **Estado** | Fundação, dados, autenticação e API entregues e verificados · PDF no servidor e a ligação do front pendentes |
 | **Uso** | Interno Samais |
 
 ---
@@ -126,11 +126,57 @@ O `transporte.html` também tinha as três mídias do CloudFront bloqueadas por 
 
 **Quando a API entrar, `connect-src 'none'` precisa passar a apontar a origem dela** — hoje o valor é deliberado, porque o console não fala com ninguém.
 
-### 3.2 · API fina
+### 3.2 · API fina — ✅ **entregue**
 
-Um endpoint por agregado, sempre abrindo a transação com o `set_config` do gestor. A API **não filtra por base**: quem filtra é o banco. Se um endpoint esquecer o `where`, o RLS segura.
+`node:http` puro, sem framework. Um endpoint por agregado, sempre abrindo a transação com o `set_config` do gestor. A API **não filtra por base**: quem filtra é o banco.
 
-Escrita mínima: pacientes, autorizações, veículos, abastecimentos, programação, baixa, emissão de documento. Toda escrita grava em `auditoria` na mesma transação.
+| | |
+|---|---|
+| `POST /api/sessao` · `DELETE /api/sessao` | entrada e saída |
+| `GET /api/carregar` | a carga inteira do console, no contrato que a `FonteSeed` já cumpre |
+| `POST /api/pacientes` | paciente e autorização na mesma transação — separar deixaria paciente sem autorização se a segunda chamada não viesse |
+| `POST /api/abastecimentos` | |
+| `PUT /api/programacao` | substitui o período, **nunca** viagem que já tem baixa |
+| `POST /api/viagens/:id/baixa` | km, litros, diárias e os embarques juntos |
+| `POST /api/documentos` | numeração do banco, sequencial por base e por tipo |
+| `GET /api/relatorio/AAAA-MM` | da view de deslocamentos, contado por paciente |
+
+Toda escrita grava em `auditoria` na mesma transação.
+
+#### A trilha registra o que mudou, não o valor do dado pessoal
+
+A auditoria recusa `UPDATE` e `DELETE` de propósito. Se nome e CNS fossem copiados para lá, um pedido de correção ou de exclusão não teria como ser honrado — a tabela é justamente a que não aceita correção. Então grava-se a referência, a ação e a **lista de campos tocados**; o valor fica na tabela que pode ser corrigida. Minimização, aqui, é o que mantém as duas garantias compatíveis.
+
+---
+
+## O bug que a API encontrou · a RLS não vale para o dono da tabela
+
+Na primeira vez em que a API subiu, a sessão de Floriano **leu e editou paciente de Caicó**. Nenhuma política falhou: o Postgres não aplica RLS ao dono da tabela nem a superusuário.
+
+As provas anteriores não pegaram porque rodavam `set role rota_app` antes de consultar. Provavam a política — não provavam a conexão. E a string de conexão que Supabase e Neon entregam por padrão é justamente a de dono.
+
+Duas defesas, ambas necessárias:
+
+1. **`force row level security`** (migração 0003) nas onze tabelas que carregam dado de saúde — passa a valer também para o dono. Ficam de fora, e o arquivo diz por quê, as cinco que as funções `security definer` precisam atravessar quando ainda não há sessão: forçar `auditoria`, por exemplo, faria `verificar_cadeia_auditoria` não ver linha nenhuma e responder "íntegra".
+2. **A API se recusa a subir** com papel superusuário ou com `BYPASSRLS`, porque contra superusuário não existe force. Não há variável de ambiente para contornar: se houvesse, seria ela que estaria em produção.
+
+Junto disso, as duas views ganharam `security_invoker = true`. View no Postgres roda com o privilégio do **dono** por padrão, o que faria delas uma porta lateral em volta da RLS.
+
+`verificar_isolamento()` lista qualquer tabela sem RLS, sem política ou sem force, e o CI exige lista vazia — tabela nova sem política é vazamento esperando data.
+
+### 3.5 · Migração do front — ✅ **a ponte está pronta**
+
+`FonteAPI` existe no console, com a mesma assinatura da `FonteSeed`, e **não está ligada**: o console continua abrindo pelo seed. Contrato com uma implementação só não é contrato, é o formato acidental de quem escreveu primeiro — agora são duas, e o teste cobra das duas as mesmas chaves e os mesmos rótulos.
+
+A diferença real é que a API devolve promessa. Por isso `Dados` passou a tolerar promessa em toda operação: com o seed o retorno é imediato e nada muda; com a API, o callback chega depois. `confirmBaixa` já fecha o modal e renderiza **depois** de gravado — a tela não diz "registrada" antes de o banco aceitar.
+
+Ligar é uma linha:
+
+```js
+Dados.abrir(new FonteAPI({token: t}), function(){ gerarProgramacao(); render('painel') });
+```
+
+`connect-src` no CSP passou de `'none'` para `'self'` — a API é de mesma origem, e é por isso que ela não manda `Access-Control-Allow-Origin`: CORS aberto ali seria entregar sessão de gestor a qualquer página.
 
 ### 3.3 · Autenticação com 2FA — ✅ **entregue**
 

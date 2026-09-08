@@ -5,11 +5,12 @@
   "description": "ROTA — páginas institucionais e console de despacho do transporte sanitário Samais",
   "type": "module",
   "scripts": {
-    "test": "node testes/regras.test.mjs && node testes/auth.test.mjs",
-    "test:banco": "node testes/login.e2e.mjs",
+    "test": "node testes/regras.test.mjs && node testes/auth.test.mjs && node testes/fonte-api.test.mjs",
+    "test:banco": "node testes/login.e2e.mjs && node testes/api.e2e.mjs",
     "csp": "node scripts/csp-hash.mjs",
     "csp:write": "node scripts/csp-hash.mjs --write",
-    "verificar": "npm run csp && npm test"
+    "verificar": "npm run csp && npm test",
+    "api": "node api/servidor.mjs"
   },
   "engines": {
     "node": ">=20"

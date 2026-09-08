@@ -208,6 +208,21 @@ begin
   raise notice 'ok · adulteracao forcada e detectada, e aponta a primeira linha';
 end $$;
 
+-- ─── 7. Deriva de isolamento ──────────────────────────────────────
+-- Tabela nova sem RLS, sem política ou sem force é vazamento esperando
+-- data. Só roda se a migração 0003 estiver aplicada.
+do $$
+declare fora text;
+begin
+  if to_regprocedure('verificar_isolamento()') is null then
+    raise notice 'ok · (0003 nao aplicada; conferencia de deriva pulada)';
+    return;
+  end if;
+  select string_agg(tabela || ' (' || problema || ')', ', ') into fora from verificar_isolamento();
+  assert fora is null, format('tabelas fora do padrao de isolamento: %s', fora);
+  raise notice 'ok · nenhuma tabela fora do padrao de isolamento';
+end $$;
+
 rollback;
 \echo ''
 \echo '  Todas as asserções do banco passaram.'
