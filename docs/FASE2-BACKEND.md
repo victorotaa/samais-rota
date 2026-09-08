@@ -132,9 +132,34 @@ Um endpoint por agregado, sempre abrindo a transação com o `set_config` do ges
 
 Escrita mínima: pacientes, autorizações, veículos, abastecimentos, programação, baixa, emissão de documento. Toda escrita grava em `auditoria` na mesma transação.
 
-### 3.3 · Autenticação com 2FA
+### 3.3 · Autenticação com 2FA — ✅ **entregue**
 
-E-mail e senha forte, segundo fator, sessão por base, log de acesso. O `gestores.auth_uid` já existe para o vínculo.
+Nada aqui depende de provedor: `api/auth.mjs` é `node:crypto` puro — sem dependência, sem I/O, sem HTTP. Recebe dados, devolve decisão.
+
+| Peça | Como é |
+|---|---|
+| Senha | scrypt N=2¹⁵, sal por hash, parâmetros gravados junto. `precisaRehash` permite subir o custo sem invalidar senha antiga |
+| Força mínima | 12 caracteres, três classes, e recusa o previsível — repetição, sequência de teclado, e o que o contexto entrega (nome, e-mail, município) |
+| Segundo fator | TOTP RFC 6238, janela de ±1 passo porque relógio de celular atrasa |
+| Reuso | `gestores.totp_ultimo_passo` grava o passo do sucesso na mesma transação. Código visto por cima do ombro não entra nos 30 segundos seguintes |
+| Recuperação | 8 códigos, só o `sha256` no banco, queimados na primeira uso |
+| Sessão | 12 horas — uma jornada, não se herda o turno alheio. Token de 32 bytes vai ao cliente; **o banco guarda só o hash** |
+| Tentativa | Atraso progressivo a partir da terceira falha, teto de 15 min. Cinco erros de digitação não podem tirar a gestora do sistema no dia do embarque |
+
+#### Por que o login mora em funções `security definer`
+
+Na hora de autenticar ainda **não existe sessão** — e portanto não existe base — para a RLS filtrar. Sem `auth_iniciar`, `auth_falhou`, `auth_entrou`, `auth_sessao`, `auth_sair` e `auth_trocar_senha`, ou se abre `gestores` inteira ao papel da aplicação, ou se inventa uma exceção na política. As duas saídas furam o isolamento.
+
+Com elas, o papel `rota_app` **não lê hash de senha** — verificado em teste, com `permission denied`.
+
+#### Retenção: o mecanismo é do código, o prazo é do contrato
+
+`bases.retencao_meses` (padrão de partida 60) e `expurgar_acesso(base)`, que remove sessão morta e log de acesso vencido e **nunca toca em viagem, paciente ou auditoria** — descarte de prontuário é decisão de política, não rotina de limpeza. O item de go/no-go deixa de ser "construir o descarte" e passa a ser só o número.
+
+#### O que prova isso
+
+- `testes/auth.test.mjs` — **71 asserções**, incluindo os vetores oficiais da RFC 4226 (HOTP), RFC 6238 apêndice B (TOTP em SHA-1 e SHA-256) e RFC 4648 (base32). Não é auto-consistência: implementação errada de jeito coerente cairia nesses vetores.
+- `testes/login.e2e.mjs` — **38 asserções** costurando os dois lados num Postgres real: reuso de código, bloqueio progressivo, sucesso zerando o contador, troca de senha derrubando sessão viva e poupando a atual, sessão de gestor desativado morrendo junto, log de e-mail inexistente sem base, expurgo. Validado por sabotagem — tirar a conferência de expiração ou deixar as sessões vivas na troca de senha deixa o teste vermelho.
 
 ### 3.4 · PDF no servidor
 

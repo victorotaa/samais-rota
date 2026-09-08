@@ -1,6 +1,5 @@
 .vercel
 node_modules
-package-lock.json
 shot*.js
 rec*.js
 news*.js
