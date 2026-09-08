@@ -93,8 +93,12 @@ await fechar();
 
 /* ─── sobe com o papel da aplicação ────────────────────────────────── */
 const papel = 'rota_api_' + Math.random().toString(36).slice(2, 8);
-await adm.query(`create role ${papel} login in role rota_app`);
-const apiUrl = new URL(testeUrl); apiUrl.username = papel; apiUrl.password = '';
+/* com senha: o container do CI autentica por scram, e papel sem senha
+   não conecta por TCP — foi assim que este teste ficou vermelho na
+   primeira vez que rodou fora daqui */
+const segredoPapel = 'p' + Math.random().toString(36).slice(2, 12);
+await adm.query(`create role ${papel} login password '${segredoPapel}' in role rota_app`);
+const apiUrl = new URL(testeUrl); apiUrl.username = papel; apiUrl.password = segredoPapel;
 process.env.DATABASE_URL = apiUrl.toString();
 const srv = await subir(0);
 const porta = srv.address().port;
