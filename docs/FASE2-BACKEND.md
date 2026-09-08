@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Base** | `docs/ROTA-SPEC.md` §7 e §9 · `docs/REVISAO-ROTA-APP.md` |
-| **Estado** | Fundação, camada de dados e testes entregues · API, autenticação e PDF pendentes de infraestrutura |
+| **Estado** | Fundação, dados, autenticação e API entregues e verificados · PDF no servidor e a ligação do front pendentes |
 | **Uso** | Interno Samais |
 
 ---
@@ -17,6 +17,7 @@ Três arquivos, aplicados e testados contra um PostgreSQL 16 real — não só e
 | `supabase/schema.sql` | 14 tabelas, 6 tipos enumerados, 2 views de derivação, RLS em todas as tabelas |
 | `supabase/migrations/0001_auditoria_hash_chain.sql` | Auditoria append-only com cadeia de hash e função de verificação |
 | `supabase/testes/rls_e_auditoria.sql` | A prova das duas garantias, reproduzível em um banco limpo |
+| `supabase/testes/assercoes.sql` | As mesmas garantias em forma de `assert` — é o que o CI roda |
 
 ### O que a prova demonstra
 
@@ -76,6 +77,17 @@ psql -d rota -v ON_ERROR_STOP=1 -f supabase/migrations/0001_auditoria_hash_chain
 psql -d rota -f supabase/testes/rls_e_auditoria.sql   # a prova
 ```
 
+### Subir a API
+
+O papel de conexão **não pode ser o dono do banco** — é a diferença entre ter isolamento e achar que tem:
+
+```bash
+psql -d rota -c "create role rota_api login password '...' in role rota_app;"
+DATABASE_URL='postgres://rota_api:...@host:5432/rota' node api/servidor.mjs
+```
+
+A API confere isso na subida e recusa papel superusuário ou com `BYPASSRLS`, dizendo como criar o certo. Também recusa subir se `verificar_isolamento()` acusar tabela fora do padrão.
+
 Em produção: **região Brasil**, sem exceção. Dado sensível de saúde, LGPD art. 11.
 
 ---
@@ -109,15 +121,102 @@ Cobre o que carrega risco regulatório — elegibilidade nos quatro cantos (8 km
 
 É a metade que faltava do item 17: as funções que decidem dinheiro público deixaram de depender de um browser para serem verificadas.
 
-### 3.2 · API fina
+### 3.1-ter · Verificação automática — ✅ **entregue**
 
-Um endpoint por agregado, sempre abrindo a transação com o `set_config` do gestor. A API **não filtra por base**: quem filtra é o banco. Se um endpoint esquecer o `where`, o RLS segura.
+`.github/workflows/verificar.yml` roda em todo push e todo PR, em dois trabalhos:
 
-Escrita mínima: pacientes, autorizações, veículos, abastecimentos, programação, baixa, emissão de documento. Toda escrita grava em `auditoria` na mesma transação.
+**Front.** `node scripts/csp-hash.mjs` confere o hash de cada script inline contra o `vercel.json`; `node testes/regras.test.mjs` roda as 30 asserções; um `grep` recusa `onclick` inline reintroduzido.
 
-### 3.3 · Autenticação com 2FA
+**Banco.** Sobe um `postgres:16`, aplica schema e migração e roda `supabase/testes/assercoes.sql` — 8 grupos de asserção que **decidem**, ao contrário de `rls_e_auditoria.sql`, que demonstra e imprime. A suite foi validada por sabotagem: desligar a RLS de `pacientes`, afrouxar o teto de 500 km, remover o gatilho de imutabilidade e remover o encadeamento fazem o CI ficar vermelho, cada um com a mensagem certa.
 
-E-mail e senha forte, segundo fator, sessão por base, log de acesso. O `gestores.auth_uid` já existe para o vínculo.
+#### O bug que essa conferência encontrou
+
+O header de CSP vale para `/(.*)` — **todas** as páginas — mas carregava só o hash do `rota-app.html`. As outras quatro (`index`, `municipios`, `transporte`, `monitoramento`) têm script inline próprio e estavam com o **JavaScript recusado em produção**: menu, âncoras de navegação e o botão de play do vídeo da hero da página de pitch não funcionavam. Confirmado no Chromium com o header real, corrigido, e reconferido — zero recusas nas cinco páginas.
+
+O `transporte.html` também tinha as três mídias do CloudFront bloqueadas por `img-src 'self' data:`. O host entrou em `img-src` e `media-src` como paliativo; o certo continua sendo trazer os arquivos para `assets/`, que daqui não dá (o egresso para o CloudFront é bloqueado).
+
+**Quando a API entrar, `connect-src 'none'` precisa passar a apontar a origem dela** — hoje o valor é deliberado, porque o console não fala com ninguém.
+
+### 3.2 · API fina — ✅ **entregue**
+
+`node:http` puro, sem framework. Um endpoint por agregado, sempre abrindo a transação com o `set_config` do gestor. A API **não filtra por base**: quem filtra é o banco.
+
+| | |
+|---|---|
+| `POST /api/sessao` · `DELETE /api/sessao` | entrada e saída |
+| `GET /api/carregar` | a carga inteira do console, no contrato que a `FonteSeed` já cumpre |
+| `POST /api/pacientes` | paciente e autorização na mesma transação — separar deixaria paciente sem autorização se a segunda chamada não viesse |
+| `POST /api/abastecimentos` | |
+| `PUT /api/programacao` | substitui o período, **nunca** viagem que já tem baixa |
+| `POST /api/viagens/:id/baixa` | km, litros, diárias e os embarques juntos |
+| `POST /api/documentos` | numeração do banco, sequencial por base e por tipo |
+| `GET /api/relatorio/AAAA-MM` | da view de deslocamentos, contado por paciente |
+
+Toda escrita grava em `auditoria` na mesma transação.
+
+#### A trilha registra o que mudou, não o valor do dado pessoal
+
+A auditoria recusa `UPDATE` e `DELETE` de propósito. Se nome e CNS fossem copiados para lá, um pedido de correção ou de exclusão não teria como ser honrado — a tabela é justamente a que não aceita correção. Então grava-se a referência, a ação e a **lista de campos tocados**; o valor fica na tabela que pode ser corrigida. Minimização, aqui, é o que mantém as duas garantias compatíveis.
+
+---
+
+## O bug que a API encontrou · a RLS não vale para o dono da tabela
+
+Na primeira vez em que a API subiu, a sessão de Floriano **leu e editou paciente de Caicó**. Nenhuma política falhou: o Postgres não aplica RLS ao dono da tabela nem a superusuário.
+
+As provas anteriores não pegaram porque rodavam `set role rota_app` antes de consultar. Provavam a política — não provavam a conexão. E a string de conexão que Supabase e Neon entregam por padrão é justamente a de dono.
+
+Duas defesas, ambas necessárias:
+
+1. **`force row level security`** (migração 0003) nas onze tabelas que carregam dado de saúde — passa a valer também para o dono. Ficam de fora, e o arquivo diz por quê, as cinco que as funções `security definer` precisam atravessar quando ainda não há sessão: forçar `auditoria`, por exemplo, faria `verificar_cadeia_auditoria` não ver linha nenhuma e responder "íntegra".
+2. **A API se recusa a subir** com papel superusuário ou com `BYPASSRLS`, porque contra superusuário não existe force. Não há variável de ambiente para contornar: se houvesse, seria ela que estaria em produção.
+
+Junto disso, as duas views ganharam `security_invoker = true`. View no Postgres roda com o privilégio do **dono** por padrão, o que faria delas uma porta lateral em volta da RLS.
+
+`verificar_isolamento()` lista qualquer tabela sem RLS, sem política ou sem force, e o CI exige lista vazia — tabela nova sem política é vazamento esperando data.
+
+### 3.5 · Migração do front — ✅ **a ponte está pronta**
+
+`FonteAPI` existe no console, com a mesma assinatura da `FonteSeed`, e **não está ligada**: o console continua abrindo pelo seed. Contrato com uma implementação só não é contrato, é o formato acidental de quem escreveu primeiro — agora são duas, e o teste cobra das duas as mesmas chaves e os mesmos rótulos.
+
+A diferença real é que a API devolve promessa. Por isso `Dados` passou a tolerar promessa em toda operação: com o seed o retorno é imediato e nada muda; com a API, o callback chega depois. `confirmBaixa` já fecha o modal e renderiza **depois** de gravado — a tela não diz "registrada" antes de o banco aceitar.
+
+Ligar é uma linha:
+
+```js
+Dados.abrir(new FonteAPI({token: t}), function(){ gerarProgramacao(); render('painel') });
+```
+
+`connect-src` no CSP passou de `'none'` para `'self'` — a API é de mesma origem, e é por isso que ela não manda `Access-Control-Allow-Origin`: CORS aberto ali seria entregar sessão de gestor a qualquer página.
+
+### 3.3 · Autenticação com 2FA — ✅ **entregue**
+
+Nada aqui depende de provedor: `api/auth.mjs` é `node:crypto` puro — sem dependência, sem I/O, sem HTTP. Recebe dados, devolve decisão.
+
+| Peça | Como é |
+|---|---|
+| Senha | scrypt N=2¹⁵, sal por hash, parâmetros gravados junto. `precisaRehash` permite subir o custo sem invalidar senha antiga |
+| Força mínima | 12 caracteres, três classes, e recusa o previsível — repetição, sequência de teclado, e o que o contexto entrega (nome, e-mail, município) |
+| Segundo fator | TOTP RFC 6238, janela de ±1 passo porque relógio de celular atrasa |
+| Reuso | `gestores.totp_ultimo_passo` grava o passo do sucesso na mesma transação. Código visto por cima do ombro não entra nos 30 segundos seguintes |
+| Recuperação | 8 códigos, só o `sha256` no banco, queimados na primeira uso |
+| Sessão | 12 horas — uma jornada, não se herda o turno alheio. Token de 32 bytes vai ao cliente; **o banco guarda só o hash** |
+| Tentativa | Atraso progressivo a partir da terceira falha, teto de 15 min. Cinco erros de digitação não podem tirar a gestora do sistema no dia do embarque |
+
+#### Por que o login mora em funções `security definer`
+
+Na hora de autenticar ainda **não existe sessão** — e portanto não existe base — para a RLS filtrar. Sem `auth_iniciar`, `auth_falhou`, `auth_entrou`, `auth_sessao`, `auth_sair` e `auth_trocar_senha`, ou se abre `gestores` inteira ao papel da aplicação, ou se inventa uma exceção na política. As duas saídas furam o isolamento.
+
+Com elas, o papel `rota_app` **não lê hash de senha** — verificado em teste, com `permission denied`.
+
+#### Retenção: o mecanismo é do código, o prazo é do contrato
+
+`bases.retencao_meses` (padrão de partida 60) e `expurgar_acesso(base)`, que remove sessão morta e log de acesso vencido e **nunca toca em viagem, paciente ou auditoria** — descarte de prontuário é decisão de política, não rotina de limpeza. O item de go/no-go deixa de ser "construir o descarte" e passa a ser só o número.
+
+#### O que prova isso
+
+- `testes/auth.test.mjs` — **71 asserções**, incluindo os vetores oficiais da RFC 4226 (HOTP), RFC 6238 apêndice B (TOTP em SHA-1 e SHA-256) e RFC 4648 (base32). Não é auto-consistência: implementação errada de jeito coerente cairia nesses vetores.
+- `testes/login.e2e.mjs` — **38 asserções** costurando os dois lados num Postgres real: reuso de código, bloqueio progressivo, sucesso zerando o contador, troca de senha derrubando sessão viva e poupando a atual, sessão de gestor desativado morrendo junto, log de e-mail inexistente sem base, expurgo. Validado por sabotagem — tirar a conferência de expiração ou deixar as sessões vivas na troca de senha deixa o teste vermelho.
 
 ### 3.4 · PDF no servidor
 

@@ -1,0 +1,90 @@
+# ═══════════════════════════════════════════════════════════════════
+# ROTA · verificação automática
+#
+# Três coisas que já quebraram na mão e não podem depender de lembrança:
+#   1. hash do CSP defasado — a página abre e o JavaScript não roda,
+#      sem erro visível;
+#   2. regra de negócio alterada sem conferir elegibilidade, farol,
+#      custo e ocupação;
+#   3. garantia de isolamento ou de auditoria enfraquecida no schema.
+# ═══════════════════════════════════════════════════════════════════
+name: verificar
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  front:
+    name: CSP e regras
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Hash do CSP confere com o script inline de cada página
+        run: node scripts/csp-hash.mjs
+      - name: Regras de negócio
+        run: node testes/regras.test.mjs
+      - name: Autenticação — vetores das RFC 4226, 4648 e 6238
+        run: node testes/auth.test.mjs
+      - name: FonteAPI — a segunda implementação do contrato de dados
+        run: node testes/fonte-api.test.mjs
+      - name: Sem onclick inline (a delegação de eventos é decisão da revisão M2)
+        run: |
+          if grep -n 'onclick=' -- *.html; then
+            echo "::error::onclick inline reintroduzido — use delegação (ver docs/REVISAO-ROTA-APP.md M2)"
+            exit 1
+          fi
+          echo "nenhum onclick inline"
+
+  banco:
+    name: Isolamento e auditoria
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: rota
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 5432:5432
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: rota
+      PGDATABASE: rota
+    steps:
+      - uses: actions/checkout@v4
+      - name: Criar base
+        run: psql -d postgres -c 'create database rota'
+      - name: Schema
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/schema.sql
+      - name: Migração da auditoria
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0001_auditoria_hash_chain.sql
+      - name: Migração da autenticação
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0002_autenticacao.sql
+      - name: Migração do isolamento forçado
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0003_forcar_rls.sql
+      - name: Asserções — RLS, paciente-deslocamento, numeração, cadeia de hash
+        run: psql -v ON_ERROR_STOP=1 -f supabase/testes/assercoes.sql
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Login de ponta a ponta — política de acesso contra o banco
+        run: node testes/login.e2e.mjs
+        env:
+          DATABASE_URL: postgres://postgres:rota@localhost:5432/rota
+      - name: API de ponta a ponta — isolamento entre municípios pela HTTP
+        run: node testes/api.e2e.mjs
+        env:
+          DATABASE_URL: postgres://postgres:rota@localhost:5432/postgres

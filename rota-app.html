@@ -516,36 +516,132 @@ FonteSeed.prototype.salvarAbastecimento=function(a){ return a; };
 FonteSeed.prototype.salvarBaixa=function(viagemId,dados){ return dados; };
 FonteSeed.prototype.salvarProgramacao=function(){ /* seed nao persiste programacao */ };
 
+/* ═══════════════════════════════════════════════════════════════════
+   FonteAPI — a outra implementacao do mesmo contrato.
+
+   Nao esta ligada: o console continua abrindo pela FonteSeed. Ela existe
+   agora porque contrato so se sabe honesto quando tem duas implementacoes;
+   com uma so, o que parece contrato costuma ser o formato acidental de
+   quem escreveu primeiro.
+
+   A diferenca real e que estas devolvem promessa. Por isso Dados passou a
+   tolerar promessa em toda operacao: com a FonteSeed o retorno e imediato
+   e nada muda; com a API, o callback chega depois.
+
+   Ligar, na Fase 2 item 3.5:
+     Dados.abrir(new FonteAPI({token:t}), function(){ gerarProgramacao(); render('painel') });
+   ═══════════════════════════════════════════════════════════════════ */
+function FonteAPI(op){
+  op=op||{};
+  this.raiz=op.raiz||'/api';
+  this.token=op.token||null;
+  /* injetavel para teste; em navegador e o fetch mesmo */
+  this.buscar=op.buscar||(typeof fetch==='function'?function(u,o){return fetch(u,o)}:null);
+}
+FonteAPI.prototype._req=function(metodo,caminho,corpo){
+  if(!this.buscar) return Promise.reject(new Error('sem fetch disponivel'));
+  var cab={};
+  if(this.token) cab.Authorization='Bearer '+this.token;
+  if(corpo!==undefined) cab['Content-Type']='application/json';
+  return this.buscar(this.raiz+caminho,{
+    method:metodo, headers:cab, credentials:'same-origin',
+    body:corpo===undefined?undefined:JSON.stringify(corpo)
+  }).then(function(r){
+    return r.json().catch(function(){return null}).then(function(j){
+      if(r.status===401){var e=new Error('sessao expirada');e.status=401;throw e}
+      if(!r.ok){var x=new Error((j&&j.erro)||('falha '+r.status));x.status=r.status;throw x}
+      return j;
+    });
+  });
+};
+FonteAPI.prototype.entrar=function(email,senha,codigo){
+  var self=this;
+  return this._req('POST','/sessao',{email:email,senha:senha,codigo:codigo}).then(function(s){
+    self.token=s.token; return s;
+  });
+};
+FonteAPI.prototype.sair=function(){
+  var self=this;
+  return this._req('DELETE','/sessao').then(function(r){ self.token=null; return r });
+};
+FonteAPI.prototype.carregar=function(){
+  return this._req('GET','/carregar').then(function(d){
+    /* os rotulos sao derivados no cliente, igual a FonteSeed: quem
+       decide como se escreve 'Maca — ambulancia' e a tela, nao o banco */
+    d.pacientes.forEach(function(p){p.trat=tratLabel(p);p.nec=necLabel(p)});
+    d.lancamentos=d.lancamentos||{};
+    return d;
+  });
+};
+FonteAPI.prototype.salvarPaciente=function(p){ return this._req('POST','/pacientes',p) };
+FonteAPI.prototype.salvarAbastecimento=function(a){ return this._req('POST','/abastecimentos',a) };
+FonteAPI.prototype.salvarBaixa=function(viagemId,dados){
+  /* a tela pensa em presentes e faltas; a comprovacao federal e por
+     paciente-deslocamento, com ida e volta conferidas. A traducao e aqui. */
+  var emb=[];
+  (dados.presentes||[]).forEach(function(id){emb.push({paciente:id,ida:true,volta:true})});
+  (dados.faltas||[]).forEach(function(id){emb.push({paciente:id,ida:false,volta:false})});
+  return this._req('POST','/viagens/'+encodeURIComponent(viagemId)+'/baixa',{
+    km:dados.km, litros:dados.litros, diarias:dados.diarias, data:dados.data, embarques:emb
+  }).then(function(r){
+    return {concluida:true, km:r.km, litros:r.litros, diarias:r.diarias, data:r.data,
+            presentes:dados.presentes||[], faltas:dados.faltas||[], ocupacao:r.ocupacao};
+  });
+};
+FonteAPI.prototype.salvarProgramacao=function(v){
+  if(!v||!v.length) return Promise.resolve();
+  return this._req('PUT','/programacao',{de:v[0].data, ate:v[v.length-1].data, viagens:v});
+};
+
+/* Fonte sincrona (seed) e fonte assincrona (API) atendidas pelo mesmo
+   codigo: se a fonte devolveu promessa, aplica-se depois; se devolveu o
+   valor, aplica-se agora. Nenhuma tela precisa saber qual e qual. */
+function _quandoPronto(x,fn){ return (x && typeof x.then==='function') ? x.then(fn) : fn(x) }
+
 var Dados={
   fonte:null,
-  abrir:function(fonte){
+  abrir:function(fonte,pronto){
     this.fonte=fonte;
-    var d=fonte.carregar();
-    DESTINOS=d.destinos;
-    pacientes=d.pacientes;
-    veiculos=d.veiculos;
-    abastecimentos=d.abastecimentos;
-    lancamentos=d.lancamentos||{};
-    if(d.config) CONFIG=d.config;
-    return this;
+    var self=this;
+    return _quandoPronto(fonte.carregar(),function(d){
+      DESTINOS=d.destinos;
+      pacientes=d.pacientes;
+      veiculos=d.veiculos;
+      abastecimentos=d.abastecimentos;
+      lancamentos=d.lancamentos||{};
+      if(d.config) CONFIG=d.config;
+      if(pronto)pronto(self);
+      return self;
+    });
   },
-  salvarBaixa:function(viagemId,dados){
-    var gravado=this.fonte.salvarBaixa(viagemId,dados);
-    lancamentos[viagemId]=gravado;
-    return gravado;
+  salvarBaixa:function(viagemId,dados,pronto){
+    return _quandoPronto(this.fonte.salvarBaixa(viagemId,dados),function(gravado){
+      lancamentos[viagemId]=gravado;
+      if(pronto)pronto(gravado);
+      return gravado;
+    });
   },
-  salvarAbastecimento:function(a){
-    var gravado=this.fonte.salvarAbastecimento(a);
-    abastecimentos.push(gravado);
-    return gravado;
+  salvarAbastecimento:function(a,pronto){
+    return _quandoPronto(this.fonte.salvarAbastecimento(a),function(gravado){
+      abastecimentos.push(gravado);
+      if(pronto)pronto(gravado);
+      return gravado;
+    });
   },
-  salvarPaciente:function(p){
-    var gravado=this.fonte.salvarPaciente(p);
-    gravado.trat=tratLabel(gravado); gravado.nec=necLabel(gravado);
-    pacientes.push(gravado);
-    return gravado;
+  salvarPaciente:function(p,pronto){
+    return _quandoPronto(this.fonte.salvarPaciente(p),function(gravado){
+      gravado.trat=tratLabel(gravado); gravado.nec=necLabel(gravado);
+      pacientes.push(gravado);
+      if(pronto)pronto(gravado);
+      return gravado;
+    });
   },
-  salvarProgramacao:function(v){ this.fonte.salvarProgramacao(v); }
+  salvarProgramacao:function(v,pronto){
+    return _quandoPronto(this.fonte.salvarProgramacao(v),function(r){
+      if(pronto)pronto(r);
+      return r;
+    });
+  }
 };
 
 function datasDaSemana(){return DIAS.map(function(d){return DATA_SEMANA[d]})}
@@ -993,8 +1089,11 @@ function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[
   var km=parseFloat(($('#bx-km')||{}).value), lit=parseFloat(($('#bx-litros')||{}).value), dia=parseInt(($('#bx-diarias')||{}).value);
   if(!(km>0)){toast('Informe o km rodado conferido na prancheta');return}
   if(!(lit>=0)){toast('Informe o combustível (0 se não abasteceu)');return}
-  Dados.salvarBaixa(vid,{concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0,data:hojeISO()});
-  closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s) · '+fmt(km)+' km');updateDots();render('lancamentos');
+  /* fecha e renderiza DEPOIS de gravado. Com o seed isso e imediato;
+     com a API, evita a tela dizer 'registrada' antes de o banco aceitar. */
+  Dados.salvarBaixa(vid,{concluida:true,km:km,litros:lit,presentes:pres,faltas:falt,diarias:dia>0?dia:0,data:hojeISO()},function(){
+    closeModal();toast('Baixa registrada · '+pres.length+' presença(s), '+falt.length+' falta(s) · '+fmt(km)+' km');updateDots();render('lancamentos');
+  });
 }
 
 /* =================== RELATÓRIO =================== */
@@ -1122,7 +1221,7 @@ if(NAVEGADOR) iniciarUI();
    que a FonteAPI da Fase 2 tera de honrar.
    ═══════════════════════════════════════════════════════════════════ */
 var ROTA={
-  Dados:Dados, FonteSeed:FonteSeed, SEED:SEED,
+  Dados:Dados, FonteSeed:FonteSeed, FonteAPI:FonteAPI, SEED:SEED,
   abrirSeed:function(){ return Dados.abrir(new FonteSeed(SEED)) },
   regras:{
     elegivelFederal:elegivelFederal, elegiveisNaViagem:elegiveisNaViagem,
