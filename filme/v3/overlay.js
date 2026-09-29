@@ -20,7 +20,7 @@ function seek(t){
  [r,D]=sc(t,'s2'); {const p=cl(r,.4,3.4); $('c1').textContent=br(Math.round(3300*E(p)));
   $('c3').textContent='R$ '+br(1.4*E(cl(r,1,4)),1)+' bi'; $('c2').style.transform='scaleX('+E(cl(r,.8,3.2))+')';
   const v=Math.round(330*E(cl(r,.4,3.6))); PT.forEach((e,i)=>{e.style.opacity=i<v?.92:0});}
- [r,D]=sc(t,'s3'); {const f='Mas não entregou quem opera.',p=cl(r,.9,2.6); $('e1').textContent=f.slice(0,Math.round(p*f.length));
+ [r,D]=sc(t,'s3'); {const f='Mas não entregou\nquem opera.',p=cl(r,.9,2.6); $('e1').textContent=f.slice(0,Math.round(p*f.length));
   $('e2').style.opacity=(r<2.9&&Math.floor(r*1.25)%2===0)?1:0; fd($('e3'),cl(r,3.4,4.2));}
  [r,D]=sc(t,'s4'); $('f1').textContent='≈ '+Math.round(6*E(cl(r,.5,2.3))); fd($('f2'),cl(r,1.3,2.1)); fd($('f3'),cl(r,2.1,2.9));
  [r,D]=sc(t,'s5'); {const p=cl(r,.2,1.1),v=$('g0'); v.style.transform='translateY(-50%) translateX('+(-26*(1-E(p)))+'px)'; v.style.opacity=E(p);
