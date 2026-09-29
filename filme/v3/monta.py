@@ -16,11 +16,11 @@ for i,p in enumerate(P['planos']):
             f"scale=2400:-2,zoompan=z='{z}':d=1:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,{GR}"]+enc)
     else:
         run(base+['-f','lavfi','-i',f'color=c=0x0A0A0A:s=1920x1080:r=30','-t',f'{d:.3f}']+enc)
-    lst.append(f"file '{o}'")
+    lst.append(f"file '{i:02d}.mp4'")
 open('seg/l.txt','w').write('\n'.join(lst))
 run(['ffmpeg','-y','-v','error','-f','concat','-safe','0','-i','seg/l.txt','-c','copy','bed.mp4'])
 run(['ffmpeg','-y','-v','error','-i','bed.mp4','-framerate','30','-i','ov/%05d.png','-filter_complex','[0][1]overlay=format=auto:shortest=1',
-     '-c:v','libx264','-preset','slow','-crf','18','-pix_fmt','yuv420p','-r','30','comp.mp4'])
+     '-c:v','libx264','-preset','slow','-crf','20','-pix_fmt','yuv420p','-r','30','comp.mp4'])
 # ---- áudio: voz nas marcas + efeitos sintetizados ----
 M=P['marcas']; C={c['id']:c for c in P['cenas']}; F=P['fim']
 def sfx(n,f): run(['ffmpeg','-y','-v','error','-f','lavfi','-i',f,'-ac','2','-ar','48000',f'{n}.wav'])

@@ -45,9 +45,12 @@ function navega(r,D){
  const f=Math.min(nq-1,Math.floor(cl(r,ini+.15,ini+1.75)*(nq-1))); const src=pasta+'/'+String(f).padStart(3,'0')+'.jpg';
  if($(id).dataset.s!==src){$(id).dataset.s=src;$(id).src=src;}
  if(nx&&nx[2]!==id){const [p2,n2]=APP[nx[3]];const s2=p2+'/000.jpg';if($(nx[2]).dataset.s!==s2){$(nx[2]).dataset.s=s2;$(nx[2]).src=s2;}}
- const z=r>11*s?1+.46*EO(cl(r,11*s,13*s)):1; ['v0','v1','v2','v3'].forEach(i=>$(i).style.transform='scale('+z+')');
+ /* push contínuo de câmera na cena inteira: nenhum quadro parado entre cliques, e a escala não salta na troca de tela */
+ const dz=1+.10*cl(r,0,11*s); const z=r>11*s?1.10+.36*EO(cl(r,11*s,13*s)):dz;
+ ['v0','v1','v2','v3'].forEach(i=>$(i).style.transform='scale('+z+')');
+ const OX=499.2,OY=842.4,tz=(p,q)=>[OX+(p-OX)*dz,OY+(q-OY)*dz];
  const cu=$('cu'),pu=$('pu'); let mv=null; P.forEach(x=>{if(x[4]&&r>=x[0]-.55&&r<=x[1]+.35)mv=x});
- if(mv){const tg=M[mv[4]],q=EO(cl(r,mv[0]-.5,mv[1]-.12)); cu.style.opacity=1;
+ if(mv){const tg=tz(...M[mv[4]]),q=EO(cl(r,mv[0]-.5,mv[1]-.12)); cu.style.opacity=1;
   cu.style.left=(960+(tg[0]-960)*q)+'px'; cu.style.top=(640+(tg[1]-640)*q)+'px';
   const pq=cl(r,mv[1]-.12,mv[1]+.3); if(pq>0&&pq<1){pu.style.opacity=1-pq;pu.style.left=tg[0]+'px';pu.style.top=tg[1]+'px';pu.style.width=pu.style.height=(22+72*pq)+'px'}else pu.style.opacity=0;
  } else {cu.style.opacity=0;pu.style.opacity=0}
