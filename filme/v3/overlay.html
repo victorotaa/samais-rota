@@ -1,0 +1,58 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<link id="fnt" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500;700&display=block">
+<style>
+:root{--gold:#B8954E;--gs:#D4B373;--gd:#8E7238;--tx:#F4F1EA;--t2:#D9D2C5;--mu:#9C9489;--dim:#7A7266;
+--D:'Syne',sans-serif;--B:'Plus Jakarta Sans',sans-serif;--M:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}html,body{background:transparent;overflow:hidden}
+#p{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:var(--B);color:var(--tx)}
+.c{position:absolute;inset:0;display:none}.c.on{display:block}
+.scr{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,8,8,.93) 0%,rgba(8,8,8,.78) 34%,rgba(8,8,8,.25) 62%,rgba(8,8,8,0) 80%),linear-gradient(0deg,rgba(8,8,8,.88) 0%,rgba(8,8,8,.4) 38%,rgba(8,8,8,0) 60%)}
+.scrC{position:absolute;inset:0;background:radial-gradient(1250px 720px at 50% 50%,rgba(8,8,8,.9) 0%,rgba(8,8,8,.74) 45%,rgba(8,8,8,.35) 78%,rgba(8,8,8,.2))}
+.eb{font-family:var(--M);font-size:19px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.t1{font-family:var(--D);font-weight:800;font-size:82px;line-height:1.05;letter-spacing:-.02em}
+.t2{font-family:var(--D);font-weight:700;font-size:54px;line-height:1.12;letter-spacing:-.015em}
+.le{font-size:31px;line-height:1.5;color:var(--t2);font-weight:300}
+.fo{font-family:var(--M);font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.n{font-family:var(--M);font-weight:700;font-variant-numeric:tabular-nums;color:var(--gold);letter-spacing:-.01em}
+.sh{text-shadow:0 4px 36px rgba(0,0,0,.9)}
+.mk{display:block;overflow:hidden}.mk>span{display:block;white-space:nowrap;transform:translateY(104%)}
+.bl{position:absolute;left:132px;bottom:150px}
+.dias{position:absolute;left:132px;top:118px;display:flex;gap:30px}
+.dias b{font-family:var(--M);font-size:27px;letter-spacing:.26em;color:rgba(244,241,234,.30);font-weight:400}
+.dias b.on{color:var(--gold)}
+.gr{position:absolute;right:140px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(22,1fr);gap:11px;width:600px;padding:40px;border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(18px);box-shadow:0 26px 70px rgba(0,0,0,.6)}
+.gr i{aspect-ratio:1;border-radius:2px;background:var(--gs);opacity:0}
+.tr{height:9px;background:rgba(255,255,255,.16);border-radius:5px;overflow:hidden;margin-top:24px;width:640px}
+.tr i{display:block;height:100%;background:linear-gradient(90deg,var(--gd),var(--gold));transform-origin:left;transform:scaleX(0)}
+.vd{position:absolute;left:132px;top:50%;width:980px;border-radius:20px;overflow:hidden;background:rgba(18,17,16,.82);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(22px);box-shadow:0 26px 70px rgba(0,0,0,.65)}
+.vd .h{display:flex;justify-content:space-between;padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.1)}
+.vd .h b{font-family:var(--M);font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.vd .h span{font-family:var(--M);font-size:13px;color:var(--mu)}
+.vd .j{height:240px;overflow:hidden}.vd img{display:block;width:100%;margin-top:-4px}
+.app{position:absolute;inset:0;background:#0A0A0A}.app img{position:absolute;inset:0;width:1920px;height:1080px;object-fit:cover;opacity:0;transform-origin:26% 78%}
+.vin{position:absolute;inset:0;box-shadow:inset 0 0 320px 80px rgba(0,0,0,.72);pointer-events:none}
+.cur{position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(244,241,234,.95);box-shadow:0 0 0 2px rgba(10,10,10,.6),0 6px 22px rgba(0,0,0,.7);transform:translate(-50%,-50%);opacity:0;z-index:9}
+.pu{position:absolute;border-radius:50%;border:2px solid var(--gold);transform:translate(-50%,-50%);opacity:0;z-index:8}
+.selo{position:absolute;left:96px;bottom:80px;font-family:var(--M);font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(184,149,78,.3);border-radius:999px;padding:11px 22px;background:rgba(10,10,10,.92)}
+.pal{position:absolute;right:0;top:0;bottom:0;width:640px;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:22px;padding-right:96px;background:linear-gradient(90deg,rgba(10,10,10,0),rgba(10,10,10,.74) 42%,rgba(10,10,10,.95))}
+.pal b{font-family:var(--M);font-size:27px;letter-spacing:.17em;text-transform:uppercase;font-weight:500;opacity:0}
+.fin{position:absolute;inset:0;background:#0A0A0A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:38px}
+.fin svg{width:330px}.fin p{font-family:var(--D);font-style:italic;font-weight:700;font-size:40px;color:var(--t2)}
+.ilu{position:absolute;right:30px;bottom:26px;font-family:var(--M);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,241,234,.5);opacity:0}
+.car{display:inline-block;width:.06em;height:1em;background:var(--gold);margin-left:.07em;vertical-align:-.1em}
+</style></head><body><div id="p">
+<div class="c" id="s0"><div class="scr"></div><div class="dias"><b id="d1">SEG</b><b id="d2">QUA</b><b id="d3">SEX</b></div>
+ <div class="bl sh"><div class="eb">Transporte sanitário</div><div class="t1 mk" style="margin-top:20px"><span id="a1">Três vezes por semana,</span></div><div class="t1 mk"><span id="a2">o mesmo trajeto.</span></div>
+ <p class="le" id="a3" style="margin-top:26px;white-space:nowrap;opacity:0">Para quem faz hemodiálise, chegar ao tratamento<br>é parte do tratamento.</p></div></div>
+<div class="c" id="s1"><div class="scr"></div><div class="bl sh"><div class="t2 mk"><span id="b1">O governo comprou a frota.</span></div><div class="fo" id="b2" style="margin-top:22px;opacity:0">Caminhos da Saúde · Novo PAC · Ministério da Saúde</div></div></div>
+<div class="c" id="s2"><div class="scr"></div><div class="gr" id="gr"></div><div class="bl sh"><div class="n" id="c1" style="font-size:150px">0</div><div class="eb" style="margin-top:4px">veículos comprados pela União</div><div class="tr"><i id="c2"></i></div><div class="n" id="c3" style="font-size:52px;margin-top:24px">R$ 0 bi</div><div class="fo" style="margin-top:10px">em frota · repasse federal mensal enquanto houver comprovação</div></div></div>
+<div class="c" id="s3"><div class="scr"></div><div class="bl sh" style="bottom:180px"><div class="t1" style="white-space:nowrap;font-size:76px"><span id="e1"></span><i class="car" id="e2"></i></div><p class="le" id="e3" style="margin-top:26px;white-space:nowrap;opacity:0">Veículo parado não transporta paciente.<br>E repasse sem comprovação é suspenso.</p></div></div>
+<div class="c" id="s4"><div class="scr"></div><div class="bl sh"><div class="eb">Operar exige atestado de capacidade técnica</div><div style="display:flex;align-items:center;gap:32px;margin-top:14px"><div class="n" id="f1" style="font-size:200px;line-height:.9">0</div><div class="t2" id="f2" style="font-size:42px;color:var(--t2);opacity:0">operadores com atestado<br>no país inteiro</div></div><div class="fo" id="f3" style="margin-top:22px;opacity:0">Estimativa de mercado · modelagem Samais</div></div></div>
+<div class="c" id="s5"><div class="scr"></div><div class="vd" id="g0"><div class="h"><b>Fonte oficial</b><span>gov.br/saúde</span></div><div class="j"><img src="img/noticia.jpg"></div></div>
+ <div id="g9" style="position:absolute;right:110px;width:720px;padding:40px 44px;border-radius:20px;background:rgba(12,11,10,.84);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(22px);box-shadow:0 26px 70px rgba(0,0,0,.65)"><div style="display:flex;align-items:center;gap:32px"><div class="n" id="g1" style="font-size:172px;line-height:.82">0</div><div class="t2" id="g2" style="font-size:38px;color:var(--t2);line-height:1.18;opacity:0">atestados de<br>capacidade técnica</div></div><div class="fo" id="g3" style="margin-top:30px;opacity:0;white-space:nowrap;letter-spacing:.07em">SAMU 192 · transferência inter-hospitalar · regulação</div><div class="fo" id="g4" style="margin-top:10px;opacity:0">Referências CISNORPI e Ourinhos</div></div></div>
+<div class="c" id="s6"><div class="app"><img id="v0"><img id="v1"><img id="v2"><img id="v3"></div><div class="vin"></div><div class="pu" id="pu"></div><div class="cur" id="cu"></div><div class="selo" id="h0">ROTA · console de gestão</div><div class="pal"><b id="w1">Programação</b><b id="w2">Embarque</b><b id="w3">Quilometragem</b><b id="w4">Comprovação</b></div></div>
+<div class="c" id="s7"><div class="scrC"></div><div class="dias" style="left:50%;transform:translateX(-50%);top:auto;bottom:150px;padding:14px 30px;border-radius:999px;background:rgba(10,10,10,.85);border:1px solid rgba(184,149,78,.28)"><b id="k1">SEG</b><b id="k2">QUA</b><b id="k3">SEX</b></div>
+ <div class="sh" style="position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center"><div class="t1 mk" style="font-size:72px"><span id="h1">Para que o paciente</span></div><div class="t1 mk" style="font-size:72px"><span id="h2">chegue ao tratamento.</span></div><div class="t2" id="h3" style="font-size:44px;margin-top:42px;color:var(--gold);opacity:0">Tecnologia à frente da saúde pública.</div></div></div>
+<div class="c" id="s8"><div class="fin"><svg viewBox="43 58 510 59"><path fill="#B8954E" d="M44,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM411.7,60.6h4.7c4.4,0,8.6,2.1,11.3,5.6l36.8,48.2h-11.7l-41-53.7ZM476.6,106.6l4.9-4.9c6.3,3.6,18.2,8.8,33.8,8.8s25.5-3.2,25.5-11.1-14.2-9.6-24.4-9.8c-16.2-.2-35.4-2.8-35.4-14.1s17.3-16.4,32.7-16.4,27,3.2,34.1,6.5l-4.4,4.9c-6.8-3.1-17.2-6-28.9-6s-22.8,1.7-22.8,9.6,17,7.7,24.8,7.9c15.9.2,35.4,3.2,35.4,16.9s-20.1,17.1-35.9,17.1-31.6-5.3-39.4-9.4ZM184.3,60.6h-12.4s24.4,33.7,24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3s10.8,14.9,10.8,14.9h13.1l-39.6-53.7ZM372.1,60.6h-12.4l24.4,33.7h-42.4c-3.2,0-6.3,1.5-8.2,4.2l-11.7,15.9h7.6l7.9-10.7c1.9-2.6,5-4.2,8.2-4.2h42.3l10.8,14.9h13.1l-39.6-53.7ZM287.2,65.9l-23.3,32.3-23.9-32.4c-2.4-3.2-6.2-5.2-10.2-5.2h-6l33.5,46.6h7.2l27.8-37.7v44.8h11.7v-53.7h-6.6c-4.1,0-7.9,2-10.3,5.3Z"/></svg><p id="z1" style="opacity:0">Onde gestão se mede em vidas.</p></div></div>
+<div class="ilu" id="il">Imagem ilustrativa</div>
+</div><script src="timeline.js"></script><script src="overlay.js"></script></body></html>

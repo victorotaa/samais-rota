@@ -44,6 +44,15 @@ documentos.
 - Vetado: “humanizado”, “excelência”, “acolhimento”
 - Tagline sempre como fecho
 
+### Quebra de linha — regra fixa, vale para todo material
+- **Nenhuma linha termina ou começa com uma palavra sozinha.** Proibido o órfão: frase,
+  ponto final, e uma única palavra antes da quebra. Vale para título, lede, legenda,
+  tipografia de vídeo e qualquer peça impressa ou digital.
+- Quebra manual (`<br>`) sempre em ponto sintático — depois de vírgula, de conjunção ou
+  entre orações —, nunca no meio de locução.
+- Título de duas linhas: as duas linhas precisam de **ao menos duas palavras** cada.
+- Conferir no render final, não no código: a quebra depende da largura real.
+
 ## Imagens (banco Samais no Drive)
 - Fotos operacionais sóbrias: frota/viaturas, central de regulação, equipe
 - **Vetado**: dramaticidade (sirene, sangue, reanimação, paciente identificável)
