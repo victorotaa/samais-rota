@@ -36,6 +36,7 @@ node trilha/compor.mjs >/dev/null
 marca "trilha"
 
 npx hyperframes lint . >/dev/null 2>&1 || true
+npx hyperframes browser ensure >/dev/null 2>&1 || true
 npx hyperframes render . -o renders/bruto.mp4 -f 30 --workers auto --quiet
 marca "render"
 
