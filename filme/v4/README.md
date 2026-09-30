@@ -5,6 +5,13 @@ do CoPilot (samais-os · `produtos/samu-copilot-os/video-comercial`): tokens de
 movimento, câmera que não para, tipografia cinética, chicote com borrão, mergulho
 de zoom, clarão e tremor nos impactos, trilha composta em código na grade de 120 BPM.
 
+## v4b — aprovada pelo Ota (30/09/2026)
+
+✓ *"Ficou ótimo."* Render local (HyperFrames, quadros de vídeo em PNG), −16 LUFS, 84,5 s,
+77.672.285 bytes. Arquivo no Higgsfield (media `480907df-ef75-45d1-8ef5-131e705738ae`).
+Pendente, a pedido do Ota: upscale dos cinco clipes de 720p (os três do ônibus e os dois
+de Belém) para 1080p.
+
 ## O que mudou da v3 (pedido do Ota, 29/09/2026)
 
 | Pedido | Resposta |
