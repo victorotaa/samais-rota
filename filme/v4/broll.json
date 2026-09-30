@@ -1,9 +1,9 @@
 {
  "_": "B-roll do comercial. Cada família num bloco só: ônibus (mesmas pessoas, quadro a9b36748), Manduri (mesma pintura), Belém (a mesma equipe, cadeia 03bd0016 → 29a7856a). Binários fora do git; baixar para assets/broll/<nome>.mp4.",
  "onibus-estrada": {
-  "job": "32855d7a-124a-4ed8-9e56-1cc31565b8f0",
-  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260930_025024_32855d7a-124a-4ed8-9e56-1cc31565b8f0.mp4",
-  "o_que": "o micro-ônibus na avenida arborizada, manhã (take novo)"
+  "job": "0b8b99ae-aa2b-4c9d-b209-d307055c8c02",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260930_175438_0b8b99ae-aa2b-4c9d-b209-d307055c8c02.mp4",
+  "o_que": "o micro-ônibus vem pela avenida e passa pela câmera (take novo, só quadro inicial)"
  },
  "onibus-clinica": {
   "job": "649eee88-ff2c-411d-9145-ead36e394064",
@@ -39,6 +39,7 @@
   "_": "Não usar (Ota, 30/09/2026): movimento inadequado no push-in do casal na frente do micro-ônibus.",
   "aba9ee4c-b824-4b6b-9b17-7af19fbee952": "push-in até o retrato dos dois profissionais (v3, onibus_A)",
   "34c85da0-938b-420d-bb70-da79ded420e9": "o mesmo push-in, 1080p (v3, onibus_B)",
-  "9e8e07fa-b28c-48f2-a2eb-d72168898fac": "mesmo quadro inicial, 'make it cinematic'"
+  "9e8e07fa-b28c-48f2-a2eb-d72168898fac": "mesmo quadro inicial, 'make it cinematic'",
+  "32855d7a-124a-4ed8-9e56-1cc31565b8f0": "ônibus na avenida com quadro final: o ônibus quase não se move"
  }
 }

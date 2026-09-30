@@ -135,19 +135,19 @@
    27.0
   ],
   "impacto_vao": 27.0,
-  "suspenso": 34.6,
-  "samu": 46.6,
-  "transferencia": 47.3,
-  "regulacao": 49.0,
+  "suspenso": 34.75,
+  "samu": 46.7,
+  "transferencia": 47.55,
+  "regulacao": 49.3,
   "atestados": 50.4,
   "app_entra": 57.0,
   "cliques": [
-   61.5,
-   62.3,
-   63.2,
-   64.1
+   61.55,
+   62.5,
+   63.35,
+   64.35
   ],
-  "comprovacao_em_dia": 64.6,
+  "comprovacao_em_dia": 64.8,
   "assinatura": 78.0,
   "tagline": 80.8,
   "relatorio": 67.2

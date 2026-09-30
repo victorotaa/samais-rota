@@ -112,7 +112,7 @@ for (const tela of TELAS) {
     return { cards, menu };
   }, tela.v);
   execFileSync(ffmpeg, ['-y', '-v', 'error', '-framerate', '30', '-i', path.join(dir, '%03d.jpg'),
-    '-vf', 'tpad=stop_mode=clone:stop_duration=6', '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-pix_fmt', 'yuv420p', '-r', '30', '-movflags', '+faststart',
+    '-vf', 'tpad=stop_mode=clone:stop_duration=6', '-c:v', 'libx264', '-preset', 'slow', '-crf', '14', '-g', '15', '-keyint_min', '15', '-sc_threshold', '0', '-pix_fmt', 'yuv420p', '-r', '30', '-movflags', '+faststart',
     path.join(AQUI, 'assets/app', nome + '.mp4')], { stdio: 'inherit' });
   console.log('tela', nome, QUADROS, 'quadros ·', caixas[nome].cards.length, 'cards');
 }
