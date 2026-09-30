@@ -37,7 +37,7 @@ marca "trilha"
 
 npx hyperframes lint . >/dev/null 2>&1 || true
 npx hyperframes browser ensure >/dev/null 2>&1 || true
-npx hyperframes render . -o renders/bruto.mp4 -f 30 --workers auto --quiet
+npx hyperframes render . -o renders/bruto.mp4 -f 30 --workers auto --video-frame-format png --quiet
 marca "render"
 
 # loudness em duas passadas: a peça tem muita dinâmica (silêncio e impacto no vão)

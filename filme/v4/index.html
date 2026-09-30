@@ -91,7 +91,10 @@
   .num{font-family:var(--mono);font-weight:500;color:var(--gold);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
 
   .scrim{position:absolute;inset:0;pointer-events:none}
-  .scrim-baixo{background:linear-gradient(0deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 80%, transparent) 30%, transparent 62%)}
+  .scrim-baixo{background:radial-gradient(62% 58% at 8% 100%, color-mix(in srgb, var(--bg) 78%, transparent) 0%, color-mix(in srgb, var(--bg) 42%, transparent) 45%, transparent 75%), linear-gradient(0deg, color-mix(in srgb, var(--bg) 45%, transparent) 0%, transparent 28%)}
+  /* texto sobre vídeo: sombra na própria letra, e não faixa escura de ponta a ponta */
+  .legenda-baixo .h2,.legenda-baixo .h3,.legenda-baixo .sub,.legenda-baixo .kicker,.quadro .palavra{text-shadow:0 2px 22px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.45)}
+  .legenda-baixo .kicker,.quadro .kicker{color:var(--gold-soft);text-shadow:0 0 14px rgba(0,0,0,.9), 0 1px 2px rgba(0,0,0,.8)}
   .scrim-esq{background:linear-gradient(90deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 84%, transparent) 36%, transparent 64%)}
   .scrim-dir{background:linear-gradient(270deg, color-mix(in srgb, var(--bg) 96%, transparent) 0%, color-mix(in srgb, var(--bg) 86%, transparent) 36%, transparent 62%)}
   .legenda{position:absolute;display:flex;flex-direction:column;justify-content:center}
@@ -101,7 +104,7 @@
 
   /* ── B-roll: o vídeo é clip; quem se move é o envoltório (sem data-start) ── */
   .bcam{position:absolute;inset:0;overflow:hidden;opacity:0}
-  .bcam video,.bcam img{position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover;filter:saturate(.9) contrast(1.05) brightness(.8)}
+  .bcam video,.bcam img{position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover;filter:saturate(.95) contrast(1.04) brightness(.9)}
   .bcam.escuro video{filter:saturate(.8) contrast(1.06) brightness(.45) blur(2px)}
   .bcam.fixo img{filter:saturate(.35) contrast(1.08) brightness(.5)}
 
@@ -154,7 +157,7 @@
 
   /* ── 06 · a Samais ───────────────────────────────────────────────────── */
   .quadro{position:absolute;inset:0;overflow:hidden;opacity:0}
-  .quadro .veu{position:absolute;inset:0;background:linear-gradient(0deg, color-mix(in srgb, var(--bg) 80%, transparent), color-mix(in srgb, var(--bg) 30%, transparent) 70%)}
+  .quadro .veu{position:absolute;inset:0;background:radial-gradient(62% 58% at 8% 100%, color-mix(in srgb, var(--bg) 78%, transparent) 0%, color-mix(in srgb, var(--bg) 42%, transparent) 45%, transparent 75%), linear-gradient(0deg, color-mix(in srgb, var(--bg) 45%, transparent) 0%, transparent 28%)}
   .quadro .palavra{position:absolute;left:130px;right:130px;bottom:130px;display:flex;flex-direction:column;gap:14px}
   .quadro .grande{font-family:var(--display);font-weight:800;font-size:150px;letter-spacing:-.035em;line-height:.95;color:var(--text)}
   .quadro .media{font-size:70px;letter-spacing:-.03em}
@@ -366,7 +369,7 @@
 
   <!-- ═══════════════ 07 · O SISTEMA ═══════════════ -->
   <div class="scene clip" id="s7" data-start="53.5" data-duration="16.5" data-track-index="0">
-    <div class="scrim" id="s7-scrim" style="background:linear-gradient(0deg, color-mix(in srgb, var(--bg) 97%, transparent) 0%, color-mix(in srgb, var(--bg) 90%, transparent) 36%, color-mix(in srgb, var(--bg) 40%, transparent) 60%, transparent 76%)"></div>
+    <div class="scrim scrim-baixo" id="s7-scrim"></div>
     <div class="scrim scrim-dir" id="s7-scrim2" style="opacity:0"></div>
     <div class="legenda legenda-baixo" id="s7-leg1">
       <div class="kicker">Operação completa</div>
@@ -624,7 +627,7 @@
     contar($('#s1-num'), 312, 1.3, 1.9, (v) => br(Math.round(v)));
     // a voz chega em "Para quem faz hemodiálise": chicote para o ônibus na avenida
     chicoteSai('#s1-graf', 3.5, -1, 0.22);
-    selo(...broll('#b-estrada', 'v-estrada', { s0: 1.02, s1: 1.1, x0: 20, x1: -40, entra: true }));
+    selo(...broll('#b-estrada', 'v-estrada', { s0: 1.0, s1: 1.05, x0: 0, x1: -20, entra: true }));
     tl.set('#s1-scrim, #s1-leg', { opacity: 1 }, 3.5);
     tl.fromTo('#s1-leg .kicker', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, ease: MOV.chegada }, 3.6);
     mascaraEntra('#s1-t2', 5.2, { stagger: 0.08 });
@@ -751,8 +754,8 @@
     chicoteSai('#s6-cam', M('v-samu').t0, -1, 0.2);
     tl.to('#mapa-camada', { opacity: 0, duration: 0.2 }, M('v-samu').t0 - 0.2);
     selo(...broll('#b-samu', 'v-samu', { s0: 1.05, s1: 1.14, x0: -20, x1: 30, entra: true }));
-    selo(...broll('#b-transf', 'v-transf', { s0: 1.08, s1: 1.2, y0: 10, y1: -20 }));
-    selo(...broll('#b-reg1', 'v-reg1', { s0: 1.04, s1: 1.12 }));
+    selo(...broll('#b-transf', 'v-transf', { s0: 1.04, s1: 1.12, y0: 10, y1: -10 }));
+    selo(...broll('#b-reg1', 'v-reg1', { s0: 1.0, s1: 1.05 }));
     selo(...broll('#b-reg2', 'v-reg2', { s0: 1.05, s1: 1.12 }));
     tl.set('#q-samu', { opacity: 1 }, M('v-samu').t0);
     tl.fromTo('#q-samu .kicker', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.4, ease: MOV.chegada }, M('v-samu').t0 + 0.1);
@@ -776,7 +779,7 @@
     // ════════════════════════════════════════════════════════════════════
     //  07 · "A Samais entrega a operação completa. E entrega, junto, o sistema..."
     // ════════════════════════════════════════════════════════════════════
-    selo(...broll('#b-embarque', 'v-embarque', { s0: 1.04, s1: 1.12, x0: 40, x1: -10, entra: true }));
+    selo(...broll('#b-embarque', 'v-embarque', { s0: 1.0, s1: 1.05, x0: 20, x1: 0, entra: true }));
     tl.fromTo('#s7-leg1 .kicker', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.35, ease: MOV.chegada }, T('s7', 0.15));
     mascaraEntra('#s7-t1', VO('n06a') + 0.02, { stagger: 0.06 });
     palavrasEntram('#s7-leg1 .sub', VO('n06a') + 0.8, { stagger: 0.03, y: 12, blur: 6, dur: 0.4 });
@@ -874,7 +877,7 @@
     //  08 · "Para que o paciente chegue ao tratamento." · assinatura
     // ════════════════════════════════════════════════════════════════════
     clarao(T('s8'), 0.3, 0.2);
-    selo(...broll('#b-clinica', 'v-clinica', { s0: 1.03, s1: 1.1, entra: true }));
+    selo(...broll('#b-clinica', 'v-clinica', { s0: 1.0, s1: 1.05, entra: true }));
     mascaraEntra('#s8-t1', VO('n07a') + 0.02, { stagger: 0.07 });
     tl.to('#s8-leg, #s8-scrim', { opacity: 0, filter: 'blur(10px)', duration: 0.3, ease: MOV.saida }, M('v-clinica').t0 + M('v-clinica').d - 0.35);
     // "Tecnologia à frente da saúde pública." — o trajeto do começo, desenhado de novo
