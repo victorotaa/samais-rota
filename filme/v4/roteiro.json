@@ -1,0 +1,155 @@
+{
+ "_": "Fonte única de tempos do comercial ROTA v4. index.html e trilha/compor.mjs leem daqui. Grade: 120 BPM (batida = 0,5 s). Locução Sterling a 1,1× (atempo).",
+ "duracao": 84.5,
+ "bpm": 120,
+ "andamento_voz": 1.1,
+ "cenas": [
+  {
+   "id": "s1",
+   "t0": 0,
+   "t1": 9,
+   "nome": "Abertura · três vezes por semana"
+  },
+  {
+   "id": "s2",
+   "t0": 9,
+   "t1": 17.5,
+   "nome": "O programa existe · 3.300 veículos"
+  },
+  {
+   "id": "s3",
+   "t0": 17.5,
+   "t1": 26.5,
+   "nome": "O repasse é contínuo · mês a mês"
+  },
+  {
+   "id": "s4",
+   "t0": 26.5,
+   "t1": 36,
+   "nome": "O vão · quem opera"
+  },
+  {
+   "id": "s5",
+   "t0": 36,
+   "t1": 43,
+   "nome": "Poucos operadores"
+  },
+  {
+   "id": "s6",
+   "t0": 43,
+   "t1": 53.5,
+   "nome": "A Samais é uma delas"
+  },
+  {
+   "id": "s7",
+   "t0": 53.5,
+   "t1": 70,
+   "nome": "O sistema"
+  },
+  {
+   "id": "s8",
+   "t0": 70,
+   "t1": 84.5,
+   "nome": "Fecho"
+  }
+ ],
+ "locucao": [
+  {
+   "id": "n00",
+   "t": 0.8,
+   "texto": "Três vezes por semana, o mesmo trajeto. Para quem faz hemodiálise, chegar ao tratamento é parte do tratamento."
+  },
+  {
+   "id": "n01",
+   "t": 9.4,
+   "texto": "São três mil e trezentos veículos. Um bilhão e quatrocentos milhões de reais, em frota comprada pela União."
+  },
+  {
+   "id": "n02",
+   "t": 17.9,
+   "texto": "E não é só a frota. A União criou o repasse federal que paga a operação, mês a mês, enquanto houver comprovação de uso."
+  },
+  {
+   "id": "n03a",
+   "t": 27.0,
+   "texto": "Mas não entregou quem opera."
+  },
+  {
+   "id": "n03b",
+   "t": 30.0,
+   "texto": "Veículo parado não transporta paciente. E repasse sem comprovação é suspenso."
+  },
+  {
+   "id": "n04",
+   "t": 36.3,
+   "texto": "No país inteiro existem poucas empresas capazes de operar dentro do que os editais exigem."
+  },
+  {
+   "id": "n05",
+   "t": 43.3,
+   "texto": "A Samais é uma delas. Uma série de atestados em SAMU, transferência inter-hospitalar e regulação."
+  },
+  {
+   "id": "n06a",
+   "t": 53.8,
+   "texto": "A Samais entrega a operação completa."
+  },
+  {
+   "id": "n06b",
+   "t": 56.8,
+   "texto": "E entrega, junto, o sistema que faz a gestão da frota e dos pacientes. Programação, embarque, quilometragem, comprovação."
+  },
+  {
+   "id": "n07a",
+   "t": 70.6,
+   "texto": "Para que o paciente chegue ao tratamento."
+  },
+  {
+   "id": "n07b",
+   "t": 75.0,
+   "texto": "Tecnologia à frente da saúde pública."
+  },
+  {
+   "id": "n07c",
+   "t": 78.0,
+   "texto": "Samais. Gestão em saúde."
+  }
+ ],
+ "duracao_voz_1x": {
+  "n00": 7.31,
+  "n01": 7.39,
+  "n02": 8.75,
+  "n03a": 1.65,
+  "n03b": 6.11,
+  "n04": 5.96,
+  "n05": 7.47,
+  "n06a": 2.27,
+  "n06b": 9.17,
+  "n07a": 2.12,
+  "n07b": 2.43,
+  "n07c": 2.51
+ },
+ "marcos": {
+  "silencio": [
+   26.5,
+   27.0
+  ],
+  "impacto_vao": 27.0,
+  "suspenso": 34.6,
+  "samu": 46.6,
+  "transferencia": 47.3,
+  "regulacao": 49.0,
+  "atestados": 50.4,
+  "app_entra": 57.0,
+  "cliques": [
+   61.5,
+   62.3,
+   63.2,
+   64.1
+  ],
+  "comprovacao_em_dia": 64.6,
+  "assinatura": 78.0,
+  "tagline": 80.8,
+  "relatorio": 67.2
+ }
+}

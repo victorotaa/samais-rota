@@ -1,0 +1,44 @@
+{
+ "_": "B-roll do comercial. Cada família num bloco só: ônibus (mesmas pessoas, quadro a9b36748), Manduri (mesma pintura), Belém (a mesma equipe, cadeia 03bd0016 → 29a7856a). Binários fora do git; baixar para assets/broll/<nome>.mp4.",
+ "onibus-estrada": {
+  "job": "32855d7a-124a-4ed8-9e56-1cc31565b8f0",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260930_025024_32855d7a-124a-4ed8-9e56-1cc31565b8f0.mp4",
+  "o_que": "o micro-ônibus na avenida arborizada, manhã (take novo)"
+ },
+ "onibus-clinica": {
+  "job": "649eee88-ff2c-411d-9145-ead36e394064",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260930_025024_649eee88-ff2c-411d-9145-ead36e394064.mp4",
+  "o_que": "a paciente desce na clínica de hemodiálise, com a profissional (take novo)"
+ },
+ "onibus-embarque": {
+  "job": "889b9fa0-42c1-4311-b3b0-be8f57dbedc7",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260930_025024_889b9fa0-42c1-4311-b3b0-be8f57dbedc7.mp4",
+  "o_que": "o profissional confere a lista no tablet e recebe o paciente na porta de casa (take novo)"
+ },
+ "manduri-praca": {
+  "job": "31f79a35-254a-4b00-bda0-7711db226185",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260727_213452_31f79a35-254a-4b00-bda0-7711db226185.mp4",
+  "o_que": "ambulância passa pela praça da igreja, giroflex apagado"
+ },
+ "manduri-estrada": {
+  "job": "a1e194f7-b5f5-4353-a6e5-768fcc35feb1",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260728_000636_a1e194f7-b5f5-4353-a6e5-768fcc35feb1.mp4",
+  "o_que": "a mesma ambulância se afasta na rodovia, hora azul"
+ },
+ "belem-tarm": {
+  "job": "03bd0016-d511-481e-8f6e-51e970e86b30",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260627_035122_03bd0016-d511-481e-8f6e-51e970e86b30.mp4",
+  "o_que": "regulação: dolly-in na atendente"
+ },
+ "belem-sala": {
+  "job": "29a7856a-2473-4374-8473-ee74b46e39a1",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260627_035130_29a7856a-2473-4374-8473-ee74b46e39a1.mp4",
+  "o_que": "regulação: a mesma sala, deslizando pelos operadores"
+ },
+ "_vetados": {
+  "_": "Não usar (Ota, 30/09/2026): movimento inadequado no push-in do casal na frente do micro-ônibus.",
+  "aba9ee4c-b824-4b6b-9b17-7af19fbee952": "push-in até o retrato dos dois profissionais (v3, onibus_A)",
+  "34c85da0-938b-420d-bb70-da79ded420e9": "o mesmo push-in, 1080p (v3, onibus_B)",
+  "9e8e07fa-b28c-48f2-a2eb-d72168898fac": "mesmo quadro inicial, 'make it cinematic'"
+ }
+}

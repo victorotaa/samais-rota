@@ -29,6 +29,10 @@ documentos.
 - Cabeçalho de seção: eyebrow mono + título Syne à esquerda, label mono à direita (alinhado ao topo)
 - Footer-master: tagline *“Onde gestão se mede em vidas.”* (itálico) + paginação mono
 - Movimento sóbrio (fade ~200ms). Proibido: dissolve/swirl/push e transições “de PowerPoint”
+- **Exceção: filme publicitário** (Ota, 30/09/2026). O vídeo segue a régua do comercial do
+  CoPilot (samais-os · `produtos/samu-copilot-os/video-comercial`): chicote com borrão,
+  mergulho de zoom, clarão e tremor nos impactos, câmera que não para, tipografia cinética.
+  Dissolve continua proibido. Fonte: `filme/v4/`
 - **Material liquid glass** (contemporâneo, referência Apple iOS 26 — não o flat da Meta/WhatsApp):
   superfícies translúcidas com `backdrop-filter:blur(~22px)`, borda `rgba(255,255,255,.12)`,
   brilho especular interno no topo, cantos ~18px e sombra profunda; brilho ambiente radial

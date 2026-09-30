@@ -1,0 +1,16 @@
+{
+ "_": "Locução Sterling (ElevenLabs, text2speech_v2). Textos em roteiro.json. Arquivos no CDN do Higgsfield; vozes.sh baixa e aplica o andamento de roteiro.json (atempo).",
+ "base": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/",
+ "n00":  "hf_20260929_144945_a352d847-49ce-4fdc-b3e0-3e25a86bf794.mp3",
+ "n01":  "hf_20260929_111520_b7b9dc34-d918-4ede-92e7-2442b7c1e3a6.mp3",
+ "n02":  "hf_20260929_111609_06a16d58-be58-44ca-9289-d57cdba6f425.mp3",
+ "n03a": "hf_20260929_111609_c99fd0bf-25f9-4508-856c-e6e7bc72d2cb.mp3",
+ "n03b": "hf_20260929_111520_c3cc88bf-ee90-4fb4-a967-e630365f6824.mp3",
+ "n04":  "hf_20260929_145109_70be0fa9-4a7a-406e-9a1e-dcf9fb93facc.mp3",
+ "n05":  "hf_20260929_145128_a813f74b-bf54-42e8-9d86-c36d9936f762.mp3",
+ "n06a": "hf_20260929_111754_36797565-9361-42a1-926c-222c637cc815.mp3",
+ "n06b": "hf_20260929_111758_515b305e-ea60-47e2-b2ce-0976bb55d108.mp3",
+ "n07a": "hf_20260929_144945_ae73b396-f67c-4484-85df-3e47dd4f7073.mp3",
+ "n07b": "hf_20260929_111848_c8648125-b59a-4104-b4ba-a213a98145e0.mp3",
+ "n07c": "hf_20260929_111848_ae00bac8-ea3d-4d4c-ac35-4d858af65dae.mp3"
+}

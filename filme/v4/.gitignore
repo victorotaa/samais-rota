@@ -1,0 +1,9 @@
+node_modules/
+vendor/
+captura/
+renders/
+snapshots/
+assets/*
+!assets/app/
+assets/app/*
+!assets/app/caixas.json
