@@ -1,0 +1,64 @@
+{
+ "_": "B-roll do filme de investidores — só do nosso banco (Higgsfield e Drive da Samais), nenhum banco de imagem de terceiro. Cada família num bloco só: Avaré (a noite), ônibus (as mesmas pessoas), Belém (a mesma equipe), Manduri (a praça). Os clipes de 720p entram pelo upscale (ByteDance, 1080p, preset aigc); 'origem' é o take original. Binários fora do git; baixar.mjs grava em assets/broll/<nome>.mp4.",
+ "avare-aerea-a": {
+  "job": "e5b31af8-b2e3-47ed-b7af-6560bda3b13b",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260707_213932_e5b31af8-b2e3-47ed-b7af-6560bda3b13b.mp4",
+  "o_que": "a cidade à noite, aérea (abertura · fala 1)"
+ },
+ "onibus-estrada-hd": {
+  "job": "bd85fda4-b194-42c6-b2e0-8662bf6c394c",
+  "origem": "0b8b99ae-aa2b-4c9d-b209-d307055c8c02",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_104952_bd85fda4-b194-42c6-b2e0-8662bf6c394c.mp4",
+  "o_que": "o micro-ônibus vem pela avenida (\"eficiente e seguro\")"
+ },
+ "avare-aerea-b": {
+  "job": "18ae9a50-6ad5-424d-8f91-a57b914efa34",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260707_213934_18ae9a50-6ad5-424d-8f91-a57b914efa34.mp4",
+  "o_que": "a mesma noite vista da janela da central, escurecida: fundo do logotipo"
+ },
+ "belem-hero": {
+  "drive": "1TeCRPtrwZeBpyRoEPbVKfLQcDH3RFRUl",
+  "url": "https://drive.usercontent.google.com/download?export=download&confirm=t&id=1TeCRPtrwZeBpyRoEPbVKfLQcDH3RFRUl",
+  "o_que": "a equipe da Samais em Belém, de frente (\"inovação e anos de operação\")"
+ },
+ "belem-regulador": {
+  "drive": "15rRz5_xyvhbOARj5II0tp8O3APy_4QRi",
+  "url": "https://drive.usercontent.google.com/download?export=download&confirm=t&id=15rRz5_xyvhbOARj5II0tp8O3APy_4QRi",
+  "o_que": "o médico regulador no rádio (\"disciplina de regulação\")"
+ },
+ "belem-tarm-hd": {
+  "job": "25a29fda-a28c-47e4-bedb-fa8691b2af4f",
+  "origem": "03bd0016-d511-481e-8f6e-51e970e86b30",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_105156_25a29fda-a28c-47e4-bedb-fa8691b2af4f.mp4",
+  "o_que": "a TARM na central, escurecida: fundo do cartão dos oito atestados"
+ },
+ "belem-sala-hd": {
+  "job": "eb5235c5-3c30-43fd-9bc3-9c3ca0a57109",
+  "origem": "29a7856a-2473-4374-8473-ee74b46e39a1",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_110625_eb5235c5-3c30-43fd-9bc3-9c3ca0a57109.mp4",
+  "o_que": "a sala de regulação em operação (SAMU 192)"
+ },
+ "belem-recua-hd": {
+  "job": "903c0db7-a0c3-4ccc-b072-d761bf677076",
+  "origem": "6170e14e-06b5-40ea-a7a6-ab782f1ed350",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_110632_903c0db7-a0c3-4ccc-b072-d761bf677076.mp4",
+  "o_que": "a câmera recua e mostra a sala inteira"
+ },
+ "manduri-praca": {
+  "job": "31f79a35-254a-4b00-bda0-7711db226185",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20260727_213452_31f79a35-254a-4b00-bda0-7711db226185.mp4",
+  "o_que": "a ambulância na praça da igreja, giroflex apagado (\"onde o veículo é do governo\")"
+ },
+ "belem-medico-hd": {
+  "job": "ef9f9929-7d23-4c77-9864-3a4259662bfd",
+  "origem": "417c284e-69f4-4137-99aa-5052f9095e80",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_111833_ef9f9929-7d23-4c77-9864-3a4259662bfd.mp4",
+  "o_que": "o regulador aponta o mapa no monitor (\"central 24 horas\")"
+ },
+ "onibus-clinica-hd": {
+  "job": "ca5f41fb-cda8-45b5-92fd-4d2f79bc8402",
+  "origem": "649eee88-ff2c-411d-9145-ead36e394064",
+  "url": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/hf_20261005_105155_ca5f41fb-cda8-45b5-92fd-4d2f79bc8402.mp4",
+  "o_que": "a chegada à clínica (o convite)"
+ }
+}

@@ -1,0 +1,472 @@
+{
+ "painel": {
+  "cards": [
+   {
+    "cls": "card glass kpi",
+    "txt": "VIAGENS NA SEMANA 14 5 concluídas · 9 programadas",
+    "caixa": [
+     264,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass kpi",
+    "txt": "OCUPAÇÃO REALIZADA 35% quem embarcou · programada: 39%",
+    "caixa": [
+     538,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass kpi",
+    "txt": "PRESENÇAS 8 faltas: 1",
+    "caixa": [
+     812,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass kpi",
+    "txt": "KM RODADO 1.056 km viagens concluídas",
+    "caixa": [
+     1086,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass kpi",
+    "txt": "CONSUMO MÉDIO 5,8 km/l 183 L abastecidos",
+    "caixa": [
+     1360,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass kpi",
+    "txt": "CUSTO ESTIMADO R$ 2.249,60 combustível da semana + km × R$ 0,90",
+    "caixa": [
+     1634,
+     395,
+     260,
+     118
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Comprovação de uso · repasse federal FAROL DE SUSPENSÃO (PORT. 11.164/",
+    "caixa": [
+     264,
+     529,
+     258,
+     324
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Ocupação realizada ASSENTOS OCUPADOS / LOTAÇÃO · VIAGENS CONCLUÍDAS 35",
+    "caixa": [
+     538,
+     529,
+     258,
+     324
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Km programado acumulado CURVA DA SEMANA (IDA E VOLTA) seg ter qua qui ",
+    "caixa": [
+     813,
+     529,
+     258,
+     324
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Consumo médio KM POR LITRO · META ≥ 6 5,8 km/l MÉDIA DA FROTA",
+    "caixa": [
+     1087,
+     529,
+     258,
+     324
+    ]
+   },
+   {
+    "cls": "card glass chartcard span2",
+    "txt": "Viagens por dia DISTRIBUIÇÃO SEMANAL 3 seg 2 ter 3 qua 3 qui 3 sex",
+    "caixa": [
+     1361,
+     529,
+     533,
+     324
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Composição por destino VIAGENS DA SEMANA Clínica de Diálise 8 · 57% Te",
+    "caixa": [
+     264,
+     868,
+     258,
+     221
+    ]
+   },
+   {
+    "cls": "card glass chartcard ",
+    "txt": "Presenças e faltas VIAGENS CONCLUÍDAS Presenças · 8 Faltas · 1",
+    "caixa": [
+     538,
+     868,
+     258,
+     221
+    ]
+   }
+  ],
+  "menu": {
+   "painel": [
+    15,
+    121,
+    208,
+    39
+   ],
+   "pacientes": [
+    15,
+    160,
+    208,
+    39
+   ],
+   "programacao": [
+    15,
+    199,
+    208,
+    39
+   ],
+   "frota": [
+    15,
+    238,
+    208,
+    39
+   ],
+   "impressos": [
+    15,
+    315,
+    208,
+    39
+   ],
+   "lancamentos": [
+    15,
+    354,
+    208,
+    39
+   ]
+  }
+ },
+ "programacao": {
+  "cards": [
+   {
+    "cls": "card glass pad",
+    "txt": "CONCLUÍDA Segunda · 05:30 Floriano → Clínica de Diálise Local · 8 km ·",
+    "caixa": [
+     264,
+     203,
+     1630,
+     184
+    ]
+   },
+   {
+    "cls": "card glass pad",
+    "txt": "CONCLUÍDA Segunda · 05:30 Floriano → Clínica de Diálise Local · 8 km ·",
+    "caixa": [
+     264,
+     399,
+     1630,
+     184
+    ]
+   },
+   {
+    "cls": "card glass pad",
+    "txt": "CONCLUÍDA Segunda · 05:00 2 ELEGÍVEIS FEDERAL · >50 KM Floriano → Tere",
+    "caixa": [
+     264,
+     595,
+     1630,
+     184
+    ]
+   },
+   {
+    "cls": "card glass pad",
+    "txt": "CONCLUÍDA Terça · 05:00 1 ELEGÍVEL FEDERAL · >50 KM Floriano → Teresin",
+    "caixa": [
+     264,
+     790,
+     1630,
+     184
+    ]
+   },
+   {
+    "cls": "card glass pad",
+    "txt": "CONCLUÍDA Terça · 05:30 Floriano → Clínica de Diálise Local · 8 km · C",
+    "caixa": [
+     264,
+     986,
+     1630,
+     184
+    ]
+   }
+  ],
+  "menu": {
+   "painel": [
+    15,
+    121,
+    208,
+    39
+   ],
+   "pacientes": [
+    15,
+    160,
+    208,
+    39
+   ],
+   "programacao": [
+    15,
+    199,
+    208,
+    39
+   ],
+   "frota": [
+    15,
+    238,
+    208,
+    39
+   ],
+   "impressos": [
+    15,
+    315,
+    208,
+    39
+   ],
+   "lancamentos": [
+    15,
+    354,
+    208,
+    39
+   ]
+  }
+ },
+ "impressos": {
+  "cards": [
+   {
+    "cls": "paper",
+    "txt": "ROTA SAMAIS · GESTÃO DE TRANSPORTE SANITÁRIO FOLHA DE EMBARQUE / REEMB",
+    "caixa": [
+     682,
+     260,
+     794,
+     1123
+    ]
+   },
+   {
+    "cls": "TABLE",
+    "txt": "# PACIENTE CARTÃO SUS ACOMP. EMBARQUE REEMBARQUE ASSINATURA 1 Antônia ",
+    "caixa": [
+     739,
+     479,
+     680,
+     151
+    ]
+   }
+  ],
+  "menu": {
+   "painel": [
+    15,
+    121,
+    208,
+    39
+   ],
+   "pacientes": [
+    15,
+    160,
+    208,
+    39
+   ],
+   "programacao": [
+    15,
+    199,
+    208,
+    39
+   ],
+   "frota": [
+    15,
+    238,
+    208,
+    39
+   ],
+   "impressos": [
+    15,
+    315,
+    208,
+    39
+   ],
+   "lancamentos": [
+    15,
+    354,
+    208,
+    39
+   ]
+  }
+ },
+ "frota": {
+  "cards": [
+   {
+    "cls": "card glass",
+    "txt": "VEÍCULO PLACA CONDUTOR HODÔMETRO REVISÃO CNES ROTA-01 Van (7 lugares) ",
+    "caixa": [
+     264,
+     148,
+     1630,
+     225
+    ]
+   },
+   {
+    "cls": "TABLE",
+    "txt": "VEÍCULO PLACA CONDUTOR HODÔMETRO REVISÃO CNES ROTA-01 Van (7 lugares) ",
+    "caixa": [
+     266,
+     150,
+     1626,
+     221
+    ]
+   },
+   {
+    "cls": "card glass",
+    "txt": "DATA VEÍCULO LITROS KM DESDE O ÚLTIMO CONSUMO VALOR 08/jul ROTA-01 32 ",
+    "caixa": [
+     264,
+     451,
+     1630,
+     220
+    ]
+   },
+   {
+    "cls": "TABLE",
+    "txt": "DATA VEÍCULO LITROS KM DESDE O ÚLTIMO CONSUMO VALOR 08/jul ROTA-01 32 ",
+    "caixa": [
+     266,
+     453,
+     1626,
+     216
+    ]
+   }
+  ],
+  "menu": {
+   "painel": [
+    15,
+    121,
+    208,
+    39
+   ],
+   "pacientes": [
+    15,
+    160,
+    208,
+    39
+   ],
+   "programacao": [
+    15,
+    199,
+    208,
+    39
+   ],
+   "frota": [
+    15,
+    238,
+    208,
+    39
+   ],
+   "impressos": [
+    15,
+    315,
+    208,
+    39
+   ],
+   "lancamentos": [
+    15,
+    354,
+    208,
+    39
+   ]
+  }
+ },
+ "relatorio": {
+  "cards": [
+   {
+    "cls": "paper",
+    "txt": "ROTA SAMAIS · GESTÃO DE TRANSPORTE SANITÁRIO RELATÓRIO MENSAL DE COMPR",
+    "caixa": [
+     682,
+     207,
+     794,
+     1123
+    ]
+   },
+   {
+    "cls": "TABLE",
+    "txt": "VEÍCULO CNES VIAGENS KM COMBUSTÍVEL CONSUMO ROTA-01 · QLF-1A23 2364712",
+    "caixa": [
+     739,
+     495,
+     680,
+     121
+    ]
+   }
+  ],
+  "menu": {
+   "painel": [
+    15,
+    121,
+    208,
+    39
+   ],
+   "pacientes": [
+    15,
+    160,
+    208,
+    39
+   ],
+   "programacao": [
+    15,
+    199,
+    208,
+    39
+   ],
+   "frota": [
+    15,
+    238,
+    208,
+    39
+   ],
+   "impressos": [
+    15,
+    315,
+    208,
+    39
+   ],
+   "lancamentos": [
+    15,
+    354,
+    208,
+    39
+   ]
+  }
+ }
+}

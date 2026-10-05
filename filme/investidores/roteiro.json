@@ -1,0 +1,187 @@
+{
+ "_": "Fonte única de tempos do filme de investidores. index.html e trilha/compor.mjs leem daqui. Locução Sterling a 1,1×.",
+ "duracao": 113,
+ "bpm": 120,
+ "andamento_voz": 1.1,
+ "cenas": [
+  {
+   "id": "s1",
+   "t0": 0,
+   "t1": 10,
+   "nome": "Abertura · necessidade crítica"
+  },
+  {
+   "id": "s2",
+   "t0": 10,
+   "t1": 17,
+   "nome": "A Samais"
+  },
+  {
+   "id": "s3",
+   "t0": 17,
+   "t1": 31,
+   "nome": "Prioridade federal · perspectiva de mercado"
+  },
+  {
+   "id": "s4",
+   "t0": 31,
+   "t1": 41,
+   "nome": "O gargalo"
+  },
+  {
+   "id": "s5",
+   "t0": 41,
+   "t1": 53,
+   "nome": "Oito atestados · SAMU 192"
+  },
+  {
+   "id": "s6",
+   "t0": 53,
+   "t1": 64,
+   "nome": "Pronta · central e plataforma"
+  },
+  {
+   "id": "s7",
+   "t0": 64,
+   "t1": 80.5,
+   "nome": "O projeto · holding e cotas"
+  },
+  {
+   "id": "s8",
+   "t0": 80.5,
+   "t1": 95,
+   "nome": "O retorno"
+  },
+  {
+   "id": "s9",
+   "t0": 95,
+   "t1": 99.5,
+   "nome": "A garantia"
+  },
+  {
+   "id": "s10",
+   "t0": 99.5,
+   "t1": 113,
+   "nome": "O convite · assinatura"
+  }
+ ],
+ "locucao": [
+  {
+   "id": "i01",
+   "t": 0.8,
+   "texto": "No Brasil, o transporte sanitário é uma necessidade crítica: um serviço que precisa ser eficiente e seguro, todos os dias."
+  },
+  {
+   "id": "i02",
+   "t": 10.0,
+   "texto": "A Samais vem transformando a realidade da saúde pública, com inovação e anos de operação."
+  },
+  {
+   "id": "i03",
+   "t": 17.5,
+   "texto": "O transporte sanitário se tornou prioridade federal: três mil e trezentos veículos, entregues pela União."
+  },
+  {
+   "id": "i04",
+   "t": 26.2,
+   "texto": "E uma perspectiva de mercado de um bilhão e duzentos milhões de reais por ano."
+  },
+  {
+   "id": "i05",
+   "t": 31.5,
+   "texto": "Mas há um gargalo: o edital exige atestado de capacidade técnica, e poucos operadores no país têm a disciplina de regulação para obtê-lo."
+  },
+  {
+   "id": "i06",
+   "t": 41.0,
+   "texto": "A Samais tem oito atestados, já integralizados na holding. Nossa disciplina de regulação, comprovada no SAMU 192, nos permite operar onde o veículo é do governo."
+  },
+  {
+   "id": "i07",
+   "t": 53.4,
+   "texto": "Com central de regulação vinte e quatro horas e plataforma própria de gestão, a Samais já está pronta para a demanda crescente: uma operação que o mercado local não tem."
+  },
+  {
+   "id": "i08",
+   "t": 64.4,
+   "texto": "E o custo de chegar primeiro é mensurável."
+  },
+  {
+   "id": "i09",
+   "t": 67.6,
+   "texto": "O projeto vale vinte e um milhões de reais. A Samais entra com quinze milhões em ativos."
+  },
+  {
+   "id": "i10",
+   "t": 73.4,
+   "texto": "Seis milhões se abrem a investidores sócios: três cotas de dois milhões, ou duas de três."
+  },
+  {
+   "id": "i11",
+   "t": 80.8,
+   "texto": "Cada cota recebe, todo mês, a sua parte do resultado operacional, desde o primeiro mês de operação."
+  },
+  {
+   "id": "i12",
+   "t": 88.0,
+   "texto": "Na projeção de referência, o capital volta em trinta e três meses de operação, só com o primeiro contrato."
+  },
+  {
+   "id": "i13",
+   "t": 95.2,
+   "texto": "E, se o primeiro contrato não vier em doze meses, o aporte volta."
+  },
+  {
+   "id": "i14",
+   "t": 100.0,
+   "texto": "Junte-se à Samais e invista no futuro do transporte sanitário no Brasil."
+  }
+ ],
+ "duracao_voz_1x": {
+  "i01": 8.83,
+  "i02": 7.08,
+  "i03": 8.75,
+  "i04": 4.83,
+  "i05": 9.87,
+  "i06": 12.36,
+  "i07": 10.84,
+  "i08": 2.85,
+  "i09": 5.8,
+  "i10": 6.92,
+  "i11": 7.31,
+  "i12": 6.92,
+  "i13": 4.05,
+  "i14": 4.91
+ },
+ "marcos": {
+  "logo": 10.45,
+  "gov": 17.0,
+  "mapa": 20.4,
+  "tres_mil": 21.1,
+  "perspectiva": 26.3,
+  "bi": 28.5,
+  "gargalo": 31.5,
+  "seis": 35.6,
+  "regulador": 37.6,
+  "oito": 41.1,
+  "samu": 45.6,
+  "veiculo_governo": 49.6,
+  "central": 53.4,
+  "plataforma": 56.0,
+  "painel": 58.3,
+  "farol": 60.6,
+  "mercado_local": 61.0,
+  "custo": 64.4,
+  "vinte_e_um": 67.6,
+  "quinze": 70.5,
+  "seis_mi": 73.4,
+  "cotas": 76.7,
+  "duas_cotas": 78.6,
+  "mensal": 80.8,
+  "payback": 90.6,
+  "garantia": 95.2,
+  "convite": 100.0,
+  "assinatura": 105.6,
+  "tagline": 108.2
+ }
+}

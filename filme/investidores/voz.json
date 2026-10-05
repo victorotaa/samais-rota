@@ -1,0 +1,18 @@
+{
+ "_": "Locução Sterling (ElevenLabs, text2speech_v2) do filme de investidores. Falas melhoradas a partir do vídeo terceirizado [Samais]TransporteSanitário.mp4 (ver README). baixar.mjs aplica o andamento de roteiro.json.",
+ "base": "https://d8j0ntlcm91z4.cloudfront.net/user_3FcrZo70OIyeF7FpKfsvsng3S4Q/",
+ "i01": "hf_20261005_104348_8d083ca8-6c04-47dd-8bbd-cb4e42636338.mp3",
+ "i02": "hf_20261005_104347_b1e4191b-1dbe-4755-ab62-5ca99b9ab547.mp3",
+ "i03": "hf_20261005_104348_38e342a5-2425-4021-93e4-3388938c9ca0.mp3",
+ "i04": "hf_20261005_104401_c0f008bb-f5cc-4a07-b8c3-3f5eb7500383.mp3",
+ "i05": "hf_20261005_104401_c777ec87-5cbf-459f-b559-6deab1e36d17.mp3",
+ "i06": "hf_20261005_104429_d7ca3ae6-8d3f-44f8-8184-ce5ca0d60f88.mp3",
+ "i07": "hf_20261005_104427_7ddfb35e-9e8c-4122-b524-b84a379ed391.mp3",
+ "i08": "hf_20261005_104445_909645b3-ce36-431f-9bef-74fb6a158a28.mp3",
+ "i09": "hf_20261005_104445_5de2ea9f-6c99-4ede-bd2b-34153779253f.mp3",
+ "i10": "hf_20261005_104503_b820b49e-aaf3-4d9c-9e20-56d8425d5748.mp3",
+ "i11": "hf_20261005_104502_e41f5bf4-ff3b-44e6-bd0a-6e479f8a5b3a.mp3",
+ "i12": "hf_20261005_104520_d0cd105c-6724-46b3-aacd-332f594f4f82.mp3",
+ "i13": "hf_20261005_104521_7a0433e8-4a62-4181-9c90-ce4ef9f2c2d8.mp3",
+ "i14": "hf_20261005_104536_fa415d0f-450c-42c2-acd5-53b263cb7b7b.mp3"
+}

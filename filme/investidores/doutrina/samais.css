@@ -1,0 +1,281 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   SAMAIS — IDENTIDADE VISUAL CANÔNICA
+   Dark liquid-glass · gold-on-black · institucional/diretoria.
+
+   ESTE ARQUIVO É A FONTE DE VERDADE dos tokens. Prosa deriva; token em
+   arquivo não. Toda superfície Samais importa ISTO em vez de redeclarar cores.
+
+   Origem: samais-estudos/css/samais.css (produção — estudos municipais) e
+   samais-rota/CLAUDE.md. Valores idênticos aos de produção, de propósito:
+   se divergirem, a produção ganha e este arquivo é corrigido.
+
+   O build copia este arquivo para dashboard/samais.css e
+   dashboard/despesas/samais.css — as páginas referenciam ./samais.css.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── Base ── */
+  --bg:#0A0A0A;            /* fundo */
+  --s1:#131313;            /* superfície 1 */
+  --s2:#1A1A1A;            /* superfície 2 */
+  --divider:#262626;       /* divisórias */
+
+  /* ── Ouro (escasso: ≤10% da superfície) ── */
+  --gold:#B8954E;
+  --gold-soft:#D4B373;
+  --gold-deep:#8E7238;
+
+  /* ── Semânticas (parcimônia) ── */
+  --green:#1E7A4B;         /* selo funcional: validado / verificado */
+  --green-deep:#003611;
+  --amber:#B8804E;         /* atenção */
+  --red:#A33044;           /* crítico */
+
+  /* ── Texto ── */
+  --text:#F4F1EA;
+  --text-2:#D9D2C5;
+  --muted:#9C9489;
+  --dim:#615C53;
+
+  /* ── Tipografia ── */
+  --display:'Syne','Arial Black','Helvetica Neue',system-ui,sans-serif;
+  --body:'Inter', system-ui, sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── Material liquid glass ── */
+  --glass-bg:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025));
+  --glass-border:1px solid rgba(255,255,255,.12);
+  --glass-blur:blur(22px) saturate(150%);
+  --glass-shadow:inset 0 1px 0 rgba(255,255,255,.16), inset 0 -1px 0 rgba(0,0,0,.22), 0 18px 50px rgba(0,0,0,.5);
+  --glass-radius:18px;
+
+  /* ── Compatibilidade ──────────────────────────────────────────────────
+     Aliases para páginas escritas antes da unificação. Camada de migração:
+     ao reescrever uma página, prefira os nomes canônicos acima. */
+  --card:var(--s1);
+  --card2:var(--s2);
+  --line:rgba(184,149,78,.20);
+  --line-soft:rgba(255,255,255,.09);
+  --gold-dim:rgba(184,149,78,.62);
+  --t2:var(--text-2);
+  --t3:var(--muted);
+  --fd:var(--display);
+  --fb:var(--body);
+  --fm:var(--mono);
+  --f-display:var(--display);
+  --f-body:var(--body);
+  --f-mono:var(--mono);
+  --border:var(--line);
+  --border-soft:var(--line-soft);
+  --card-2:var(--s2);
+  --text-3:var(--muted);
+  --r:12px;                /* raio padrão de componente */
+}
+
+/* ── Fundo e brilho ambiente (o que o vidro refrata) ─────────────────── */
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--body); font-weight:300; line-height:1.6;
+  letter-spacing:.005em; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(55% 45% at 82% 6%,  rgba(184,149,78,.13), transparent 62%),
+    radial-gradient(48% 42% at 8% 80%,  rgba(30,122,75,.07),  transparent 62%),
+    radial-gradient(42% 38% at 50% 52%, rgba(212,179,115,.05),transparent 72%);
+}
+
+/* ── Material liquid glass (aplicar em cards, painéis, tabelas) ──────── */
+.glass{
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  border:var(--glass-border);
+  border-radius:var(--glass-radius);
+  box-shadow:var(--glass-shadow);
+}
+.glass-sutil{
+  background:linear-gradient(140deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  -webkit-backdrop-filter:blur(16px) saturate(135%);
+  backdrop-filter:blur(16px) saturate(135%);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+}
+/* O material recorta o que passa por baixo — sem isso, conteúdo largo vaza pela
+   borda arredondada e o vidro deixa de parecer uma superfície. */
+.glass{overflow:hidden}
+
+/* ── REFRAÇÃO (o que separa liquid glass de "card borrado") ──────────────
+   backdrop-filter com url(#glassDistort) distorce o fundo atrás do vidro, como
+   vidro real. Exige o <svg> do filtro na página — use o snippet de
+   doutrina/glass-filter.html, que o build distribui. Chromium aplica; os demais
+   ignoram a url() e ficam no blur, então degrada sozinho.
+   Padrão instaurado nos estudos e no ROTA — agora é o padrão do OS.          */
+.glass, .barra-vidro{
+  /* ⚠️ DUAS declarações de propósito. `backdrop-filter: blur() url(...)` é INVÁLIDO no
+     Firefox, e declaração inválida é descartada INTEIRA — o resultado é ficar sem vidro
+     nenhum, com o conteúdo do fundo atravessando o cartão. A primeira linha é a base que
+     vale em todo navegador; a segunda só é aplicada por quem entende url(). */
+  backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur) url(#glassDistort);
+}
+/* Conteúdo largo (tabela, gráfico) precisa rolar DENTRO do vidro: o overflow:hidden
+   do material clipa as colunas da direita no celular se não houver este escape. */
+.glass .rolavel, .rolavel{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+@media (max-width:720px){
+  /* Sem refração no celular: custa GPU e o ganho visual não se vê em 390px.
+     A declaração sem url() é o fallback — mantém o vidro, tira o cálculo caro. */
+  .glass, .barra-vidro{
+    border-radius:12px;
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    backdrop-filter:blur(16px) saturate(140%);
+  }
+}
+@media (prefers-reduced-transparency: reduce){
+  /* Quem pediu menos transparência recebe superfície opaca, não vidro. */
+  .glass,.glass-sutil,.barra-vidro{
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:var(--s1);
+  }
+}
+
+
+/* ── MARCA ───────────────────────────────────────────────────────────────
+   A marca é ARQUIVO OFICIAL, não tipografia imitando a marca. Os SVGs vêm da
+   pasta canônica do Drive (Desenho: Victor Ota) e vivem em doutrina/marca/;
+   o build os distribui para cada superfície, ao lado deste CSS — por isso as
+   url() relativas funcionam tanto em dashboard/ quanto em dashboard/despesas/.
+
+   Desktop: wordmark dourado completo. Mobile: monograma SA+ (a marca não some,
+   colapsa). NUNCA escrever "Samais" em fonte genérica — é o erro que o
+   samais-rota proíbe explicitamente.                                        */
+/* --marca-tam = ALTURA do wordmark. 26px é o mínimo em que o traço fino do
+   logotipo oficial ainda tem presença numa barra escura. */
+.marca{--marca-tam:26px;display:inline-flex;align-items:center;gap:.55em;text-decoration:none;line-height:1;white-space:nowrap}
+.marca .nome{
+  display:block;
+  height:var(--marca-tam,26px);
+  width:calc(var(--marca-tam,26px) * 3.385);   /* viewBox 595.3 × 175.9 */
+  background:url(./samais-logo-gold.svg) no-repeat left center / contain;
+  text-indent:-9999px; overflow:hidden;         /* o texto fica p/ leitor de tela */
+}
+.marca .sep{color:var(--gold-deep);font-size:calc(var(--marca-tam,26px) * .7);font-weight:400}
+.marca .desc{
+  font-family:var(--mono); font-size:calc(var(--marca-tam,26px) * .40);
+  letter-spacing:.2em; text-transform:uppercase; color:var(--muted);
+}
+.marca .mono-sa{display:none}
+/* Monograma SA+ no mobile — a marca não some, colapsa. */
+@media (max-width:600px){
+  .marca .nome,.marca .sep,.marca .desc{display:none}
+  .marca .mono-sa{
+    display:block;
+    height:calc(var(--marca-tam,26px) * 1.15);
+    width:calc(var(--marca-tam,26px) * 1.15 * 1.541);  /* viewBox 271 × 175.9 */
+    background:url(./samais-monograma-gold.svg) no-repeat center / contain;
+    text-indent:-9999px; overflow:hidden;
+  }
+}
+
+/* ── Cabeçalho/rodapé de vidro (sticky) ─────────────────────────────── */
+.barra-vidro{
+  background:rgba(20,20,22,.42);
+  -webkit-backdrop-filter:blur(28px) saturate(175%);
+  backdrop-filter:blur(28px) saturate(175%);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 10px 34px rgba(0,0,0,.34);
+}
+
+/* ── Barra fixa do topo (marca + navegação) ─────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:100; display:flex; align-items:center;
+  justify-content:space-between; gap:16px;
+  padding:11px clamp(16px,4vw,26px); border-bottom:1px solid;
+}
+.topnav-links{display:flex;gap:clamp(12px,2vw,20px);align-items:center;min-width:0;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.topnav-links::-webkit-scrollbar{display:none}
+.topnav-links a{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .18s;
+  display:inline-flex;align-items:center;min-height:40px;padding:0 2px}
+.topnav-links a:hover{color:var(--gold-soft)}
+.topnav-links a[aria-current="page"]{color:var(--gold)}
+/* Com 7 itens a barra rola no celular. Rolagem sem pista visual parece corte: a máscara
+   esmaece a borda direita e diz "tem mais aqui" sem gastar espaço com seta. */
+@media (max-width:820px){
+  .topnav-links{
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);
+    mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);
+  }
+}
+
+/* ── Tipografia base ─────────────────────────────────────────────────── */
+h1,h2,h3,h4{font-family:var(--display);letter-spacing:-.02em;line-height:1.1;margin:0}
+h1{font-weight:700}
+h2,h3,h4{font-weight:600}
+
+/* 🔴 NENHUMA PALAVRA ÓRFÃ (regra do Ota, 17/09/2026) — vale para TODO material Samais.
+   Quebra que deixa uma ou duas palavras sozinhas na última linha é erro de composição:
+   o olho lê "acabou" antes de o parágrafo acabar.
+   · `balance` distribui título curto em linhas de peso parecido;
+   · `pretty` puxa uma palavra da penúltima linha e evita a viúva no corpo.
+   ⚠️ O CSS sozinho NÃO cumpre a regra: `pretty` só evita a viúva de UMA palavra, e só
+   no Chrome e no Safari. A costura determinística de duas é do `doutrina/orfas.js`, que
+   o build distribui para cada superfície junto com este arquivo. Página que importa o
+   samais.css e esquece o orfas.js cumpre metade da regra. */
+h1,h2,h3,h4,blockquote,.hero-sub{text-wrap:balance}
+p,li,figcaption,.lede,.sub,.desc{text-wrap:pretty}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+/* Eyebrow/kicker: mono em caps pequenas douradas */
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+/* Dados SEMPRE em mono, com dígitos alinhados */
+.dado{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── <select> não cabe sozinho ───────────────────────────────────────────
+   O select se dimensiona pela OPÇÃO MAIS LARGA, ignorando o container: uma opção
+   como "Diários oficiais municipais (Querido Diário)" estoura 390px e a página
+   inteira ganha rolagem horizontal. `max-width` fecha isso onde o problema nasce,
+   em vez de cada página descobrir de novo. */
+select{max-width:100%}
+
+/* ── Alvos de toque (mobile) ─────────────────────────────────────────
+   Controle que se toca com o dedo precisa de ~40px de altura. */
+@media (max-width:720px){
+  select,input:not([type="checkbox"]):not([type="file"]),button,.btn{min-height:44px}
+  .btn.sm{min-height:44px;padding-inline:16px}
+  input[type="checkbox"]{width:20px;height:20px}
+}
+
+/* ── Barra de progresso — PRIMITIVA CANÔNICA ────────────────────────────
+   Mora aqui, e não em cada página, porque o MESMO bug já apareceu três vezes:
+   uma <span> usada como barra é INLINE, e `height`/`width` não se aplicam a
+   caixa inline. O resultado muda de página para página e nenhum deles parece
+   um erro de CSS:
+     · frentes — o preenchimento do medidor ficou com 0×0 e a barra de score
+       simplesmente NUNCA renderizou, sem quebrar mais nada;
+     · implantação — o filho `display:block` dentro da span inline virou uma
+       coluna dourada de 356px que engoliu o cartão e empurrou o cabeçalho
+       por cima da lista.
+   Declarar `display:block` na trilha E no preenchimento é o que fecha a porta.
+   Use `<span class="trilha"><i style="width:NN%"></i></span>` e ajuste só
+   altura/margem na página — geometria e cor saem daqui. */
+.trilha{display:block;height:6px;border-radius:3px;overflow:hidden;
+  background:rgba(255,255,255,.06)}
+.trilha > *{display:block;height:100%;border-radius:inherit;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold))}
+
+/* ── [hidden] tem que ganhar ────────────────────────────────────────────
+   Um display:flex/grid de autor VENCE o display:none do atributo hidden —
+   o elemento "escondido" reaparece (e, com glass, como caixa vazia).
+   Esta regra fecha a porta para toda a família de componentes. */
+[hidden]{display:none !important}
+
+/* ── Acessibilidade ──────────────────────────────────────────────────── */
+:where(a,button,input,select,textarea):focus-visible{
+  outline:2px solid var(--gold-soft); outline-offset:2px;
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
