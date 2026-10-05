@@ -115,8 +115,9 @@ Assim, uma trilha refeita não pede refazer os 6.780 quadros (32 min de render n
   a folga média voz-música ficava em 7,4 LU. Com 0,8 ela chega perto dos 9,7 LU da v4 aprovada.
 - **Conferido:** nenhum trecho de vídeo congelado (diferença entre quadros por clipe) e a
   folha de contato completa, um quadro a cada 2 s.
-- **Fora do hall do samais-os, por enquanto (decisão do Ota):** o hall está em URL pública
-  e este filme traz os termos do aporte. Entra quando a Vercel Authentication estiver ligada.
+- **No hall do samais-os** (`videos/rota-investidores.json`, samais-os `f7eba5f`), com o botão
+  "Baixar MP4". O Ota decidiu publicar sabendo que a URL é pública e não tem autenticação
+  (05/10/2026).
 
 - **Fonte única de tempos:** `roteiro.json` (cenas, falas e marcos). As falas e os marcos
   foram casados com as pausas medidas da locução.
