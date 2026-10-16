@@ -180,8 +180,9 @@ na consulta, em qualquer caixa e em qualquer profundidade, devolve 400** antes d
 | `GET /api/bpa-i/AAAA-MM.csv` | a pré-remessa em CSV, com `Content-Disposition` nomeado por base e competência |
 
 O núcleo que não depende de banco (montar competências, farol da base, seleção e CSV da pré-remessa, painel de
-conformidade, recusa de CPF) fica em `api/integracao-11165.mjs`, como funções puras testadas sem banco
-(`testes/integracao-11165.test.mjs`).
+conformidade, recusa de CPF) é a **costura**: funções puras testadas sem banco (`testes/integracao-11165.test.mjs`).
+Desde a etapa 2 mora em `regras/integracao-11165.mjs` (o console carrega o mesmo código no navegador; `api/` não é
+estático no Vercel) e `api/integracao-11165.mjs` só a reexporta — o teste cobra que é a mesma função.
 
 ---
 
@@ -208,24 +209,39 @@ Em execução vale a guarda D8.
 
 ---
 
-## 8 · O que a etapa 2 (console) precisa ligar
+## 8 · O que a etapa 2 (console) liga — **ligado em 16/10/2026**
 
-1. **Seed**: acrescentar ao `SEED` os campos novos (paciente `munIbge`/`ufRes`; destino `ibge`/`uf`/`cnes`/
-   `habilitacaoConferida`; veículo os campos da doação; `config.pactuacao`) com identificadores sintéticos, e a
-   `elegibilidade` calculada pelo módulo (o console pode importar o módulo ou receber o valor pronto da API).
-2. **Elegibilidade**: trocar `elegivelFederal(p)` (base → destino) pelo `p.elegibilidade.status`, com os três estados e
-   as pendências na ficha ("a levantar: distância", "agendamento sem resposta").
-3. **Farol**: trocar `farolRepasse()`/`diasSemRegistro()` pelo `GET /api/farol-producao` (e, no seed, pelo
-   `farolProducao` sobre remessas de demonstração); "não aplicável a este contrato" quando a base não está apta; os
-   dias sem baixa viram linha operacional.
-4. **Telas novas**: agendamento confirmado (por paciente), remessa da competência, pactuação da base, dados da doação do
-   veículo e o painel de conformidade; botão "pré-BPA-I" com o relatório do que ficou de fora.
-5. **FonteSeed/FonteAPI**: métodos novos (`salvarAgendamento`, `salvarRemessa`, `salvarPactuacao`, `salvarVeiculoPortaria`,
-   `salvarServico`, `salvarDistancia`, `farolProducao`, `conformidade`, `preBpaI`) nas duas fontes, com o teste
-   `testes/fonte-api.test.mjs` cobrando as duas.
-6. **Textos**: citar 11.164 + 11.165 (nunca 11.179) nos alertas (`rota-app.html` linhas 791, 925 e vizinhas).
+Registro de execução e RED/GREEN: `docs/ANDAMENTO-11165.md`, "Etapa 2".
 
----
+0. **Regras no console sem cópia.** ✓ `rota-app.html` carrega `regras/portaria-11165.mjs` e
+   `regras/integracao-11165.mjs` por `import()` dinâmico (CSP `script-src 'self'`); o login espera os módulos e, se
+   não carregarem, diz por quê (não presume elegibilidade). Nos testes, os módulos entram pelo contexto da VM.
+1. **Seed.** ✓ Campos novos com identificadores sintéticos (IBGE 99220xx, CNES 99900xx, CIB/termo/protocolo DEMO),
+   distâncias rotuladas "demonstração" (não são a matriz oficial, L5), agendamentos da semana e remessas jul–ago/2026
+   (setembro sem informação: farol "a conferir"). A semana-demo passou a 12–16/out/2026 para haver competências
+   fechadas desde o início do incentivo (jul/2026). Nenhum CPF.
+2. **Elegibilidade.** ✓ `elegivelFederal(p)` saiu; a tela usa `p.elegibilidade` (três estados) com regras violadas e
+   pendências legíveis na lista e na ficha. Na demonstração a FonteSeed calcula pelo módulo, com o próximo agendamento
+   a partir de hoje (como a API). Distância de município a município; sem par = pendente.
+3. **Farol.** ✓ `farolRepasse()`/`diasSemRegistro()` saíram; farol por competência da fonte (`/api/farol-producao`;
+   na demonstração, `farolDaBase` da costura sobre as remessas do seed), "não aplicável a este contrato" quando a base
+   não está apta. Dias sem baixa viraram linha "Operacional · … baixa interna não comprova produção".
+4. **Telas.** ✓ Ficha do paciente (elegibilidade + agendamentos confirmados + registrar agendamento); ficha e edição
+   da doação do veículo com os prazos do módulo; Conformidade (pactuação editável, farol, veículos, serviços de
+   referência, distâncias); Faturamento BPA-I (pré-BPA-I da competência com o que ficou de fora por motivo e avisos,
+   botão que baixa o CSV; remessas informadas e "informar remessa"). Tudo por delegação `data-act`.
+   **Pré-BPA-I na demonstração:** gerado no navegador a partir das baixas da sessão pelo **mesmo** `preRemessaBPAI` e
+   `csvPreBPAI` da API; nome `pre-bpa-i_<municipio>-<uf>_demonstracao_<AAAA-MM>.csv`.
+5. **FonteSeed/FonteAPI.** ✓ `agendamentos`, `salvarAgendamento`, `distancias`, `salvarDistancia`, `salvarServico`,
+   `salvarVeiculoPortaria`, `salvarPactuacao`, `remessas`, `salvarRemessa`, `farolProducao`, `conformidade`, `preBpaI`,
+   `preBpaICsv` nas duas, cobertos em `testes/fonte-api.test.mjs` (endpoint, corpo e formato de retorno). As duas recusam
+   corpo com chave de CPF antes de sair. Escritas da norma recarregam só os campos da norma nos mesmos objetos da sessão.
+6. **Textos.** ✓ Alertas, painéis e relatório citam 11.164 + 11.165 (teste cobra a ausência de 11.179); relatório
+   mensal segue sem dado nominal.
+
+**Fica para depois:** ligar o login à FonteAPI (Fase 2, item 3.5: hoje o console abre só em demonstração); cadastro
+de paciente gravando de verdade (continua "demo"); escolher a competência fechada anterior como padrão do pré-BPA-I
+quando a API estiver ligada (hoje o padrão é a competência corrente, parcial).
 
 ## 9 · Lacunas (○) que esta etapa não fecha
 

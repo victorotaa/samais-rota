@@ -37,7 +37,9 @@
     --bg:#F1ECE1; --divider:#DED6C6; --line:#D2C9B6; --track:#E2DACA;
     --gold:#8E7238; --gold-soft:#A6843F; --gold-deep:#6F5A2C;
     --green:#1E7A4B; --green-soft:#1a6b41; --amber:#9A7433; --red:#B24A41; --blue:#456C97;
-    --text:#0A0A0A; --text-2:#3A362E; --muted:#6E675B; --dim:#6E675B;
+    /* etapa 2 · #6E675B passava só sobre o fundo (4,75:1); em cabeçalho de
+       tabela e selo sobre superfície caía a 4,3:1. Um tom abaixo: ≥ 5,5:1 */
+    --text:#0A0A0A; --text-2:#3A362E; --muted:#5C564B; --dim:#5C564B;
     --glass:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.4));
     --glass-border:rgba(0,0,0,.09);
     --glass-hi:rgba(255,255,255,.85);
@@ -231,6 +233,51 @@
   .seg button{background:none;border:0;color:var(--muted);font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px;border-radius:7px}
   .seg button.on{background:rgba(184,149,78,.16);color:var(--gold-soft)}
 
+  /* Portaria 11.165 · farol, conformidade, faturamento */
+  .opline{font-size:12px;color:var(--text-2);margin:0 0 16px;padding:10px 14px;border:1px dashed var(--divider);border-radius:10px;line-height:1.6}
+  .opline b{color:var(--text-2);font-weight:600}
+  .opline .sublbl{margin-right:6px}
+  .farol-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+  .farol-rot{font-family:var(--display);font-weight:600;font-size:21px;line-height:1.1}
+  .comps{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+  .comp{border:1px solid var(--divider);border-radius:9px;padding:7px 8px;display:flex;flex-direction:column;gap:2px;background:var(--hover)}
+  .comp .cm2{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .comp b{font-family:var(--mono);font-size:12px;font-weight:600;white-space:nowrap}
+  .comp.c-ok b{color:var(--green-soft)} .comp.c-zero b{color:var(--red)} .comp.c-sem b{color:var(--amber)}
+  .comp.c-sem{border-style:dashed;border-color:rgba(199,154,85,.45)}
+  .elig-box{margin-top:16px;padding:14px 16px;border:1px solid var(--divider);border-radius:12px;background:var(--hover)}
+  .elig-box .fgrid{gap:4px 14px}
+  ul.regras{list-style:none;margin:6px 0 0;padding:0;font-size:12.5px;color:var(--text-2)}
+  ul.regras li{padding:5px 0 5px 14px;position:relative;line-height:1.45}
+  ul.regras li::before{content:"";position:absolute;left:0;top:11px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+  ul.regras.pend li::before{background:var(--amber)}
+  ul.regras li b{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--text)}
+  .prazos{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:12px}
+  .prazos > div{display:flex;flex-direction:column;gap:6px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .kpis3{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+  .kpis3 .kpi .d{overflow-wrap:anywhere}
+  table.tbl-sm{min-width:0;font-size:12.5px}
+  table.tbl-sm td,table.tbl-sm th{padding:9px 12px}
+  .sel{max-width:240px;background:var(--input-bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--text);font-size:13px}
+  .empty{font-size:12.5px;color:var(--muted);padding:10px 0}
+  .carregando{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:30px 0}
+  .motivo{max-width:260px;margin-top:4px;line-height:1.4}
+  .login-erro{margin-top:14px;font-size:12px;color:var(--red);line-height:1.5}
+  @media(max-width:600px){.grid2{grid-template-columns:1fr}.sel{max-width:100%}}
+  /* M5 · no tema claro, o texto dos selos e das competências desce para tons
+     escuros da mesma família: ouro/âmbar claro sobre fundo creme dava 2,5:1 */
+  :root[data-theme="light"] .p-gold,:root[data-theme="light"] .comp.c-sem b{color:#6F5A2C}
+  :root[data-theme="light"] .p-green,:root[data-theme="light"] .comp.c-ok b{color:#155C37}
+  :root[data-theme="light"] .p-red,:root[data-theme="light"] .comp.c-zero b{color:#8F342C}
+  :root[data-theme="light"] .p-blue{color:#2F5378}
+  :root[data-theme="light"] .p-dim{color:#5C564B}
+  :root[data-theme="light"] .btn:not(.solid){color:#6F5A2C}
+  :root[data-theme="light"] .btn.ghost{color:var(--text-2)}
+  :root[data-theme="light"] .btn.solid{background:#B8954E;border-color:#B8954E}
+  .mono-cell.gold-num{color:var(--gold-soft)}
+  :root[data-theme="light"] .tag-mono,:root[data-theme="light"] .mono-cell.gold-num{color:#6F5A2C}
+
   /* PAPER (A4 print preview) */
   .paper-shell{overflow-x:auto;padding-bottom:6px}
   .paper{background:#fff;color:#111;width:210mm;min-height:297mm;margin:0 auto;padding:15mm;font-size:11.5px;line-height:1.42;box-shadow:0 20px 60px rgba(0,0,0,.5);border-radius:2px}
@@ -320,7 +367,8 @@
     <div class="field"><label for="lg-user">Gestor(a) responsável</label><input id="lg-user" value="Gestor(a) local" /></div>
     <div class="field"><label for="lg-pass">Senha</label><input id="lg-pass" type="password" placeholder="qualquer senha — protótipo" autocomplete="off" /></div>
     <button class="btn solid block" id="lg-enter">Entrar no console</button>
-    <div class="login-note">Protótipo de demonstração · dados fictícios · nenhuma informação real de paciente. Perfil único: gestor local. Motoristas e assistentes operam via prancheta impressa.</div>
+    <div class="login-erro" id="lg-erro" hidden>As regras da Portaria 11.165 não carregaram (regras/portaria-11165.mjs). O console não abre sem elas: a elegibilidade não pode ser presumida.</div>
+    <div class="login-note">Protótipo de demonstração · dados fictícios · nenhuma informação real de paciente, nenhum CPF. Códigos de município, CNES e deliberação são sintéticos; as distâncias são de demonstração. Perfil único: gestor local. Motoristas e assistentes operam via prancheta impressa.</div>
   </div>
 </div>
 
@@ -340,6 +388,9 @@
       <div class="sb-sec">Controle</div>
       <button type="button" class="navitem" data-view="impressos"><svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg> Impressos</button>
       <button type="button" class="navitem" data-view="lancamentos"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Lançamentos <span class="dot" id="dot-lanc" hidden>0</span></button>
+      <div class="sb-sec">Portaria 11.165</div>
+      <button type="button" class="navitem" data-view="conformidade"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg> Conformidade</button>
+      <button type="button" class="navitem" data-view="faturamento"><svg viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg> Faturamento BPA-I <span class="dot" id="dot-fat" hidden>0</span></button>
     </nav>
     <div class="sb-foot">
       <div class="who" id="sb-who">Gestor(a) local</div>
@@ -360,7 +411,7 @@
     </div>
     <div class="rt">
       <span class="pill" id="tb-week"><b>—</b></span>
-      <span class="pill" title="Prototipo: a semana e o dia de hoje sao fixos para demonstracao">Data simulada · <b>08/jul/2026</b></span>
+      <span class="pill" title="Prototipo: a semana e o dia de hoje sao fixos para demonstracao">Data simulada · <b id="tb-hoje">14/out/2026</b></span>
       <span class="pill live">Base ativa · <b id="tb-base">Floriano — PI</b></span>
     </div>
   </header>
@@ -372,6 +423,8 @@
     <section class="view" id="v-frota"></section>
     <section class="view" id="v-impressos"></section>
     <section class="view" id="v-lancamentos"></section>
+    <section class="view" id="v-conformidade"></section>
+    <section class="view" id="v-faturamento"></section>
   </main>
 </div>
 
@@ -382,20 +435,51 @@
 /* =================== ESTADO (seed fictício) =================== */
 var DIAS=['seg','ter','qua','qui','sex'];
 var DIA_NOME={seg:'Segunda',ter:'Terça',qua:'Quarta',qui:'Quinta',sex:'Sexta'};
-var HOJE='qua', SEMANA='06–10/jul/2026';
-/* A1 · O farol de repasse precisa de DATA, não de índice de dia da semana.
+var HOJE='qua', SEMANA='12–16/out/2026';
+/* A1 · O farol precisa de DATA, não de índice de dia da semana.
    Cada dia da semana-demo tem data real; hojeISO() é o relógio da aplicação.
-   Fase 2: trocar o corpo de hojeISO() por new Date().toISOString().slice(0,10). */
-var DATA_SEMANA={seg:'2026-07-06',ter:'2026-07-07',qua:'2026-07-08',qui:'2026-07-09',sex:'2026-07-10'};
-function hojeISO(){return DATA_SEMANA[HOJE]}
-function diasEntre(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5)}
+   Com a API, "hoje" vem do servidor (config.hoje, relógio de Brasília).
+   Nunca toISOString().slice(0,10): das 21h à meia-noite de Brasília o UTC
+   já é amanhã. A semana da demonstração é de outubro/2026 para o farol por
+   competência ter competências fechadas desde o início do incentivo. */
+var DATA_SEMANA={seg:'2026-10-12',ter:'2026-10-13',qua:'2026-10-14',qui:'2026-10-15',sex:'2026-10-16'};
+function hojeISO(){return (CONFIG&&CONFIG.hoje)||DATA_SEMANA[HOJE]}
+/* aritmética de calendário sobre AAAA-MM-DD: régua de contar dias, sem fuso */
+function _diaN(iso){var p=iso.split('-');return Date.UTC(+p[0],+p[1]-1,+p[2])/864e5}
+function diasEntre(a,b){return _diaN(b)-_diaN(a)}
 var MES_CURTO=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+var MES_LONGO=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 function fmtDia(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]}
 function fmtDataLonga(iso){var d=iso.split('-');return d[2]+'/'+MES_CURTO[+d[1]-1]+'/'+d[0]}
+function fmtCompetencia(c){var d=String(c||'').split('-');return d.length<2?String(c||''):MES_CURTO[+d[1]-1]+'/'+d[0]}
 /* Fase 2 · o script precisa carregar fora do navegador para ser testado em Node.
    Nada no escopo de modulo pode assumir DOM. */
 var NAVEGADOR = typeof document !== 'undefined';
 var REDUCE = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ═══════════════════════════════════════════════════════════════════
+   NORMA · Portaria GM/MS 11.165/2026 (operação) com a 11.164/2026
+   (financiamento). O console NÃO tem regra própria da norma: usa
+   regras/portaria-11165.mjs (as regras) e regras/integracao-11165.mjs
+   (a costura: farol da base, conformidade, pré-remessa BPA-I, CSV) — os
+   mesmos módulos da API. No navegador entram por import() dinâmico
+   (CSP: script-src 'self'); nos testes, pelo contexto da VM (NORMA_11165).
+   Desenho: docs/PORTARIA-11165-INTEGRACAO.md §8.
+   ═══════════════════════════════════════════════════════════════════ */
+var NORMA=null, _normaEspera=[];
+function ligarNorma(regras,costura){
+  NORMA={regras:regras,costura:costura,r:regras,c:costura};
+  var fila=_normaEspera; _normaEspera=[]; fila.forEach(function(fn){fn()});
+  return NORMA;
+}
+function quandoNorma(fn){ if(NORMA) fn(); else _normaEspera.push(fn); }
+if(typeof NORMA_11165!=='undefined'&&NORMA_11165) ligarNorma(NORMA_11165.regras,NORMA_11165.costura);
+function _nn(x){return x===undefined?null:x}
+/* CPF em lugar nenhum (Ota, 16/10/2026): nenhuma escrita sai com chave de
+   CPF, nem para a API (que também recusa com 400) nem para a demonstração. */
+function _chaveCpf(corpo){return NORMA?NORMA.c.chaveComCpf(corpo):null}
+function _erroCpf(k){return new Error('o ROTA-OS não recebe CPF (campo "'+k+'"): a pré-remessa sai com a coluna vazia e o faturamento do ente a completa')}
+function _competenciaOk(c){return !!NORMA&&NORMA.c.competenciaValida(c)}
 
 var DESTINOS={};
 /* A2 · Regra de negócio nunca decide por regex em texto livre. Tratamento e
@@ -403,11 +487,11 @@ var DESTINOS={};
    "Radiologia" (exame) deixa de virar radioterapia; "Maca" sem a palavra
    "ambulância" deixa de ir para o micro-ônibus. */
 var TRATAMENTOS={
-  hemodialise:{label:'Hemodiálise',elegivel:true},
-  radioterapia:{label:'Radioterapia',elegivel:true},
-  quimioterapia:{label:'Quimioterapia',elegivel:false},
-  consulta:{label:'Consulta especializada',elegivel:false},
-  fisioterapia:{label:'Fisioterapia',elegivel:false}
+  hemodialise:{label:'Hemodiálise'},
+  radioterapia:{label:'Radioterapia'},
+  quimioterapia:{label:'Quimioterapia'},
+  consulta:{label:'Consulta especializada'},
+  fisioterapia:{label:'Fisioterapia'}
 };
 var NECESSIDADES={
   nenhuma:{label:'—',ambulancia:false},
@@ -420,17 +504,61 @@ function necLabel(p){return NECESSIDADES[p.necKey].label}
 function exigeAmbulancia(p){return NECESSIDADES[p.necKey].ambulancia}
 
 var pacientes=[];
-/* autorização da regulação (TFD) + rótulos derivados das chaves — nunca digitados solto */
 /* rotulos e autorizacao vem do seed, aplicados por FonteSeed.carregar */
-/* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.165): hemodiálise/radioterapia, >50 km e ≤500 km */
-function elegivelFederal(p){var d=DESTINOS[p.dest];return TRATAMENTOS[p.tratKey].elegivel&&d.km>50&&d.km<=500}
+/* RN-05 · elegibilidade da Port. 11.165 (com a 11.164), em TRÊS estados, do
+   município de residência ao município sede do serviço. Vem pronta da fonte
+   (API: módulo no servidor; demonstração: o mesmo módulo, na FonteSeed).
+   A regra antiga — distância da BASE ao destino, dois estados — saiu. */
+var SEM_AVALIACAO={status:'pendente',regras_violadas:[],pendencias:['nao_avaliada'],procedimento:null,faixa:null};
+function elegibilidadeDe(p){return (p&&p.elegibilidade)||SEM_AVALIACAO}
+function elegivel(p){return elegibilidadeDe(p).status==='elegivel'}
+/* rótulos legíveis das regras (texto de tela; a regra mora no módulo) */
+var ROTULO_REGRA={
+  'RE-01':{violada:'modalidade fora da portaria (só radioterapia e hemodiálise)'},
+  'RE-02':{violada:'mesmo município de residência e do serviço — a norma exige ente diverso',
+           pendente:'a levantar: município de residência ou município sede do serviço'},
+  'RE-03':{violada:'até 50 km do município de residência ao município sede do serviço',
+           pendente:'a levantar: distância do município de residência ao município sede do serviço'},
+  'RE-04':{violada:'acima de 500 km do município de residência ao município sede do serviço'},
+  'RE-05':{violada:'hemodiálise em outra UF (a norma pede a mesma UF)',
+           pendente:'a levantar: UF de residência ou do serviço'},
+  'RE-06':{violada:'serviço sem a habilitação exigida', pendente:'a conferir: habilitação do serviço'},
+  'RE-07':{violada:'agendamento não confirmado pelo serviço', pendente:'agendamento sem resposta do serviço'},
+  'nao_avaliada':{pendente:'elegibilidade ainda não avaliada'}
+};
+function rotuloRegra(cod,tipo){var r=ROTULO_REGRA[cod];return (r&&r[tipo])||cod}
+var ROTULO_STATUS={elegivel:'elegível',inelegivel:'inelegível',pendente:'pendente'};
+var ROTULO_MOTIVO={
+  nao_comprovado:'presença de ida e volta não conferida na baixa',
+  'RC-12:fora_dos_municipios_abrangidos':'residência fora dos municípios abrangidos pela pactuação (RC-12)',
+  'RE-09:excedente_semanal':'hemodiálise acima de 3 idas e voltas na semana (RE-09)',
+  'RE-11:excedente':'radioterapia além de 1 planejamento e 1 tratamento na competência (RE-11)',
+  'RE-11:etapa_a_informar':'radioterapia sem a etapa informada no agendamento (RE-11)',
+  cnes_executante_a_levantar:'CNES do estabelecimento executante a levantar (veículo sem inscrição no CNES)',
+  divergencia_modulo_banco:'divergência entre o módulo e o banco (conferir)'
+};
+function rotuloMotivo(m){
+  if(ROTULO_MOTIVO[m]) return ROTULO_MOTIVO[m];
+  var x=String(m).split(':');
+  if((x[0]==='inelegivel'||x[0]==='pendente')&&x[1]){
+    var tipo=x[0]==='inelegivel'?'violada':'pendente';
+    return ROTULO_STATUS[x[0]]+' · '+x[1].split('+').map(function(c){return c+' '+rotuloRegra(c,tipo)}).join('; ');
+  }
+  if(x[0]==='linha_invalida') return 'linha inválida para o BPA-I · '+(x[1]||'').split('+').join(' + ');
+  return String(m);
+}
+var ROTULO_AVISO={
+  cpf_a_completar_pelo_faturamento_do_ente:'coluna do CPF vazia: o faturamento do ente completa pelo CADSUS',
+  'RC-08:itinerario_pactuado_nao_modelado':'registro do art. 27 sem o itinerário pactuado (não modelado, M20)',
+  'RC-12:a_conferir':'município abrangido pela pactuação a conferir (RC-12)'
+};
 /* A unidade de comprovação é o PACIENTE-DESLOCAMENTO, nunca a viagem: a portaria remunera
    o deslocamento de cada paciente em radioterapia/hemodiálise. Uma viagem mista (radio +
    quimio) "contém elegíveis" — não "é elegível". Contar viagens infla o relatório. */
-function elegiveisNaViagem(v){return v.pacientes.filter(elegivelFederal)}
+function elegiveisNaViagem(v){return v.pacientes.filter(elegivel)}
 function contemElegiveis(v){return elegiveisNaViagem(v).length>0}
 function elegiveisRealizados(v){var l=lancamentos[v.id];if(!l||!l.concluida)return 0;
-  return v.pacientes.filter(function(p){return elegivelFederal(p)&&l.presentes.indexOf(p.id)>=0}).length}
+  return v.pacientes.filter(function(p){return elegivel(p)&&l.presentes.indexOf(p.id)>=0}).length}
 /* A5 · Ocupação PROGRAMADA é planejamento; ocupação REALIZADA é comprovação.
    A portaria pede o mecanismo de gestão de frota sobre quem de fato embarcou —
    só a realizada vai ao relatório. */
@@ -450,39 +578,93 @@ var CONFIG={custoKmVariavel:0.90, custoKmFonte:'parâmetro da base · definido n
 var abastecimentos=[];
 /* ═══════════════════════════════════════════════════════════════════
    SEED — dado ficticio da demonstracao. E DADO, nao codigo: a fonte real
-   devolve exatamente esta forma. Nenhum paciente real vive aqui.
+   devolve exatamente esta forma. Nenhum paciente real vive aqui, e nada
+   aqui e CPF.
+   Portaria 11.165: os codigos de municipio (99220xx), de CNES (99900xx),
+   de deliberacao CIB, de termo de doacao e de protocolo sao SINTETICOS; as
+   distancias de municipio a municipio sao de DEMONSTRACAO (nao sao a
+   matriz oficial — lacuna L5). As tabelas da norma (distancias,
+   agendamentos, remessas) ficam fora das seis chaves da carga, como na API.
    ═══════════════════════════════════════════════════════════════════ */
 var SEED={
   destinos:{
-  dialise:{nome:'Clínica de Diálise — Floriano', km:8, tipo:'Local'},
-  teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km'},
-  picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km'}
+  dialise:{nome:'Clínica de Diálise — Floriano', km:8, tipo:'Local',
+    ibge:'9922001', uf:'PI', cnes:'9990011', habilitacaoConferida:true, habilitacaoCodigo:'15.04', modalidades:['hemodialise']},
+  teresina:{nome:'Teresina — oncologia/radioterapia', km:252, tipo:'Intermunicipal >50km',
+    ibge:'9922003', uf:'PI', cnes:'9990012', habilitacaoConferida:true, habilitacaoCodigo:null, modalidades:['radioterapia']},
+  picos:{nome:'Picos — consultas especializadas', km:148, tipo:'Intermunicipal >50km',
+    ibge:'9922004', uf:'PI', cnes:'9990013', habilitacaoConferida:null, habilitacaoCodigo:null, modalidades:[]}
 },
   pacientes:[
-  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',ponto:'UBS Centro',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0140',val:'31/dez/2026'}},
-  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'cadeirante',aut:{proc:'TFD-2026/0141',val:'31/dez/2026'}},
-  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0142',val:'31/dez/2026'}},
-  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',ponto:'UBS Centro',tratKey:'radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0143',val:'31/dez/2026'}},
-  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'quimioterapia',dest:'teresina',rec:['ter'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0144',val:'31/dez/2026'}},
-  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0145',val:'31/dez/2026'}},
-  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Floriano',ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0146',val:'31/dez/2026'}},
-  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',ponto:'UBS Alto da Boa Vista',tratKey:'hemodialise',esp:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,necKey:'maca',aut:{proc:'TFD-2026/0147',val:'31/dez/2026'}},
-  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',ponto:'UBS Centro',tratKey:'consulta',esp:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,necKey:'menor',aut:{proc:'TFD-2026/0148',val:'31/dez/2026'}},
-  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',ponto:'UBS Tabuleiro',tratKey:'fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0149',val:'31/dez/2026'}}
+  {id:1,nome:'Antônia Pereira da Costa',cns:'700 8041 2233 4501',nasc:'12/03/1958',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Centro',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0140',val:'31/dez/2026'}},
+  {id:2,nome:'Raimundo Nonato Alves',cns:'701 2233 8890 0012',nasc:'04/09/1949',mun:'Floriano',munIbge:null,ufRes:null,ponto:'UBS Manguinha',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'cadeirante',aut:{proc:'TFD-2026/0141',val:'31/dez/2026'}},
+  {id:3,nome:'Maria José da Silva',cns:'702 4456 1122 7788',nasc:'27/07/1971',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Alto da Boa Vista',tratKey:'radioterapia',dest:'teresina',rec:['seg','ter','qua','qui','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0142',val:'31/dez/2026'}},
+  {id:4,nome:'João Batista de Sousa',cns:'703 9087 5544 3321',nasc:'15/11/1963',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Centro',tratKey:'radioterapia',dest:'teresina',rec:['seg','qua','sex'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0143',val:'31/dez/2026'}},
+  {id:5,nome:'Francisca Gomes Lima',cns:'704 1120 6677 9900',nasc:'08/02/1966',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Tabuleiro',tratKey:'quimioterapia',dest:'teresina',rec:['ter'],acomp:true,necKey:'nenhuma',aut:{proc:'TFD-2026/0144',val:'31/dez/2026'}},
+  {id:6,nome:'Sebastião Alves Rocha',cns:'705 3344 0099 1122',nasc:'19/06/1955',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Centro',tratKey:'consulta',esp:'Cardiologia (consulta)',dest:'picos',rec:['qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0145',val:'31/dez/2026'}},
+  {id:7,nome:'Luzia Santana de Jesus',cns:'706 8877 2211 4433',nasc:'30/10/1974',mun:'Amarante',munIbge:'9922002',ufRes:'PI',ponto:'Ponto de apoio — Amarante',tratKey:'hemodialise',dest:'dialise',rec:['seg','qua','sex'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0146',val:'31/dez/2026'}},
+  {id:8,nome:'Damião Ferreira da Cruz',cns:'707 5566 3300 8811',nasc:'22/01/1960',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Alto da Boa Vista',tratKey:'hemodialise',esp:'Hemodiálise (acamado)',dest:'dialise',rec:['seg','qua','sex'],acomp:true,necKey:'maca',aut:{proc:'TFD-2026/0147',val:'31/dez/2026'}},
+  {id:9,nome:'Ana Clara Mendes',cns:'708 2019 4455 6677',nasc:'03/05/2016',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Centro',tratKey:'consulta',esp:'Neurologia infantil',dest:'teresina',rec:['qua'],acomp:true,necKey:'menor',aut:{proc:'TFD-2026/0148',val:'31/dez/2026'}},
+  {id:10,nome:'Pedro Henrique Barros',cns:'709 6543 1200 3344',nasc:'11/08/1987',mun:'Floriano',munIbge:'9922001',ufRes:'PI',ponto:'UBS Tabuleiro',tratKey:'fisioterapia',dest:'dialise',rec:['ter','qui'],acomp:false,necKey:'nenhuma',aut:{proc:'TFD-2026/0149',val:'31/dez/2026'}}
 ],
   veiculos:[
-  {id:'ROTA-01',placa:'QLF-1A23',classe:'van',tipo:'Van (7 lugares)',lot:7,hod:48250,revCada:10000,proxRev:50000,mot:'José Ribamar',cnes:'2364712'},
-  {id:'ROTA-02',placa:'QLF-2B45',classe:'micro',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:61900,revCada:10000,proxRev:70000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:null,cnesPrazo:'15/ago/2026',origem:'Caminhos da Saúde (federal)'},
-  {id:'ROTA-03',placa:'QLF-3C67',classe:'ambulancia',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'2364712'}
+  {id:'ROTA-01',placa:'QLF-1A23',classe:'van',tipo:'Van (7 lugares)',lot:7,hod:6250,revCada:10000,proxRev:10000,mot:'José Ribamar',cnes:null,
+    origem:'Caminhos da Saúde (federal)',doadoMs:true,termoDoacao:'TD-DEMO-0101/2026',finalidadeDoacao:'hemodialise',dataRecebimento:'2026-08-25',
+    prorrogacao:false,cnesEstabelecimento:null,cnesInscritoEm:null,primeiraViagemConcluida:'2026-09-01',emplacadoEm:'2026-08-20',disponibilidade12m:null,laudo:null},
+  {id:'ROTA-02',placa:'QLF-2B45',classe:'micro',tipo:'Micro-ônibus (24 lugares)',lot:24,hod:41900,revCada:10000,proxRev:50000,mot:'Antônio Sales',assist:'Maria das Graças',cnes:'9990021',
+    origem:'Caminhos da Saúde (federal)',doadoMs:true,termoDoacao:'TD-DEMO-0102/2026',finalidadeDoacao:'radioterapia',dataRecebimento:'2026-06-15',
+    prorrogacao:false,cnesEstabelecimento:'9990001',cnesInscritoEm:'2026-07-30',primeiraViagemConcluida:'2026-07-06',emplacadoEm:'2026-06-10',disponibilidade12m:0.96,laudo:null},
+  {id:'ROTA-03',placa:'QLF-3C67',classe:'ambulancia',tipo:'Ambulância tipo A (2)',lot:2,hod:39100,revCada:10000,proxRev:40000,mot:'Francisco Lima',cnes:'9990023',
+    origem:'frota própria do município',doadoMs:false,termoDoacao:null,finalidadeDoacao:null,dataRecebimento:null,
+    prorrogacao:false,cnesEstabelecimento:'9990001',cnesInscritoEm:null,primeiraViagemConcluida:null,emplacadoEm:null,disponibilidade12m:null,laudo:null}
 ],
   abastecimentos:[
-  {vid:'ROTA-02',data:'2026-07-06',litros:78,km:520,valor:452.4},
-  {vid:'ROTA-01',data:'2026-07-06',litros:34,km:210,valor:197.2},
-  {vid:'ROTA-02',data:'2026-07-08',litros:80,km:508,valor:464.0},
-  {vid:'ROTA-01',data:'2026-07-08',litros:32,km:205,valor:185.6}
+  {vid:'ROTA-02',data:'2026-10-12',litros:78,km:520,valor:452.4},
+  {vid:'ROTA-01',data:'2026-10-12',litros:34,km:210,valor:197.2},
+  {vid:'ROTA-02',data:'2026-10-14',litros:80,km:508,valor:464.0},
+  {vid:'ROTA-01',data:'2026-10-14',litros:32,km:205,valor:185.6}
 ],
   lancamentos:{},
-  config:{custoKmVariavel:0.90, custoKmFonte:'parametro da base · definido no contrato'}
+  config:{custoKmVariavel:0.90, custoKmFonte:'parametro da base · definido no contrato', municipio:'Floriano', uf:'PI', hoje:'2026-10-14',
+    pactuacao:{deliberacaoCib:'CIB-DEMO 001/2026', deliberacaoCibData:'2026-06-10', estruturaGestao:true,
+      municipiosAbrangidos:['9922001','9922002'], inicioIncentivo:'2026-07'},
+    /* nomes dos codigos sinteticos, so para leitura da demonstracao */
+    nomesMunicipios:{'9922001':'Floriano','9922002':'Amarante','9922003':'Teresina','9922004':'Picos'}},
+  distancias:[
+  {origem:'9922001',destino:'9922003',km:252,fonte:'demonstração · distância ilustrativa, não é a matriz oficial (lacuna L5)',lidoEm:'2026-07-01'},
+  {origem:'9922002',destino:'9922001',km:62,fonte:'demonstração · distância ilustrativa, não é a matriz oficial (lacuna L5)',lidoEm:'2026-07-01'},
+  {origem:'9922001',destino:'9922004',km:148,fonte:'demonstração · distância ilustrativa, não é a matriz oficial (lacuna L5)',lidoEm:'2026-07-01'}
+],
+  /* agendamento confirmado pelo servico (11.165 art. 13 §3º). confirmado
+     nulo = sem resposta do servico (pendente), nunca "nao". */
+  agendamentos:[
+  {id:'ag-01',paciente:1,destino:'dialise',data:'2026-10-12',confirmado:true,etapa:null,protocolo:'AG-DEMO-0101'},
+  {id:'ag-02',paciente:1,destino:'dialise',data:'2026-10-14',confirmado:true,etapa:null,protocolo:'AG-DEMO-0102'},
+  {id:'ag-03',paciente:1,destino:'dialise',data:'2026-10-16',confirmado:true,etapa:null,protocolo:'AG-DEMO-0103'},
+  {id:'ag-04',paciente:2,destino:'dialise',data:'2026-10-12',confirmado:true,etapa:null,protocolo:'AG-DEMO-0201'},
+  {id:'ag-05',paciente:2,destino:'dialise',data:'2026-10-14',confirmado:true,etapa:null,protocolo:'AG-DEMO-0202'},
+  {id:'ag-06',paciente:2,destino:'dialise',data:'2026-10-16',confirmado:true,etapa:null,protocolo:'AG-DEMO-0203'},
+  {id:'ag-07',paciente:3,destino:'teresina',data:'2026-10-12',confirmado:true,etapa:'tratamento',protocolo:'AG-DEMO-0301'},
+  {id:'ag-08',paciente:3,destino:'teresina',data:'2026-10-13',confirmado:true,etapa:'tratamento',protocolo:'AG-DEMO-0302'},
+  {id:'ag-09',paciente:3,destino:'teresina',data:'2026-10-14',confirmado:true,etapa:'tratamento',protocolo:'AG-DEMO-0303'},
+  {id:'ag-10',paciente:3,destino:'teresina',data:'2026-10-15',confirmado:true,etapa:'tratamento',protocolo:'AG-DEMO-0304'},
+  {id:'ag-11',paciente:3,destino:'teresina',data:'2026-10-16',confirmado:true,etapa:'tratamento',protocolo:'AG-DEMO-0305'},
+  {id:'ag-12',paciente:4,destino:'teresina',data:'2026-10-12',confirmado:null,etapa:'tratamento',protocolo:null},
+  {id:'ag-13',paciente:4,destino:'teresina',data:'2026-10-14',confirmado:null,etapa:'tratamento',protocolo:null},
+  {id:'ag-14',paciente:4,destino:'teresina',data:'2026-10-16',confirmado:null,etapa:'tratamento',protocolo:null},
+  {id:'ag-15',paciente:7,destino:'dialise',data:'2026-10-12',confirmado:true,etapa:null,protocolo:'AG-DEMO-0701'},
+  {id:'ag-16',paciente:7,destino:'dialise',data:'2026-10-14',confirmado:true,etapa:null,protocolo:'AG-DEMO-0702'},
+  {id:'ag-17',paciente:7,destino:'dialise',data:'2026-10-16',confirmado:true,etapa:null,protocolo:'AG-DEMO-0703'},
+  {id:'ag-18',paciente:8,destino:'dialise',data:'2026-10-12',confirmado:true,etapa:null,protocolo:'AG-DEMO-0801'},
+  {id:'ag-19',paciente:8,destino:'dialise',data:'2026-10-14',confirmado:true,etapa:null,protocolo:'AG-DEMO-0802'},
+  {id:'ag-20',paciente:8,destino:'dialise',data:'2026-10-16',confirmado:true,etapa:null,protocolo:'AG-DEMO-0803'}
+],
+  /* remessas BPA-I informadas pelo faturamento do ente (art. 21). Setembro
+     de proposito sem informacao: o farol fica "a conferir", nunca zero. */
+  remessas:[
+  {competencia:'2026-07',linhas:38,enviadaEm:'2026-08-07',informadoPor:'faturamento da SMS (demonstração)',registradoEm:'2026-08-07'},
+  {competencia:'2026-08',linhas:41,enviadaEm:'2026-09-08',informadoPor:'faturamento da SMS (demonstração)',registradoEm:'2026-09-08'}
+]
 };
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -492,41 +674,248 @@ var SEED={
    amanha e a API — mesma assinatura, mesma semantica, sem tocar em render.
    Trocar a fonte e trocar uma implementacao, nao reescrever as telas.
 
-   Contrato que a FonteAPI tera de honrar:
+   Contrato que as duas fontes honram (testes/fonte-api.test.mjs):
      carregar()                        -> {destinos, pacientes, veiculos, abastecimentos, lancamentos, config}
      salvarPaciente(p)                 -> paciente com id
      salvarAbastecimento(a)            -> abastecimento com id
      salvarBaixa(viagemId, dados)      -> lancamento gravado
      salvarProgramacao(viagens)        -> void
+   Portaria 11.165 (etapa 2, desenho §8.5):
+     agendamentos({de,ate}) · salvarAgendamento(a)
+     distancias() · salvarDistancia(d) · salvarServico(destino, campos)
+     salvarVeiculoPortaria(ident, campos) · salvarPactuacao(p)
+     remessas() · salvarRemessa(r)
+     farolProducao({hoje}) · conformidade({hoje})
+     preBpaI(competencia) · preBpaICsv(competencia) -> {nome, csv, linhas}
    Toda escrita da fonte real abre transacao, grava em `auditoria` junto, e
    deixa o RLS decidir de qual base o dado e.
    ═══════════════════════════════════════════════════════════════════ */
-function FonteSeed(seed){ this.seed=seed; }
+function _copia(o){return o===undefined?undefined:JSON.parse(JSON.stringify(o))}
+/* o vocabulario do console -> o vocabulario dos modulos (o mesmo da API) */
+function _pactInterna(p){p=p||{};return {deliberacao_cib:_nn(p.deliberacaoCib),deliberacao_cib_data:_nn(p.deliberacaoCibData),
+  estrutura_gestao_registrada:_nn(p.estruturaGestao),municipios_abrangidos:p.municipiosAbrangidos||[],inicio_incentivo:_nn(p.inicioIncentivo)}}
+function _veicInterno(v){return {identificacao:v.id,classe:v.classe,doado_ms:_nn(v.doadoMs),finalidade_doacao:_nn(v.finalidadeDoacao),
+  data_recebimento:_nn(v.dataRecebimento),cnes_inscrito_em:_nn(v.cnesInscritoEm),prorrogacao:!!v.prorrogacao,
+  primeira_viagem_concluida:_nn(v.primeiraViagemConcluida),emplacado_em:_nn(v.emplacadoEm),hodometro:_nn(v.hod),
+  disponibilidade_12m:_nn(v.disponibilidade12m),laudo:_nn(v.laudo)}}
+function _portariaDe(c){return {incentivo:c.incentivo,cnes:c.cnes,operacao:c.operacao,renovacao:c.renovacao}}
+/* nascimento do seed vem DD/MM/AAAA; o modulo conta idade sobre AAAA-MM-DD */
+function _isoNasc(n){var m=String(n||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?m[3]+'-'+m[2]+'-'+m[1]:(/^\d{4}-\d{2}-\d{2}$/.test(n||'')?n:null)}
+function _slug(t){return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+var PENDENTE_DE_LEIAUTE='arquivo oficial do BPA Magnético a gerar quando o leiaute vigente for obtido (lacuna L1)';
+var NOTA_OPERACIONAL='informação operacional: baixa interna não comprova produção; o farol conta remessas BPA-I (art. 21 §2º)';
+var CAMPOS_SERVICO=['ibge','uf','cnes','habilitacaoConferida','habilitacaoCodigo','modalidades'];
+var CAMPOS_DOACAO=['doadoMs','termoDoacao','finalidadeDoacao','dataRecebimento','prorrogacao','cnesEstabelecimento','cnesInscritoEm',
+  'primeiraViagemConcluida','emplacadoEm','disponibilidade12m','laudo'];
+var CAMPOS_PACTUACAO=['deliberacaoCib','deliberacaoCibData','estruturaGestao','municipiosAbrangidos','inicioIncentivo'];
+
+function FonteSeed(seed){ this.seed=seed; this.db=null; }
+/* o "banco" da demonstracao: copia do seed, mutavel nesta sessao. O seed
+   em si nunca muda. */
+FonteSeed.prototype._db=function(){
+  if(!this.db){
+    var d=_copia(this.seed);
+    d.distancias=d.distancias||[]; d.agendamentos=d.agendamentos||[]; d.remessas=d.remessas||[];
+    d.config=d.config||{};
+    d.config.pactuacao=d.config.pactuacao||{deliberacaoCib:null,deliberacaoCibData:null,estruturaGestao:null,municipiosAbrangidos:[],inicioIncentivo:null};
+    this.db=d;
+  }
+  return this.db;
+};
+FonteSeed.prototype._hoje=function(op){return (op&&op.hoje)||this._db().config.hoje||hojeISO()};
+/* distancia SEMPRE na direcao residencia -> servico; sem par, null (a levantar) */
+FonteSeed.prototype._km=function(origem,destino){
+  if(!origem||!destino) return null;
+  var d=this._db().distancias.filter(function(x){return x.origem===origem&&x.destino===destino})[0];
+  return d&&typeof d.km==='number'?d.km:null;
+};
+FonteSeed.prototype._agendamento=function(pid,dest,data){
+  return this._db().agendamentos.filter(function(a){return a.paciente===pid&&a.destino===dest&&a.data===data})[0]||null;
+};
+/* como a API: o proximo agendamento a partir de hoje decide o RE-07 da ficha */
+FonteSeed.prototype._proxAgendamento=function(p,hoje){
+  return this._db().agendamentos.filter(function(a){return a.paciente===p.id&&a.destino===p.dest&&a.data>=hoje})
+    .sort(function(a,b){return a.data<b.data?-1:a.data>b.data?1:0})[0]||null;
+};
+FonteSeed.prototype._elegibilidade=function(p,confirmado){
+  if(!NORMA) return _copia(SEM_AVALIACAO);
+  var dest=this._db().destinos[p.dest]||{};
+  return NORMA.r.elegibilidade11165(NORMA.c.entradaElegibilidade({tratamento:p.tratKey,
+    residencia_ibge:_nn(p.munIbge),residencia_uf:_nn(p.ufRes),servico_ibge:_nn(dest.ibge),servico_uf:_nn(dest.uf),
+    habilitacao_conferida:_nn(dest.habilitacaoConferida),distancia_km:this._km(p.munIbge,dest.ibge),
+    agendamento_confirmado:_nn(confirmado)}));
+};
+FonteSeed.prototype._conformidade=function(hoje){
+  var db=this._db();
+  return NORMA.c.conformidade({hoje:hoje,pactuacao:_pactInterna(db.config.pactuacao),veiculos:db.veiculos.map(_veicInterno)});
+};
+FonteSeed.prototype._semCpf=function(corpo){var k=_chaveCpf(corpo);if(k)throw _erroCpf(k)};
+FonteSeed.prototype._dataOk=function(nome,v){if(v!==null&&v!==undefined&&!(NORMA&&NORMA.c.dataValida(v)))throw new Error(nome+': esperado AAAA-MM-DD')};
 FonteSeed.prototype.carregar=function(){
   /* copia profunda: o seed e imutavel, o estado de sessao e derivado dele */
-  var d=JSON.parse(JSON.stringify(this.seed));
-  d.pacientes.forEach(function(p){p.trat=tratLabel(p);p.nec=necLabel(p)});
-  return d;
+  var self=this, db=this._db(), d=_copia(db), hoje=this._hoje();
+  d.pacientes.forEach(function(p){
+    p.trat=tratLabel(p); p.nec=necLabel(p);
+    var ag=self._proxAgendamento(p,hoje);
+    p.proxAgendamento=ag?{data:ag.data,confirmado:ag.confirmado,etapa:ag.etapa}:null;
+    p.elegibilidade=self._elegibilidade(p,ag?ag.confirmado:null);
+  });
+  if(NORMA){
+    var conf=this._conformidade(hoje);
+    d.veiculos.forEach(function(v,i){v.portaria=_portariaDe(conf.veiculos[i])});
+    d.config.baseApta=conf.base_apta;
+  }
+  d.config.hoje=hoje;
+  /* as mesmas seis chaves da API: as tabelas da norma ficam na fonte */
+  return {destinos:d.destinos,pacientes:d.pacientes,veiculos:d.veiculos,abastecimentos:d.abastecimentos,
+    lancamentos:d.lancamentos||{},config:d.config};
 };
 FonteSeed.prototype.salvarPaciente=function(p){
+  this._semCpf(p);
   if(!p.id) p.id='p-'+(Date.now().toString(36));
   return p;
 };
-FonteSeed.prototype.salvarAbastecimento=function(a){ return a; };
-FonteSeed.prototype.salvarBaixa=function(viagemId,dados){ return dados; };
+FonteSeed.prototype.salvarAbastecimento=function(a){ this._semCpf(a); return a; };
+FonteSeed.prototype.salvarBaixa=function(viagemId,dados){ this._semCpf(dados); return dados; };
 FonteSeed.prototype.salvarProgramacao=function(){ /* seed nao persiste programacao */ };
+FonteSeed.prototype.agendamentos=function(op){
+  op=op||{};
+  return _copia(this._db().agendamentos.filter(function(a){return (!op.de||a.data>=op.de)&&(!op.ate||a.data<=op.ate)})
+    .sort(function(a,b){return a.data<b.data?-1:a.data>b.data?1:(a.paciente<b.paciente?-1:a.paciente>b.paciente?1:0)}));
+};
+FonteSeed.prototype.salvarAgendamento=function(a){
+  this._semCpf(a); a=a||{};
+  var db=this._db();
+  if(!db.pacientes.some(function(p){return p.id===a.paciente})||!db.destinos[a.destino]) throw new Error('paciente ou destino não encontrado nesta base');
+  if(!(NORMA&&NORMA.c.dataValida(a.data))) throw new Error('data: esperado AAAA-MM-DD');
+  if([true,false,null,undefined].indexOf(a.confirmado)<0) throw new Error('confirmado: sim, não ou sem resposta');
+  if([null,undefined,'planejamento','tratamento'].indexOf(a.etapa)<0) throw new Error('etapa: planejamento ou tratamento');
+  var atual=this._agendamento(a.paciente,a.destino,a.data);
+  if(!atual){atual={id:'ag-'+(db.agendamentos.length+1)+'-s',paciente:a.paciente,destino:a.destino,data:a.data};db.agendamentos.push(atual)}
+  atual.confirmado=_nn(a.confirmado); atual.etapa=_nn(a.etapa); atual.protocolo=_nn(a.protocolo)||null;
+  return _copia(atual);
+};
+FonteSeed.prototype.distancias=function(){
+  return _copia(this._db().distancias.slice().sort(function(a,b){return (a.origem+a.destino)<(b.origem+b.destino)?-1:1}));
+};
+FonteSeed.prototype.salvarDistancia=function(d){
+  this._semCpf(d); d=d||{};
+  if(!/^\d{7}$/.test(d.origem||'')||!/^\d{7}$/.test(d.destino||'')) throw new Error('origem e destino: código IBGE de 7 dígitos');
+  var km=_nn(d.km);
+  if(km!==null&&!(typeof km==='number'&&isFinite(km)&&km>=0)) throw new Error('km: número não negativo, ou vazio (a levantar)');
+  if(km!==null&&(!d.fonte||!d.lidoEm)) throw new Error('km precisa de fonte e data de leitura: sem procedência não há número');
+  this._dataOk('lidoEm',_nn(d.lidoEm));
+  var db=this._db(), atual=db.distancias.filter(function(x){return x.origem===d.origem&&x.destino===d.destino})[0];
+  if(!atual){atual={origem:d.origem,destino:d.destino};db.distancias.push(atual)}
+  atual.km=km; atual.fonte=_nn(d.fonte); atual.lidoEm=_nn(d.lidoEm);
+  return _copia(atual);
+};
+FonteSeed.prototype.salvarServico=function(destino,campos){
+  this._semCpf(campos);
+  var dest=this._db().destinos[destino]; if(!dest) throw new Error('destino não encontrado nesta base');
+  CAMPOS_SERVICO.forEach(function(c){if(campos&&c in campos)dest[c]=campos[c]});
+  var r=_copia(dest); r.id=destino; return r;
+};
+FonteSeed.prototype.salvarVeiculoPortaria=function(ident,campos){
+  this._semCpf(campos); campos=campos||{};
+  var db=this._db(), v=db.veiculos.filter(function(x){return x.id===ident})[0];
+  if(!v) throw new Error('veículo não encontrado nesta base');
+  ['dataRecebimento','cnesInscritoEm','primeiraViagemConcluida','emplacadoEm'].forEach(function(c){if(c in campos)this._dataOk(c,campos[c])},this);
+  if(campos.cnesEstabelecimento&&!/^\d{7}$/.test(campos.cnesEstabelecimento)) throw new Error('cnesEstabelecimento: 7 dígitos');
+  if(campos.finalidadeDoacao&&['radioterapia','hemodialise','outros'].indexOf(campos.finalidadeDoacao)<0) throw new Error('finalidadeDoacao: radioterapia, hemodialise ou outros');
+  if(campos.disponibilidade12m!==null&&campos.disponibilidade12m!==undefined&&!(campos.disponibilidade12m>=0&&campos.disponibilidade12m<=1)) throw new Error('disponibilidade12m: fração de 0 a 1');
+  CAMPOS_DOACAO.forEach(function(c){if(c in campos)v[c]=c==='prorrogacao'?!!campos[c]:_nn(campos[c])});
+  if('hodometro' in campos&&campos.hodometro!==null) v.hod=campos.hodometro;
+  var r=_copia(v), hoje=this._hoje();
+  /* como a API: o painel do veiculo salvo, sem a pactuacao */
+  r.portaria=_portariaDe(NORMA.c.conformidade({hoje:hoje,pactuacao:null,veiculos:[_veicInterno(v)]}).veiculos[0]);
+  return r;
+};
+FonteSeed.prototype.salvarPactuacao=function(p){
+  this._semCpf(p); p=p||{};
+  if(p.inicioIncentivo&&!_competenciaOk(p.inicioIncentivo)) throw new Error('inicioIncentivo: esperado AAAA-MM');
+  if(p.municipiosAbrangidos&&!(p.municipiosAbrangidos.every&&p.municipiosAbrangidos.every(function(x){return /^\d{7}$/.test(x)}))) throw new Error('municipiosAbrangidos: códigos IBGE de 7 dígitos');
+  this._dataOk('deliberacaoCibData',_nn(p.deliberacaoCibData));
+  var pact=this._db().config.pactuacao;
+  CAMPOS_PACTUACAO.forEach(function(c){if(c in p)pact[c]=c==='municipiosAbrangidos'?(p[c]||[]):_nn(p[c])});
+  return _copia(pact);
+};
+FonteSeed.prototype.remessas=function(){
+  return _copia(this._db().remessas.slice().sort(function(a,b){return a.competencia<b.competencia?-1:1}));
+};
+/* zero linhas se informa como 0; competencia nao informada nao tem linha
+   aqui e entra NULA no farol — sem informacao nao e zero */
+FonteSeed.prototype.salvarRemessa=function(r){
+  this._semCpf(r); r=r||{};
+  if(!_competenciaOk(r.competencia)) throw new Error('competencia: esperado AAAA-MM');
+  var linhas=_nn(r.linhas);
+  if(linhas!==null&&!(typeof linhas==='number'&&linhas>=0&&Math.floor(linhas)===linhas)) throw new Error('linhas: inteiro não negativo');
+  if(!r.informadoPor) throw new Error('informadoPor: setor ou instituição que informou a remessa');
+  if(linhas>0&&!r.enviadaEm) throw new Error('remessa com linhas precisa da data de envio');
+  this._dataOk('enviadaEm',_nn(r.enviadaEm));
+  var db=this._db(), atual=db.remessas.filter(function(x){return x.competencia===r.competencia})[0];
+  if(!atual){atual={competencia:r.competencia};db.remessas.push(atual)}
+  atual.linhas=linhas; atual.enviadaEm=_nn(r.enviadaEm); atual.informadoPor=r.informadoPor; atual.registradoEm=this._hoje();
+  return _copia(atual);
+};
+/* Na demonstracao a SESSAO (programacao e baixas) e o banco das viagens:
+   ultima baixa e deslocamentos vem dela. */
+FonteSeed.prototype.farolProducao=function(op){
+  var hoje=this._hoje(op), db=this._db(), pact=db.config.pactuacao, conf=this._conformidade(hoje);
+  var fb=NORMA.c.farolDaBase({inicio_incentivo:_nn(pact.inicioIncentivo),hoje:hoje,
+    remessas:db.remessas.map(function(r){return {competencia:r.competencia,linhas_enviadas:r.linhas,enviada_em:r.enviadaEm,informado_por:r.informadoPor}})});
+  var op2=diasSemBaixa(hoje);
+  return {hoje:hoje,inicio_incentivo:_nn(pact.inicioIncentivo),aplicavel:conf.base_apta.estado==='apta',base_apta:conf.base_apta,
+    competencias:fb.competencias,farol:fb.farol,
+    operacional:{ultima_baixa:op2.ultima,dias_sem_baixa:op2.dias,nota:NOTA_OPERACIONAL}};
+};
+FonteSeed.prototype.conformidade=function(op){
+  var hoje=this._hoje(op), c=this._conformidade(hoje);
+  return {hoje:hoje,pactuacao:_copia(this._db().config.pactuacao),veiculos:c.veiculos,base_apta:c.base_apta};
+};
+FonteSeed.prototype._deslocamentos=function(){
+  var self=this, db=this._db(), out=[];
+  viagens.forEach(function(v){
+    var l=lancamentos[v.id]; if(!l||!l.concluida) return;
+    var data=DATA_SEMANA[v.dia], veic=db.veiculos.filter(function(x){return x.id===v.veic.id})[0]||{};
+    v.pacientes.forEach(function(ps){
+      var p=db.pacientes.filter(function(x){return x.id===ps.id})[0]; if(!p) return;
+      var dest=db.destinos[p.dest]||{}, ag=self._agendamento(p.id,p.dest,data), presente=l.presentes.indexOf(p.id)>=0;
+      out.push({viagem_id:v.id,data:data,paciente_id:p.id,cns:p.cns,nascimento:_isoNasc(p.nasc),tratamento:p.tratKey,
+        residencia_ibge:_nn(p.munIbge),residencia_uf:_nn(p.ufRes),servico_ibge:_nn(dest.ibge),servico_uf:_nn(dest.uf),
+        habilitacao_conferida:_nn(dest.habilitacaoConferida),distancia_km:self._km(p.munIbge,dest.ibge),
+        agendamento_confirmado:ag?_nn(ag.confirmado):null,etapa:ag?_nn(ag.etapa):null,
+        presente_ida:presente,presente_volta:presente,cnes_executante:_nn(veic.cnesEstabelecimento)});
+    });
+  });
+  return out;
+};
+FonteSeed.prototype._preRemessa=function(competencia){
+  if(!_competenciaOk(competencia)) throw new Error('competência: esperado AAAA-MM');
+  return NORMA.c.preRemessaBPAI({competencia:competencia,deslocamentos:this._deslocamentos(),pactuacao:_pactInterna(this._db().config.pactuacao)});
+};
+FonteSeed.prototype.preBpaI=function(competencia){
+  var pre=this._preRemessa(competencia);
+  return {competencia:competencia,leiaute:pre.leiaute,colunas:pre.colunas,total_deslocamentos:pre.total_deslocamentos,
+    linhas:pre.linhas.length,fora:pre.fora,avisos:pre.avisos,pendente_de_leiaute:PENDENTE_DE_LEIAUTE};
+};
+FonteSeed.prototype.preBpaICsv=function(competencia){
+  var pre=this._preRemessa(competencia), cfg=this._db().config;
+  return {nome:'pre-bpa-i_'+_slug(cfg.municipio)+'-'+_slug(cfg.uf)+'_demonstracao_'+competencia+'.csv',
+    csv:NORMA.c.csvPreBPAI(pre.linhas),linhas:pre.linhas.length};
+};
 
 /* ═══════════════════════════════════════════════════════════════════
    FonteAPI — a outra implementacao do mesmo contrato.
 
-   Nao esta ligada: o console continua abrindo pela FonteSeed. Ela existe
-   agora porque contrato so se sabe honesto quando tem duas implementacoes;
-   com uma so, o que parece contrato costuma ser o formato acidental de
-   quem escreveu primeiro.
+   Nao esta ligada ao login: o console abre pela FonteSeed (demonstracao).
+   Ela existe porque contrato so se sabe honesto quando tem duas
+   implementacoes; com uma so, o que parece contrato costuma ser o formato
+   acidental de quem escreveu primeiro.
 
-   A diferenca real e que estas devolvem promessa. Por isso Dados passou a
-   tolerar promessa em toda operacao: com a FonteSeed o retorno e imediato
-   e nada muda; com a API, o callback chega depois.
+   A diferenca real e que estas devolvem promessa. Por isso Dados tolera
+   promessa em toda operacao: com a FonteSeed o retorno e imediato e nada
+   muda; com a API, o callback chega depois.
 
    Ligar, na Fase 2 item 3.5:
      Dados.abrir(new FonteAPI({token:t}), function(){ gerarProgramacao(); render('painel') });
@@ -538,13 +927,18 @@ function FonteAPI(op){
   /* injetavel para teste; em navegador e o fetch mesmo */
   this.buscar=op.buscar||(typeof fetch==='function'?function(u,o){return fetch(u,o)}:null);
 }
-FonteAPI.prototype._req=function(metodo,caminho,corpo){
-  if(!this.buscar) return Promise.reject(new Error('sem fetch disponivel'));
+FonteAPI.prototype._cab=function(comCorpo){
   var cab={};
   if(this.token) cab.Authorization='Bearer '+this.token;
-  if(corpo!==undefined) cab['Content-Type']='application/json';
+  if(comCorpo) cab['Content-Type']='application/json';
+  return cab;
+};
+FonteAPI.prototype._req=function(metodo,caminho,corpo){
+  if(!this.buscar) return Promise.reject(new Error('sem fetch disponivel'));
+  var k=corpo===undefined?null:_chaveCpf(corpo);
+  if(k) return Promise.reject(_erroCpf(k));
   return this.buscar(this.raiz+caminho,{
-    method:metodo, headers:cab, credentials:'same-origin',
+    method:metodo, headers:this._cab(corpo!==undefined), credentials:'same-origin',
     body:corpo===undefined?undefined:JSON.stringify(corpo)
   }).then(function(r){
     return r.json().catch(function(){return null}).then(function(j){
@@ -553,6 +947,10 @@ FonteAPI.prototype._req=function(metodo,caminho,corpo){
       return j;
     });
   });
+};
+FonteAPI.prototype._q=function(caminho,par){
+  var q=[];Object.keys(par||{}).forEach(function(k){var v=par[k];if(v!==null&&v!==undefined&&v!=='')q.push(encodeURIComponent(k)+'='+encodeURIComponent(v))});
+  return caminho+(q.length?'?'+q.join('&'):'');
 };
 FonteAPI.prototype.entrar=function(email,senha,codigo){
   var self=this;
@@ -592,11 +990,54 @@ FonteAPI.prototype.salvarProgramacao=function(v){
   if(!v||!v.length) return Promise.resolve();
   return this._req('PUT','/programacao',{de:v[0].data, ate:v[v.length-1].data, viagens:v});
 };
+/* Portaria 11.165 · endpoints da etapa 1 (desenho §5) */
+FonteAPI.prototype.agendamentos=function(op){op=op||{};return this._req('GET',this._q('/agendamentos',{de:op.de,ate:op.ate}))};
+FonteAPI.prototype.salvarAgendamento=function(a){return this._req('POST','/agendamentos',a)};
+FonteAPI.prototype.distancias=function(){return this._req('GET','/distancias')};
+FonteAPI.prototype.salvarDistancia=function(d){return this._req('PUT','/distancias',d)};
+FonteAPI.prototype.salvarServico=function(destino,campos){return this._req('PUT','/destinos/'+encodeURIComponent(destino)+'/servico',campos)};
+FonteAPI.prototype.salvarVeiculoPortaria=function(ident,campos){return this._req('PUT','/veiculos/'+encodeURIComponent(ident)+'/portaria',campos)};
+FonteAPI.prototype.salvarPactuacao=function(p){return this._req('PUT','/base/pactuacao',p)};
+FonteAPI.prototype.remessas=function(){return this._req('GET','/remessas-bpa')};
+FonteAPI.prototype.salvarRemessa=function(r){return this._req('POST','/remessas-bpa',r)};
+FonteAPI.prototype.farolProducao=function(op){return this._req('GET',this._q('/farol-producao',{hoje:op&&op.hoje}))};
+FonteAPI.prototype.conformidade=function(op){return this._req('GET',this._q('/conformidade',{hoje:op&&op.hoje}))};
+FonteAPI.prototype.preBpaI=function(c){
+  if(!_competenciaOk(c)) return Promise.reject(new Error('competência: esperado AAAA-MM'));
+  return this._req('GET','/bpa-i/'+c);
+};
+/* o CSV e o unico canal nominal (CNS, sem nome, sem CPF); chega como texto */
+FonteAPI.prototype.preBpaICsv=function(c){
+  if(!_competenciaOk(c)) return Promise.reject(new Error('competência: esperado AAAA-MM'));
+  if(!this.buscar) return Promise.reject(new Error('sem fetch disponivel'));
+  return this.buscar(this.raiz+'/bpa-i/'+c+'.csv',{method:'GET',headers:this._cab(false),credentials:'same-origin'}).then(function(r){
+    if(!r.ok) return r.json().catch(function(){return null}).then(function(j){
+      var e=new Error(r.status===401?'sessao expirada':((j&&j.erro)||('falha '+r.status)));e.status=r.status;throw e});
+    return r.text().then(function(t){
+      var h=function(n){return r.headers&&r.headers.get?r.headers.get(n):null};
+      var m=(h('Content-Disposition')||'').match(/filename="([^"]+)"/), n=h('X-Rota-Linhas');
+      return {nome:m?m[1]:'pre-bpa-i_'+c+'.csv',csv:t,linhas:n===null||n===undefined?null:+n};
+    });
+  });
+};
 
 /* Fonte sincrona (seed) e fonte assincrona (API) atendidas pelo mesmo
    codigo: se a fonte devolveu promessa, aplica-se depois; se devolveu o
    valor, aplica-se agora. Nenhuma tela precisa saber qual e qual. */
 function _quandoPronto(x,fn){ return (x && typeof x.then==='function') ? x.then(fn) : fn(x) }
+
+/* Depois de uma escrita da norma, so os campos da norma voltam da carga e
+   entram NOS MESMOS objetos da sessao: as viagens guardam referencia ao
+   paciente e ao veiculo, e as baixas da sessao nao podem ser perdidas. */
+function mesclarNorma(d){
+  d.pacientes.forEach(function(n){var p=pacientes.filter(function(x){return x.id===n.id})[0];
+    if(p){p.munIbge=n.munIbge;p.ufRes=n.ufRes;p.elegibilidade=n.elegibilidade;p.proxAgendamento=n.proxAgendamento}});
+  Object.keys(d.destinos||{}).forEach(function(k){var x=DESTINOS[k];
+    if(x)CAMPOS_SERVICO.forEach(function(c){x[c]=d.destinos[k][c]})});
+  d.veiculos.forEach(function(n){var v=veiculos.filter(function(x){return x.id===n.id})[0];
+    if(v){CAMPOS_DOACAO.forEach(function(c){v[c]=n[c]});v.hod=n.hod;v.cnes=n.cnes;v.portaria=n.portaria}});
+  if(d.config){CONFIG.pactuacao=d.config.pactuacao;CONFIG.baseApta=d.config.baseApta;if(d.config.hoje)CONFIG.hoje=d.config.hoje}
+}
 
 var Dados={
   fonte:null,
@@ -613,6 +1054,28 @@ var Dados={
       if(pronto)pronto(self);
       return self;
     });
+  },
+  /* leitura sem estado de sessao: farol, conformidade, listas da norma */
+  ler:function(metodo,arg,pronto){
+    return _quandoPronto(this.fonte[metodo](arg),function(r){if(pronto)pronto(r);return r});
+  },
+  recarregarNorma:function(pronto){
+    var self=this;
+    return _quandoPronto(this.fonte.carregar(),function(d){mesclarNorma(d);if(pronto)pronto(self);return self});
+  },
+  _escreverNorma:function(x,pronto){
+    var self=this;
+    return _quandoPronto(x,function(g){
+      return _quandoPronto(self.recarregarNorma(),function(){if(pronto)pronto(g);return g});
+    });
+  },
+  salvarAgendamento:function(a,pronto){return this._escreverNorma(this.fonte.salvarAgendamento(a),pronto)},
+  salvarDistancia:function(d,pronto){return this._escreverNorma(this.fonte.salvarDistancia(d),pronto)},
+  salvarServico:function(destino,campos,pronto){return this._escreverNorma(this.fonte.salvarServico(destino,campos),pronto)},
+  salvarVeiculoPortaria:function(ident,campos,pronto){return this._escreverNorma(this.fonte.salvarVeiculoPortaria(ident,campos),pronto)},
+  salvarPactuacao:function(p,pronto){return this._escreverNorma(this.fonte.salvarPactuacao(p),pronto)},
+  salvarRemessa:function(r,pronto){
+    return _quandoPronto(this.fonte.salvarRemessa(r),function(g){if(pronto)pronto(g);return g});
   },
   salvarBaixa:function(viagemId,dados,pronto){
     return _quandoPronto(this.fonte.salvarBaixa(viagemId,dados),function(gravado){
@@ -739,18 +1202,53 @@ function statusViagem(v){var l=lancamentos[v.id];
 /* =================== ROTEADOR =================== */
 var TITLES={painel:['Painel da semana','ROTA / Painel'],pacientes:['Pacientes cadastrados','ROTA / Pacientes'],
   programacao:['Programação de viagens','ROTA / Programação'],frota:['Frota e abastecimento','ROTA / Frota'],
-  impressos:['Impressos operacionais','ROTA / Impressos'],lancamentos:['Lançamentos e baixa','ROTA / Lançamentos']};
+  impressos:['Impressos operacionais','ROTA / Impressos'],lancamentos:['Lançamentos e baixa','ROTA / Lançamentos'],
+  conformidade:['Conformidade da base','ROTA / Portaria 11.165'],faturamento:['Faturamento BPA-I','ROTA / Portaria 11.165']};
+var VIEWS=['painel','pacientes','programacao','frota','impressos','lancamentos','conformidade','faturamento'];
 function render(view){
-  ['painel','pacientes','programacao','frota','impressos','lancamentos'].forEach(function(v){$('#v-'+v).classList.toggle('on',v===view)});
+  VIEWS.forEach(function(v){$('#v-'+v).classList.toggle('on',v===view)});
   if(view!=='impressos')$('#print-root').innerHTML='';   /* B3: nunca imprimir o último papel por engano */
   $$('.navitem').forEach(function(a){a.classList.toggle('active',a.dataset.view===view)});
   $('#viewtitle').textContent=TITLES[view][0];$('#crumb').textContent=TITLES[view][1];
-  ({painel:renderPainel,pacientes:renderPacientes,programacao:renderProgramacao,frota:renderFrota,impressos:renderImpressos,lancamentos:renderLancamentos})[view]();
+  ({painel:renderPainel,pacientes:renderPacientes,programacao:renderProgramacao,frota:renderFrota,impressos:renderImpressos,lancamentos:renderLancamentos,
+    conformidade:renderConformidade,faturamento:renderFaturamento})[view]();
+  viewAtual=view;
   closeMenu();
 }
 
 /* =================== PAINEL =================== */
-function renderPainel(){
+var ICO_ALERTA='<svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>';
+var ICO_INFO='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>';
+function alerta(tipo,html){return '<div class="alert '+tipo+'">'+(tipo==='bad'?'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>':ICO_ALERTA)+'<div>'+html+'</div></div>'}
+/* alertas da norma por veículo doado (prazos calculados pelo módulo, nunca digitados) */
+function alertasVeiculos(){
+  var out='';
+  veiculos.forEach(function(x){
+    var pt=x.portaria; if(!pt||x.doadoMs!==true) return;
+    var c=pt.cnes, o=pt.operacao, nome=esc(x.id)+' ('+esc(x.placa)+')';
+    if(c.estado==='atencao'||c.estado==='vencido')
+      out+=alerta(c.estado==='vencido'?'bad':'warn','<b>Registro CNES '+(c.estado==='vencido'?'vencido':'pendente')+' — '+nome+'.</b> '+
+        (c.estado==='vencido'?'O prazo venceu em <b>'+esc(fmtDataLonga(c.limite))+'</b>':'Inscrever até <b>'+esc(fmtDataLonga(c.limite))+'</b>, em '+c.dias_restantes+' dia'+(c.dias_restantes===1?'':'s'))+
+        ' (60 dias do recebimento — Port. 11.165 art. 11 III). Sem o CNES do estabelecimento, os deslocamentos deste veículo ficam fora da pré-remessa BPA-I.');
+    else if(c.estado==='a_conferir')
+      out+=alerta('warn','<b>Prazo do CNES a conferir — '+nome+'.</b> Falta a data de recebimento do veículo doado: o prazo de 60 dias (Port. 11.165 art. 11 III) se calcula dela, nunca de data digitada à mão.');
+    if(o.estado==='atencao'||o.estado==='vencido')
+      out+=alerta(o.estado==='vencido'?'bad':'warn','<b>Veículo sem operação comprovada — '+nome+'.</b> A primeira viagem deve ocorrer até <b>'+esc(fmtDataLonga(o.limite))+'</b> (60 dias do recebimento, prorrogáveis por 30 — Port. 11.165 art. 10 §3º), sob pena de revogação da doação.');
+  });
+  return out;
+}
+function alertaFarol(fp){
+  if(!fp) return '';
+  if(!fp.aplicavel){
+    return fp.base_apta&&fp.base_apta.estado==='pendente'?alerta('warn','<b>Base ainda não apta ao incentivo de custeio.</b> Falta: '+
+      esc(fp.base_apta.faltam.map(rotuloFalta).join('; '))+' (Port. 11.165 art. 14 parágrafo único). Até lá, o farol de produção não se aplica.'):'';
+  }
+  var f=fp.farol, ult=fp.competencias.filter(function(c){return c.linhas_enviadas===null||c.linhas_enviadas===undefined}).map(function(c){return fmtCompetencia(c.competencia)});
+  if(f.estado==='a_conferir') return alerta('warn','<b>Produção BPA-I a conferir.</b> Competência '+esc(ult.join(', '))+' sem remessa informada pelo faturamento. Sem a informação, o farol fica a conferir — nunca zero (Port. 11.165 art. 21 §2º). Informe em <b>Faturamento BPA-I</b>.');
+  if(f.alerta) return alerta(f.estado==='atencao'?'warn':'bad','<b>Produção BPA-I · '+esc(ROTULO_FAROL[f.estado])+'.</b> '+f.meses_sem_registro+' competência'+(f.meses_sem_registro===1?'':'s')+' seguida'+(f.meses_sem_registro===1?'':'s')+' sem remessa BPA-I enviada ao SIA. Três suspendem o incentivo; seis excluem (Port. 11.165 art. 21 §2º).');
+  return '';
+}
+function htmlPainel(fp){
   var totV=viagens.length;
   var concl=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
   var kmSem=concl.reduce(function(a,v){return a+lancamentos[v.id].km},0);
@@ -761,12 +1259,10 @@ function renderPainel(){
   var kml=+(kmSem/litSem).toFixed(1)||0;
   var custo=custoPeriodo(datasDaSemana(),kmSem);
 
-  var alerts='';
-  veiculos.filter(function(x){return !x.cnes}).forEach(function(x){
-    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Registro CNES pendente — '+esc(x.id)+' ('+esc(x.placa)+').</b> Veículo do lote '+esc(x.origem||'federal')+' deve estar inscrito no CNES até <b>'+esc(x.cnesPrazo)+'</b> (60 dias do recebimento — Port. 11.164/2026). Sem CNES, as viagens não comprovam repasse.</div></div>';});
+  var alerts=alertaFarol(fp)+alertasVeiculos();
   veiculos.filter(function(x){return (x.proxRev-x.hod)<=2000}).forEach(function(x){
-    alerts+='<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div><b>Revisão próxima — '+esc(x.id)+' ('+esc(x.placa)+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.</div></div>';});
-  if(faltas>0) alerts+='<div class="alert bad"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg><div><b>'+faltas+' falta(s) registrada(s) nesta semana.</b> Faltas recorrentes devem ser reportadas à Central de Regulação para liberar a vaga a outro paciente.</div></div>';
+    alerts+=alerta('warn','<b>Revisão próxima — '+esc(x.id)+' ('+esc(x.placa)+').</b> Faltam '+fmt(x.proxRev-x.hod)+' km para a revisão programada ('+fmt(x.proxRev)+' km). Agende com a oficina.');});
+  if(faltas>0) alerts+=alerta('bad','<b>'+faltas+' falta(s) registrada(s) nesta semana.</b> Faltas recorrentes devem ser reportadas à Central de Regulação para liberar a vaga a outro paciente.');
 
   /* dados p/ gráficos */
   var counts={},cum=[],run=0;
@@ -775,8 +1271,7 @@ function renderPainel(){
   var kmMax=cum[cum.length-1];
   var byDest={};viagens.forEach(function(v){byDest[v.dest]=(byDest[v.dest]||0)+1});
 
-  $('#v-painel').innerHTML=
-    '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">Semana '+SEMANA+' · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Resumo operacional da semana</h3></div>'+
+  return '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">Semana '+SEMANA+' · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Resumo operacional da semana</h3></div>'+
       '<button class="btn sm ghost" data-act="relatorio">↗ Gerar relatório à secretaria</button></div>'+
     alerts+
     '<div class="kpis">'+
@@ -787,8 +1282,9 @@ function renderPainel(){
       kpi('Consumo médio',cv(kml,1),' km/l',litSem+' L abastecidos',icoFuel)+
       kpi('Custo estimado',cv(custo,2,'R$ '),'','combustível da semana + km × R$ '+CONFIG.custoKmVariavel.toFixed(2).replace('.',','),icoCost)+
     '</div>'+
+    '<div class="opline">'+linhaOperacional(fp?fp.operacional:diasSemBaixa())+'</div>'+
     '<div class="charts">'+
-      chartcard('Comprovação de uso · repasse federal','farol de suspensão (Port. 11.164/2026)', farolRepasse()) +
+      chartcard('Produção BPA-I por competência','farol do incentivo · Port. 11.165 art. 21 §2º', htmlFarol(fp,true), 'span2') +
       chartcard('Ocupação realizada','assentos ocupados / lotação · viagens concluídas', donut(ocupReal,'realizada')) +
       chartcard('Km programado acumulado','curva da semana (ida e volta)', areaChart(cum,kmMax)) +
       chartcard('Consumo médio','km por litro · meta ≥ 6', gauge(kml,12)) +
@@ -796,7 +1292,13 @@ function renderPainel(){
       chartcard('Composição por destino','viagens da semana', propChart(byDest,totV)) +
       chartcard('Presenças e faltas','viagens concluídas', splitChart(presencas,faltas)) +
     '</div>';
-  paintCharts();
+}
+function renderPainel(){
+  $('#v-painel').innerHTML='<div class="carregando">carregando o painel…</div>';
+  Dados.ler('farolProducao',{hoje:hojeISO()},function(fp){
+    $('#v-painel').innerHTML=htmlPainel(fp);
+    paintCharts();
+  });
 }
 function kpi(k,val,unit,d,ico){return '<div class="card glass kpi"><div class="k">'+ico+k+'</div><div class="v">'+val+(unit?'<small>'+unit+'</small>':'')+'</div><div class="d">'+d+'</div></div>'}
 function cv(to,dec,pre){return '<span class="cv" data-to="'+to+'" data-dec="'+(dec||0)+'" data-pre="'+(pre||'')+'">'+(pre||'')+(dec?'0':'0')+'</span>'}
@@ -830,7 +1332,7 @@ function areaChart(vals,max){
     '<path d="'+area+'" fill="url(#gArea)" opacity=".9"/>'+
     '<path class="line-draw" d="'+line+'" fill="none" stroke="var(--gold)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>'+
     dots+labs+'</svg>'+
-    '<div class="between" style="margin-top:8px"><span class="sublbl">total</span><span class="mono-cell" style="color:var(--gold-soft)">'+fmt(max)+' km</span></div>';
+    '<div class="between" style="margin-top:8px"><span class="sublbl">total</span><span class="mono-cell gold-num">'+fmt(max)+' km</span></div>';
 }
 function barsChart(counts){
   var max=Math.max.apply(null,DIAS.map(function(d){return counts[d]}))||1;
@@ -846,27 +1348,56 @@ function splitChart(pres,falt){
   return '<div class="split"><div class="track"><div class="seg-a" data-w="'+(pres/tot*100)+'"></div><div class="seg-b" data-w="'+(falt/tot*100)+'"></div></div>'+
     '<div class="lgd"><span><i style="background:var(--green-soft)"></i>Presenças · '+pres+'</span><span><i style="background:var(--red)"></i>Faltas · '+falt+'</span></div></div>';
 }
-/* RN-08 · dias corridos desde o último registro comprovado, por DATA.
-   3 meses consecutivos sem registro suspendem o repasse federal. */
-function diasSemRegistro(){
-  var ultima=null;
-  viagens.forEach(function(v){var l=lancamentos[v.id];
+/* Informação OPERACIONAL: dias desde a última baixa interna. Não é farol:
+   a norma conta competências sem remessa BPA-I enviada ao SIA (RN-08,
+   11.165 art. 21 §2º), e baixa interna sem remessa não comprova nada. */
+function diasSemBaixa(hoje){
+  hoje=hoje||hojeISO(); var ultima=null;
+  Object.keys(lancamentos).forEach(function(k){var l=lancamentos[k];
     if(l&&l.concluida&&l.data&&(!ultima||l.data>ultima)) ultima=l.data});
-  return {ultima:ultima, dias:ultima?diasEntre(ultima,hojeISO()):null};
+  return {ultima:ultima, dias:ultima?diasEntre(ultima,hoje):null};
 }
-function farolRepasse(){
-  var r=diasSemRegistro(), semRegistro=(r.dias===null), dias=semRegistro?90:r.dias;
-  var cor=semRegistro?'var(--red)':dias<30?'var(--green-soft)':dias<=60?'var(--amber)':'var(--red)';
-  var rot=semRegistro?'Sem registro':dias<30?'Em dia':dias<=60?'Atenção':'Risco de suspensão';
-  var pct=Math.min(dias/90*100,100);
-  var linha=semRegistro?'nenhuma viagem comprovada nesta base':
-    'último registro em <b style="color:var(--text-2)">'+fmtDataLonga(r.ultima)+'</b> · há '+dias+' dia'+(dias===1?'':'s');
+function linhaOperacional(o){
+  o=o||{}; var u=o.ultima!==undefined?o.ultima:o.ultima_baixa, d=o.dias!==undefined?o.dias:o.dias_sem_baixa;
+  return '<span class="sublbl">Operacional</span> '+(u?'última baixa interna em <b>'+esc(fmtDataLonga(u))+'</b> · há '+d+' dia'+(d===1?'':'s'):'nenhuma baixa interna lançada')+
+    ' · <span class="mut">baixa interna não comprova produção: quem comprova é a remessa BPA-I enviada pelo faturamento do ente</span>';
+}
+/* RN-08 · farol de produção por competência (11.165 art. 21 §2º), calculado
+   pelo módulo (farolProducao) sobre as remessas informadas pelo faturamento. */
+var ROTULO_FAROL={em_dia:'Em dia',atencao:'Atenção',risco:'Risco',suspenso:'Suspenso',excluido:'Excluído',
+  a_conferir:'A conferir',sem_competencia_fechada:'Sem competência fechada',nao_aplicavel:'Não aplicável a este contrato'};
+var COR_FAROL={em_dia:'var(--green-soft)',atencao:'var(--amber)',risco:'var(--red)',suspenso:'var(--red)',excluido:'var(--red)',
+  a_conferir:'var(--amber)',sem_competencia_fechada:'var(--dim)',nao_aplicavel:'var(--dim)'};
+var ROTULO_FALTA={veiculo_elegivel:'veículo elegível ao incentivo (van ou micro-ônibus doado pelo MS)',cnes_veiculo:'CNES do veículo elegível',
+  estrutura_gestao:'estrutura de gestão do transporte registrada',deliberacao_cib:'deliberação da CIB'};
+function rotuloFalta(f){return ROTULO_FALTA[f]||f}
+function htmlFarol(fp,compacto){
+  if(!fp) return '<div class="sm mut">farol indisponível</div>';
+  var estado=fp.aplicavel?fp.farol.estado:'nao_aplicavel', cor=COR_FAROL[estado]||'var(--dim)', linha;
+  if(!fp.aplicavel){
+    linha=fp.base_apta&&fp.base_apta.estado==='pendente'?'a base ainda não está apta ao incentivo · falta: '+esc(fp.base_apta.faltam.map(rotuloFalta).join('; ')):
+      'nenhum veículo do incentivo nesta base (só van e micro-ônibus doados pelo MS)';
+  }else if(estado==='a_conferir'){
+    var semInfo=fp.competencias.filter(function(c){return c.linhas_enviadas===null||c.linhas_enviadas===undefined});
+    linha='competência <b style="color:var(--text-2)">'+esc(semInfo.map(function(c){return fmtCompetencia(c.competencia)}).join(', '))+'</b> sem remessa informada pelo faturamento';
+  }else if(estado==='em_dia'){
+    var ult=fp.competencias[fp.competencias.length-1];
+    linha='última competência fechada: <b style="color:var(--text-2)">'+esc(fmtCompetencia(ult.competencia))+'</b> · '+fmt(ult.linhas_enviadas)+' linhas enviadas';
+  }else if(estado==='sem_competencia_fechada'){
+    linha='incentivo desde '+esc(fmtCompetencia(fp.inicio_incentivo))+' · nenhuma competência fechada ainda';
+  }else{
+    linha=fp.farol.meses_sem_registro+' competência'+(fp.farol.meses_sem_registro===1?'':'s')+' seguida'+(fp.farol.meses_sem_registro===1?'':'s')+' sem remessa BPA-I';
+  }
+  var lista=fp.aplicavel?fp.competencias.slice(compacto?-6:-12):[];
+  var chips=lista.length?'<div class="comps">'+lista.map(function(c){
+    var n=c.linhas_enviadas, sem=(n===null||n===undefined), cls=sem?'c-sem':n>0?'c-ok':'c-zero';
+    return '<div class="comp '+cls+'"><span class="cm2">'+esc(fmtCompetencia(c.competencia))+'</span><b>'+(sem?'a informar':fmt(n))+'</b></div>'}).join('')+'</div>':'';
   return '<div style="display:flex;align-items:center;gap:16px;margin:8px 0 14px">'+
-    '<span style="width:16px;height:16px;border-radius:50%;background:'+cor+';box-shadow:0 0 14px '+cor+';flex-shrink:0"></span>'+
-    '<div><div style="font-family:var(--display);font-weight:600;font-size:21px;line-height:1.1">'+rot+'</div>'+
-    '<div class="sm mut" style="margin-top:2px">'+linha+'</div></div></div>'+
-    '<div class="prop"><div class="item"><div class="lab"><span class="xs mut">janela de 90 dias</span><span class="mono-cell">'+dias+'/90</span></div><div class="bar"><div class="fill" data-w="'+pct.toFixed(0)+'" style="background:'+cor+'"></div></div></div></div>'+
-    '<div class="xs mut" style="margin-top:12px;line-height:1.55">3 meses consecutivos sem registro de uso suspendem o repasse federal. O lançamento das baixas é o que mantém o dinheiro fluindo.</div>';
+    '<span class="farol-dot" style="background:'+cor+';box-shadow:0 0 14px '+cor+'"></span>'+
+    '<div><div class="farol-rot">'+esc(ROTULO_FAROL[estado]||estado)+'</div>'+
+    '<div class="sm mut" style="margin-top:2px">'+linha+'</div></div></div>'+chips+
+    '<div class="xs mut" style="margin-top:12px;line-height:1.55">Conta competências fechadas desde o início do incentivo'+(fp.inicio_incentivo?' ('+esc(fmtCompetencia(fp.inicio_incentivo))+')':'')+
+    ' sem remessa BPA-I enviada ao SIA: três seguidas suspendem o incentivo; seis excluem (Port. 11.165 art. 21 §2º). Competência sem informação fica a conferir, nunca zero.</div>';
 }
 /* M4 · os gradientes vivem no <svg> do topo do documento; aqui nao se redefine nada */
 function gDefs(){return ''}
@@ -893,39 +1424,119 @@ function countUp(elm,dur){
 }
 
 /* =================== PACIENTES =================== */
+var PILL_STATUS={elegivel:'p-green',pendente:'p-gold',inelegivel:'p-dim'};
+function pillElegibilidade(p){var e=elegibilidadeDe(p);
+  return '<span class="pill2 '+(PILL_STATUS[e.status]||'p-dim')+'">'+esc(ROTULO_STATUS[e.status]||e.status)+'</span>'}
+/* o porquê, em uma linha: a primeira regra violada ou a primeira pendência */
+function motivoCurto(p){var e=elegibilidadeDe(p);
+  if(e.status==='elegivel') return 'Port. 11.165 · '+(e.procedimento||'')+(e.faixa?' · faixa '+e.faixa:'');
+  if(e.regras_violadas.length) return e.regras_violadas[0]+' · '+rotuloRegra(e.regras_violadas[0],'violada');
+  return e.pendencias.length?rotuloRegra(e.pendencias[0],'pendente'):'';
+}
+function nomeMunicipio(ibge){var n=CONFIG&&CONFIG.nomesMunicipios&&CONFIG.nomesMunicipios[ibge];return ibge?(n?n+' · '+ibge:ibge):null}
 function renderPacientes(){
   var rows=pacientes.map(function(p){
     return '<td><span class="nm">'+esc(p.nome)+'</span><div class="xs mut">'+esc(p.mun)+' · '+esc(p.ponto)+'</div></td>'+
       '<td class="mono-cell">'+esc(p.cns)+'</td><td>'+esc(p.trat)+'</td>'+
       '<td><span class="tag-mono">'+p.rec.join(' · ')+'</span><div class="xs mut">'+esc(DESTINOS[p.dest].nome.split(' —')[0])+'</div></td>'+
       '<td>'+(p.acomp?'<span class="pill2 p-gold">com acompanhante</span>':'<span class="pill2 p-dim">sozinho</span>')+'</td>'+
-      '<td><span class="mono-cell">'+esc(p.aut.proc)+'</span><div style="margin-top:4px">'+(elegivelFederal(p)?'<span class="pill2 p-green">elegível federal</span>':'<span class="pill2 p-dim">municipal</span>')+'</div></td>'+
+      '<td><span class="mono-cell">'+esc(p.aut?p.aut.proc:'—')+'</span><div style="margin-top:4px">'+pillElegibilidade(p)+'</div><div class="xs mut motivo">'+esc(motivoCurto(p))+'</div></td>'+
       '<td class="sm">'+esc(p.nec)+'</td>';}).map(function(html,i){return '<tr data-act="ver-paciente" data-arg="'+esc(pacientes[i].id)+'" tabindex="0" role="button" aria-label="Abrir ficha de '+esc(pacientes[i].nome)+'" style="cursor:pointer">'+html+'</tr>'}).join('');
+  var n={elegivel:0,pendente:0,inelegivel:0};pacientes.forEach(function(p){n[elegibilidadeDe(p).status]++});
   $('#v-pacientes').innerHTML=
     '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">'+pacientes.length+' pacientes ativos · lista autorizada pela Central de Regulação</div><h3 class="blk" style="font-size:18px;margin-top:4px">Cadastro de pacientes</h3></div>'+
       '<button class="btn sm" data-act="novo-paciente">+ Novo paciente</button></div>'+
-    '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>A lista chega da Secretaria/Central de Regulação e é lançada aqui pelo gestor. Integração automática com o CADSUS fica para uma fase futura — por ora, cadastro manual por CNS.</div></div>'+
-    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Autorização</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    '<div class="alert warn" style="margin-bottom:16px">'+ICO_INFO+'<div>A lista chega da Secretaria/Central de Regulação e é lançada aqui pelo gestor. Integração automática com o CADSUS fica para uma fase futura — por ora, cadastro manual por CNS. O ROTA não guarda CPF.</div></div>'+
+    '<div class="row" style="gap:8px;margin-bottom:12px"><span class="pill2 p-green">'+n.elegivel+' elegíve'+(n.elegivel===1?'l':'is')+'</span><span class="pill2 p-gold">'+n.pendente+' pendente'+(n.pendente===1?'':'s')+'</span><span class="pill2 p-dim">'+n.inelegivel+' inelegíve'+(n.inelegivel===1?'l':'is')+'</span>'+
+      '<span class="xs mut" style="align-self:center">transporte da Port. 11.165 · do município de residência ao município sede do serviço</span></div>'+
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Paciente</th><th>Cartão SUS (CNS)</th><th>Tratamento</th><th>Recorrência / destino</th><th>Acompanhante</th><th>Autorização · elegibilidade</th><th>Necessidade</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 function novoPaciente(){
   openModal('Novo paciente','<div class="fgrid">'+fld('Nome completo','text','')+fld('Cartão SUS (CNS)','text','')+fld('Município','text','Floriano')+fld('Ponto de embarque','text','UBS Centro')+
+    fld('Município de residência (IBGE, 7 dígitos)','text','')+fld('UF de residência','text','PI')+
     selfld('Tratamento',Object.keys(TRATAMENTOS).map(function(k){return TRATAMENTOS[k].label}))+
     selfld('Necessidade especial',Object.keys(NECESSIDADES).map(function(k){return NECESSIDADES[k].label==='—'?'Nenhuma':NECESSIDADES[k].label}))+
     selfld('Destino',Object.keys(DESTINOS).map(function(k){return DESTINOS[k].nome.split(' —')[0]}))+'</div>'+
     '<div style="margin-top:14px"><div class="sublbl" style="margin-bottom:8px">Recorrência</div><div class="row" style="gap:14px">'+DIAS.map(function(d){return '<label class="chk"><input type="checkbox"> '+DIA_NOME[d]+'</label>'}).join('')+'</div></div>'+
-    '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>',
+    '<label class="chk" style="margin-top:16px"><input type="checkbox"> Viaja com acompanhante (ocupa assento)</label>'+
+    '<div class="xs mut" style="margin-top:12px">Sem o município de residência, a elegibilidade fica <b>pendente</b> (a distância da Port. 11.165 é do município de residência ao município sede do serviço). O ROTA não pede nem guarda CPF.</div>',
     '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="demo-paciente-salvo">Salvar cadastro</button>');
 }
 function info(k,v){return '<div class="field"><label>'+esc(k)+'</label><div style="padding:6px 0;color:var(--text-2);font-size:13.5px">'+esc(v)+'</div></div>'}
-function verPaciente(id){
-  var p=pacientes.filter(function(x){return x.id===id})[0];
+var ROTULO_CONFIRMACAO=function(c){return c===true?'confirmado':c===false?'não confirmado':'sem resposta do serviço'};
+var ROTULO_ETAPA={planejamento:'planejamento',tratamento:'tratamento'};
+/* Ficha: elegibilidade em três estados com o porquê legível; agendamentos
+   confirmados (art. 13 §3º); residência, serviço e distância de município a
+   município com a procedência. Nenhum CPF. */
+function htmlFichaPaciente(id,ags,dists){
+  var p=pacientes.filter(function(x){return x.id===id})[0]; if(!p) return '<div class="empty">Paciente não encontrado</div>';
+  var e=elegibilidadeDe(p), d=DESTINOS[p.dest]||{};
+  var km=null,fonteKm=null;(dists||[]).forEach(function(x){if(x.origem===p.munIbge&&x.destino===d.ibge){km=x.km;fonteKm=x.fonte}});
   var trips=viagens.filter(function(v){return v.pacientes.some(function(q){return q.id===id})});
   var tr=trips.map(function(v){var st=statusViagem(v);
     return '<div class="between" style="padding:11px 0;border-top:1px solid var(--divider)"><div><span class="pill2 '+st.pill+'">'+st.txt+'</span> <span class="sm" style="color:var(--text-2)">'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</span><div class="xs mut" style="margin-top:3px">'+esc(v.destNome.split(' —')[0])+' · '+esc(v.veic.id)+'</div></div><span class="mono-cell">'+(v.km*2)+' km</span></div>'}).join('')||'<div class="empty">Sem viagens nesta semana</div>';
-  openModal(p.nome,'<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',DESTINOS[p.dest].nome.split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+info('Autorização (regulação)',p.aut.proc+' · válida até '+p.aut.val)+info('Cofinanciamento',elegivelFederal(p)?'Elegível federal (>50 km · Port. 11.164)':'Municipal (≤50 km ou fora do escopo)')+'</div>'+
-    (p.nec!=='—'?'<div class="alert warn" style="margin:14px 0 0"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Necessidade especial: <b>'+esc(p.nec)+'</b></div></div>':'')+
-    '<div class="sublbl" style="margin:18px 0 2px">Viagens da semana ('+trips.length+')</div>'+tr,
-    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button>');
+  var meus=(ags||[]).filter(function(a){return a.paciente===id});
+  var agHtml=meus.length?'<div class="tbl-wrap" style="margin-top:8px"><table class="tbl-sm"><thead><tr><th>Data</th><th>Confirmação do serviço</th><th>Etapa</th><th>Protocolo</th></tr></thead><tbody>'+
+    meus.map(function(a){return '<tr><td class="mono-cell">'+esc(fmtDataLonga(a.data))+'</td><td><span class="pill2 '+(a.confirmado===true?'p-green':a.confirmado===false?'p-red':'p-gold')+'">'+esc(ROTULO_CONFIRMACAO(a.confirmado))+'</span></td><td class="sm">'+esc(a.etapa?ROTULO_ETAPA[a.etapa]:'—')+'</td><td class="mono-cell">'+esc(a.protocolo||'—')+'</td></tr>'}).join('')+
+    '</tbody></table></div>':'<div class="empty">Nenhum agendamento registrado</div>';
+  var regras=e.regras_violadas.map(function(r){return '<li><b>'+esc(r)+'</b> · '+esc(rotuloRegra(r,'violada'))+'</li>'}).join('');
+  var pend=e.pendencias.map(function(r){return '<li><b>'+esc(r)+'</b> · '+esc(rotuloRegra(r,'pendente'))+'</li>'}).join('');
+  return '<div class="fgrid">'+info('Cartão SUS',p.cns)+info('Nascimento',p.nasc)+info('Município',p.mun)+info('Ponto de embarque',p.ponto)+info('Tratamento',p.trat)+info('Recorrência',p.rec.join(' · '))+info('Destino',(d.nome||'').split(' —')[0])+info('Acompanhante',p.acomp?'Sim':'Não')+info('Autorização (regulação)',p.aut?p.aut.proc+' · válida até '+p.aut.val:'—')+'</div>'+
+    '<div class="elig-box"><div class="between"><div class="sublbl">Elegibilidade · Port. 11.164 + 11.165</div>'+pillElegibilidade(p)+'</div>'+
+      (e.status==='elegivel'?'<div class="sm" style="margin-top:8px;color:var(--text-2)">Procedimento SIGTAP <b>'+esc(e.procedimento)+'</b>'+(e.faixa?' · faixa de distância '+e.faixa:'')+'</div>':'')+
+      (regras?'<div class="xs mut" style="margin-top:10px">Regra não atendida</div><ul class="regras">'+regras+'</ul>':'')+
+      (pend?'<div class="xs mut" style="margin-top:10px">'+(e.status==='inelegivel'?'Também a levantar ou conferir':'Pendências — a levantar ou conferir')+'</div><ul class="regras pend">'+pend+'</ul>':'')+
+      '<div class="fgrid" style="margin-top:12px">'+
+        info('Município de residência',nomeMunicipio(p.munIbge)||'a levantar')+info('UF de residência',p.ufRes||'a levantar')+
+        info('Município sede do serviço',nomeMunicipio(d.ibge)||'a levantar')+
+        info('Habilitação do serviço',d.habilitacaoConferida===true?'conferida'+(d.habilitacaoCodigo?' · '+d.habilitacaoCodigo:''):d.habilitacaoConferida===false?'sem habilitação':'a conferir')+
+        info('Distância residência → serviço',km===null?'a levantar':fmt(km)+' km')+
+        (fonteKm?info('Procedência da distância',fonteKm):'')+
+      '</div><div class="xs mut" style="margin-top:6px">A distância da norma é do município de residência ao município sede do serviço — não a da base ao destino ('+fmt(d.km||0)+' km, usada só na operação).</div></div>'+
+    '<div class="between" style="margin:18px 0 2px"><div class="sublbl">Agendamentos confirmados · art. 13 §3º ('+meus.length+')</div><button class="btn sm ghost" data-act="novo-agendamento" data-arg="'+esc(id)+'">+ Registrar agendamento</button></div>'+agHtml+
+    (p.nec!=='—'?'<div class="alert warn" style="margin:14px 0 0">'+ICO_INFO+'<div>Necessidade especial: <b>'+esc(p.nec)+'</b></div></div>':'')+
+    '<div class="sublbl" style="margin:18px 0 2px">Viagens da semana ('+trips.length+')</div>'+tr;
+}
+function verPaciente(id){
+  var p=pacientes.filter(function(x){return x.id===id})[0]; if(!p) return;
+  Dados.ler('agendamentos',{},function(ags){Dados.ler('distancias',null,function(ds){
+    openModal(p.nome,htmlFichaPaciente(id,ags,ds),'<button class="btn ghost sm" data-act="fechar-modal">Fechar</button>');
+  })});
+}
+function novoAgendamento(id){
+  var p=pacientes.filter(function(x){return x.id===id})[0]; if(!p) return;
+  openModal('Agendamento · '+p.nome,'<div class="fgrid">'+
+    fld('Data do atendimento','date',hojeISO(),'ag-data')+
+    selfld2('Confirmação do serviço','ag-conf',[['','Sem resposta do serviço'],['sim','Confirmado'],['nao','Não confirmado']],'')+
+    (p.tratKey==='radioterapia'?selfld2('Etapa (radioterapia)','ag-etapa',[['','Não informada'],['planejamento','Planejamento'],['tratamento','Tratamento']],'tratamento'):'')+
+    fld('Protocolo do serviço','text','','ag-prot')+'</div>'+
+    '<div class="xs mut" style="margin-top:12px">Sem resposta do serviço, a elegibilidade fica <b>pendente</b> — nunca vira "não" (Port. 11.165 art. 13 §3º). Destino: '+esc(DESTINOS[p.dest].nome)+'.</div>',
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="confirmar-agendamento" data-arg="'+esc(id)+'">Registrar</button>');
+}
+function confirmarAgendamento(id){
+  var p=pacientes.filter(function(x){return x.id===id})[0], conf=valor('#ag-conf'), et=$('#ag-etapa')?valor('#ag-etapa'):'';
+  executar(function(){return Dados.salvarAgendamento({paciente:id,destino:p.dest,data:valor('#ag-data'),
+      confirmado:conf==='sim'?true:conf==='nao'?false:null,etapa:et||null,protocolo:valor('#ag-prot')||null})},
+    function(){toast('Agendamento registrado · '+ROTULO_STATUS[elegibilidadeDe(p).status]);verPaciente(id);if($('#v-pacientes').classList.contains('on'))renderPacientes()});
+}
+var ROTULO_PRAZO={cumprido:'cumprido',cumprido_fora_do_prazo:'cumprido fora do prazo',no_prazo:'no prazo',atencao:'atenção',vencido:'vencido',a_conferir:'a conferir'};
+var PILL_PRAZO={cumprido:'p-green',cumprido_fora_do_prazo:'p-gold',no_prazo:'p-blue',atencao:'p-gold',vencido:'p-red',a_conferir:'p-gold'};
+var ROTULO_INCENTIVO={elegivel:'elegível ao incentivo',nao_elegivel:'fora do incentivo',pendente:'incentivo a conferir'};
+var MOTIVO_INCENTIVO={classe:'classe não financiada (só van e micro-ônibus)',origem:'origem da doação',finalidade:'finalidade da doação'};
+var ROTULO_RENOVACAO={nao:'não atinge critério',elegivel_renovacao:'elegível à renovação',pendente:'pendente de laudo',a_conferir:'a conferir',bloqueado:'bloqueada'};
+function pillPrazo(pz,doado){
+  if(doado===false) return '<span class="pill2 p-dim">não se aplica</span>';
+  if(!pz) return '<span class="pill2 p-gold">a conferir</span>';
+  var extra=pz.estado==='no_prazo'||pz.estado==='atencao'?' · até '+fmtDia(pz.limite)+' ('+pz.dias_restantes+' d)':pz.estado==='vencido'?' · '+fmtDia(pz.limite):'';
+  return '<span class="pill2 '+(PILL_PRAZO[pz.estado]||'p-dim')+'">'+esc((ROTULO_PRAZO[pz.estado]||pz.estado)+extra)+'</span>';
+}
+function pillIncentivo(inc){if(!inc)return '<span class="pill2 p-gold">a conferir</span>';
+  return '<span class="pill2 '+(inc.estado==='elegivel'?'p-green':inc.estado==='pendente'?'p-gold':'p-dim')+'">'+esc(ROTULO_INCENTIVO[inc.estado]||inc.estado)+'</span>'+
+    (inc.motivo?'<div class="xs mut">'+esc((inc.estado==='pendente'?'a conferir: ':'')+(MOTIVO_INCENTIVO[inc.motivo]||inc.motivo))+'</div>':'')}
+function textoCnes(x){var pz=x.portaria&&x.portaria.cnes;
+  if(x.cnes) return 'CNES '+x.cnes+(x.cnesEstabelecimento?' · estabelecimento '+x.cnesEstabelecimento:'');
+  if(x.doadoMs===false) return 'sem CNES do veículo';
+  return pz&&pz.limite?'pendente · inscrever até '+fmtDataLonga(pz.limite)+' (60 dias do recebimento)':'pendente · prazo a conferir (falta a data de recebimento)';
 }
 function verVeiculo(id){
   var x=veiculos.filter(function(v){return v.id===id})[0];
@@ -934,14 +1545,48 @@ function verVeiculo(id){
   var tk=ab.reduce(function(a,b){return a+b.km},0),tl=ab.reduce(function(a,b){return a+b.litros},0);
   var kml=tl?(tk/tl).toFixed(1):'—';
   var falta=x.proxRev-x.hod, pctRev=Math.min(Math.max((x.revCada-falta)/x.revCada*100,0),100);
+  var pt=x.portaria||{};
   var abList=ab.map(function(a){return '<div class="between" style="padding:9px 0;border-top:1px solid var(--divider)"><span class="mono-cell">'+fmtDia(a.data)+'</span><span class="sm mut">'+a.litros+' L · '+a.km+' km · '+(a.km/a.litros).toFixed(1)+' km/l</span><span class="mono-cell">'+money(a.valor)+'</span></div>'}).join('')||'<div class="empty">Sem abastecimentos</div>';
-  openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+info('CNES',x.cnes?x.cnes:'pendente — prazo '+x.cnesPrazo)+info('Origem',x.origem||'frota própria/locada')+'</div>'+
-    (!x.cnes?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Inscrever no CNES até <b>'+esc(x.cnesPrazo)+'</b> (60 dias do recebimento — Port. 11.164/2026).</div></div>':'')+
+  openModal(x.id+' · '+x.placa,'<div class="fgrid">'+info('Tipo',x.tipo)+info('Condutor',x.mot)+info('Assistente',x.assist||'—')+info('Hodômetro',fmt(x.hod)+' km')+info('Consumo médio',kml+' km/l')+info('Viagens na semana',String(trips.length))+info('CNES',textoCnes(x))+info('Origem',x.origem||'frota própria/locada')+'</div>'+
+    '<div class="elig-box"><div class="between"><div class="sublbl">Doação e prazos · Port. 11.165</div>'+pillIncentivo(pt.incentivo)+'</div>'+
+      '<div class="fgrid" style="margin-top:10px">'+
+        info('Doado pelo Ministério da Saúde',x.doadoMs===true?'sim':x.doadoMs===false?'não':'a conferir')+info('Termo de doação',x.termoDoacao||'—')+
+        info('Finalidade da doação',x.finalidadeDoacao||'a conferir')+info('Recebido em',x.dataRecebimento?fmtDataLonga(x.dataRecebimento):'a levantar')+
+        info('Primeira viagem concluída',x.primeiraViagemConcluida?fmtDataLonga(x.primeiraViagemConcluida):'—')+info('Emplacado em',x.emplacadoEm?fmtDataLonga(x.emplacadoEm):'a levantar')+
+      '</div>'+
+      '<div class="prazos"><div><span class="sublbl">CNES · 60 dias</span>'+pillPrazo(pt.cnes,x.doadoMs)+'</div><div><span class="sublbl">Operação · 60 (+30)</span>'+pillPrazo(pt.operacao,x.doadoMs)+'</div>'+
+      '<div><span class="sublbl">Renovação · art. 12</span><span class="pill2 p-dim">'+esc(pt.renovacao?(ROTULO_RENOVACAO[pt.renovacao.estado]||pt.renovacao.estado):'a conferir')+'</span></div></div></div>'+
     '<div class="sublbl" style="margin:16px 0 8px">Próxima revisão · faltam '+fmt(falta)+' km ('+fmt(x.proxRev)+' km)</div>'+
     '<div class="prop"><div class="item"><div class="bar"><div class="fill" style="width:'+pctRev.toFixed(0)+'%"></div></div></div></div>'+
-    (falta<=2000?'<div class="alert warn" style="margin-top:12px"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><div>Revisão próxima — agende com a oficina.</div></div>':'')+
+    (falta<=2000?alerta('warn','Revisão próxima — agende com a oficina.').replace('class="alert warn"','class="alert warn" style="margin-top:12px"'):'')+
     '<div class="sublbl" style="margin:18px 0 2px">Abastecimentos ('+ab.length+')</div>'+abList,
-    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button>');
+    '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button><button class="btn sm" data-act="editar-veiculo" data-arg="'+esc(x.id)+'">Editar doação e prazos</button>');
+}
+function editarVeiculo(id){
+  var x=veiculos.filter(function(v){return v.id===id})[0];
+  var b3=function(v){return v===true?'sim':v===false?'nao':''};
+  openModal('Doação e prazos · '+x.id,'<div class="fgrid">'+
+    selfld2('Doado pelo Ministério da Saúde','vp-doado',[['','A conferir'],['sim','Sim'],['nao','Não']],b3(x.doadoMs))+
+    fld('Termo de doação','text',x.termoDoacao||'','vp-termo')+
+    selfld2('Finalidade da doação','vp-fin',[['','A conferir'],['radioterapia','Radioterapia'],['hemodialise','Hemodiálise'],['outros','Outros']],x.finalidadeDoacao||'')+
+    fld('Data de recebimento','date',x.dataRecebimento||'','vp-receb')+
+    fld('CNES do estabelecimento (7 dígitos)','text',x.cnesEstabelecimento||'','vp-cnes-est')+
+    fld('Inscrito no CNES em','date',x.cnesInscritoEm||'','vp-cnes-em')+
+    fld('Primeira viagem concluída','date',x.primeiraViagemConcluida||'','vp-prim')+
+    fld('Emplacado em','date',x.emplacadoEm||'','vp-empl')+
+    fld('Disponibilidade em 12 meses (%)','number',x.disponibilidade12m===null||x.disponibilidade12m===undefined?'':String(Math.round(x.disponibilidade12m*100)),'vp-disp')+
+    selfld2('Laudo de disponibilidade','vp-laudo',[['','A conferir'],['sim','Sim'],['nao','Não']],b3(x.laudo))+'</div>'+
+    '<label class="chk" style="margin-top:14px"><input type="checkbox" id="vp-prorr"'+(x.prorrogacao?' checked':'')+'> Prazo de operação prorrogado por 30 dias (art. 11 §1º)</label>'+
+    '<div class="xs mut" style="margin-top:12px">Os prazos se calculam da data de recebimento pelo módulo da norma: CNES em 60 dias (art. 11 III); operação em 60, prorrogáveis por 30 (art. 10 §3º). Campo vazio fica a conferir.</div>',
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="salvar-veiculo" data-arg="'+esc(id)+'">Salvar</button>');
+}
+function salvarVeiculo(id){
+  var b3=function(v){return v==='sim'?true:v==='nao'?false:null}, disp=valor('#vp-disp');
+  executar(function(){return Dados.salvarVeiculoPortaria(id,{doadoMs:b3(valor('#vp-doado')),termoDoacao:valor('#vp-termo')||null,
+      finalidadeDoacao:valor('#vp-fin')||null,dataRecebimento:valor('#vp-receb')||null,cnesEstabelecimento:valor('#vp-cnes-est')||null,
+      cnesInscritoEm:valor('#vp-cnes-em')||null,primeiraViagemConcluida:valor('#vp-prim')||null,emplacadoEm:valor('#vp-empl')||null,
+      disponibilidade12m:disp===''?null:(+disp)/100,laudo:b3(valor('#vp-laudo')),prorrogacao:!!($('#vp-prorr')&&$('#vp-prorr').checked)})},
+    function(){closeModal();toast('Dados da doação salvos · prazos recalculados');updateDots();renderAtual()});
 }
 
 /* =================== PROGRAMAÇÃO =================== */
@@ -954,7 +1599,7 @@ function renderProgramacao(){
   body+='<div class="row" style="flex-direction:column;gap:12px">';
   list.forEach(function(v){var st=statusViagem(v),ocup=Math.round(v.assentos/v.lot*100);
     body+='<div class="card glass pad"><div class="between" style="align-items:flex-start">'+
-      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' federal · >50 km</span>':''})()+'</div>'+
+      '<div style="min-width:200px"><div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;flex-wrap:wrap"><span class="pill2 '+st.pill+'">'+st.txt+'</span><span class="tag-mono">'+DIA_NOME[v.dia]+' · '+esc(v.hora)+'</span>'+(function(){var n=elegiveisNaViagem(v).length;return n?'<span class="pill2 p-green">'+n+' elegíve'+(n>1?'is':'l')+' · Port. 11.165</span>':''})()+'</div>'+
         '<h3 class="blk">'+esc(v.rota)+'</h3><div class="sm mut" style="margin-top:2px">'+esc(DESTINOS[v.dest].tipo)+' · '+v.km+' km · '+esc(v.destNome)+'</div>'+
         (function(){var irmas=viagens.filter(function(x){return x.dia===v.dia&&x.dest===v.dest&&x.veic.classe===v.veic.classe});
           return irmas.length>1?'<div class="xs mut" style="margin-top:4px">viagem '+(irmas.indexOf(v)+1)+' de '+irmas.length+' — grupo excedeu a lotação e foi dividido</div>':''})()+'</div>'+
@@ -975,11 +1620,12 @@ function renderFrota(){
     return '<tr data-act="ver-veiculo" data-arg="'+esc(x.id)+'" tabindex="0" role="button" aria-label="Abrir ficha do veiculo '+esc(x.id)+'" style="cursor:pointer"><td><span class="nm">'+esc(x.id)+'</span><div class="xs mut">'+esc(x.tipo)+'</div></td><td class="mono-cell">'+esc(x.placa)+'</td>'+
       '<td>'+esc(x.mot)+(x.assist?'<div class="xs mut">assist.: '+esc(x.assist)+'</div>':'')+'</td><td class="mono-cell">'+fmt(x.hod)+' km</td>'+
       '<td>'+(al?'<span class="pill2 p-gold">revisão em '+fmt(falta)+' km</span>':'<span class="pill2 p-green">'+fmt(falta)+' km p/ revisão</span>')+'</td>'+
-      '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+esc(x.cnes)+'</span>':'<span class="pill2 p-red">pendente · até '+esc(x.cnesPrazo)+'</span>')+'</td></tr>';}).join('');
+      '<td>'+(x.cnes?'<span class="pill2 p-green">CNES '+esc(x.cnes)+'</span>':x.doadoMs===false?'<span class="pill2 p-dim">sem CNES do veículo</span>':pillPrazo(x.portaria&&x.portaria.cnes,x.doadoMs))+'</td>'+
+      '<td>'+pillIncentivo(x.portaria&&x.portaria.incentivo)+'</td></tr>';}).join('');
   var arows=abastecimentos.slice().reverse().map(function(a){return '<tr><td class="mono-cell">'+fmtDia(a.data)+'</td><td><span class="nm">'+esc(a.vid)+'</span></td><td>'+a.litros+' L</td><td class="mono-cell">'+a.km+' km</td><td>'+(a.km/a.litros).toFixed(1)+' km/l</td><td>'+money(a.valor)+'</td></tr>'}).join('');
   $('#v-frota').innerHTML=
-    '<div class="sect-head between"><div><div class="sublbl">3 veículos · Base Floriano — PI</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
-    '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th><th>CNES</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
+    '<div class="sect-head between"><div><div class="sublbl">'+veiculos.length+' veículos · Base Floriano — PI · doação e prazos da Port. 11.165 na ficha</div><h3 class="blk" style="font-size:18px;margin-top:4px">Frota</h3></div></div>'+
+    '<div class="card glass" style="margin-bottom:22px"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Placa</th><th>Condutor</th><th>Hodômetro</th><th>Revisão</th><th>CNES · 60 dias</th><th>Incentivo · art. 14</th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
     '<div class="between" style="margin-bottom:14px"><div><h3 class="blk">Abastecimentos</h3><div class="sublbl" style="margin-top:2px">lançados pelo gestor · consumo calculado automaticamente</div></div><button class="btn sm" data-act="novo-abastecimento">+ Registrar abastecimento</button></div>'+
     '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Data</th><th>Veículo</th><th>Litros</th><th>Km desde o último</th><th>Consumo</th><th>Valor</th></tr></thead><tbody>'+arows+'</tbody></table></div></div>';
 }
@@ -1012,6 +1658,8 @@ function paperRelatorio(){
   var concl=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
   var elegProg=viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0);
   var elegReal=viagens.reduce(function(a,v){return a+elegiveisRealizados(v)},0);
+  var pendProg=viagens.reduce(function(a,v){return a+v.pacientes.filter(function(p){return elegibilidadeDe(p).status==='pendente'}).length},0);
+  var mes=hojeISO().split('-');
   var km=concl.reduce(function(a,v){return a+lancamentos[v.id].km},0);
   var lit=concl.reduce(function(a,v){return a+lancamentos[v.id].litros},0);
   var pres=concl.reduce(function(a,v){return a+lancamentos[v.id].presentes.length},0);
@@ -1021,12 +1669,12 @@ function paperRelatorio(){
   var ocupReal=ocupRealizada(viagens), ocupProg=ocupProgramada(viagens);
   var byV={};concl.forEach(function(v){var k=v.veic.id;(byV[k]=byV[k]||{n:0,km:0,lit:0}).n++;byV[k].km+=lancamentos[v.id].km;byV[k].lit+=lancamentos[v.id].litros});
   var vr=veiculos.map(function(x){var d=byV[x.id]||{n:0,km:0,lit:0};
-    return '<tr><td>'+esc(x.id)+' · '+esc(x.placa)+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+esc(x.cnesPrazo)+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
+    return '<tr><td>'+esc(x.id)+' · '+esc(x.placa)+'</td><td>'+(x.cnes?esc(x.cnes):'<b>'+esc(textoCnes(x))+'</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('RELATÓRIO MENSAL DE COMPROVAÇÃO')+
-    '<h4>Julho/2026 — parcial (semana 06–10)</h4>'+
-    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.165/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, acima de 50 km, com presença conferida.</div>'+
+    '<h4>'+MES_LONGO[+mes[1]-1]+'/'+mes[0]+' — parcial (semana '+SEMANA+')</h4>'+
+    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.165/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, do município de residência ao município sede do serviço acima de 50 km e até 500 km, com ente diverso, serviço habilitado, agendamento confirmado e presença conferida. A produção federal se comprova pela remessa BPA-I que o faturamento do ente envia ao SIA (Port. 11.165 art. 21).</div>'+
     '<div class="meta"><div><span>Viagens realizadas</span>'+concl.length+' de '+viagens.length+' programadas</div>'+
-      '<div><span>Deslocamentos elegíveis · federal</span>'+elegReal+' realizados · '+elegProg+' programados</div>'+
+      '<div><span>Deslocamentos elegíveis · Port. 11.165</span>'+elegReal+' realizados · '+elegProg+' programados'+(pendProg?' <span style="color:#777">('+pendProg+' pendentes de dado)</span>':'')+'</div>'+
       '<div><span>Km comprovado</span>'+fmt(km)+' km</div>'+
       '<div><span>Taxa de ocupação realizada</span>'+ocupReal+'% <span style="color:#777">(programada '+ocupProg+'%)</span></div></div>'+
     '<table><thead><tr><th>Veículo</th><th>CNES</th><th>Viagens</th><th>Km</th><th>Combustível</th><th>Consumo</th></tr></thead><tbody>'+vr+'</tbody></table>'+
@@ -1047,7 +1695,7 @@ function paperManifesto(){
     blocks+='<div class="veh-block"><div class="vh"><span>'+esc(veic.id)+' · '+esc(veic.placa)+' · '+esc(veic.tipo)+'</span><span>Motorista: '+esc(veic.mot)+(veic.assist?' · Assist.: '+esc(veic.assist):'')+'</span></div><div class="wk">'+wk+'</div></div>';});
   return '<div class="paper">'+paperHead('MANIFESTO GERAL SEMANAL')+'<h4>Escala de viagens por veículo</h4><div style="font-size:10px;color:#666;margin-bottom:12px">Afixar no ponto de guarda dos veículos. Placa · rota · destino · horário.</div>'+blocks+
     '<div class="lgpd">Documento operacional interno — contém dados de saúde. Uso restrito à equipe Samais. Descartar de forma segura após a baixa no sistema (LGPD).</div>'+
-    '<div class="pf"><div>Emitido em 09/jul/2026 · ROTA · Samais</div><div class="sig"><div class="ln">Gestor(a) local responsável</div></div></div></div>';
+    '<div class="pf"><div>Emitido em '+esc(fmtDataLonga(hojeISO()))+' · ROTA · Samais</div><div class="sig"><div class="ln">Gestor(a) local responsável</div></div></div></div>';
 }
 function paperEmbarque(vid){
   var v=viagens.filter(function(x){return x.id===vid})[0];
@@ -1068,7 +1716,8 @@ function renderLancamentos(){
   var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))});
   var feitas=viagens.filter(function(v){return lancamentos[v.id]&&lancamentos[v.id].concluida});
   var body='<div class="sect-head"><div class="sublbl">O gestor recebe a prancheta e dá baixa · '+pend.length+' pendente(s)</div><h3 class="blk" style="font-size:18px;margin-top:4px">Lançamentos e baixa</h3></div>'+
-    '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Campo primeiro no papel, baixa depois — a operação não depende de conexão. O gestor lança presenças, faltas, km e combustível a partir da folha conferida.</div></div>';
+    '<div class="alert warn" style="margin-bottom:16px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div>Campo primeiro no papel, baixa depois — a operação não depende de conexão. O gestor lança presenças, faltas, km e combustível a partir da folha conferida.</div></div>'+
+    '<div class="opline" style="margin-bottom:16px">'+linhaOperacional(diasSemBaixa())+'</div>';
   if(pend.length){body+='<h3 class="blk" style="margin-bottom:10px">Pendentes de baixa</h3><div class="row" style="flex-direction:column;gap:10px;margin-bottom:26px">';
     pend.forEach(function(v){body+='<div class="card glass pad between"><div><span class="pill2 p-gold">Aguardando baixa</span><h3 class="blk" style="margin-top:8px">'+esc(v.rota)+'</h3><div class="sm mut">'+DIA_NOME[v.dia]+' · '+esc(v.veic.id)+' · '+v.pacientes.length+' paciente(s)</div></div><button class="btn sm solid" data-act="dar-baixa" data-arg="'+esc(v.id)+'">Dar baixa</button></div>'});
     body+='</div>';}
@@ -1096,11 +1745,182 @@ function confirmBaixa(vid){var v=viagens.filter(function(x){return x.id===vid})[
   });
 }
 
+/* =================== CONFORMIDADE (Port. 11.165) =================== */
+var PILL_BASE={apta:'p-green',pendente:'p-gold',nao_aplicavel:'p-dim'};
+var ROTULO_BASE={apta:'base apta ao incentivo',pendente:'base pendente',nao_aplicavel:'incentivo não aplicável'};
+function pillBase(b){return b?'<span class="pill2 '+(PILL_BASE[b.estado]||'p-dim')+'">'+esc(ROTULO_BASE[b.estado]||b.estado)+'</span>':''}
+function simNao(v,nulo){return v===true?'sim':v===false?'não':(nulo||'a conferir')}
+function htmlConformidade(d){
+  d=d||{}; var c=d.conformidade||{veiculos:[],base_apta:null,pactuacao:{}}, pa=c.pactuacao||{}, ds=d.distancias||[];
+  var faltam=c.base_apta&&c.base_apta.faltam&&c.base_apta.faltam.length?'<div class="xs mut" style="margin-top:6px">Falta: '+esc(c.base_apta.faltam.map(rotuloFalta).join('; '))+' (art. 14 parágrafo único)</div>':'';
+  var vrows=c.veiculos.map(function(v){var x=veiculos.filter(function(y){return y.id===v.id})[0]||{};
+    return '<tr><td><span class="nm">'+esc(v.id)+'</span><div class="xs mut">'+esc(x.tipo||v.classe)+'</div></td>'+
+      '<td>'+pillIncentivo(v.incentivo)+'</td><td>'+pillPrazo(v.cnes,x.doadoMs)+'</td><td>'+pillPrazo(v.operacao,x.doadoMs)+'</td>'+
+      '<td><span class="pill2 '+(v.renovacao.estado==='elegivel_renovacao'?'p-gold':'p-dim')+'">'+esc(ROTULO_RENOVACAO[v.renovacao.estado]||v.renovacao.estado)+'</span></td>'+
+      '<td><button class="btn sm ghost" data-act="editar-veiculo" data-arg="'+esc(v.id)+'">Editar</button></td></tr>'}).join('');
+  var srows=Object.keys(DESTINOS).map(function(k){var x=DESTINOS[k];
+    return '<tr><td><span class="nm">'+esc(x.nome.split(' —')[0])+'</span><div class="xs mut">'+esc((x.modalidades||[]).join(' · ')||'—')+'</div></td>'+
+      '<td class="mono-cell">'+esc(nomeMunicipio(x.ibge)||'a levantar')+'</td><td class="mono-cell">'+esc(x.uf||'—')+'</td><td class="mono-cell">'+esc(x.cnes||'—')+'</td>'+
+      '<td><span class="pill2 '+(x.habilitacaoConferida===true?'p-green':x.habilitacaoConferida===false?'p-red':'p-gold')+'">'+esc(x.habilitacaoConferida===true?'conferida'+(x.habilitacaoCodigo?' · '+x.habilitacaoCodigo:''):x.habilitacaoConferida===false?'sem habilitação':'a conferir')+'</span></td>'+
+      '<td><button class="btn sm ghost" data-act="editar-servico" data-arg="'+esc(k)+'">Editar</button></td></tr>'}).join('');
+  var drows=ds.map(function(x){var demo=/demonstra/i.test(x.fonte||'');
+    return '<tr><td class="mono-cell">'+esc(nomeMunicipio(x.origem))+' → '+esc(nomeMunicipio(x.destino))+'</td>'+
+      '<td>'+(x.km===null||x.km===undefined?'<span class="pill2 p-gold">a levantar</span>':'<span class="nm">'+fmt(x.km)+' km</span>')+'</td>'+
+      '<td class="sm">'+(demo?'<span class="pill2 p-gold">demonstração</span> ':'')+esc(x.fonte||'—')+'</td><td class="mono-cell">'+esc(x.lidoEm?fmtDataLonga(x.lidoEm):'—')+'</td></tr>'}).join('')||'<tr><td colspan="4" class="sm mut">Nenhuma distância registrada: elegibilidade pendente (RE-03).</td></tr>';
+  return '<div class="between" style="margin-bottom:18px;align-items:flex-start"><div><div class="sublbl">Port. 11.164 + 11.165 · regras do módulo, sem cópia no console</div><h3 class="blk" style="font-size:18px;margin-top:4px">Conformidade da base</h3></div>'+
+      '<div style="text-align:right">'+pillBase(c.base_apta)+faltam+'</div></div>'+
+    '<div class="grid2">'+
+      '<div class="card glass pad"><div class="between"><div><h3 class="blk">Pactuação da base</h3><div class="sublbl">art. 14 p.ú. · art. 25, 4º item, b</div></div><button class="btn sm ghost" data-act="editar-pactuacao">Editar</button></div>'+
+        '<div class="fgrid" style="margin-top:12px">'+info('Deliberação CIB',pa.deliberacaoCib||'a levantar')+info('Data da deliberação',pa.deliberacaoCibData?fmtDataLonga(pa.deliberacaoCibData):'—')+
+          info('Estrutura de gestão registrada',simNao(pa.estruturaGestao))+info('Início do incentivo',pa.inicioIncentivo?fmtCompetencia(pa.inicioIncentivo):'a levantar')+'</div>'+
+        info('Municípios abrangidos',(pa.municipiosAbrangidos||[]).map(nomeMunicipio).join(' · ')||'a levantar')+
+        (/DEMO/.test(pa.deliberacaoCib||'')?'<div class="xs mut">Deliberação e códigos de município sintéticos (demonstração).</div>':'')+'</div>'+
+      '<div class="card glass pad"><div><h3 class="blk">Produção BPA-I por competência</h3><div class="sublbl">farol do incentivo · art. 21 §2º</div></div>'+htmlFarol(d.farol)+'</div>'+
+    '</div>'+
+    '<div class="between" style="margin:24px 0 12px"><div><h3 class="blk">Veículos · doação, prazos e renovação</h3><div class="sublbl">art. 10 §3º · art. 11 III · art. 12 · art. 14 p.ú.</div></div></div>'+
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Veículo</th><th>Incentivo</th><th>CNES · 60 dias</th><th>Operação · 60 (+30)</th><th>Renovação</th><th></th></tr></thead><tbody>'+vrows+'</tbody></table></div></div>'+
+    '<div class="between" style="margin:24px 0 12px"><div><h3 class="blk">Serviços de referência</h3><div class="sublbl">município sede, habilitação · RE-02, RE-05, RE-06</div></div></div>'+
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Serviço</th><th>Município sede (IBGE)</th><th>UF</th><th>CNES</th><th>Habilitação</th><th></th></tr></thead><tbody>'+srows+'</tbody></table></div></div>'+
+    '<div class="between" style="margin:24px 0 12px"><div><h3 class="blk">Distâncias de município a município</h3><div class="sublbl">residência → serviço · RE-03, RE-04 · sem par = a levantar</div></div><button class="btn sm" data-act="nova-distancia">+ Registrar distância</button></div>'+
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Residência → serviço</th><th>Km</th><th>Procedência</th><th>Lido em</th></tr></thead><tbody>'+drows+'</tbody></table></div></div>'+
+    '<div class="xs mut" style="margin-top:12px">A matriz oficial de distâncias é lacuna (L5): cada base registra o que leu e de onde. Distância sem fonte e data de leitura não é aceita; par não registrado deixa a elegibilidade pendente, nunca em 0 km.</div>';
+}
+function renderConformidade(){
+  var hoje=hojeISO(), alvo=$('#v-conformidade'); alvo.innerHTML='<div class="carregando">carregando a conformidade…</div>';
+  Dados.ler('conformidade',{hoje:hoje},function(c){Dados.ler('farolProducao',{hoje:hoje},function(fp){Dados.ler('distancias',null,function(ds){
+    alvo.innerHTML=htmlConformidade({conformidade:c,farol:fp,distancias:ds});
+  })})});
+}
+function editarPactuacao(){
+  var pa=CONFIG.pactuacao||{};
+  openModal('Pactuação da base','<div class="fgrid">'+fld('Deliberação CIB (referência)','text',pa.deliberacaoCib||'','pa-cib')+fld('Data da deliberação','date',pa.deliberacaoCibData||'','pa-cib-data')+
+    selfld2('Estrutura de gestão do transporte registrada','pa-estr',[['','A conferir'],['sim','Sim'],['nao','Não']],pa.estruturaGestao===true?'sim':pa.estruturaGestao===false?'nao':'')+
+    fld('Início do incentivo (AAAA-MM)','text',pa.inicioIncentivo||'','pa-inicio')+'</div>'+
+    fld('Municípios abrangidos (IBGE, separados por vírgula)','text',(pa.municipiosAbrangidos||[]).join(', '),'pa-muns')+
+    '<div class="xs mut" style="margin-top:4px">A base fica apta ao incentivo com CNES de veículo elegível, estrutura de gestão e deliberação CIB (art. 14 parágrafo único). O farol de produção conta desde o início do incentivo.</div>',
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="salvar-pactuacao">Salvar</button>');
+}
+function salvarPactuacao(){
+  var e=valor('#pa-estr'), muns=valor('#pa-muns').split(/[,;\s]+/).filter(Boolean);
+  executar(function(){return Dados.salvarPactuacao({deliberacaoCib:valor('#pa-cib')||null,deliberacaoCibData:valor('#pa-cib-data')||null,
+      estruturaGestao:e==='sim'?true:e==='nao'?false:null,inicioIncentivo:valor('#pa-inicio')||null,municipiosAbrangidos:muns})},
+    function(){closeModal();toast('Pactuação salva');updateDots();renderAtual()});
+}
+function editarServico(k){
+  var x=DESTINOS[k];
+  openModal('Serviço · '+x.nome.split(' —')[0],'<div class="fgrid">'+fld('Município sede (IBGE, 7 dígitos)','text',x.ibge||'','sv-ibge')+fld('UF','text',x.uf||'','sv-uf')+
+    fld('CNES do serviço','text',x.cnes||'','sv-cnes')+
+    selfld2('Habilitação conferida','sv-hab',[['','A conferir'],['sim','Sim'],['nao','Não']],x.habilitacaoConferida===true?'sim':x.habilitacaoConferida===false?'nao':'')+
+    fld('Código da habilitação','text',x.habilitacaoCodigo||'','sv-cod')+'</div>'+
+    '<div class="xs mut" style="margin-top:12px">Habilitação não conferida deixa a elegibilidade pendente (RE-06); sem habilitação, inelegível. Na hemodiálise, 15.04 (art. 16 I).</div>',
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="salvar-servico" data-arg="'+esc(k)+'">Salvar</button>');
+}
+function salvarServico(k){
+  var h=valor('#sv-hab');
+  executar(function(){return Dados.salvarServico(k,{ibge:valor('#sv-ibge')||null,uf:(valor('#sv-uf')||'').toUpperCase()||null,cnes:valor('#sv-cnes')||null,
+      habilitacaoConferida:h==='sim'?true:h==='nao'?false:null,habilitacaoCodigo:valor('#sv-cod')||null})},
+    function(){closeModal();toast('Serviço salvo · elegibilidade recalculada');renderAtual()});
+}
+function novaDistancia(){
+  openModal('Registrar distância','<div class="fgrid">'+fld('Município de residência (IBGE)','text','','di-orig')+fld('Município sede do serviço (IBGE)','text','','di-dest')+
+    fld('Km (vazio = a levantar)','number','','di-km')+fld('Lido em','date','','di-lido')+'</div>'+fld('Fonte da leitura','text','','di-fonte')+
+    '<div class="xs mut" style="margin-top:4px">Sempre na direção residência → serviço. Km sem fonte e data de leitura não é aceito: sem procedência não há número.</div>',
+    '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="salvar-distancia">Salvar</button>');
+}
+function salvarDistanciaTela(){
+  var km=valor('#di-km');
+  executar(function(){return Dados.salvarDistancia({origem:valor('#di-orig'),destino:valor('#di-dest'),km:km===''?null:+km,
+      fonte:valor('#di-fonte')||null,lidoEm:valor('#di-lido')||null})},
+    function(){closeModal();toast('Distância registrada · elegibilidade recalculada');renderAtual()});
+}
+
+/* =================== FATURAMENTO BPA-I (Port. 11.165 art. 21) =================== */
+/* competências que a tela oferece: do início do incentivo até a corrente
+   (a corrente é parcial); sem início, as três últimas e a corrente */
+function competenciasOferecidas(fp){
+  var hoje=hojeISO(), atual=hoje.slice(0,7), lista=(fp&&fp.competencias||[]).map(function(c){return c.competencia});
+  if(!lista.length){var a=+atual.slice(0,4),m=+atual.slice(5,7);for(var i=3;i>=1;i--){var mm=m-i,aa=a;if(mm<1){mm+=12;aa--}lista.push(aa+'-'+(mm<10?'0':'')+mm)}}
+  if(lista.indexOf(atual)<0) lista.push(atual);
+  return lista;
+}
+var compFat=null;
+function htmlFaturamento(d){
+  d=d||{}; var rel=d.relatorio, rem=d.remessas||[], fp=d.farol, comp=d.competencia, atual=hojeISO().slice(0,7);
+  var opts=competenciasOferecidas(fp).map(function(c){return '<option value="'+esc(c)+'"'+(c===comp?' selected':'')+'>'+esc(fmtCompetencia(c))+(c===atual?' · aberta (parcial)':'')+'</option>'}).join('');
+  var fora=rel?Object.keys(rel.fora.motivos).sort(function(a,b){return rel.fora.motivos[b]-rel.fora.motivos[a]}).map(function(m){
+    return '<tr><td class="sm">'+esc(rotuloMotivo(m))+'</td><td class="mono-cell" style="text-align:right">'+rel.fora.motivos[m]+'</td></tr>'}).join(''):'';
+  var avisos=rel?Object.keys(rel.avisos).map(function(a){return '<li>'+esc(ROTULO_AVISO[a]||a)+' <span class="mono-cell">· '+rel.avisos[a]+'</span></li>'}).join(''):'';
+  var porComp={};rem.forEach(function(r){porComp[r.competencia]=r});
+  var linhasRem=(fp&&fp.competencias||[]).map(function(c){return c.competencia}).concat(rem.map(function(r){return r.competencia}))
+    .filter(function(c,i,a){return a.indexOf(c)===i}).sort().reverse().map(function(c){var r=porComp[c];
+      return '<tr><td class="mono-cell">'+esc(fmtCompetencia(c))+'</td>'+(r?'<td>'+(r.linhas===null||r.linhas===undefined?'<span class="pill2 p-gold">sem informação</span>':'<span class="pill2 '+(r.linhas>0?'p-green':'p-red')+'">'+fmt(r.linhas)+' linha'+(r.linhas===1?'':'s')+'</span>')+'</td>'+
+        '<td class="mono-cell">'+esc(r.enviadaEm?fmtDataLonga(r.enviadaEm):'—')+'</td><td class="sm">'+esc(r.informadoPor||'—')+'</td><td class="mono-cell">'+esc(r.registradoEm?fmtDataLonga(String(r.registradoEm).slice(0,10)):'—')+'</td>':
+        '<td><span class="pill2 p-gold">a informar</span></td><td class="mono-cell">—</td><td class="sm mut">sem remessa informada: o farol fica a conferir, nunca zero</td><td class="mono-cell">—</td>')+'</tr>'}).join('')||'<tr><td colspan="5" class="sm mut">Nenhuma competência fechada desde o início do incentivo.</td></tr>';
+  var demo=Dados.fonte instanceof FonteSeed;
+  return '<div class="between" style="margin-bottom:18px"><div><div class="sublbl">Port. 11.165 arts. 18 a 21 · o ROTA prepara, o faturamento do ente envia ao SIA</div><h3 class="blk" style="font-size:18px;margin-top:4px">Faturamento BPA-I</h3></div></div>'+
+    '<div class="card glass pad" style="margin-bottom:22px">'+
+      '<div class="between" style="align-items:flex-end"><div><h3 class="blk">Pré-BPA-I da competência</h3><div class="sublbl">paciente-deslocamento elegível, comprovado e financiável</div></div>'+
+        '<div class="row" style="gap:10px;align-items:center"><label class="sublbl" for="fat-comp">Competência</label><select id="fat-comp" class="sel" data-act-change="competencia-bpa">'+opts+'</select></div></div>'+
+      (rel?'<div class="kpis kpis3" style="margin-top:16px">'+
+        '<div class="card glass kpi"><div class="k">'+icoRoute+'Deslocamentos</div><div class="v">'+fmt(rel.total_deslocamentos)+'</div><div class="d">na competência, nas viagens com baixa</div></div>'+
+        '<div class="card glass kpi"><div class="k">'+icoCheck+'Linhas na pré-remessa</div><div class="v">'+fmt(rel.linhas)+'</div><div class="d">'+esc(rel.leiaute)+'</div></div>'+
+        '<div class="card glass kpi"><div class="k">'+icoUsers+'Ficaram de fora</div><div class="v">'+fmt(rel.fora.total)+'</div><div class="d">contadas por motivo, abaixo</div></div></div>'+
+        (fora?'<div class="tbl-wrap" style="margin-top:6px"><table class="tbl-sm"><thead><tr><th>Ficou de fora porque</th><th style="text-align:right">Deslocamentos</th></tr></thead><tbody>'+fora+'</tbody></table></div>':'')+
+        (avisos?'<div class="sublbl" style="margin:14px 0 6px">Avisos</div><ul class="regras">'+avisos+'</ul>':''):'<div class="sm mut" style="margin-top:12px">conferência indisponível</div>')+
+      '<div class="between" style="margin-top:16px;align-items:flex-start"><div class="xs mut" style="max-width:640px;line-height:1.6">CSV (;) em UTF-8, uma linha por paciente-deslocamento. <b>Sem CPF:</b> a coluna sai vazia, a completar pelo faturamento do ente pelo CADSUS. Não é o leiaute oficial do BPA Magnético (lacuna L1): é insumo de conferência. Leva o CNS, sem nome: uso restrito (LGPD).'+
+        (demo?' Na demonstração, o arquivo é gerado no navegador, a partir das baixas desta sessão, pelo mesmo código da API.':'')+'</div>'+
+        '<button class="btn sm solid" data-act="baixar-pre-bpa" data-arg="'+esc(comp)+'">⇩ Pré-BPA-I da competência</button></div>'+
+    '</div>'+
+    '<div class="between" style="margin-bottom:12px"><div><h3 class="blk">Remessas informadas pelo faturamento</h3><div class="sublbl">o que foi enviado ao SIA · base do farol por competência</div></div><button class="btn sm" data-act="informar-remessa">+ Informar remessa</button></div>'+
+    '<div class="card glass"><div class="tbl-wrap"><table><thead><tr><th>Competência</th><th>Linhas enviadas</th><th>Enviada em</th><th>Informado por</th><th>Registrado em</th></tr></thead><tbody>'+linhasRem+'</tbody></table></div></div>'+
+    '<div class="xs mut" style="margin-top:12px">Quem informa é um setor ou instituição (ex.: faturamento da SMS), nunca uma pessoa. Zero linhas se informa como 0 e conta para o farol; competência não informada fica a conferir.</div>';
+}
+function renderFaturamento(){
+  var hoje=hojeISO(), alvo=$('#v-faturamento'); alvo.innerHTML='<div class="carregando">carregando o faturamento…</div>';
+  Dados.ler('farolProducao',{hoje:hoje},function(fp){
+    var ofer=competenciasOferecidas(fp); if(!compFat||ofer.indexOf(compFat)<0) compFat=hoje.slice(0,7);
+    Dados.ler('remessas',null,function(rem){
+      executar(function(){return Dados.ler('preBpaI',compFat)},function(rel){
+        alvo.innerHTML=htmlFaturamento({competencia:compFat,relatorio:rel,remessas:rem,farol:fp});
+      },function(){alvo.innerHTML=htmlFaturamento({competencia:compFat,relatorio:null,remessas:rem,farol:fp})});
+    });
+  });
+}
+function baixarArquivo(nome,texto,tipo){
+  if(typeof Blob==='undefined'||typeof URL==='undefined'||!URL.createObjectURL){toast('download indisponível neste navegador');return}
+  var url=URL.createObjectURL(new Blob([texto],{type:tipo})), a=document.createElement('a');
+  a.href=url; a.download=nome; a.rel='noopener'; document.body.appendChild(a); a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);a.remove()},500);
+}
+function baixarPreBpa(c){
+  executar(function(){return Dados.ler('preBpaICsv',c)},function(arq){
+    baixarArquivo(arq.nome,arq.csv,'text/csv;charset=utf-8');
+    toast('Pré-BPA-I '+fmtCompetencia(c)+' · '+(arq.linhas===null?'?':arq.linhas)+' linha(s) · CPF a completar pelo faturamento');
+  });
+}
+function informarRemessa(){
+  Dados.ler('farolProducao',{hoje:hojeISO()},function(fp){
+    var ofer=competenciasOferecidas(fp), sem=(fp.competencias||[]).filter(function(c){return c.linhas_enviadas===null||c.linhas_enviadas===undefined}).map(function(c){return c.competencia});
+    var padrao=sem.length?sem[0]:ofer[ofer.length-1];
+    openModal('Informar remessa BPA-I','<div class="fgrid">'+selfld2('Competência','rm-comp',ofer.map(function(c){return [c,fmtCompetencia(c)]}),padrao)+
+      fld('Linhas enviadas ao SIA','number','','rm-linhas')+fld('Enviada em','date','','rm-data')+'</div>'+
+      fld('Informado por (setor ou instituição)','text','faturamento da SMS','rm-por')+
+      '<div class="xs mut" style="margin-top:4px">O faturamento do ente informa o que enviou ao SIA. Zero se informa como 0. Setor ou instituição — nunca nome de pessoa.</div>',
+      '<button class="btn ghost sm" data-act="fechar-modal">Cancelar</button><button class="btn solid sm" data-act="salvar-remessa">Informar</button>');
+  });
+}
+function salvarRemessaTela(){
+  var l=valor('#rm-linhas');
+  if(l===''){toast('Informe as linhas enviadas (0 se nenhuma)');return}
+  executar(function(){return Dados.salvarRemessa({competencia:valor('#rm-comp'),linhas:+l,enviadaEm:valor('#rm-data')||null,informadoPor:valor('#rm-por')})},
+    function(r){closeModal();toast('Remessa '+fmtCompetencia(r.competencia)+' informada');updateDots();renderAtual()});
+}
+
 /* =================== RELATÓRIO =================== */
 function openReport(){
   openModal('Relatório à secretaria contratante','<p class="sm mut" style="margin-bottom:14px">Consolidado da semana '+SEMANA+' — Base Floriano — PI. Documento que o gestor entrega à Secretaria de Saúde e à Samais como prestação de contas.</p>'+
-    '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Deslocamentos elegíveis</div><div class="v">'+viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0)+'</div><div class="d">paciente-deslocamento · radio/hemodiálise · >50 km</div></div></div>'+
-    '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>Cada <b>paciente</b> em hemodiálise ou radioterapia transportado acima de 50 km, com presença conferida na folha de embarque, é um deslocamento comprovado para o cofinanciamento federal. A folha conferida é o documento que fatura — por paciente, não por viagem.</div></div>',
+    '<div class="kpis" style="grid-template-columns:1fr 1fr;margin-bottom:16px"><div class="card glass kpi"><div class="k">'+icoRoute+'Viagens</div><div class="v">'+viagens.length+'</div></div><div class="card glass kpi"><div class="k">'+icoRoute+'Deslocamentos elegíveis</div><div class="v">'+viagens.reduce(function(a,v){return a+elegiveisNaViagem(v).length},0)+'</div><div class="d">paciente-deslocamento · Port. 11.164 + 11.165</div></div></div>'+
+    '<div class="alert warn"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><div>Cada <b>paciente</b> em hemodiálise ou radioterapia elegível (do município de residência ao município sede do serviço, acima de 50 km e até 500 km, ente diverso, agendamento confirmado), com presença conferida na folha de embarque, é um deslocamento que entra na <b>pré-remessa BPA-I</b> — por paciente, não por viagem (Port. 11.164 + 11.165). Quem comprova a produção ao Ministério é a remessa enviada pelo faturamento do ente.</div></div>',
     '<button class="btn ghost sm" data-act="fechar-modal">Fechar</button><button class="btn solid sm" data-act="abrir-relatorio-a4">Abrir versão A4 (imprimir)</button>');
 }
 
@@ -1113,6 +1933,17 @@ var icoFuel='<svg viewBox="0 0 24 24"><rect x="4" y="4" width="9" height="16"/><
 var icoCost='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5a2.5 2 0 0 1 5 0c0 2.5-5 1.5-5 4a2.5 2 0 0 0 5 0"/></svg>';
 function fld(l,t,v,id){return '<div class="field"><label'+(id?' for="'+id+'"':'')+'>'+esc(l)+'</label><input type="'+t+'" value="'+esc(v).replace(/"/g,'&quot;')+'"'+(id?' id="'+id+'"':'')+'></div>'}
 function selfld(l,o){return '<div class="field"><label>'+esc(l)+'</label><select>'+o.map(function(x){return '<option>'+esc(x)+'</option>'}).join('')+'</select></div>'}
+/* select com valor e rótulo, e id (os formulários da norma leem por id) */
+function selfld2(l,id,o,atual){return '<div class="field"><label for="'+esc(id)+'">'+esc(l)+'</label><select id="'+esc(id)+'">'+o.map(function(x){return '<option value="'+esc(x[0])+'"'+(x[0]===atual?' selected':'')+'>'+esc(x[1])+'</option>'}).join('')+'</select></div>'}
+function valor(sel){var e=$(sel);return e?String(e.value).trim():''}
+/* escrita síncrona (seed) ou assíncrona (API) com o mesmo tratamento de erro:
+   o motivo vai ao toast, e nada é dado como gravado antes de a fonte aceitar */
+function executar(acao,ok,falha){
+  var avisar=function(e){toast(e&&e.message?e.message:'falha');if(falha)falha(e)};
+  try{var r=acao();if(r&&typeof r.then==='function')return r.then(ok,avisar);return ok(r)}catch(e){avisar(e)}
+}
+var viewAtual='painel';
+function renderAtual(){render(viewAtual)}
 function openModal(t,b,f){$('#modal').innerHTML='<div class="mh"><h3 id="modal-titulo">'+esc(t)+'</h3><button class="x" data-act="fechar-modal" aria-label="Fechar">×</button></div><div class="mb">'+b+'</div><div class="mf">'+(f||'')+'</div>';_focoAnterior=document.activeElement;
   $('#modalbg').classList.add('on');
   var alvo=$('#modal input,#modal select,#modal textarea,#modal button')||$('#modal');
@@ -1132,8 +1963,14 @@ function badge(el,n){if(!el)return;if(n){el.hidden=false;el.style.display='flex'
 function updateDots(){
   var pend=viagens.filter(function(v){return !lancamentos[v.id]&&(v.dia===HOJE||DIAS.indexOf(v.dia)<DIAS.indexOf(HOJE))}).length;
   /* L2 · o badge da frota era fixo no HTML; agora conta o que de fato pede ação */
-  var frota=veiculos.filter(function(x){return !x.cnes||(x.proxRev-x.hod)<=2000}).length;
+  var frota=veiculos.filter(function(x){var pt=x.portaria||{};
+    var prazo=x.doadoMs===true&&(['atencao','vencido','a_conferir'].indexOf((pt.cnes||{}).estado)>=0||['atencao','vencido'].indexOf((pt.operacao||{}).estado)>=0);
+    return prazo||(x.proxRev-x.hod)<=2000}).length;
   badge($('#dot-lanc'),pend); badge($('#dot-frota'),frota);
+  /* competências fechadas sem remessa informada, ou farol em alerta */
+  if(Dados.fonte) Dados.ler('farolProducao',{hoje:hojeISO()},function(fp){
+    var n=fp&&fp.aplicavel?fp.competencias.filter(function(c){return c.linhas_enviadas===null||c.linhas_enviadas===undefined}).length+(fp.farol.alerta&&fp.farol.estado!=='a_conferir'?1:0):0;
+    badge($('#dot-fat'),n)});
 }
 
 /* M2 · Nenhum handler inline: o markup declara a AÇÃO, o JS resolve.
@@ -1156,7 +1993,22 @@ var ACOES={
   'demo-paciente-salvo':function(){closeModal();toast('Paciente cadastrado (demo)')},
   'demo-abastecimento-salvo':function(){closeModal();toast('Abastecimento lançado (demo)')},
   'abrir-relatorio-a4':function(){closeModal();render('impressos');impMode='relatorio';renderImpressos()},
-  'render-paper':function(){renderPaper()}
+  'render-paper':function(){renderPaper()},
+  /* Portaria 11.165 */
+  'novo-agendamento':function(a){novoAgendamento(+a)},
+  'confirmar-agendamento':function(a){confirmarAgendamento(+a)},
+  'editar-veiculo':function(a){editarVeiculo(a)},
+  'salvar-veiculo':function(a){salvarVeiculo(a)},
+  'editar-pactuacao':function(){editarPactuacao()},
+  'salvar-pactuacao':function(){salvarPactuacao()},
+  'editar-servico':function(a){editarServico(a)},
+  'salvar-servico':function(a){salvarServico(a)},
+  'nova-distancia':function(){novaDistancia()},
+  'salvar-distancia':function(){salvarDistanciaTela()},
+  'informar-remessa':function(){informarRemessa()},
+  'salvar-remessa':function(){salvarRemessaTela()},
+  'baixar-pre-bpa':function(a){baixarPreBpa(a)},
+  'competencia-bpa':function(v){compFat=v;renderFaturamento()}
 };
 function despachar(atributo,valorDoCampo){return function(e){
   var alvo=e.target&&e.target.closest?e.target.closest('['+atributo+']'):null; if(!alvo)return;
@@ -1204,12 +2056,26 @@ function iniciarUI(){
   $('#scrim').addEventListener('click',closeMenu);
   $$('.navitem').forEach(function(a){a.addEventListener('click',function(){render(a.dataset.view)})});
   $('#lg-enter').addEventListener('click',function(){
-    var base=$('#lg-base').value,user=$('#lg-user').value||'Gestor(a) local';
-    $('#login').style.display='none';$('#app').classList.add('on');
-    $('#sb-who').textContent=user;$('#sb-base').textContent='Base '+base;$('#tb-base').textContent=base;$('#tb-week').innerHTML='Semana <b>'+SEMANA+'</b>';
-    Dados.abrir(new FonteSeed(SEED));
-    gerarProgramacao();updateDots();render('painel');
+    var base=$('#lg-base').value,user=$('#lg-user').value||'Gestor(a) local',btn=this;
+    if(!NORMA){btn.textContent='Carregando as regras da portaria…';btn.disabled=true}
+    /* nada abre antes de as regras da norma chegarem: sem elas a tela não
+       sabe a elegibilidade, e mostrar "inelegível" por falta de módulo seria
+       inventar um não */
+    quandoNorma(function(){
+      btn.textContent='Entrar no console';btn.disabled=false;
+      $('#login').style.display='none';$('#app').classList.add('on');
+      $('#sb-who').textContent=user;$('#sb-base').textContent='Base '+base;$('#tb-base').textContent=base;$('#tb-week').innerHTML='Semana <b>'+SEMANA+'</b>';
+      Dados.abrir(new FonteSeed(SEED));
+      $('#tb-hoje').textContent=fmtDataLonga(hojeISO());
+      gerarProgramacao();updateDots();render('painel');
+    });
   });
+  /* as regras e a costura da Portaria 11.165: os MESMOS módulos da API
+     (CSP script-src 'self'). Se não carregarem, o login diz por quê. */
+  Promise.all([import('./regras/portaria-11165.mjs'),import('./regras/integracao-11165.mjs')])
+    .then(function(m){ligarNorma(m[0],m[1])})
+    .catch(function(){var b=$('#lg-enter');b.disabled=true;b.textContent='Regras da portaria indisponíveis';
+      $('#lg-erro').hidden=false});
   $('#logout').addEventListener('click',function(){$('#app').classList.remove('on');$('#login').style.display='flex'});
   if(!REDUCE)document.documentElement.classList.add('js-anim');
   try{var st=localStorage.getItem('rota-theme');if(st)setTheme(st);}catch(e){}
@@ -1223,15 +2089,23 @@ if(NAVEGADOR) iniciarUI();
 var ROTA={
   Dados:Dados, FonteSeed:FonteSeed, FonteAPI:FonteAPI, SEED:SEED,
   abrirSeed:function(){ return Dados.abrir(new FonteSeed(SEED)) },
+  norma:function(){ return NORMA }, ligarNorma:ligarNorma,
   regras:{
-    elegivelFederal:elegivelFederal, elegiveisNaViagem:elegiveisNaViagem,
+    elegibilidadeDe:elegibilidadeDe, elegiveisNaViagem:elegiveisNaViagem,
     elegiveisRealizados:elegiveisRealizados, assentosRealizados:assentosRealizados,
     ocupProgramada:ocupProgramada, ocupRealizada:ocupRealizada,
-    custoPeriodo:custoPeriodo, diasSemRegistro:diasSemRegistro,
+    custoPeriodo:custoPeriodo, diasSemBaixa:diasSemBaixa, datasDaSemana:datasDaSemana,
     alocarComuns:alocarComuns, alocarAmbulancia:alocarAmbulancia,
     classePreferida:classePreferida, assentosDe:assentosDe,
-    gerarProgramacao:gerarProgramacao, diasEntre:diasEntre, esc:esc,
-    exigeAmbulancia:exigeAmbulancia, tratLabel:tratLabel
+    gerarProgramacao:gerarProgramacao, diasEntre:diasEntre, hojeISO:hojeISO, esc:esc,
+    exigeAmbulancia:exigeAmbulancia, tratLabel:tratLabel,
+    rotuloRegra:rotuloRegra, rotuloMotivo:rotuloMotivo
+  },
+  /* construtores de tela sem DOM: o que os testes conferem de texto */
+  ui:{
+    htmlPainel:htmlPainel, htmlFarol:htmlFarol, linhaOperacional:linhaOperacional,
+    htmlConformidade:htmlConformidade, htmlFaturamento:htmlFaturamento,
+    htmlFichaPaciente:htmlFichaPaciente, paperRelatorio:paperRelatorio
   },
   estado:function(){return {pacientes:pacientes,veiculos:veiculos,viagens:viagens,
     lancamentos:lancamentos,abastecimentos:abastecimentos,destinos:DESTINOS,config:CONFIG}}

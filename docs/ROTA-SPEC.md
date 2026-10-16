@@ -94,7 +94,7 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
   **recorrência semanal** (dias), acompanhante (S/N — ocupa assento), necessidade
   especial (cadeirante, maca/ambulância, menor c/ responsável).
 - **Autorização vinculada** (regulatório): nº do processo TFD/regulação, validade,
-  distância ao destino → elegibilidade >50 km calculada automaticamente (RN-05).
+  elegibilidade calculada pelo módulo da norma (RN-05), do município de residência ao município sede do serviço.
 - **Portaria 11.165 (desde a migração 0004):** município de residência (IBGE) e UF; o
   serviço de referência do destino (município sede, CNES, habilitação); agendamento
   confirmado por data (art. 13 §3º). **Sem CPF** (decisão de 16/10/2026, abaixo).
@@ -137,12 +137,13 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 - Infográficos (SVG/CSS puro, padrão Samais): donut de ocupação, curva acumulada de
   km, medidor de consumo, barras por dia, composição por destino, split
   presenças×faltas.
-- Alertas: revisão próxima, faltas na semana, **risco de suspensão de repasse**
-  (dias sem registro — RN-08), prazo CNES.
+- Alertas: revisão próxima, faltas na semana, **produção BPA-I por competência** (RN-08; competência sem
+  remessa informada = "a conferir"), prazo CNES e de operação do veículo doado (calculados da data de
+  recebimento), base não apta ao incentivo. Dias sem baixa interna: linha operacional, não farol.
 
 ### RF-07 · Relatórios
-- **Relatório mensal de comprovação** (PDF/A4): viagens totais e **elegíveis
-  (>50 km)**, km, ocupação, custo, faltas — o documento que a secretaria usa para
+- **Relatório mensal de comprovação** (PDF/A4): viagens totais e **deslocamentos elegíveis
+  (Port. 11.164 + 11.165, de município a município)**, km, ocupação, custo, faltas — o documento que a secretaria usa para
   manter o repasse e que a Samais usa para faturar.
 - Entregue ao contratante pelo gestor; sem acesso direto do contratante na fase 2.
 
@@ -177,9 +178,14 @@ lacunas e ordem de trabalho: `samais-os/produtos/rota/portaria-11165.md`.
 **Integração, etapa 1 (banco e API) — feita em 16/10/2026.** Desenho em
 [`docs/PORTARIA-11165-INTEGRACAO.md`](PORTARIA-11165-INTEGRACAO.md): migração
 `supabase/migrations/0004_portaria_11165.sql`, endpoints novos em `api/servidor.mjs`, pré-remessa BPA-I
-em CSV, farol por competência e painel de conformidade. RN-05 e RN-08 já seguem a regra certa **no banco
-e na API**. ⚠️ O console (`rota-app.html`) ainda mostra a regra antiga até a **etapa 2**, que liga a tela
-ao que a API devolve (desenho §8).
+em CSV, farol por competência e painel de conformidade. RN-05 e RN-08 seguem a regra certa **no banco
+e na API**.
+
+**Integração, etapa 2 (console) — feita em 16/10/2026.** O console (`rota-app.html`) não tem mais regra própria
+da norma: carrega `regras/portaria-11165.mjs` e a costura `regras/integracao-11165.mjs` (as mesmas da API) e mostra
+RN-05 em três estados com o porquê legível, RN-07 (CNES 60 dias) e o prazo de operação calculados da data de
+recebimento, e RN-08 por competência ("não aplicável" sem base apta; dias sem baixa só como informação operacional).
+Telas novas: Conformidade e Faturamento BPA-I (pré-BPA-I em CSV, remessas informadas). Desenho §8.
 
 **Decisão do CPF (Ota, 16/10/2026): o ROTA-OS não guarda CPF em lugar nenhum.** Nenhuma coluna, campo de
 API, log ou exportação com CPF. O BPA-I exige CPF (SIGTAP, "Obrigatório CPF"); a pré-remessa sai com a

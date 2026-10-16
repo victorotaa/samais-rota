@@ -186,5 +186,24 @@ const PACT = {deliberacao_cib: 'CIB-SINT-001', estrutura_gestao_registrada: true
      ['a_conferir', 'pendente', 'pendente']);
 }
 
+/* ──────────────────────── a mesma costura no console (etapa 2) ──
+   O console gera a pré-remessa da demonstração pelo MESMO código da API
+   (sem duplicar regra). Para o navegador carregar, a costura mora em
+   regras/ (estático no deploy; api/ vira função no Vercel) e não importa
+   nada de node:. A API reexporta: é a mesma função, não uma cópia.     */
+console.log('\n── a costura carrega no navegador ──');
+{
+  const fs = await import('node:fs');
+  let C = null;
+  try{ C = await import('../regras/integracao-11165.mjs') }catch(e){ ok('regras/integracao-11165.mjs carrega', false, e.code || e.message) }
+  if(C){
+    const fonte = fs.readFileSync(new URL('../regras/integracao-11165.mjs', import.meta.url), 'utf8');
+    ok('sem import de node: (roda no navegador)', !/from\s+['"]node:/.test(fonte) && !/import\(\s*['"]node:/.test(fonte));
+    ok('a API reexporta a mesma função (não é cópia)',
+       ['preRemessaBPAI', 'csvPreBPAI', 'farolDaBase', 'conformidade', 'competenciasFechadas', 'chaveComCpf']
+         .every(n => typeof C[n] === 'function' && C[n] === I[n]));
+  }
+}
+
 console.log(`\n${falhou ? '✗' : '✓'} ${passou} asserção(ões) passaram${falhou ? `, ${falhou} falharam` : ''}\n`);
 process.exit(falhou ? 1 : 0);

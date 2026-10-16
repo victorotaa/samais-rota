@@ -14,11 +14,15 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import * as regras11165 from '../regras/portaria-11165.mjs';
+import * as costura11165 from '../regras/integracao-11165.mjs';
 
 const raiz = path.dirname(fileURLToPath(import.meta.url));
 const html = fs.readFileSync(path.join(raiz, '..', 'rota-app.html'), 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
-const ctx = vm.createContext({console, performance, Date, Math, JSON, Promise});
+/* a norma entra pelo contexto, como o import() entrega no navegador */
+const ctx = vm.createContext({console, performance, Date, Math, JSON, Promise,
+  NORMA_11165: {regras: regras11165, costura: costura11165}});
 vm.runInContext(script, ctx, {filename: 'rota-app.html'});
 const {FonteAPI, FonteSeed, Dados, SEED} = ctx.ROTA;
 
@@ -35,9 +39,12 @@ function stub(respostas){
     chamadas.push({url, metodo: op.method, cab: op.headers,
                    corpo: op.body ? JSON.parse(op.body) : undefined});
     const r = respostas.shift() || {status: 200, json: {}};
+    const cab = r.cabecalhos || {};
     return Promise.resolve({
       ok: r.status < 400, status: r.status,
-      json: () => Promise.resolve(r.json)
+      headers: {get: n => cab[Object.keys(cab).find(k => k.toLowerCase() === n.toLowerCase())] ?? null},
+      json: () => Promise.resolve(r.json),
+      text: () => Promise.resolve(r.texto ?? JSON.stringify(r.json))
     });
   };
   return {buscar, chamadas};
@@ -214,6 +221,138 @@ console.log('\n── Dados com fonte assíncrona ──');
   ok('com o seed, o callback é imediato', chamou);
   eq('e abrir continua devolvendo Dados', r === Dados, true);
   eq('com o seed carregado', ctx.ROTA.estado().pacientes.length, 10);
+}
+
+/* ═══════════════════════ etapa 2 · métodos novos do contrato ═══════
+   Desenho §8.5: as duas fontes têm os mesmos métodos, com o mesmo
+   formato de retorno. A FonteAPI vai ao endpoint certo (api/servidor.mjs
+   §5 do desenho); a FonteSeed devolve as mesmas chaves que a API, calculadas
+   pelos mesmos módulos (regras/ e a costura).                          */
+const METODOS = ['carregar', 'salvarPaciente', 'salvarAbastecimento', 'salvarBaixa', 'salvarProgramacao',
+  'agendamentos', 'salvarAgendamento', 'distancias', 'salvarDistancia', 'salvarServico',
+  'salvarVeiculoPortaria', 'salvarPactuacao', 'remessas', 'salvarRemessa',
+  'farolProducao', 'conformidade', 'preBpaI', 'preBpaICsv'];
+console.log('\n── métodos novos: as duas fontes ──');
+eq('a FonteSeed tem todos os métodos do contrato', METODOS.filter(m => typeof FonteSeed.prototype[m] !== 'function'), []);
+eq('a FonteAPI também', METODOS.filter(m => typeof FonteAPI.prototype[m] !== 'function'), []);
+
+console.log('\n── métodos novos: a FonteAPI vai ao endpoint certo ──');
+async function chamada(fn, resposta = {status: 200, json: {}}){
+  const {buscar, chamadas} = stub([resposta]);
+  const r = await fn(new FonteAPI({buscar, token: 't'}));
+  return {c: chamadas[0], r};
+}
+{
+  const {c} = await chamada(f => f.agendamentos({de: '2026-10-12', ate: '2026-10-16'}), {status: 200, json: []});
+  eq('agendamentos do período', [c.metodo, c.url], ['GET', '/api/agendamentos?de=2026-10-12&ate=2026-10-16']);
+}
+{
+  const ag = {paciente: 'p1', destino: 'd1', data: '2026-10-14', confirmado: null, etapa: 'tratamento', protocolo: 'AG-1'};
+  const {c} = await chamada(f => f.salvarAgendamento(ag));
+  eq('salvar agendamento (confirmado nulo = sem resposta, vai nulo)', [c.metodo, c.url, c.corpo], ['POST', '/api/agendamentos', ag]);
+}
+{
+  const {c} = await chamada(f => f.distancias(), {status: 200, json: []});
+  eq('distâncias', [c.metodo, c.url], ['GET', '/api/distancias']);
+  const d = {origem: '9900001', destino: '9900003', km: null, fonte: null, lidoEm: null};
+  const s2 = await chamada(f => f.salvarDistancia(d));
+  eq('salvar distância (km nulo = a levantar, vai nulo)', [s2.c.metodo, s2.c.url, s2.c.corpo], ['PUT', '/api/distancias', d]);
+}
+{
+  const {c} = await chamada(f => f.salvarServico('0b1c-uuid', {habilitacaoConferida: true}));
+  eq('salvar serviço do destino', [c.metodo, c.url, c.corpo], ['PUT', '/api/destinos/0b1c-uuid/servico', {habilitacaoConferida: true}]);
+}
+{
+  const {c} = await chamada(f => f.salvarVeiculoPortaria('ROTA 02', {cnesInscritoEm: '2026-07-30'}));
+  eq('salvar doação do veículo (identificação codificada na URL)', [c.metodo, c.url], ['PUT', '/api/veiculos/ROTA%2002/portaria']);
+}
+{
+  const {c} = await chamada(f => f.salvarPactuacao({estruturaGestao: true}));
+  eq('salvar pactuação', [c.metodo, c.url, c.corpo], ['PUT', '/api/base/pactuacao', {estruturaGestao: true}]);
+}
+{
+  const {c} = await chamada(f => f.remessas(), {status: 200, json: []});
+  eq('remessas', [c.metodo, c.url], ['GET', '/api/remessas-bpa']);
+  const rm = {competencia: '2026-09', linhas: 0, enviadaEm: null, informadoPor: 'faturamento da SMS'};
+  const s2 = await chamada(f => f.salvarRemessa(rm));
+  eq('informar remessa (zero é zero)', [s2.c.metodo, s2.c.url, s2.c.corpo], ['POST', '/api/remessas-bpa', rm]);
+}
+{
+  const {c} = await chamada(f => f.farolProducao({hoje: '2026-10-14'}));
+  eq('farol com data simulada', [c.metodo, c.url], ['GET', '/api/farol-producao?hoje=2026-10-14']);
+  const s2 = await chamada(f => f.farolProducao());
+  eq('farol sem data: o servidor usa o relógio de Brasília', s2.c.url, '/api/farol-producao');
+  const s3 = await chamada(f => f.conformidade({hoje: '2026-10-14'}));
+  eq('conformidade', [s3.c.metodo, s3.c.url], ['GET', '/api/conformidade?hoje=2026-10-14']);
+}
+{
+  const {c} = await chamada(f => f.preBpaI('2026-09'));
+  eq('conferência da pré-remessa', [c.metodo, c.url], ['GET', '/api/bpa-i/2026-09']);
+  const csv = 'competencia;x\r\n';
+  const s2 = await chamada(f => f.preBpaICsv('2026-09'), {status: 200, texto: csv, cabecalhos: {
+    'Content-Type': 'text/csv; charset=utf-8', 'X-Rota-Linhas': '3',
+    'Content-Disposition': 'attachment; filename="pre-bpa-i_caico-rn_2026-09.csv"'}});
+  eq('o CSV chega como texto, com o nome do servidor', [s2.c.url, s2.r.csv, s2.r.nome, s2.r.linhas],
+     ['/api/bpa-i/2026-09.csv', csv, 'pre-bpa-i_caico-rn_2026-09.csv', 3]);
+  const {buscar, chamadas} = stub([]);
+  let e = null;
+  try{ await new FonteAPI({buscar, token: 't'}).preBpaI('2026-13') }catch(x){ e = x }
+  ok('competência inválida não vira requisição', !!e && chamadas.length === 0);
+}
+
+console.log('\n── CPF em lugar nenhum, também no cliente ──');
+{
+  const {buscar, chamadas} = stub([]);
+  let e = null;
+  try{ await new FonteAPI({buscar, token: 't'}).salvarRemessa({competencia: '2026-09', linhas: 1, paciente: {Cpf: 'x'}}) }catch(x){ e = x }
+  ok('a FonteAPI recusa corpo com chave de CPF antes de sair', !!e && chamadas.length === 0 && /CPF/.test(e.message));
+  let e2 = null;
+  try{ await new FonteAPI({buscar, token: 't'}).salvarPaciente({nome: 'X', cpf: 'x'}) }catch(x){ e2 = x }
+  ok('inclusive no cadastro de paciente', !!e2 && chamadas.length === 0);
+  let e3 = null;
+  try{ new FonteSeed(SEED).salvarAgendamento({paciente: 1, cpf_paciente: 'x'}) }catch(x){ e3 = x }
+  ok('e a FonteSeed também', !!e3 && /CPF/.test(e3.message));
+}
+
+console.log('\n── métodos novos: a FonteSeed devolve o formato da API ──');
+{
+  /* as chaves que a API devolve (api/servidor.mjs; cobertas em testes/api.e2e.mjs) */
+  const CHAVES = {
+    farolProducao: ['aplicavel', 'base_apta', 'competencias', 'farol', 'hoje', 'inicio_incentivo', 'operacional'],
+    conformidade: ['base_apta', 'hoje', 'pactuacao', 'veiculos'],
+    preBpaI: ['avisos', 'colunas', 'competencia', 'fora', 'leiaute', 'linhas', 'pendente_de_leiaute', 'total_deslocamentos'],
+    remessa: ['competencia', 'enviadaEm', 'informadoPor', 'linhas', 'registradoEm'],
+    agendamento: ['confirmado', 'data', 'destino', 'etapa', 'id', 'paciente', 'protocolo'],
+    distancia: ['destino', 'fonte', 'km', 'lidoEm', 'origem'],
+    pactuacao: ['deliberacaoCib', 'deliberacaoCibData', 'estruturaGestao', 'inicioIncentivo', 'municipiosAbrangidos'],
+    portaria: ['cnes', 'incentivo', 'operacao', 'renovacao']
+  };
+  const chaves = o => Object.keys(o).sort();
+  Dados.abrir(new FonteSeed(SEED));
+  ctx.ROTA.regras.gerarProgramacao();
+  const f = Dados.fonte, hoje = ctx.ROTA.regras.hojeISO();
+  eq('farol de produção', chaves(f.farolProducao({hoje})), CHAVES.farolProducao);
+  eq('conformidade', chaves(f.conformidade({hoje})), CHAVES.conformidade);
+  eq('conformidade: a pactuação no vocabulário do console', chaves(f.conformidade({hoje}).pactuacao), CHAVES.pactuacao);
+  eq('conferência da pré-remessa', chaves(f.preBpaI('2026-10')), CHAVES.preBpaI);
+  eq('remessa informada', chaves(f.remessas()[0]), CHAVES.remessa);
+  eq('remessa recém-informada', chaves(f.salvarRemessa({competencia: '2026-09', linhas: 0, enviadaEm: null, informadoPor: 'faturamento'})), CHAVES.remessa);
+  eq('agendamento', chaves(f.agendamentos({})[0]), CHAVES.agendamento);
+  eq('distância', chaves(f.distancias()[0]), CHAVES.distancia);
+  eq('pactuação salva', chaves(f.salvarPactuacao({estruturaGestao: true})), CHAVES.pactuacao);
+  eq('veículo salvo traz o painel da portaria', chaves(f.salvarVeiculoPortaria('ROTA-02', {laudo: null}).portaria), CHAVES.portaria);
+  const csv = f.preBpaICsv('2026-10');
+  eq('o CSV da demonstração tem nome, texto e contagem', chaves(csv), ['csv', 'linhas', 'nome']);
+  eq('e é o mesmo código da costura: cabeçalho idêntico',
+     csv.csv.split('\r\n')[0], costura11165.csvPreBPAI([]).split('\r\n')[0]);
+  ok('a carga da FonteSeed continua com as seis chaves (as tabelas da norma ficam fora)',
+     chaves(f.carregar()).join() === 'abastecimentos,config,destinos,lancamentos,pacientes,veiculos');
+  let e = null;
+  try{ f.preBpaI('julho') }catch(x){ e = x }
+  ok('competência inválida também é recusada na demonstração', !!e);
+  let e2 = null;
+  try{ f.salvarDistancia({origem: '9922001', destino: '9922004', km: 140, fonte: null, lidoEm: null}) }catch(x){ e2 = x }
+  ok('km sem fonte e data de leitura é recusado, como na API', !!e2);
 }
 
 console.log(`\n${falhou ? '✗' : '✓'} ${passou} asserção(ões) passaram${falhou ? `, ${falhou} falharam` : ''}\n`);

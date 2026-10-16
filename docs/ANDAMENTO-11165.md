@@ -113,3 +113,97 @@ do job "banco" reproduzida num script de rascunho (schema → 0001…0003 → `a
 Seed com os campos novos; elegibilidade em três estados na tela; farol por competência no lugar de
 `farolRepasse()`/`diasSemRegistro()`; telas de agendamento, remessa, pactuação, doação do veículo e conformidade;
 botão de pré-BPA-I; métodos novos nas duas fontes; textos citando 11.164 + 11.165.
+
+---
+
+# Etapa 2 · console (`rota-app.html`) ligado às regras e à API
+
+Branch `claude/charming-cannon-hvmlc8`, a partir de `7f98931`. Commit e push com o coordenador.
+
+## Fase 2.0 · base verde (16/10/2026)
+
+`npm run verificar`: CSP 5/5 · regras 30 · portaria 113 · integração 45 · auth 71 · fonte-api 35.
+
+## Plano (fatias TDD)
+
+- [x] 2.1 · costura pura acessível ao navegador (`regras/integracao-11165.mjs`; `api/` reexporta)
+- [x] 2.2 · norma injetada no console (navegador: `import()` dinâmico; testes: contexto da VM)
+- [x] 2.3 · seed com os campos novos + elegibilidade em três estados (testes antigos reescritos)
+- [x] 2.4 · farol por competência + dias sem baixa como informação operacional
+- [x] 2.5 · conformidade da base, prazos do veículo, pactuação
+- [x] 2.6 · FonteSeed e FonteAPI com os métodos novos (`fonte-api.test.mjs`)
+- [x] 2.7 · pré-BPA-I na demonstração pelo mesmo código da costura
+- [x] 2.8 · telas novas (padrão da casa, sem onclick inline) e textos 11.164 + 11.165
+- [x] 2.9 · CSP, verificação visual (1440/390), banco limpo, docs
+
+## Fase 2.1 · costura no navegador (feito)
+
+- RED: `integracao-11165.test.mjs` cobra `regras/integracao-11165.mjs` sem `node:` e a identidade da função
+  reexportada → `ERR_MODULE_NOT_FOUND`.
+- `git mv api/integracao-11165.mjs regras/integracao-11165.mjs`; `api/integracao-11165.mjs` vira `export * from`.
+  Motivo: o console precisa do MESMO código da pré-remessa na demonstração, e `api/` não é estático no Vercel
+  (vira função). Mudança pequena na API, sem efeito de comportamento (o servidor importa igual). GREEN: 47 ok.
+
+## Fases 2.2 a 2.7 · RED (16/10/2026)
+
+- `testes/regras.test.mjs` reescrito (módulos entram pelo contexto da VM em `NORMA_11165`) → `TypeError: ROTA.norma
+  is not a function`.
+- `testes/fonte-api.test.mjs` com os métodos novos → "a FonteSeed tem todos os métodos do contrato" e "a FonteAPI
+  também" falham listando os 13 métodos; `TypeError: f.agendamentos is not a function`.
+
+## Fases 2.2 a 2.8 · GREEN (16/10/2026)
+
+- `rota-app.html`: bloco NORMA (`ligarNorma`/`quandoNorma`; `import()` dinâmico de `./regras/portaria-11165.mjs` e
+  `./regras/integracao-11165.mjs` em `iniciarUI`; o login espera as regras e, se não carregarem, diz por quê).
+  `elegivelFederal` saiu; `p.elegibilidade` (três estados) vem da fonte. `farolRepasse`/`diasSemRegistro` saíram;
+  farol por competência pela fonte, `diasSemBaixa` como linha operacional.
+- Seed: semana-demo movida para 12–16/out/2026 (o farol precisa de competências fechadas desde o início do incentivo,
+  jul/2026). Campos novos com códigos sintéticos (IBGE 99220xx, CNES 99900xx, CIB/termo/protocolo DEMO), distâncias
+  rotuladas "demonstração", setembro sem remessa informada (farol "a conferir").
+- FonteSeed/FonteAPI: 13 métodos novos; guarda de CPF nas duas (cliente recusa antes de sair).
+- Telas: Conformidade (pactuação, farol, veículos, serviços, distâncias) e Faturamento BPA-I (pré-BPA-I com o que ficou
+  de fora por motivo + download do CSV; remessas informadas); ficha do paciente com elegibilidade legível e
+  agendamentos; ficha do veículo com doação e prazos; formulários de edição em modal (delegação `data-act`).
+- `regras.test.mjs` 78 ok · `fonte-api.test.mjs` 70 ok · CSP reescrito (`npm run csp:write`) · nenhum `onclick=`.
+- Um tropeço meu no meio: um recorte por cabeçalho ("PROGRAMAÇÃO" aparece duas vezes) duplicou um trecho do arquivo;
+  removido o trecho duplicado e conferida a estrutura.
+- Mutação (cada uma restaurada depois): distância da base no lugar da de município a município → 6 falhas;
+  guarda de CPF desligada → 3 falhas; competência sem informação tratada como zero → 3 falhas.
+
+## Fase 2.9 · verificação e fechamento (feito)
+
+- Visual (Playwright, Chromium de /opt/pw-browsers, servidor estático com os cabeçalhos reais do `vercel.json`):
+  1440 e 390 px, escuro e claro, painel, pacientes, conformidade, faturamento, frota, fichas de paciente e de veículo,
+  relatório A4. Zero erro de JS, zero violação de CSP, `scrollWidth === clientWidth` em todas. Download do pré-BPA-I
+  conferido (1 linha, CPF vazio); informar a remessa de set/2026 leva o farol de "A conferir" a "Em dia".
+  Prints em `/tmp/claude-0/-home-user/43c922f0-59b5-55ea-8a71-d1c17e834063/scratchpad/rota-prints/` (fora do repo).
+- Contraste: no tema claro os selos, o botão sólido, `--muted`/`--dim`, o mono dourado e o total do gráfico ficavam
+  entre 2,5 e 4,3:1; tokens do tema claro do console ajustados. Medido depois: nada abaixo de 4,5:1 nos dois temas.
+- Achado na verificação: o servidor de teste guardava o `vercel.json` velho e o script inline foi bloqueado — prova de
+  que o CSP está valendo; `npm run csp:write` tem de rodar a cada mudança do script (já rodado).
+- Comentário de cabeçalho de `regras/portaria-11165.mjs` atualizado (dizia que o console não estava ligado).
+
+### Verificação final da etapa 2 (16/10/2026)
+
+| Conjunto | Resultado |
+|---|---|
+| `npm run verificar` | CSP 5/5 em dia · regras 78 · portaria 113 · integração 47 · auth 71 · fonte-api 70 |
+| `grep -n 'onclick=' -- *.html` | nada |
+| banco limpo (schema + 0001…0004) | `assercoes.sql` 9 grupos · `assercoes_11165.sql` ok |
+| `test:banco` | login 38 · paridade 21 · API 122 |
+
+### Testes antigos reescritos (motivo no comentário de cada um em `testes/regras.test.mjs`)
+
+1. "hemodiálise a 8 km NÃO é elegível" → inelegível por ente diverso (RE-02); os 8 km eram da base.
+2. "radioterapia a 252 km é elegível" → elegível de município a município, com habilitação, agendamento, procedimento
+   e faixa.
+3. "quimioterapia a 252 km" e "consulta a 148 km" → inelegíveis pela modalidade (RE-01), não pela distância.
+4. "acima de 500 km" (600 km em DESTINOS, base → destino) → 600 km de município a município (RE-04), mais: mudar o km
+   da base não muda a elegibilidade; sem distância = pendente (RE-03).
+5. "farol de suspensão (RN-08)" com `diasSemRegistro` (e data por `toISOString().slice`) → "dias sem baixa
+   (informação operacional)" com `diasSemBaixa` e aritmética de calendário; farol por competência em seção nova.
+6. Custo do período: datas da semana-demo nova (`datasDaSemana()`), com asserção de que há abastecimento na semana.
+
+### Para o coordenador
+
+- `git add api/integracao-11165.mjs` (o arquivo novo de reexportação; o `git mv` já está no índice).
