@@ -20,22 +20,14 @@
    Lacuna nunca vira zero: dado ausente devolve 'pendente' / 'a_conferir',
    nunca 'inelegivel' nem 0 km.
 
-   ⚠️ DIVERGÊNCIAS QUE O CONSOLE (rota-app.html) AINDA TEM — este módulo
-   ainda NÃO está ligado a ele; a integração depende de decisão do Ota:
-   1. Distância. O console decide com `DESTINOS[p.dest].km` (base → destino;
-      rota-app.html `elegivelFederal`; supabase/schema.sql `elegivel_federal`
-      sobre `destinos.km`). A norma mede do MUNICÍPIO DE RESIDÊNCIA ao
-      MUNICÍPIO SEDE DO SERVIÇO (11.165 arts. 15 e 16; 11.164 art. 23 §§2º
-      e 4º), exige ente federativo diverso (Lei 12.732 arts. 2º-A §3º e
-      2º-B §3º) e, na hemodiálise, a mesma UF (11.164 art. 23 caput).
-   2. Farol. O console conta DIAS desde a última baixa interna, em janela
-      de 90 dias com cortes 30/60 (`diasSemRegistro`/`farolRepasse`;
-      `bases.janela_suspensao_dias`). A norma conta COMPETÊNCIAS sem
-      nenhum registro BPA-I enviado ao SIA: 3 suspendem, 6 excluem
-      (11.165 art. 21 §2º). Baixa interna sem remessa não comprova nada.
-   3. O console não tem agendamento confirmado (art. 13 §3º), código
-      SIGTAP, BPA-I, veículo elegível ao incentivo (art. 14) nem o prazo
-      CNES calculado da data de recebimento (art. 11 III).
+   Ligado em toda parte (16/10/2026): o banco espelha a elegibilidade
+   (migração 0004, teste de paridade); a API e o console (rota-app.html,
+   por import() no navegador) usam ESTE módulo e a costura
+   regras/integracao-11165.mjs. O console não tem mais regra própria da
+   norma: a distância é do município de residência ao município sede do
+   serviço, o farol conta competências sem remessa BPA-I e os prazos do
+   veículo saem da data de recebimento. Desenho:
+   docs/PORTARIA-11165-INTEGRACAO.md §8.
    ═══════════════════════════════════════════════════════════════════ */
 
 export const PROCEDIMENTO = Object.freeze({

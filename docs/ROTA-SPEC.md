@@ -94,7 +94,10 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
   **recorrência semanal** (dias), acompanhante (S/N — ocupa assento), necessidade
   especial (cadeirante, maca/ambulância, menor c/ responsável).
 - **Autorização vinculada** (regulatório): nº do processo TFD/regulação, validade,
-  distância ao destino → elegibilidade >50 km calculada automaticamente (RN-05).
+  elegibilidade calculada pelo módulo da norma (RN-05), do município de residência ao município sede do serviço.
+- **Portaria 11.165 (desde a migração 0004):** município de residência (IBGE) e UF; o
+  serviço de referência do destino (município sede, CNES, habilitação); agendamento
+  confirmado por data (art. 13 §3º). **Sem CPF** (decisão de 16/10/2026, abaixo).
 - Ficha do paciente: dados + viagens da semana.
 
 ### RF-02 · Programação
@@ -134,12 +137,13 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 - Infográficos (SVG/CSS puro, padrão Samais): donut de ocupação, curva acumulada de
   km, medidor de consumo, barras por dia, composição por destino, split
   presenças×faltas.
-- Alertas: revisão próxima, faltas na semana, **risco de suspensão de repasse**
-  (dias sem registro — RN-08), prazo CNES.
+- Alertas: revisão próxima, faltas na semana, **produção BPA-I por competência** (RN-08; competência sem
+  remessa informada = "a conferir"), prazo CNES e de operação do veículo doado (calculados da data de
+  recebimento), base não apta ao incentivo. Dias sem baixa interna: linha operacional, não farol.
 
 ### RF-07 · Relatórios
-- **Relatório mensal de comprovação** (PDF/A4): viagens totais e **elegíveis
-  (>50 km)**, km, ocupação, custo, faltas — o documento que a secretaria usa para
+- **Relatório mensal de comprovação** (PDF/A4): viagens totais e **deslocamentos elegíveis
+  (Port. 11.164 + 11.165, de município a município)**, km, ocupação, custo, faltas — o documento que a secretaria usa para
   manter o repasse e que a Samais usa para faturar.
 - Entregue ao contratante pelo gestor; sem acesso direto do contratante na fase 2.
 
@@ -159,19 +163,36 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 | **RN-02** | Nenhum paciente permanece no destino sem registro: reembarque é conferido no papel e lançado na baixa. (Sem rastreio em tempo real — decisão de produto.) |
 | **RN-03** | Necessidade "maca" → viagem separada em ambulância; nunca em veículo comum. |
 | **RN-04** | Alerta de revisão quando faltarem ≤ 2.000 km para o intervalo do veículo. |
-| **RN-05** | Elegibilidade a cofinanciamento federal: destino a **>50 km e ≤500 km** do município de residência, tratamento radioterapia/hemodiálise (Port. 11.164/11.165). Flag automática por viagem. |
+| **RN-05** | Elegibilidade ao transporte da Port. 11.165 (com a 11.164), **em três estados** (elegível · inelegível · pendente): radioterapia ou hemodiálise; distância **do município de residência ao município sede do serviço** **>50 km e ≤500 km**; ente federativo diverso; hemodiálise na mesma UF; serviço habilitado; agendamento confirmado. Dado ausente = **pendente**, nunca inelegível nem 0 km. No banco (`elegibilidade_federal`, migração 0004) e na API (módulo `regras/portaria-11165.mjs`), com teste de paridade. Por paciente-deslocamento. |
 | **RN-06** | Km, custo operacional e taxa de ocupação são registros obrigatórios (mecanismo de gestão de frota exigido pela portaria). |
 | **RN-07** | Veículo federal recebido deve ter CNES registrado em até 60 dias; o sistema acompanha o prazo. |
-| **RN-08** | 3 meses sem registro de uso → repasse suspenso. Farol: verde <30 dias, âmbar 30–60, vermelho >60 sem registro comprovado. |
+| **RN-08** | Farol de produção **por competência** (11.165 art. 21 §2º): competências fechadas desde o início do incentivo **sem remessa BPA-I enviada ao SIA**; 1 = atenção, 2 = risco (o próximo suspende), 3 a 5 = suspenso, ≥ 6 = excluído. A remessa é **informada pelo faturamento do ente** (linhas, data, setor); competência não informada fica "a conferir", nunca zero. Só se aplica com a base apta ao incentivo (RC-04). Dias sem baixa interna ficam como informação operacional, não como farol. |
 | **RN-09** | Faltas recorrentes são reportadas à regulação para liberar a vaga. |
 | **RN-10** | Impressos com dado de saúde: uso restrito, descarte seguro após a baixa (LGPD). |
 
 **Regras da Portaria GM/MS 11.165/2026 (com a 11.164/2026), lidas no DOU:** módulo puro
 `regras/portaria-11165.mjs` (RE-01…RE-15, RC-01…RC-12), casos em
 `testes/casos/portaria-11165-casos.json`, teste `testes/portaria-11165.test.mjs`. Matriz artigo → campo,
-lacunas e ordem de trabalho: `samais-os/produtos/rota/portaria-11165.md`. ⚠️ O módulo ainda não está
-ligado ao console: RN-05 e RN-08 acima seguem a regra antiga (distância base→destino; farol por dias)
-até a decisão de integração.
+lacunas e ordem de trabalho: `samais-os/produtos/rota/portaria-11165.md`.
+
+**Integração, etapa 1 (banco e API) — feita em 16/10/2026.** Desenho em
+[`docs/PORTARIA-11165-INTEGRACAO.md`](PORTARIA-11165-INTEGRACAO.md): migração
+`supabase/migrations/0004_portaria_11165.sql`, endpoints novos em `api/servidor.mjs`, pré-remessa BPA-I
+em CSV, farol por competência e painel de conformidade. RN-05 e RN-08 seguem a regra certa **no banco
+e na API**.
+
+**Integração, etapa 2 (console) — feita em 16/10/2026.** O console (`rota-app.html`) não tem mais regra própria
+da norma: carrega `regras/portaria-11165.mjs` e a costura `regras/integracao-11165.mjs` (as mesmas da API) e mostra
+RN-05 em três estados com o porquê legível, RN-07 (CNES 60 dias) e o prazo de operação calculados da data de
+recebimento, e RN-08 por competência ("não aplicável" sem base apta; dias sem baixa só como informação operacional).
+Telas novas: Conformidade e Faturamento BPA-I (pré-BPA-I em CSV, remessas informadas). Desenho §8.
+
+**Decisão do CPF (Ota, 16/10/2026): o ROTA-OS não guarda CPF em lugar nenhum.** Nenhuma coluna, campo de
+API, log ou exportação com CPF. O BPA-I exige CPF (SIGTAP, "Obrigatório CPF"); a pré-remessa sai com a
+coluna do CPF **vazia**, rotulada "a completar pelo faturamento do ente", e o faturamento do ente a
+completa no BPA Magnético/SIA. A API recusa com 400 qualquer chave com "cpf" (qualquer caixa, qualquer
+profundidade, inclusive na consulta e no login); o banco tem `verificar_sem_cpf()`, cobrada no CI, e a API
+não sobe se ela acusar coluna.
 
 ---
 
@@ -179,6 +200,12 @@ até a decisão de integração.
 
 Multi-tenant por `base_id` com **row-level security** — isolamento por contrato no
 banco, não na aplicação.
+
+Desde a migração 0004 (Portaria 11.165), além do abaixo: `pacientes.municipio_residencia_ibge`/
+`uf_residencia`; `destinos` como serviço de referência (`municipio_ibge`, `cnes`, `habilitacao_conferida`,
+`habilitacao_codigo`, `modalidades`); `distancias_municipais`; `agendamentos`; doação, prazos e renovação
+em `veiculos`; `base_pactuacao`; `remessas_bpa`. **Nenhuma coluna de CPF.** Detalhe em
+`docs/PORTARIA-11165-INTEGRACAO.md` §3.
 
 ```
 bases          (id, municipio, uf, contratante, contrato_ref)
@@ -258,8 +285,8 @@ integração CADSUS direta na fase atual.
 2. Fluxo completo esteira: cadastro → programação → impressão → baixa → dashboard →
    relatório mensal, sem tocar em outra base.
 3. Impressos idênticos ao protótipo (A4 absoluto, margens 14 mm).
-4. Farol de suspensão muda de estado conforme dias sem registro (teste com datas
-   simuladas).
+4. Farol de suspensão muda de estado conforme **competências sem remessa BPA-I**
+   (teste com datas simuladas; `GET /api/farol-producao?hoje=`).
 5. Todo lançamento aparece no `audit_log` com autor e timestamp.
 6. Dados sensíveis ilegíveis em repouso (criptografia verificada).
 
@@ -272,8 +299,13 @@ integração CADSUS direta na fase atual.
 - **Manifesto**: escala impressa semanal por veículo, afixada no ponto de guarda.
 - **Folha de embarque**: lista por viagem com tique ida/volta e assinatura.
 - **TFD**: Tratamento Fora do Domicílio (Portaria SAS/MS 55/1999).
-- **Elegível federal**: viagem >50 km e ≤500 km p/ radioterapia/hemodiálise
-  (Portarias 11.164/11.165/2026).
+- **Elegível federal**: paciente-deslocamento de radioterapia/hemodiálise com mais de
+  50 km e até 500 km do município de residência ao município sede do serviço, ente
+  diverso, hemodiálise na mesma UF, serviço habilitado e agendamento confirmado
+  (Portarias 11.164/11.165/2026). Três estados: elegível, inelegível, pendente.
+- **Pré-remessa BPA-I**: CSV por base e competência que o ROTA entrega ao faturamento do
+  ente, sem CPF; não é o leiaute oficial do BPA Magnético (lacuna).
+- **Remessa**: o que o faturamento do ente informa ter enviado ao SIA na competência.
 
 ---
 

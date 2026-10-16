@@ -154,6 +154,11 @@ O `transporte.html` também tinha as três mídias do CloudFront bloqueadas por 
 
 Toda escrita grava em `auditoria` na mesma transação.
 
+**Portaria 11.165 (migração 0004, 16/10/2026).** Endpoints de agendamento confirmado, serviço de referência,
+distâncias de município a município, doação do veículo, pactuação da base, remessas BPA-I, farol por
+competência, painel de conformidade e pré-remessa BPA-I em CSV (sem CPF). A API recusa com 400 qualquer chave
+com "cpf" e não sobe sem a 0004. Desenho e lista completa: `docs/PORTARIA-11165-INTEGRACAO.md` §5.
+
 #### A trilha registra o que mudou, não o valor do dado pessoal
 
 A auditoria recusa `UPDATE` e `DELETE` de propósito. Se nome e CNS fossem copiados para lá, um pedido de correção ou de exclusão não teria como ser honrado — a tabela é justamente a que não aceita correção. Então grava-se a referência, a ação e a **lista de campos tocados**; o valor fica na tabela que pode ser corrigida. Minimização, aqui, é o que mantém as duas garantias compatíveis.

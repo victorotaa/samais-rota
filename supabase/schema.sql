@@ -8,8 +8,11 @@
 -- pode vazar paciente de outro município.
 --
 -- Aplicar em PostgreSQL 15+ (Supabase/Neon/RDS) em REGIÃO BRASIL — dado
--- sensível de saúde, LGPD art. 11. Depois deste arquivo, aplicar
--- migrations/0001_auditoria_hash_chain.sql.
+-- sensível de saúde, LGPD art. 11. Depois deste arquivo, aplicar as
+-- migrações em ordem: 0001 (auditoria encadeada), 0002 (autenticação),
+-- 0003 (RLS forçada) e 0004 (Portaria GM/MS 11.165/2026: elegibilidade de
+-- município a município, agendamento, doação do veículo, pactuação,
+-- remessas BPA-I; nenhum CPF). Desenho: docs/PORTARIA-11165-INTEGRACAO.md.
 -- ═══════════════════════════════════════════════════════════════════
 
 create extension if not exists pgcrypto;
@@ -40,7 +43,9 @@ create table bases (
   -- Revisão A4: o custo por km é parâmetro do contrato, não número mágico
   custo_km       numeric(8,2) not null default 0.90,
   custo_km_fonte text not null default 'parâmetro da base · definido no contrato',
-  -- Revisão A5/A1: janela de suspensão da Port. 11.164 em dias
+  -- Revisão A5/A1: janela de suspensão em dias. Desde a 0004 é só
+  -- informação operacional: o farol de conformidade conta COMPETÊNCIAS sem
+  -- remessa BPA-I (11.165 art. 21 §2º), sobre `remessas_bpa`.
   janela_suspensao_dias int not null default 90,
   ativa          boolean not null default true,
   created_at     timestamptz not null default now()
@@ -247,6 +252,15 @@ create index on auditoria(base_id, id);
 -- Elegibilidade federal — no banco, não na tela
 -- Port. GM/MS 11.164 e 11.165/2026: hemodiálise ou radioterapia,
 -- deslocamento > 50 km e ≤ 500 km.
+--
+-- ⚠️ ESTADO DE PARTIDA, SUBSTITUÍDO NA 0004. Esta versão mede da BASE ao
+-- destino (`destinos.km`); a norma mede do MUNICÍPIO DE RESIDÊNCIA ao
+-- MUNICÍPIO SEDE DO SERVIÇO, com ente diverso, hemodiálise na mesma UF,
+-- serviço habilitado e agendamento confirmado (11.165 arts. 1º §1º, 13
+-- §3º, 15, 16; 11.164 art. 23). A 0004 aposenta esta assinatura, cria
+-- elegibilidade_federal/elegivel_federal de oito argumentos (espelho de
+-- regras/portaria-11165.mjs, com teste de paridade) e recria a view
+-- `deslocamentos` sobre elas. Não use esta função depois da 0004.
 -- ═══════════════════════════════════════════════════════════════════
 
 create or replace function elegivel_federal(p_tratamento tratamento_tipo, p_km numeric)
