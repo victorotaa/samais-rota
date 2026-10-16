@@ -422,7 +422,7 @@ function exigeAmbulancia(p){return NECESSIDADES[p.necKey].ambulancia}
 var pacientes=[];
 /* autorização da regulação (TFD) + rótulos derivados das chaves — nunca digitados solto */
 /* rotulos e autorizacao vem do seed, aplicados por FonteSeed.carregar */
-/* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.179): hemodiálise/radioterapia, >50 km e ≤500 km */
+/* RN-05: elegível a cofinanciamento federal (Port. 11.164/11.165): hemodiálise/radioterapia, >50 km e ≤500 km */
 function elegivelFederal(p){var d=DESTINOS[p.dest];return TRATAMENTOS[p.tratKey].elegivel&&d.km>50&&d.km<=500}
 /* A unidade de comprovação é o PACIENTE-DESLOCAMENTO, nunca a viagem: a portaria remunera
    o deslocamento de cada paciente em radioterapia/hemodiálise. Uma viagem mista (radio +
@@ -1024,7 +1024,7 @@ function paperRelatorio(){
     return '<tr><td>'+esc(x.id)+' · '+esc(x.placa)+'</td><td>'+(x.cnes?x.cnes:'<b>pendente ('+esc(x.cnesPrazo)+')</b>')+'</td><td>'+d.n+'</td><td>'+fmt(d.km)+' km</td><td>'+d.lit+' L</td><td>'+(d.lit?(d.km/d.lit).toFixed(1):'—')+' km/l</td></tr>'}).join('');
   return '<div class="paper">'+paperHead('RELATÓRIO MENSAL DE COMPROVAÇÃO')+
     '<h4>Julho/2026 — parcial (semana 06–10)</h4>'+
-    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.179/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, acima de 50 km, com presença conferida.</div>'+
+    '<div style="font-size:10px;color:#666;margin-bottom:12px">Prestação de contas do transporte sanitário à Secretaria de Saúde contratante. Base de comprovação de uso conforme Portarias GM/MS 11.164 e 11.165/2026. Unidade de comprovação: <b>paciente-deslocamento</b> em radioterapia ou hemodiálise, acima de 50 km, com presença conferida.</div>'+
     '<div class="meta"><div><span>Viagens realizadas</span>'+concl.length+' de '+viagens.length+' programadas</div>'+
       '<div><span>Deslocamentos elegíveis · federal</span>'+elegReal+' realizados · '+elegProg+' programados</div>'+
       '<div><span>Km comprovado</span>'+fmt(km)+' km</div>'+

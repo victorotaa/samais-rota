@@ -29,6 +29,8 @@ jobs:
         run: node scripts/csp-hash.mjs
       - name: Regras de negócio
         run: node testes/regras.test.mjs
+      - name: Portaria GM/MS 11.165/2026 — 113 casos da especificação
+        run: node testes/portaria-11165.test.mjs
       - name: Autenticação — vetores das RFC 4226, 4648 e 6238
         run: node testes/auth.test.mjs
       - name: FonteAPI — a segunda implementação do contrato de dados

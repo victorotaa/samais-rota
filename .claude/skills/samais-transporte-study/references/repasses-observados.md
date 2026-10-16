@@ -7,9 +7,10 @@
 
 ## 1 · O que rastrear (método)
 
-1. **Anexos das Portarias GM/MS 11.164, 11.165 e 11.179/2026** (DOU) — listam municípios
-   contemplados e valores. ⚠️ Texto integral ainda pendente de leitura (bloqueio de acesso);
-   obter via DOU/in.gov.br ou cópia local antes de citar cifra.
+1. **Anexos das Portarias GM/MS 11.164 e 11.165/2026** (DOU de 12/05/2026) — a 11.165 traz a
+   estimativa por UF e faixa de distância; a 11.164, as faixas e os atributos SIGTAP. Texto
+   integral lido no DOU em 16/10/2026. (A 11.179/2026 é outra norma — CNES e nefrologia —, citada
+   por engano no título de uma matéria do CONASS.)
 2. **Consulta de pagamentos do Fundo Nacional de Saúde** (portalfns.saude.gov.br) — repasse
    fundo a fundo por município/ação; é onde o pagamento mensal aparece de fato.
 3. **Portal da Transparência** — transferências por favorecido (prefeituras).

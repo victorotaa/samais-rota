@@ -245,7 +245,7 @@ create index on auditoria(base_id, id);
 
 -- ═══════════════════════════════════════════════════════════════════
 -- Elegibilidade federal — no banco, não na tela
--- Port. GM/MS 11.164 e 11.179/2026: hemodiálise ou radioterapia,
+-- Port. GM/MS 11.164 e 11.165/2026: hemodiálise ou radioterapia,
 -- deslocamento > 50 km e ≤ 500 km.
 -- ═══════════════════════════════════════════════════════════════════
 

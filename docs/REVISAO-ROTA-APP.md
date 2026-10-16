@@ -45,7 +45,7 @@ Cada item traz **onde** (linha), **evidência** (o que o teste mostrou), **efeit
 **B2 · A viagem inteira vira "elegível federal" se um único paciente for.**
 - Onde: `viagemElegivel()`, L393; contagem no relatório, L721–722; modal do relatório, L798.
 - Evidência: V04 (Radioterapia + **Quimioterapia**) e V08 (Radioterapia + Radioterapia + **Neurologia infantil**) aparecem como "elegível federal · >50 km". O relatório mensal conta **viagens** elegíveis.
-- Efeito: o cofinanciamento das Portarias 11.164/11.179 remunera o **deslocamento do paciente** em radioterapia ou hemodiálise — não a viagem. Contar viagens infla a comprovação e, em auditoria, é exatamente o tipo de erro que suspende repasse. O documento que a spec chama de "o que fatura" está superestimando.
+- Efeito: o cofinanciamento das Portarias 11.164/11.165 remunera o **deslocamento do paciente** em radioterapia ou hemodiálise — não a viagem. Contar viagens infla a comprovação e, em auditoria, é exatamente o tipo de erro que suspende repasse. O documento que a spec chama de "o que fatura" está superestimando.
 - Correção: a unidade de comprovação passa a ser **paciente-deslocamento elegível**. O relatório mostra "deslocamentos elegíveis: N (de M pacientes transportados)". A viagem pode continuar recebendo uma marca "contém elegíveis", nunca "é elegível".
 
 **B3 · Imprimir de qualquer tela que não seja Impressos sai em branco.**
