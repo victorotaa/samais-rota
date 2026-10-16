@@ -23,7 +23,7 @@ O sistema existe para três finalidades, nesta ordem:
 1. **Controle operacional** — quem viaja, em qual veículo, quem embarcou e quem
    voltou; km, combustível, revisões, faltas e presenças.
 2. **Prova e prestação de contas** — o registro conferido é o documento que sustenta
-   o repasse federal (Portarias GM/MS 11.164/2026 e 11.179/2026) e a fatura ao
+   o repasse federal (Portarias GM/MS 11.164/2026 e 11.165/2026) e a fatura ao
    contratante. Elimina a "vaga fantasma".
 3. **Argumento comercial** — chegar à licitação com o mecanismo de gestão de frota
    que a portaria **exige** já pronto e demonstrável.
@@ -41,7 +41,7 @@ A operação nunca depende de conexão no campo.
 | Portaria SAS/MS **55/1999** (TFD) | Transporte + diárias p/ paciente e acompanhante; médico solicita, comissão do gestor autoriza | A lista de pacientes **nasce na regulação**, nunca na Samais; campos de nº de processo/autorização |
 | Portaria GM/MS **4.279/2010** | Transporte sanitário eletivo = sistema logístico das Redes de Atenção | Enquadramento institucional do serviço |
 | Portaria GM/MS **8.516/2025** | Financiamento de radioterapia (Agora Tem Especialistas) | Base do componente de transporte |
-| Portaria GM/MS **11.164/2026** e **11.179/2026** | Transporte p/ radioterapia e hemodiálise **>50 km** (teto 500 km), paciente + acompanhante; custeio federal fixo e variável (combustível, manutenção, seguro, RH) | Ver regras RN-05 a RN-08 abaixo — são requisitos de conformidade |
+| Portaria GM/MS **11.164/2026** e **11.165/2026** | Transporte p/ radioterapia e hemodiálise **>50 km** (teto 500 km), paciente + acompanhante; custeio federal fixo e variável (combustível, manutenção, seguro, RH) | Ver regras RN-05 a RN-08 abaixo — são requisitos de conformidade |
 
 **Exigências das portarias de 2026 que o sistema materializa:**
 - Veículo inscrito no **CNES** em até **60 dias** do recebimento.
@@ -159,12 +159,19 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 | **RN-02** | Nenhum paciente permanece no destino sem registro: reembarque é conferido no papel e lançado na baixa. (Sem rastreio em tempo real — decisão de produto.) |
 | **RN-03** | Necessidade "maca" → viagem separada em ambulância; nunca em veículo comum. |
 | **RN-04** | Alerta de revisão quando faltarem ≤ 2.000 km para o intervalo do veículo. |
-| **RN-05** | Elegibilidade a cofinanciamento federal: destino a **>50 km e ≤500 km** do município de residência, tratamento radioterapia/hemodiálise (Port. 11.164/11.179). Flag automática por viagem. |
+| **RN-05** | Elegibilidade a cofinanciamento federal: destino a **>50 km e ≤500 km** do município de residência, tratamento radioterapia/hemodiálise (Port. 11.164/11.165). Flag automática por viagem. |
 | **RN-06** | Km, custo operacional e taxa de ocupação são registros obrigatórios (mecanismo de gestão de frota exigido pela portaria). |
 | **RN-07** | Veículo federal recebido deve ter CNES registrado em até 60 dias; o sistema acompanha o prazo. |
 | **RN-08** | 3 meses sem registro de uso → repasse suspenso. Farol: verde <30 dias, âmbar 30–60, vermelho >60 sem registro comprovado. |
 | **RN-09** | Faltas recorrentes são reportadas à regulação para liberar a vaga. |
 | **RN-10** | Impressos com dado de saúde: uso restrito, descarte seguro após a baixa (LGPD). |
+
+**Regras da Portaria GM/MS 11.165/2026 (com a 11.164/2026), lidas no DOU:** módulo puro
+`regras/portaria-11165.mjs` (RE-01…RE-15, RC-01…RC-12), casos em
+`testes/casos/portaria-11165-casos.json`, teste `testes/portaria-11165.test.mjs`. Matriz artigo → campo,
+lacunas e ordem de trabalho: `samais-os/produtos/rota/portaria-11165.md`. ⚠️ O módulo ainda não está
+ligado ao console: RN-05 e RN-08 acima seguem a regra antiga (distância base→destino; farol por dias)
+até a decisão de integração.
 
 ---
 
@@ -235,7 +242,7 @@ diária/casa de apoio vinculado à viagem.
 
 **Fase 3 — Integrações (pós-contrato).**
 - Export/registro nos sistemas do SUS conforme mecanismo detalhado nas Portarias
-  11.164/11.179 (validar texto integral antes de codar).
+  11.164/11.165 (texto integral lido no DOU em 16/10/2026 — ver `regras/portaria-11165.mjs`).
 - Consulta CADSUS via credencial do ente público (nunca da Samais isolada).
 - Perfil leitura para secretaria; telemetria/GPS de frota (opcional).
 
@@ -266,7 +273,7 @@ integração CADSUS direta na fase atual.
 - **Folha de embarque**: lista por viagem com tique ida/volta e assinatura.
 - **TFD**: Tratamento Fora do Domicílio (Portaria SAS/MS 55/1999).
 - **Elegível federal**: viagem >50 km e ≤500 km p/ radioterapia/hemodiálise
-  (Portarias 11.164/11.179/2026).
+  (Portarias 11.164/11.165/2026).
 
 ---
 

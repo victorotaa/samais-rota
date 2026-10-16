@@ -10,7 +10,7 @@ description: >
   transporte [cidade]", menção a veículos doados pelo Ministério da Saúde, ou licitação/pregão de
   transporte de pacientes. O output segue o padrão da casa: HTML single-file dark Samais, Partes numeradas,
   cenários Mínimo/Base/Amplo, BDI decomposto (nunca "lucro") — MAIS a camada exclusiva desta skill:
-  a pilha de financiamento com repasse federal mensal (Portarias 11.164/11.179/2026) e o farol de
+  a pilha de financiamento com repasse federal mensal (Portarias 11.164/11.165/2026) e o farol de
   conformidade que protege esse repasse. Referência viva: demo ROTA (samais-rota.vercel.app/rota-app.html)
   e spec em docs/ROTA-SPEC.md.
 ---
@@ -38,7 +38,7 @@ dinheiro não vem ou é suspenso.
 |---|---|
 | Portaria SAS/MS **55/1999** (TFD) | Transporte + diárias p/ paciente e acompanhante; custeio municipal/estadual próprio; médico solicita, comissão autoriza |
 | Portaria GM/MS **4.279/2010** | Transporte eletivo = sistema logístico das Redes de Atenção |
-| Portarias GM/MS **8.516/2025 → 11.164 e 11.179/2026** | Cofinanciamento federal p/ radioterapia e hemodiálise **>50 km e ≤500 km** (paciente + acompanhante) |
+| Portarias GM/MS **8.516/2025 → 11.164 e 11.165/2026** | Cofinanciamento federal p/ radioterapia e hemodiálise **>50 km e ≤500 km** (paciente + acompanhante) |
 
 **Mecânica do dinheiro federal (verificada):**
 - **Capital:** União **doa** o veículo (Caminhos da Saúde/Novo PAC — 3.300 veículos).

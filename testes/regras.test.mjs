@@ -38,7 +38,7 @@ ok('rótulos derivados na carga', est.pacientes[7].nec==='Maca — ambulância')
 ok('autorização vem do seed', est.pacientes[0].aut.proc==='TFD-2026/0140');
 ok('seed não é mutado pela sessão', ROTA.SEED.pacientes[0].trat===undefined);
 
-console.log('\n── elegibilidade federal (Port. 11.164/11.179) ──');
+console.log('\n── elegibilidade federal (Port. 11.164/11.165) ──');
 const R = ROTA.regras;
 const D = est.destinos;
 ok('hemodiálise a 8 km NÃO é elegível', !R.elegivelFederal({tratKey:'hemodialise',dest:'dialise'}));

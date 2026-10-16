@@ -1,0 +1,380 @@
+{
+  "meta": {
+    "titulo": "Casos de teste — Portaria GM/MS 11.165/2026 no ROTA-OS",
+    "especificacao": "produtos/rota/portaria-11165.md",
+    "data": "2026-10-16",
+    "destino": "samais-rota/testes/ (portar para o estilo de testes/regras.test.mjs: uma seção por grupo, eq(nome, obtido, esperado))",
+    "fontes": {
+      "11.165": "https://www.in.gov.br/web/dou/-/portaria-gm/ms-n-11.165-de-11-de-maio-de-2026-704763675",
+      "11.164": "https://www.in.gov.br/web/dou/-/portaria-gm/ms-n-11.164-de-11-de-maio-de-2026-704757440",
+      "SAES 4.904": "https://www.in.gov.br/web/dou/-/portaria-saes/ms-n-4.904-de-14-de-setembro-de-2026-731885555",
+      "Lei 12.732": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12732.htm",
+      "SIGTAP 08.03.01.015-0": "http://sigtap.datasus.gov.br/tabela-unificada/app/sec/procedimento/exibir/0803010150/10/2026",
+      "SIGTAP 08.03.01.016-8": "http://sigtap.datasus.gov.br/tabela-unificada/app/sec/procedimento/exibir/0803010168/10/2026"
+    },
+    "procedencia": "Cada caso traz a regra (RE-xx/RC-xx) e o marcador da regra: 'lido' (texto oficial) ou 'derivado' (regra declarada na especificação). Caso 'derivado' cai se a SAES responder diferente (lacunas L2-L6 da especificação).",
+    "convencoes": {
+      "comparacao": "Comparar só as chaves presentes em 'esperado'. Listas de regras em ordem crescente de id.",
+      "combinacao_de_estados": "Qualquer regra violada -> 'inelegivel' (ou 'nao_conforme'); senão, qualquer dado ausente -> 'pendente' (ou 'a_conferir'); senão 'elegivel'. Lacuna nunca vira zero nem vira 'inelegivel'.",
+      "datas": "Datas ISO fixas. 'hoje' é parâmetro do caso; em produção vem do relógio de Brasília (America/Sao_Paulo), nunca de toISOString().slice(0,10). Prazos em dias corridos, limite inclusive.",
+      "identificadores": "Todos sintéticos. IBGE 99xxxxx e UF 'ZA'/'ZB' não existem. Nenhum CPF: o caso usa cpf_presente true/false. Nenhuma pessoa real.",
+      "distancia": "distancia_km é a distância de município de residência a município sede do serviço, lida da fonte oficial; o teste a recebe pronta. null = não levantada."
+    },
+    "chamada": "Cada função recebe UM objeto com a forma da 'entrada' do caso (ex.: faixaDistancia({modalidade, km}), prazoCNES({hoje, veiculo})). Implementação: samais-rota/regras/portaria-11165.mjs.",
+    "funcoes_propostas": {
+      "elegibilidade11165": "(d) -> {status, regras_violadas[], pendencias[], procedimento, faixa}",
+      "faixaDistancia": "(modalidade, km) -> int | null",
+      "procedimentoSigtap": "(modalidade) -> '08.03.01.015-0' | '08.03.01.016-8' | null",
+      "validarLinhaBPAI": "(linha) -> {valida, erros[]}",
+      "frequenciaHD": "(semana) -> {excedente_idas, excedente_voltas}",
+      "acompanhantesViagem": "(viagem) -> {limite, excedente}",
+      "etapasRadioterapia": "(paciente) -> {financiaveis, excedentes, pendentes}",
+      "farolProducao": "(historico) -> {meses_sem_registro, estado, alerta}",
+      "prazoCNES": "(veiculo, hoje) -> {limite, dias_restantes, estado}",
+      "prazoOperacao": "(veiculo, hoje) -> {limite, dias_restantes, estado}",
+      "veiculoElegivelIncentivo": "(veiculo) -> {estado, motivo}",
+      "baseAptaIncentivo": "(base) -> {estado, faltam[]}",
+      "usoSecundario": "(viagem) -> {estado, motivos[]}",
+      "renovacao": "(veiculo, hoje) -> {estado, criterios[]}",
+      "municipioAbrangido": "(paciente, base) -> {estado}",
+      "registroArt27": "(deslocamento) -> {estado, faltam[]}"
+    },
+    "parametros": {
+      "distancia_minima_km_exclusiva": 50.0,
+      "distancia_maxima_km_inclusiva": 500.0,
+      "procedimentos": {"radioterapia": "08.03.01.015-0", "hemodialise": "08.03.01.016-8"},
+      "quantidade_maxima_bpai": 12,
+      "idade_maxima": 130,
+      "faixas_hemodialise_limite_superior_inclusivo_km": {"2": 100, "3": 150, "4": 500},
+      "faixas_radioterapia_limite_superior_inclusivo_km": {"2": 200, "3": 300, "4": 400, "5": 500},
+      "hd_max_idas_semana": 3,
+      "hd_max_voltas_semana": 3,
+      "hd_acompanhantes_fracao": 0.10,
+      "cnes_prazo_dias": 60,
+      "operacao_prazo_dias": 60,
+      "operacao_prorrogacao_dias": 30,
+      "alerta_prazo_dias": 15,
+      "suspensao_meses": 3,
+      "exclusao_meses": 6,
+      "renovacao_anos": 5,
+      "renovacao_km": 300000,
+      "renovacao_disponibilidade_minima": 0.70,
+      "nota": "Valores em R$ das faixas ficam fora deste arquivo: o teste classifica a faixa; o valor é parâmetro federal versionado, nunca preço."
+    }
+  },
+  "grupos": [
+    {
+      "secao": "elegibilidade (11.165 art. 1º, 13 §3º; 11.164 art. 23; Lei 12.732)",
+      "funcao": "elegibilidade11165",
+      "casos": [
+        {"id": "EL-01", "regra": "RE-03", "procedencia": "lido", "nome": "hemodiálise a 49,9 km NÃO é elegível",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 49.9, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-03"]}},
+        {"id": "EL-02", "regra": "RE-03", "procedencia": "lido", "nome": "hemodiálise a exatos 50,0 km NÃO é elegível (a norma diz acima de cinquenta)",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 50.0, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-03"]}},
+        {"id": "EL-03", "regra": "RE-03", "procedencia": "lido", "nome": "hemodiálise a 50,1 km é elegível, código 08.03.01.016-8, faixa 2",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 50.1, "agendamento_confirmado": true},
+         "esperado": {"status": "elegivel", "regras_violadas": [], "pendencias": [], "procedimento": "08.03.01.016-8", "faixa": 2}},
+        {"id": "EL-04", "regra": "RE-03", "procedencia": "lido", "nome": "radioterapia a 50,1 km é elegível, código 08.03.01.015-0, faixa 2",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 50.1, "agendamento_confirmado": true},
+         "esperado": {"status": "elegivel", "procedimento": "08.03.01.015-0", "faixa": 2}},
+        {"id": "EL-05", "regra": "RE-08", "procedencia": "lido", "nome": "radioterapia a 252 km é elegível, faixa 3",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 252, "agendamento_confirmado": true},
+         "esperado": {"status": "elegivel", "procedimento": "08.03.01.015-0", "faixa": 3}},
+        {"id": "EL-06", "regra": "RE-04", "procedencia": "lido", "nome": "radioterapia a exatos 500,0 km é elegível (teto inclusivo), faixa 5",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 500.0, "agendamento_confirmado": true},
+         "esperado": {"status": "elegivel", "faixa": 5}},
+        {"id": "EL-07", "regra": "RE-04", "procedencia": "derivado", "nome": "radioterapia a 500,1 km NÃO é elegível (teto de 500 km aplicado às duas modalidades)",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 500.1, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-04"]}},
+        {"id": "EL-08", "regra": "RE-04", "procedencia": "lido", "nome": "hemodiálise a 600 km NÃO é elegível",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 600, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-04"]}},
+        {"id": "EL-09", "regra": "RE-01", "procedencia": "lido", "nome": "quimioterapia a 252 km NÃO é elegível e não tem procedimento",
+         "entrada": {"modalidade": "quimioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 252, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-01"], "procedimento": null, "faixa": null}},
+        {"id": "EL-10", "regra": "RE-01", "procedencia": "lido", "nome": "consulta especializada a 148 km NÃO é elegível",
+         "entrada": {"modalidade": "consulta", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900004", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 148, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-01"]}},
+        {"id": "EL-11", "regra": "RE-02", "procedencia": "lido", "nome": "hemodiálise a 62 km dentro do MESMO município NÃO é elegível (ente federativo diverso)",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900001", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 62, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-02"]}},
+        {"id": "EL-12", "regra": "RE-05", "procedencia": "derivado", "nome": "hemodiálise interestadual a 120 km NÃO é elegível (âmbito estadual)",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900101", "uf": "ZB", "habilitacao_conferida": true}, "distancia_km": 120, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-05"]}},
+        {"id": "EL-13", "regra": "RE-05", "procedencia": "lido", "nome": "radioterapia interestadual a 180 km é elegível, faixa 2",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900101", "uf": "ZB", "habilitacao_conferida": true}, "distancia_km": 180, "agendamento_confirmado": true},
+         "esperado": {"status": "elegivel", "procedimento": "08.03.01.015-0", "faixa": 2}},
+        {"id": "EL-14", "regra": "RE-03", "procedencia": "derivado", "nome": "distância não levantada fica PENDENTE, nunca vira 0 km nem inelegível",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": null, "agendamento_confirmado": true},
+         "esperado": {"status": "pendente", "regras_violadas": [], "pendencias": ["RE-03"], "procedimento": null, "faixa": null}},
+        {"id": "EL-15", "regra": "RE-06", "procedencia": "lido", "nome": "radioterapia em serviço NÃO habilitado não é elegível",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": false}, "distancia_km": 252, "agendamento_confirmado": true},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-06"]}},
+        {"id": "EL-16", "regra": "RE-06", "procedencia": "derivado", "nome": "hemodiálise com habilitação 15.04 não conferida fica PENDENTE",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": null}, "distancia_km": 80, "agendamento_confirmado": true},
+         "esperado": {"status": "pendente", "pendencias": ["RE-06"]}},
+        {"id": "EL-17", "regra": "RE-07", "procedencia": "lido", "nome": "tratamento NÃO confirmado: o deslocamento não entra no transporte da portaria",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 80, "agendamento_confirmado": false},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-07"]}},
+        {"id": "EL-18", "regra": "RE-07", "procedencia": "derivado", "nome": "agendamento sem resposta do serviço fica PENDENTE",
+         "entrada": {"modalidade": "radioterapia", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900003", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 252, "agendamento_confirmado": null},
+         "esperado": {"status": "pendente", "pendencias": ["RE-07"]}},
+        {"id": "EL-19", "regra": "RE-03,RE-07", "procedencia": "lido", "nome": "duas violações aparecem as duas, em ordem de id",
+         "entrada": {"modalidade": "hemodialise", "residencia": {"ibge": "9900001", "uf": "ZA"}, "servico": {"municipio_ibge": "9900002", "uf": "ZA", "habilitacao_conferida": true}, "distancia_km": 49.9, "agendamento_confirmado": false},
+         "esperado": {"status": "inelegivel", "regras_violadas": ["RE-03", "RE-07"]}}
+      ]
+    },
+    {
+      "secao": "faixa de distância (11.164 Anexo IV; vãos decimais por limite superior inclusivo)",
+      "funcao": "faixaDistancia",
+      "casos": [
+        {"id": "FX-01", "regra": "RE-08", "procedencia": "lido", "nome": "hemodiálise 50,0 km não tem faixa financiável", "entrada": {"modalidade": "hemodialise", "km": 50.0}, "esperado": {"faixa": null}},
+        {"id": "FX-02", "regra": "RE-08", "procedencia": "derivado", "nome": "hemodiálise 50,1 km cai na faixa 2 (vão de 50 a 51)", "entrada": {"modalidade": "hemodialise", "km": 50.1}, "esperado": {"faixa": 2}},
+        {"id": "FX-03", "regra": "RE-08", "procedencia": "lido", "nome": "hemodiálise 100 km é faixa 2", "entrada": {"modalidade": "hemodialise", "km": 100}, "esperado": {"faixa": 2}},
+        {"id": "FX-04", "regra": "RE-08", "procedencia": "derivado", "nome": "hemodiálise 100,5 km é faixa 3", "entrada": {"modalidade": "hemodialise", "km": 100.5}, "esperado": {"faixa": 3}},
+        {"id": "FX-05", "regra": "RE-08", "procedencia": "lido", "nome": "hemodiálise 150 km é faixa 3", "entrada": {"modalidade": "hemodialise", "km": 150}, "esperado": {"faixa": 3}},
+        {"id": "FX-06", "regra": "RE-08", "procedencia": "derivado", "nome": "hemodiálise 150,5 km é faixa 4 (vão de 150 a 151)", "entrada": {"modalidade": "hemodialise", "km": 150.5}, "esperado": {"faixa": 4}},
+        {"id": "FX-07", "regra": "RE-08", "procedencia": "lido", "nome": "hemodiálise 151 km é faixa 4", "entrada": {"modalidade": "hemodialise", "km": 151}, "esperado": {"faixa": 4}},
+        {"id": "FX-08", "regra": "RE-08", "procedencia": "lido", "nome": "hemodiálise 500 km é faixa 4", "entrada": {"modalidade": "hemodialise", "km": 500}, "esperado": {"faixa": 4}},
+        {"id": "FX-09", "regra": "RE-08", "procedencia": "derivado", "nome": "radioterapia 50,1 km é faixa 2", "entrada": {"modalidade": "radioterapia", "km": 50.1}, "esperado": {"faixa": 2}},
+        {"id": "FX-10", "regra": "RE-08", "procedencia": "lido", "nome": "radioterapia 200 km é faixa 2", "entrada": {"modalidade": "radioterapia", "km": 200}, "esperado": {"faixa": 2}},
+        {"id": "FX-11", "regra": "RE-08", "procedencia": "derivado", "nome": "radioterapia 200,5 km é faixa 3", "entrada": {"modalidade": "radioterapia", "km": 200.5}, "esperado": {"faixa": 3}},
+        {"id": "FX-12", "regra": "RE-08", "procedencia": "lido", "nome": "radioterapia 300 km é faixa 3", "entrada": {"modalidade": "radioterapia", "km": 300}, "esperado": {"faixa": 3}},
+        {"id": "FX-13", "regra": "RE-08", "procedencia": "lido", "nome": "radioterapia 400 km é faixa 4", "entrada": {"modalidade": "radioterapia", "km": 400}, "esperado": {"faixa": 4}},
+        {"id": "FX-14", "regra": "RE-08", "procedencia": "derivado", "nome": "radioterapia 400,5 km é faixa 5", "entrada": {"modalidade": "radioterapia", "km": 400.5}, "esperado": {"faixa": 5}},
+        {"id": "FX-15", "regra": "RE-08", "procedencia": "lido", "nome": "radioterapia 401 km é faixa 5", "entrada": {"modalidade": "radioterapia", "km": 401}, "esperado": {"faixa": 5}}
+      ]
+    },
+    {
+      "secao": "procedimento SIGTAP (11.165 arts. 18 a 20)",
+      "funcao": "procedimentoSigtap",
+      "casos": [
+        {"id": "PR-01", "regra": "RE-12", "procedencia": "lido", "nome": "radioterapia registra 08.03.01.015-0", "entrada": {"modalidade": "radioterapia"}, "esperado": {"procedimento": "08.03.01.015-0"}},
+        {"id": "PR-02", "regra": "RE-12", "procedencia": "lido", "nome": "hemodiálise registra 08.03.01.016-8", "entrada": {"modalidade": "hemodialise"}, "esperado": {"procedimento": "08.03.01.016-8"}},
+        {"id": "PR-03", "regra": "RE-12", "procedencia": "lido", "nome": "quimioterapia não tem procedimento da portaria", "entrada": {"modalidade": "quimioterapia"}, "esperado": {"procedimento": null}}
+      ]
+    },
+    {
+      "secao": "linha do BPA-I (SIGTAP 10/2026: BPA-I, quantidade máxima 12, CPF obrigatório, 0 a 130 anos)",
+      "funcao": "validarLinhaBPAI",
+      "casos": [
+        {"id": "BP-01", "regra": "RE-12..RE-15", "procedencia": "lido", "nome": "linha completa de hemodiálise é válida",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.016-8", "cns_presente": true, "cpf_presente": true, "quantidade": 12, "idade": 64, "registro_art27_completo": true},
+         "esperado": {"valida": true, "erros": []}},
+        {"id": "BP-02", "regra": "RE-12", "procedencia": "lido", "nome": "procedimento FORA dos dois códigos é rejeitado",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "00.00.00.000-0", "cns_presente": true, "cpf_presente": true, "quantidade": 1, "idade": 64, "registro_art27_completo": true},
+         "esperado": {"valida": false, "erros": ["RE-12"]}},
+        {"id": "BP-03", "regra": "RE-12", "procedencia": "lido", "nome": "código de radioterapia em deslocamento de hemodiálise é rejeitado",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.015-0", "cns_presente": true, "cpf_presente": true, "quantidade": 1, "idade": 64, "registro_art27_completo": true},
+         "esperado": {"valida": false, "erros": ["RE-12"]}},
+        {"id": "BP-04", "regra": "RE-14", "procedencia": "lido", "nome": "linha sem CPF é rejeitada (atributo Obrigatório CPF)",
+         "entrada": {"modalidade": "radioterapia", "procedimento": "08.03.01.015-0", "cns_presente": true, "cpf_presente": false, "quantidade": 2, "idade": 58, "registro_art27_completo": true},
+         "esperado": {"valida": false, "erros": ["RE-14"]}},
+        {"id": "BP-05", "regra": "RE-13", "procedencia": "lido", "nome": "quantidade 12 passa (limite inclusivo)",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.016-8", "cns_presente": true, "cpf_presente": true, "quantidade": 12, "idade": 70, "registro_art27_completo": true},
+         "esperado": {"valida": true}},
+        {"id": "BP-06", "regra": "RE-13", "procedencia": "derivado", "nome": "quantidade 13 é rejeitada (unidade de contagem a confirmar, lacuna L2)",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.016-8", "cns_presente": true, "cpf_presente": true, "quantidade": 13, "idade": 70, "registro_art27_completo": true},
+         "esperado": {"valida": false, "erros": ["RE-13"]}},
+        {"id": "BP-07", "regra": "RE-15", "procedencia": "lido", "nome": "idade 131 é rejeitada",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.016-8", "cns_presente": true, "cpf_presente": true, "quantidade": 1, "idade": 131, "registro_art27_completo": true},
+         "esperado": {"valida": false, "erros": ["RE-15"]}},
+        {"id": "BP-08", "regra": "RC-08", "procedencia": "lido", "nome": "registro do art. 27 incompleto bloqueia a exportação",
+         "entrada": {"modalidade": "hemodialise", "procedimento": "08.03.01.016-8", "cns_presente": true, "cpf_presente": true, "quantidade": 1, "idade": 64, "registro_art27_completo": false},
+         "esperado": {"valida": false, "erros": ["RC-08"]}}
+      ]
+    },
+    {
+      "secao": "frequência da hemodiálise (art. 16 parágrafo único: até 3 idas e 3 voltas por semana)",
+      "funcao": "frequenciaHD",
+      "casos": [
+        {"id": "FQ-01", "regra": "RE-09", "procedencia": "lido", "nome": "3 idas e 3 voltas na semana: nada excede", "entrada": {"paciente": "PAC-SINT-001", "semana": "2026-W41", "idas": 3, "voltas": 3}, "esperado": {"excedente_idas": 0, "excedente_voltas": 0}},
+        {"id": "FQ-02", "regra": "RE-09", "procedencia": "lido", "nome": "4 idas e 4 voltas: 1 de cada fica fora do financiável", "entrada": {"paciente": "PAC-SINT-001", "semana": "2026-W41", "idas": 4, "voltas": 4}, "esperado": {"excedente_idas": 1, "excedente_voltas": 1}},
+        {"id": "FQ-03", "regra": "RE-09", "procedencia": "lido", "nome": "2 idas e 2 voltas: nada excede", "entrada": {"paciente": "PAC-SINT-002", "semana": "2026-W41", "idas": 2, "voltas": 2}, "esperado": {"excedente_idas": 0, "excedente_voltas": 0}},
+        {"id": "FQ-04", "regra": "RE-09", "procedencia": "lido", "nome": "3 idas e 4 voltas: excede só a volta", "entrada": {"paciente": "PAC-SINT-003", "semana": "2026-W41", "idas": 3, "voltas": 4}, "esperado": {"excedente_idas": 0, "excedente_voltas": 1}}
+      ]
+    },
+    {
+      "secao": "acompanhantes por viagem (art. 16 parágrafo único: até 10% na hemodiálise; arredondamento para baixo)",
+      "funcao": "acompanhantesViagem",
+      "casos": [
+        {"id": "AC-01", "regra": "RE-10", "procedencia": "derivado", "nome": "hemodiálise com 8 pacientes: limite 0, o 1 acompanhante excede", "entrada": {"modalidade": "hemodialise", "pacientes": 8, "acompanhantes": 1}, "esperado": {"limite": 0, "excedente": 1}},
+        {"id": "AC-02", "regra": "RE-10", "procedencia": "lido", "nome": "hemodiálise com 10 pacientes: limite 1", "entrada": {"modalidade": "hemodialise", "pacientes": 10, "acompanhantes": 1}, "esperado": {"limite": 1, "excedente": 0}},
+        {"id": "AC-03", "regra": "RE-10", "procedencia": "derivado", "nome": "hemodiálise com 19 pacientes e 2 acompanhantes: limite 1, excede 1", "entrada": {"modalidade": "hemodialise", "pacientes": 19, "acompanhantes": 2}, "esperado": {"limite": 1, "excedente": 1}},
+        {"id": "AC-04", "regra": "RE-10", "procedencia": "lido", "nome": "hemodiálise com 20 pacientes: limite 2", "entrada": {"modalidade": "hemodialise", "pacientes": 20, "acompanhantes": 2}, "esperado": {"limite": 2, "excedente": 0}},
+        {"id": "AC-05", "regra": "RE-10", "procedencia": "lido", "nome": "viagem vazia não gera excedente", "entrada": {"modalidade": "hemodialise", "pacientes": 0, "acompanhantes": 0}, "esperado": {"limite": 0, "excedente": 0}},
+        {"id": "AC-06", "regra": "RE-10", "procedencia": "lido", "nome": "radioterapia não tem teto de acompanhante (art. 15 parágrafo único)", "entrada": {"modalidade": "radioterapia", "pacientes": 5, "acompanhantes": 5}, "esperado": {"limite": null, "excedente": 0}}
+      ]
+    },
+    {
+      "secao": "etapas da radioterapia (art. 15 parágrafo único: 1 ida e volta de planejamento e 1 de tratamento)",
+      "funcao": "etapasRadioterapia",
+      "casos": [
+        {"id": "RT-01", "regra": "RE-11", "procedencia": "lido", "nome": "1 planejamento e 1 tratamento: 2 financiáveis", "entrada": {"paciente": "PAC-SINT-010", "idas_e_voltas": [{"etapa": "planejamento"}, {"etapa": "tratamento"}]}, "esperado": {"financiaveis": 2, "excedentes": 0, "pendentes": 0}},
+        {"id": "RT-02", "regra": "RE-11", "procedencia": "derivado", "nome": "transporte diário: 1 planejamento e 20 de tratamento dão 2 financiáveis e 19 operacionais (lacuna L4)", "entrada": {"paciente": "PAC-SINT-011", "idas_e_voltas": [{"etapa": "planejamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}, {"etapa": "tratamento"}]}, "esperado": {"financiaveis": 2, "excedentes": 19, "pendentes": 0}},
+        {"id": "RT-03", "regra": "RE-11", "procedencia": "lido", "nome": "2 planejamentos: 1 financiável e 1 excedente", "entrada": {"paciente": "PAC-SINT-012", "idas_e_voltas": [{"etapa": "planejamento"}, {"etapa": "planejamento"}]}, "esperado": {"financiaveis": 1, "excedentes": 1, "pendentes": 0}},
+        {"id": "RT-04", "regra": "RE-11", "procedencia": "derivado", "nome": "etapa não informada fica pendente, não vira tratamento", "entrada": {"paciente": "PAC-SINT-013", "idas_e_voltas": [{"etapa": null}]}, "esperado": {"financiaveis": 0, "excedentes": 0, "pendentes": 1}}
+      ]
+    },
+    {
+      "secao": "farol de produção por competência (art. 21 §2º: 3 meses suspendem, 6 excluem)",
+      "funcao": "farolProducao",
+      "casos": [
+        {"id": "FP-01", "regra": "RC-06", "procedencia": "lido", "nome": "todas as competências com registro: em dia",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 44}, {"competencia": "2026-08", "linhas_bpai_enviadas": 39}, {"competencia": "2026-09", "linhas_bpai_enviadas": 42}]},
+         "esperado": {"meses_sem_registro": 0, "estado": "em_dia", "alerta": false}},
+        {"id": "FP-02", "regra": "RC-06", "procedencia": "derivado", "nome": "1 mês sem registro: atenção",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 44}, {"competencia": "2026-08", "linhas_bpai_enviadas": 39}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0}]},
+         "esperado": {"meses_sem_registro": 1, "estado": "atencao", "alerta": false}},
+        {"id": "FP-03", "regra": "RC-06", "procedencia": "derivado", "nome": "2 meses sem registro: risco, com ALERTA antes do 3º mês",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 44}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0}]},
+         "esperado": {"meses_sem_registro": 2, "estado": "risco", "alerta": true}},
+        {"id": "FP-04", "regra": "RC-06", "procedencia": "lido", "nome": "3 meses seguidos sem registro: suspenso",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0}]},
+         "esperado": {"meses_sem_registro": 3, "estado": "suspenso"}},
+        {"id": "FP-05", "regra": "RC-06", "procedencia": "lido", "nome": "5 meses seguidos sem registro: ainda suspenso",
+         "entrada": {"inicio_incentivo": "2026-04", "competencias_fechadas": [{"competencia": "2026-04", "linhas_bpai_enviadas": 30}, {"competencia": "2026-05", "linhas_bpai_enviadas": 0}, {"competencia": "2026-06", "linhas_bpai_enviadas": 0}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0}]},
+         "esperado": {"meses_sem_registro": 5, "estado": "suspenso"}},
+        {"id": "FP-06", "regra": "RC-06", "procedencia": "lido", "nome": "6 meses seguidos sem registro: excluído",
+         "entrada": {"inicio_incentivo": "2026-04", "competencias_fechadas": [{"competencia": "2026-04", "linhas_bpai_enviadas": 0}, {"competencia": "2026-05", "linhas_bpai_enviadas": 0}, {"competencia": "2026-06", "linhas_bpai_enviadas": 0}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0}]},
+         "esperado": {"meses_sem_registro": 6, "estado": "excluido"}},
+        {"id": "FP-07", "regra": "RC-06", "procedencia": "lido", "nome": "3 meses sem registro e depois a retomada: volta a em dia",
+         "entrada": {"inicio_incentivo": "2026-05", "competencias_fechadas": [{"competencia": "2026-05", "linhas_bpai_enviadas": 22}, {"competencia": "2026-06", "linhas_bpai_enviadas": 0}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 18}]},
+         "esperado": {"meses_sem_registro": 0, "estado": "em_dia"}},
+        {"id": "FP-08", "regra": "RC-06", "procedencia": "derivado", "nome": "6 meses sem registro e depois a retomada: a exclusão persiste",
+         "entrada": {"inicio_incentivo": "2026-03", "competencias_fechadas": [{"competencia": "2026-03", "linhas_bpai_enviadas": 0}, {"competencia": "2026-04", "linhas_bpai_enviadas": 0}, {"competencia": "2026-05", "linhas_bpai_enviadas": 0}, {"competencia": "2026-06", "linhas_bpai_enviadas": 0}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0}, {"competencia": "2026-09", "linhas_bpai_enviadas": 25}]},
+         "esperado": {"meses_sem_registro": 0, "estado": "excluido"}},
+        {"id": "FP-09", "regra": "RC-05", "procedencia": "derivado", "nome": "competência sem informação de remessa fica A CONFERIR, não conta como zero",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 44}, {"competencia": "2026-08", "linhas_bpai_enviadas": 39}, {"competencia": "2026-09", "linhas_bpai_enviadas": null}]},
+         "esperado": {"estado": "a_conferir"}},
+        {"id": "FP-10", "regra": "RC-05", "procedencia": "lido", "nome": "baixa interna sem remessa enviada CONTA como mês sem registro",
+         "entrada": {"inicio_incentivo": "2026-06", "competencias_fechadas": [{"competencia": "2026-06", "linhas_bpai_enviadas": 41}, {"competencia": "2026-07", "linhas_bpai_enviadas": 44}, {"competencia": "2026-08", "linhas_bpai_enviadas": 0, "baixas_internas": 40}, {"competencia": "2026-09", "linhas_bpai_enviadas": 0, "baixas_internas": 38}]},
+         "esperado": {"meses_sem_registro": 2, "estado": "risco", "alerta": true}},
+        {"id": "FP-11", "regra": "RC-06", "procedencia": "derivado", "nome": "competências anteriores ao início do incentivo não contam",
+         "entrada": {"inicio_incentivo": "2026-08", "competencias_fechadas": [{"competencia": "2026-05", "linhas_bpai_enviadas": 0}, {"competencia": "2026-06", "linhas_bpai_enviadas": 0}, {"competencia": "2026-07", "linhas_bpai_enviadas": 0}, {"competencia": "2026-08", "linhas_bpai_enviadas": 12}, {"competencia": "2026-09", "linhas_bpai_enviadas": 15}]},
+         "esperado": {"meses_sem_registro": 0, "estado": "em_dia"}},
+        {"id": "FP-12", "regra": "RC-06", "procedencia": "derivado", "nome": "incentivo iniciado na competência aberta: nada fechado ainda",
+         "entrada": {"inicio_incentivo": "2026-10", "competencias_fechadas": []},
+         "esperado": {"meses_sem_registro": 0, "estado": "sem_competencia_fechada", "alerta": false}}
+      ]
+    },
+    {
+      "secao": "prazo do CNES (art. 11 III; SAES 4.904 art. 2º: 60 dias do recebimento)",
+      "funcao": "prazoCNES",
+      "casos": [
+        {"id": "CN-01", "regra": "RC-02", "procedencia": "lido", "nome": "recebido em 01/10, sem CNES: no prazo, 45 dias restantes", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-01", "data_recebimento": "2026-10-01", "cnes_inscrito_em": null}}, "esperado": {"limite": "2026-11-30", "dias_restantes": 45, "estado": "no_prazo"}},
+        {"id": "CN-02", "regra": "RC-02", "procedencia": "derivado", "nome": "recebido em 01/09, sem CNES: atenção, 15 dias restantes", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-02", "data_recebimento": "2026-09-01", "cnes_inscrito_em": null}}, "esperado": {"limite": "2026-10-31", "dias_restantes": 15, "estado": "atencao"}},
+        {"id": "CN-03", "regra": "RC-02", "procedencia": "lido", "nome": "recebido em 01/08, sem CNES: vencido", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-03", "data_recebimento": "2026-08-01", "cnes_inscrito_em": null}}, "esperado": {"limite": "2026-09-30", "estado": "vencido"}},
+        {"id": "CN-04", "regra": "RC-02", "procedencia": "lido", "nome": "inscrito dentro do prazo: cumprido", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-04", "data_recebimento": "2026-08-01", "cnes_inscrito_em": "2026-09-15"}}, "esperado": {"estado": "cumprido"}},
+        {"id": "CN-05", "regra": "RC-02", "procedencia": "lido", "nome": "inscrito depois do prazo: cumprido fora do prazo", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-05", "data_recebimento": "2026-08-01", "cnes_inscrito_em": "2026-10-05"}}, "esperado": {"limite": "2026-09-30", "estado": "cumprido_fora_do_prazo"}},
+        {"id": "CN-06", "regra": "RC-02", "procedencia": "derivado", "nome": "inscrito exatamente no 60º dia: cumprido (limite inclusivo)", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-06", "data_recebimento": "2026-08-17", "cnes_inscrito_em": "2026-10-16"}}, "esperado": {"limite": "2026-10-16", "estado": "cumprido"}},
+        {"id": "CN-07", "regra": "RC-02", "procedencia": "derivado", "nome": "sem data de recebimento: a conferir, nunca prazo digitado", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-07", "data_recebimento": null, "cnes_inscrito_em": null}}, "esperado": {"limite": null, "estado": "a_conferir"}}
+      ]
+    },
+    {
+      "secao": "prazo de operação (art. 10 §3º: 60 dias, prorrogáveis por 30)",
+      "funcao": "prazoOperacao",
+      "casos": [
+        {"id": "OP-01", "regra": "RC-03", "procedencia": "lido", "nome": "primeira viagem dentro dos 60 dias: cumprido", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-11", "data_recebimento": "2026-08-01", "prorrogacao": false, "primeira_viagem_concluida": "2026-09-20"}}, "esperado": {"limite": "2026-09-30", "estado": "cumprido"}},
+        {"id": "OP-02", "regra": "RC-03", "procedencia": "lido", "nome": "sem viagem e sem prorrogação depois de 60 dias: vencido", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-12", "data_recebimento": "2026-07-01", "prorrogacao": false, "primeira_viagem_concluida": null}}, "esperado": {"limite": "2026-08-30", "estado": "vencido"}},
+        {"id": "OP-03", "regra": "RC-03", "procedencia": "lido", "nome": "com prorrogação registrada, o limite vai a 90 dias: atenção", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-13", "data_recebimento": "2026-08-01", "prorrogacao": true, "primeira_viagem_concluida": null}}, "esperado": {"limite": "2026-10-30", "dias_restantes": 14, "estado": "atencao"}},
+        {"id": "OP-04", "regra": "RC-03", "procedencia": "lido", "nome": "primeira viagem depois do limite, sem prorrogação: cumprido fora do prazo", "entrada": {"hoje": "2026-10-16", "veiculo": {"id": "VEI-SINT-14", "data_recebimento": "2026-08-01", "prorrogacao": false, "primeira_viagem_concluida": "2026-10-10"}}, "esperado": {"limite": "2026-09-30", "estado": "cumprido_fora_do_prazo"}}
+      ]
+    },
+    {
+      "secao": "veículo elegível ao incentivo (art. 14 parágrafo único; NT Conjunta 153/2026)",
+      "funcao": "veiculoElegivelIncentivo",
+      "casos": [
+        {"id": "VE-01", "regra": "RC-01", "procedencia": "lido", "nome": "van doada pelo MS para hemodiálise é elegível", "entrada": {"classe": "van", "doado_ms": true, "finalidade_doacao": "hemodialise"}, "esperado": {"estado": "elegivel"}},
+        {"id": "VE-02", "regra": "RC-01", "procedencia": "lido", "nome": "micro-ônibus doado pelo MS para radioterapia é elegível", "entrada": {"classe": "micro", "doado_ms": true, "finalidade_doacao": "radioterapia"}, "esperado": {"estado": "elegivel"}},
+        {"id": "VE-03", "regra": "RC-01", "procedencia": "lido", "nome": "ambulância tipo A doada pelo MS opera, mas NÃO entra no incentivo", "entrada": {"classe": "ambulancia", "doado_ms": true, "finalidade_doacao": "radioterapia"}, "esperado": {"estado": "nao_elegivel", "motivo": "classe"}},
+        {"id": "VE-04", "regra": "RC-01", "procedencia": "lido", "nome": "van locada ou própria NÃO entra no incentivo", "entrada": {"classe": "van", "doado_ms": false, "finalidade_doacao": null}, "esperado": {"estado": "nao_elegivel", "motivo": "origem"}},
+        {"id": "VE-05", "regra": "RC-01", "procedencia": "derivado", "nome": "van doada pelo MS da cota outros tratamentos NÃO entra no incentivo", "entrada": {"classe": "van", "doado_ms": true, "finalidade_doacao": "outros"}, "esperado": {"estado": "nao_elegivel", "motivo": "finalidade"}},
+        {"id": "VE-06", "regra": "RC-01", "procedencia": "derivado", "nome": "van doada pelo MS sem finalidade conhecida fica pendente", "entrada": {"classe": "van", "doado_ms": true, "finalidade_doacao": null}, "esperado": {"estado": "pendente"}},
+        {"id": "VE-07", "regra": "RC-01", "procedencia": "lido", "nome": "embarcação NÃO entra no incentivo", "entrada": {"classe": "embarcacao", "doado_ms": true, "finalidade_doacao": "hemodialise"}, "esperado": {"estado": "nao_elegivel", "motivo": "classe"}}
+      ]
+    },
+    {
+      "secao": "base apta ao incentivo (art. 14 parágrafo único, I a III); o farol só aparece se apta",
+      "funcao": "baseAptaIncentivo",
+      "casos": [
+        {"id": "BA-01", "regra": "RC-04", "procedencia": "lido", "nome": "veículo elegível com CNES, estrutura de gestão e CIB: apta",
+         "entrada": {"veiculos": [{"estado_incentivo": "elegivel", "cnes": "cumprido"}], "estrutura_gestao_registrada": true, "deliberacao_cib": "CIB-SINT-001"},
+         "esperado": {"estado": "apta", "faltam": []}},
+        {"id": "BA-02", "regra": "RC-04", "procedencia": "lido", "nome": "sem deliberação CIB: pendente",
+         "entrada": {"veiculos": [{"estado_incentivo": "elegivel", "cnes": "cumprido"}], "estrutura_gestao_registrada": true, "deliberacao_cib": null},
+         "esperado": {"estado": "pendente", "faltam": ["deliberacao_cib"]}},
+        {"id": "BA-03", "regra": "RC-04", "procedencia": "lido", "nome": "veículo elegível ainda sem CNES: pendente",
+         "entrada": {"veiculos": [{"estado_incentivo": "elegivel", "cnes": "no_prazo"}], "estrutura_gestao_registrada": true, "deliberacao_cib": "CIB-SINT-001"},
+         "esperado": {"estado": "pendente", "faltam": ["cnes_veiculo"]}},
+        {"id": "BA-04", "regra": "RC-04", "procedencia": "derivado", "nome": "nenhum veículo elegível: o farol mostra NÃO APLICÁVEL a este contrato",
+         "entrada": {"veiculos": [{"estado_incentivo": "nao_elegivel", "cnes": "cumprido"}], "estrutura_gestao_registrada": true, "deliberacao_cib": null},
+         "esperado": {"estado": "nao_aplicavel"}}
+      ]
+    },
+    {
+      "secao": "uso secundário (art. 4º §§1º e 2º)",
+      "funcao": "usoSecundario",
+      "casos": [
+        {"id": "US-01", "regra": "RC-07", "procedencia": "lido", "nome": "secundário autorizado antes, na mesma rota, sem atraso de prioritário: conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [{"paciente": "PAC-SINT-020", "autorizado_em": "2026-10-10", "itinerario_compativel": true}], "prioritarios_atrasados_ou_cancelados": 0},
+         "esperado": {"estado": "conforme", "motivos": []}},
+        {"id": "US-02", "regra": "RC-07", "procedencia": "lido", "nome": "secundário sem autorização do gestor: não conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [{"paciente": "PAC-SINT-021", "autorizado_em": null, "itinerario_compativel": true}], "prioritarios_atrasados_ou_cancelados": 0},
+         "esperado": {"estado": "nao_conforme", "motivos": ["sem_autorizacao_previa"]}},
+        {"id": "US-03", "regra": "RC-07", "procedencia": "lido", "nome": "autorização dada depois da viagem não vale: não conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [{"paciente": "PAC-SINT-022", "autorizado_em": "2026-10-15", "itinerario_compativel": true}], "prioritarios_atrasados_ou_cancelados": 0},
+         "esperado": {"estado": "nao_conforme", "motivos": ["sem_autorizacao_previa"]}},
+        {"id": "US-04", "regra": "RC-07", "procedencia": "lido", "nome": "desvio para fora do itinerário: não conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [{"paciente": "PAC-SINT-023", "autorizado_em": "2026-10-10", "itinerario_compativel": false}], "prioritarios_atrasados_ou_cancelados": 0},
+         "esperado": {"estado": "nao_conforme", "motivos": ["itinerario_incompativel"]}},
+        {"id": "US-05", "regra": "RC-07", "procedencia": "lido", "nome": "prioritário atrasado com secundário a bordo: não conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [{"paciente": "PAC-SINT-024", "autorizado_em": "2026-10-10", "itinerario_compativel": true}], "prioritarios_atrasados_ou_cancelados": 1},
+         "esperado": {"estado": "nao_conforme", "motivos": ["prejuizo_ao_prioritario"]}},
+        {"id": "US-06", "regra": "RC-07", "procedencia": "lido", "nome": "viagem só com prioritários: conforme",
+         "entrada": {"data_viagem": "2026-10-14", "secundarios": [], "prioritarios_atrasados_ou_cancelados": 0},
+         "esperado": {"estado": "conforme", "motivos": []}}
+      ]
+    },
+    {
+      "secao": "renovação de frota (art. 12, I a III e §2º)",
+      "funcao": "renovacao",
+      "casos": [
+        {"id": "RN-01", "regra": "RC-09", "procedencia": "lido", "nome": "5 anos exatos do emplacamento: elegível a renovar", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2021-10-16", "hodometro": 120000, "disponibilidade_12m": 0.92, "laudo": false}, "base_suspensa": false}, "esperado": {"estado": "elegivel_renovacao", "criterios": ["idade"]}},
+        {"id": "RN-02", "regra": "RC-09", "procedencia": "lido", "nome": "um dia antes dos 5 anos, com km e disponibilidade normais: não", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2021-10-17", "hodometro": 120000, "disponibilidade_12m": 0.92, "laudo": false}, "base_suspensa": false}, "esperado": {"estado": "nao", "criterios": []}},
+        {"id": "RN-03", "regra": "RC-09", "procedencia": "lido", "nome": "300.000 km: elegível a renovar", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 300000, "disponibilidade_12m": 0.92, "laudo": false}, "base_suspensa": false}, "esperado": {"estado": "elegivel_renovacao", "criterios": ["km"]}},
+        {"id": "RN-04", "regra": "RC-09", "procedencia": "lido", "nome": "299.999 km: não", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 299999, "disponibilidade_12m": 0.92, "laudo": false}, "base_suspensa": false}, "esperado": {"estado": "nao", "criterios": []}},
+        {"id": "RN-05", "regra": "RC-09", "procedencia": "lido", "nome": "disponibilidade de 69% com laudo: elegível a renovar", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 90000, "disponibilidade_12m": 0.69, "laudo": true}, "base_suspensa": false}, "esperado": {"estado": "elegivel_renovacao", "criterios": ["disponibilidade"]}},
+        {"id": "RN-06", "regra": "RC-09", "procedencia": "lido", "nome": "disponibilidade de 69% sem laudo: pendente do laudo", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 90000, "disponibilidade_12m": 0.69, "laudo": false}, "base_suspensa": false}, "esperado": {"estado": "pendente", "criterios": ["disponibilidade"]}},
+        {"id": "RN-07", "regra": "RC-09", "procedencia": "lido", "nome": "disponibilidade de exatos 70%: não (a norma diz inferior a 70%)", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 90000, "disponibilidade_12m": 0.70, "laudo": true}, "base_suspensa": false}, "esperado": {"estado": "nao", "criterios": []}},
+        {"id": "RN-08", "regra": "RC-09", "procedencia": "lido", "nome": "base com portaria de suspensão: renovação bloqueada", "entrada": {"hoje": "2026-10-16", "veiculo": {"emplacado_em": "2024-01-10", "hodometro": 310000, "disponibilidade_12m": 0.92, "laudo": false}, "base_suspensa": true}, "esperado": {"estado": "bloqueado"}}
+      ]
+    },
+    {
+      "secao": "município abrangido pelo operador regional (art. 25, 4º item, b)",
+      "funcao": "municipioAbrangido",
+      "casos": [
+        {"id": "MA-01", "regra": "RC-12", "procedencia": "lido", "nome": "residente em município abrangido pela CIB entra no custeio da base", "entrada": {"paciente": {"municipio_residencia_ibge": "9900005"}, "base": {"deliberacao_cib": "CIB-SINT-001", "municipios_abrangidos": ["9900001", "9900005", "9900006"]}}, "esperado": {"estado": "dentro"}},
+        {"id": "MA-02", "regra": "RC-12", "procedencia": "lido", "nome": "residente fora dos abrangidos não entra no custeio desta base", "entrada": {"paciente": {"municipio_residencia_ibge": "9900009"}, "base": {"deliberacao_cib": "CIB-SINT-001", "municipios_abrangidos": ["9900001", "9900005", "9900006"]}}, "esperado": {"estado": "fora"}},
+        {"id": "MA-03", "regra": "RC-12", "procedencia": "derivado", "nome": "base sem deliberação CIB registrada: a conferir", "entrada": {"paciente": {"municipio_residencia_ibge": "9900005"}, "base": {"deliberacao_cib": null, "municipios_abrangidos": []}}, "esperado": {"estado": "a_conferir"}}
+      ]
+    },
+    {
+      "secao": "registro individual do art. 27",
+      "funcao": "registroArt27",
+      "casos": [
+        {"id": "R27-01", "regra": "RC-08", "procedencia": "lido", "nome": "registro com finalidade, itinerário e aproveitamento: completo",
+         "entrada": {"paciente": "PAC-SINT-030", "municipio_residencia_ibge": "9900001", "modalidade": "hemodialise", "finalidade": "prioritario_hd", "servico_cnes": "SINT-0000001", "data": "2026-10-14", "viagem": "VIA-SINT-100", "veiculo": "VEI-SINT-01", "itinerario": "ITI-SINT-01", "presente_ida": true, "presente_volta": true, "assentos": 1, "lotacao": 15},
+         "esperado": {"estado": "completo", "faltam": []}},
+        {"id": "R27-02", "regra": "RC-08", "procedencia": "lido", "nome": "sem finalidade da viagem: incompleto",
+         "entrada": {"paciente": "PAC-SINT-031", "municipio_residencia_ibge": "9900001", "modalidade": "hemodialise", "finalidade": null, "servico_cnes": "SINT-0000001", "data": "2026-10-14", "viagem": "VIA-SINT-100", "veiculo": "VEI-SINT-01", "itinerario": "ITI-SINT-01", "presente_ida": true, "presente_volta": true, "assentos": 1, "lotacao": 15},
+         "esperado": {"estado": "incompleto", "faltam": ["finalidade"]}},
+        {"id": "R27-03", "regra": "RC-08", "procedencia": "lido", "nome": "sem itinerário (compatibilidade não verificável): incompleto",
+         "entrada": {"paciente": "PAC-SINT-032", "municipio_residencia_ibge": "9900001", "modalidade": "radioterapia", "finalidade": "prioritario_rt", "servico_cnes": "SINT-0000002", "data": "2026-10-14", "viagem": "VIA-SINT-101", "veiculo": "VEI-SINT-02", "itinerario": null, "presente_ida": true, "presente_volta": true, "assentos": 2, "lotacao": 29},
+         "esperado": {"estado": "incompleto", "faltam": ["itinerario"]}}
+      ]
+    }
+  ]
+}
