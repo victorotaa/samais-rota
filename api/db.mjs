@@ -14,6 +14,10 @@ import pg from 'pg';
 /* numeric volta como string por padrão no pg — em dinheiro isso é
    virtude, em km e litros é ruído. Converte-se aqui, uma vez. */
 pg.types.setTypeParser(1700, v => v === null ? null : parseFloat(v));
+/* `date` chega como o texto AAAA-MM-DD que o banco guardou. Virar Date
+   no fuso da máquina e voltar com toISOString() pode devolver a véspera
+   ou o dia seguinte; data de calendário não tem fuso. */
+pg.types.setTypeParser(1082, v => v);
 
 let pool = null;
 
@@ -71,16 +75,21 @@ export async function comGestor({gestorId, baseId}, fn){
    não teria como ser honrado, porque esta tabela recusa UPDATE e DELETE
    de propósito. Minimização não é zelo excessivo aqui: é o que mantém as
    duas garantias compatíveis.                                        */
-const PROIBIDOS = new Set(['nome','cns','nascimento','ponto','ponto_embarque','email','telefone','senha','token']);
+const PROIBIDOS = new Set(['nome','cns','nascimento','ponto','ponto_embarque','email','telefone','senha','token',
+  'informadoPor','protocolo']);
+
+/* CPF nem como nome de campo: a API já recusa o corpo com 400; isto é a
+   segunda trava, para o dia em que alguém contornar a primeira. */
+const temCpf = k => /cpf/i.test(k);
 
 export function resumir(objeto){
-  const campos = Object.keys(objeto || {}).filter(k => !PROIBIDOS.has(k));
+  const campos = Object.keys(objeto || {}).filter(k => !PROIBIDOS.has(k) && !temCpf(k));
   const seguro = {};
   for(const k of campos){
     const v = objeto[k];
     seguro[k] = (v && typeof v === 'object') ? Array.isArray(v) ? v.length : '{...}' : v;
   }
-  return {campos: Object.keys(objeto || {}).sort(), valores: seguro};
+  return {campos: Object.keys(objeto || {}).filter(k => !temCpf(k)).sort(), valores: seguro};
 }
 
 export async function auditar(cli, {baseId, gestorId, acao, entidade, entidadeId, payload}){
@@ -119,6 +128,14 @@ export async function conferirConexao(){
     if(deriva && deriva.rowCount){
       throw new Error('isolamento inconsistente no schema: ' +
         deriva.rows.map(r => `${r.tabela} (${r.problema})`).join(', '));
+    }
+    /* CPF em lugar nenhum (decisão do Ota, 16/10/2026). A conferência é da
+       migração 0004, de que a API depende: sem ela, não sobe. */
+    const cpf = await cli.query('select * from verificar_sem_cpf()').catch(() => null);
+    if(!cpf) throw new Error('migração 0004 (Portaria 11.165) não aplicada: falta verificar_sem_cpf()');
+    if(cpf.rowCount){
+      throw new Error('o ROTA-OS não guarda CPF, e o esquema tem coluna com CPF: ' +
+        cpf.rows.map(r => `${r.tabela}.${r.coluna}`).join(', '));
     }
     return {papel};
   }finally{ cli.release() }

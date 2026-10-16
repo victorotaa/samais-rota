@@ -10,7 +10,7 @@
 -- Como rodar, num Postgres 16 limpo:
 --   createdb rota
 --   psql -d rota -v ON_ERROR_STOP=1 -f supabase/schema.sql
---   psql -d rota -v ON_ERROR_STOP=1 -f supabase/migrations/0001_auditoria_hash_chain.sql
+--   for f in supabase/migrations/000*.sql; do psql -d rota -v ON_ERROR_STOP=1 -f "$f"; done
 --   psql -d rota -f supabase/testes/rls_e_auditoria.sql
 --
 -- Esperado: 2 / 0 / erro de policy / 1 · elegíveis 1 e 1 · ocupação 13% e 8%
@@ -58,13 +58,25 @@ insert into viagens (id,base_id,chave,data,hora,destino_id,veiculo_id,km_previst
 insert into viagem_pacientes (viagem_id,paciente_id,acompanhante) values
  ('ffffffff-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000001',true),
  ('ffffffff-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000009',false);
+-- o elegivel cumpre a norma (0004): reside em 9900001, servico em 9900003 a
+-- 252 km de municipio a municipio, habilitado, sessao confirmada no dia
+update pacientes set municipio_residencia_ibge='9900001', uf_residencia='PI'
+ where base_id='11111111-1111-1111-1111-111111111111';
+update destinos set municipio_ibge='9900003', habilitacao_conferida=true
+ where id='dddddddd-0000-0000-0000-000000000001';
+insert into distancias_municipais (base_id,origem_ibge,destino_ibge,km,fonte,lido_em) values
+ ('11111111-1111-1111-1111-111111111111','9900001','9900003',252,'SINT · matriz de teste','2026-10-16');
+insert into agendamentos (base_id,paciente_id,destino_id,data,confirmado) values
+ ('11111111-1111-1111-1111-111111111111','cccccccc-0000-0000-0000-000000000001','dddddddd-0000-0000-0000-000000000001','2026-07-06',true);
 -- so o elegivel embarcou e voltou
 insert into embarques (viagem_id,paciente_id,presente_ida,presente_volta) values
  ('ffffffff-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000001',true,true),
  ('ffffffff-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000009',false,false);
 
 \echo '=== B2 no banco: a viagem e mista; a contagem e por paciente ==='
-select tratamento, km, elegivel, comprovado from deslocamentos order by tratamento;
+-- desde a 0004 a view expõe a distância de município a município (nula = a levantar)
+-- e a elegibilidade em três estados; sem esses dados, o elegível fica pendente
+select tratamento, distancia_km, elegibilidade, pendencias, elegivel, comprovado from deslocamentos order by tratamento;
 \echo '--- deslocamentos elegiveis programados / comprovados (esperado 1 / 1) ---'
 select count(*) filter (where elegivel) as elegiveis_programados,
        count(*) filter (where elegivel and comprovado) as elegiveis_comprovados,

@@ -87,6 +87,43 @@ console.log('\n── mesmo contrato da FonteSeed ──');
   ok('lancamentos nunca vem indefinido', daApi.lancamentos && typeof daApi.lancamentos === 'object');
 }
 
+/* ──────────────────────── contrato da Portaria 11.165 (etapa 1) ──
+   Desde a migração 0004 a carga da API leva, DENTRO das mesmas seis
+   chaves, o que a norma pede (docs/PORTARIA-11165-INTEGRACAO.md §5):
+   elegibilidade do paciente vinda do módulo, serviço no destino, doação
+   e prazos no veículo, pactuação e base apta na configuração. A FonteAPI
+   não pode perder nada disso no caminho, e as chaves de cima continuam
+   as da FonteSeed. Ligar na tela é a etapa 2 (desenho §8).           */
+console.log('\n── contrato da Portaria 11.165 ──');
+{
+  const ELEG = {status: 'pendente', regras_violadas: [], pendencias: ['RE-07'], procedimento: null, faixa: null};
+  const PORTARIA = {incentivo: {estado: 'elegivel', motivo: null},
+    cnes: {limite: '2026-07-19', dias_restantes: null, estado: 'cumprido'},
+    operacao: {limite: '2026-07-19', dias_restantes: null, estado: 'cumprido'},
+    renovacao: {estado: 'nao', criterios: []}};
+  const carga = JSON.parse(JSON.stringify(CARGA));
+  Object.assign(carga.pacientes[0], {munIbge: '9900001', ufRes: 'ZA', elegibilidade: ELEG, proxAgendamento: null});
+  Object.assign(carga.destinos.d1, {ibge: '9900003', uf: 'ZA', cnes: '0000002', habilitacaoConferida: true,
+    habilitacaoCodigo: null, modalidades: ['radioterapia']});
+  Object.assign(carga.veiculos[0], {doadoMs: true, finalidadeDoacao: 'radioterapia', dataRecebimento: '2026-05-20',
+    cnesEstabelecimento: '0000001', portaria: PORTARIA});
+  Object.assign(carga.config, {pactuacao: {deliberacaoCib: 'CIB-SINT-001', estruturaGestao: true,
+    municipiosAbrangidos: ['9900001'], inicioIncentivo: '2026-06', deliberacaoCibData: null},
+    baseApta: {estado: 'apta', faltam: []}, hoje: '2026-10-16'});
+
+  const {buscar} = stub([{status: 200, json: carga}]);
+  const d = await new FonteAPI({buscar, token: 't'}).carregar();
+  eq('as chaves de cima continuam as da FonteSeed',
+     Object.keys(d).sort(), Object.keys(new FonteSeed(SEED).carregar()).sort());
+  eq('a elegibilidade do módulo chega intacta', d.pacientes[0].elegibilidade, ELEG);
+  eq('e a residência do paciente', [d.pacientes[0].munIbge, d.pacientes[0].ufRes], ['9900001', 'ZA']);
+  eq('o destino leva o serviço', [d.destinos.d1.ibge, d.destinos.d1.habilitacaoConferida], ['9900003', true]);
+  eq('o veículo leva a doação e o painel da portaria', d.veiculos[0].portaria, PORTARIA);
+  eq('a configuração leva pactuação e base apta', [d.config.pactuacao.inicioIncentivo, d.config.baseApta.estado],
+     ['2026-06', 'apta']);
+  ok('nenhuma chave de CPF no contrato', !/cpf/i.test(JSON.stringify(Object.keys(d.pacientes[0]))));
+}
+
 /* ─────────────────────────────────────── presença vira embarque */
 console.log('\n── baixa ──');
 {

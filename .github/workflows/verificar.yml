@@ -1,12 +1,14 @@
 # ═══════════════════════════════════════════════════════════════════
 # ROTA · verificação automática
 #
-# Três coisas que já quebraram na mão e não podem depender de lembrança:
+# Quatro coisas que já quebraram, ou podem quebrar, e não dependem de lembrança:
 #   1. hash do CSP defasado — a página abre e o JavaScript não roda,
 #      sem erro visível;
 #   2. regra de negócio alterada sem conferir elegibilidade, farol,
 #      custo e ocupação;
-#   3. garantia de isolamento ou de auditoria enfraquecida no schema.
+#   3. garantia de isolamento ou de auditoria enfraquecida no schema;
+#   4. regra da Portaria 11.165 divergindo entre o módulo e o banco, ou
+#      CPF entrando em qualquer lugar.
 # ═══════════════════════════════════════════════════════════════════
 name: verificar
 
@@ -31,6 +33,8 @@ jobs:
         run: node testes/regras.test.mjs
       - name: Portaria GM/MS 11.165/2026 — 113 casos da especificação
         run: node testes/portaria-11165.test.mjs
+      - name: Portaria 11.165 na API — pré-BPA-I sem CPF, farol por competência, conformidade (sem banco)
+        run: node testes/integracao-11165.test.mjs
       - name: Autenticação — vetores das RFC 4226, 4648 e 6238
         run: node testes/auth.test.mjs
       - name: FonteAPI — a segunda implementação do contrato de dados
@@ -75,8 +79,12 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0002_autenticacao.sql
       - name: Migração do isolamento forçado
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0003_forcar_rls.sql
+      - name: Migração da Portaria GM/MS 11.165/2026
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/0004_portaria_11165.sql
       - name: Asserções — RLS, paciente-deslocamento, numeração, cadeia de hash
         run: psql -v ON_ERROR_STOP=1 -f supabase/testes/assercoes.sql
+      - name: Asserções da Portaria 11.165 — sem CPF, distância de município a município, lacuna não vira zero
+        run: psql -v ON_ERROR_STOP=1 -f supabase/testes/assercoes_11165.sql
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -84,6 +92,10 @@ jobs:
       - run: npm ci
       - name: Login de ponta a ponta — política de acesso contra o banco
         run: node testes/login.e2e.mjs
+        env:
+          DATABASE_URL: postgres://postgres:rota@localhost:5432/rota
+      - name: Paridade — elegibilidade da Portaria 11.165 no módulo e no banco
+        run: node testes/paridade-elegibilidade.e2e.mjs
         env:
           DATABASE_URL: postgres://postgres:rota@localhost:5432/rota
       - name: API de ponta a ponta — isolamento entre municípios pela HTTP

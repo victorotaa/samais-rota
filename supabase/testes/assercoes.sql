@@ -50,15 +50,44 @@ insert into embarques (viagem_id,paciente_id,presente_ida,presente_volta) values
   ('ffffffff-0000-0000-0000-000000000001','cccccccc-0000-0000-0000-000000000009',false,false);
 
 -- ─── 1. Elegibilidade federal é do banco, não da tela ──────────────
+-- Regra da norma (migração 0004): do MUNICÍPIO DE RESIDÊNCIA ao
+-- MUNICÍPIO SEDE DO SERVIÇO, > 50 e ≤ 500 km, ente diverso, hemodiálise
+-- na mesma UF, serviço habilitado e agendamento confirmado. Três
+-- estados: dado ausente é pendente, nunca inelegível nem 0 km.
+-- Os 19 casos do JSON e a grade de fronteira, contra o módulo, estão em
+-- testes/paridade-elegibilidade.e2e.mjs.
 do $$
+declare r record;
 begin
-  assert     elegivel_federal('radioterapia', 252), 'radioterapia a 252 km deveria ser elegivel';
-  assert     elegivel_federal('hemodialise',  51),  'hemodialise a 51 km deveria ser elegivel';
-  assert not elegivel_federal('radioterapia', 50),  'o piso e ESTRITAMENTE maior que 50 km';
-  assert not elegivel_federal('radioterapia', 501), 'o teto e 500 km';
-  assert not elegivel_federal('quimioterapia',252), 'quimioterapia nao entra na portaria';
-  assert not elegivel_federal('consulta',     252), 'consulta nao entra na portaria';
-  raise notice 'ok · elegibilidade nos seis cantos';
+  assert     elegivel_federal('radioterapia','9900001','PI','9900003','PI',true,252,true),
+             'radioterapia a 252 km de municipio a municipio deveria ser elegivel';
+  assert     elegivel_federal('hemodialise','9900001','PI','9900002','PI',true,50.1,true),
+             'hemodialise a 50,1 km deveria ser elegivel';
+  assert not elegivel_federal('radioterapia','9900001','PI','9900003','PI',true,50,true),
+             'o piso e ESTRITAMENTE maior que 50 km';
+  assert     elegivel_federal('radioterapia','9900001','PI','9900003','PI',true,500,true),
+             'o teto de 500 km e inclusivo';
+  assert not elegivel_federal('radioterapia','9900001','PI','9900003','PI',true,500.1,true),
+             'acima de 500 km nao e elegivel';
+  assert not elegivel_federal('quimioterapia','9900001','PI','9900003','PI',true,252,true),
+             'quimioterapia nao entra na portaria';
+  assert not elegivel_federal('hemodialise','9900001','PI','9900001','PI',true,62,true),
+             'dentro do mesmo municipio nao entra (ente federativo diverso)';
+  assert not elegivel_federal('hemodialise','9900001','PI','9900101','MA',true,120,true),
+             'hemodialise e de ambito estadual';
+  assert     elegivel_federal('radioterapia','9900001','PI','9900101','MA',true,180,true),
+             'radioterapia interestadual entra';
+
+  select * into r from elegibilidade_federal('hemodialise','9900001','PI','9900002','PI',true,null,true);
+  assert r.status = 'pendente' and r.pendencias = '{RE-03}' and r.regras_violadas = '{}',
+         format('distancia nao levantada fica PENDENTE, nunca 0 km: %s', row_to_json(r));
+  select * into r from elegibilidade_federal('hemodialise','9900001','PI','9900002','PI',null,80,true);
+  assert r.status = 'pendente' and r.pendencias = '{RE-06}', 'habilitacao nao conferida fica pendente';
+  select * into r from elegibilidade_federal('hemodialise','9900001','PI','9900002','PI',true,80,false);
+  assert r.status = 'inelegivel' and r.regras_violadas = '{RE-07}', 'tratamento nao confirmado nao entra';
+  select * into r from elegibilidade_federal('radioterapia','9900001','PI','9900003','PI',true,252,null);
+  assert r.status = 'pendente' and r.pendencias = '{RE-07}', 'agendamento sem resposta fica pendente';
+  raise notice 'ok · elegibilidade da norma, em tres estados, no banco';
 end $$;
 
 -- ─── 2. Isolamento por contrato (RLS), sob papel sem bypass ────────
@@ -101,6 +130,19 @@ begin
   raise notice 'ok · escrita em base alheia recusada pelo banco';
 end $$;
 
+-- O paciente em radioterapia cumpre a norma: reside em 9900001, o serviço
+-- fica em 9900003 a 252 km (lido), habilitado, sessão confirmada no dia.
+-- O de quimioterapia continua fora pela modalidade (RE-01).
+update pacientes set municipio_residencia_ibge = '9900001', uf_residencia = 'PI'
+ where base_id = '11111111-1111-1111-1111-111111111111';
+update destinos set municipio_ibge = '9900003', habilitacao_conferida = true
+ where id = 'dddddddd-0000-0000-0000-000000000001';
+insert into distancias_municipais (base_id,origem_ibge,destino_ibge,km,fonte,lido_em) values
+ ('11111111-1111-1111-1111-111111111111','9900001','9900003',252,'SINT · matriz de teste','2026-10-16');
+insert into agendamentos (base_id,paciente_id,destino_id,data,confirmado,etapa) values
+ ('11111111-1111-1111-1111-111111111111','cccccccc-0000-0000-0000-000000000001','dddddddd-0000-0000-0000-000000000001','2026-07-06',true,'planejamento'),
+ ('11111111-1111-1111-1111-111111111111','cccccccc-0000-0000-0000-000000000009','dddddddd-0000-0000-0000-000000000001','2026-07-06',true,null);
+
 -- ─── 3. A unidade de comprovação é o paciente-deslocamento ─────────
 do $$
 declare prog int; comp int; total int;
@@ -113,6 +155,9 @@ begin
   assert total = 2, format('a viagem mista tem 2 deslocamentos, veio %s', total);
   assert prog  = 1, format('so 1 dos 2 e elegivel, veio %s', prog);
   assert comp  = 1, format('so 1 embarcou e voltou, veio %s', comp);
+  select count(*) into total from deslocamentos
+   where tratamento = 'quimioterapia' and elegibilidade = 'inelegivel' and regras_violadas = '{RE-01}';
+  assert total = 1, 'o deslocamento de quimioterapia sai com a regra que o tirou (RE-01)';
   raise notice 'ok · contagem por paciente, nao por viagem';
 end $$;
 
