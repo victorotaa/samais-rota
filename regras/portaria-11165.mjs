@@ -111,19 +111,38 @@ export function elegibilidade11165(d){
   };
 }
 
-/* Uma linha do BPA-I antes de ir ao faturamento do ente.
+/* A LINHA FINAL do BPA-I, a que o faturamento do ente importa no BPA
+   Magnético (lado do faturamento, não do ROTA-OS).
    RE-12 código certo para a modalidade — 11.165 arts. 18 a 20; SIGTAP
    RE-13 quantidade ≤ 12 — SIGTAP (a unidade de contagem é lacuna L2)
-   RE-14 CPF presente — SIGTAP, atributo "Obrigatório CPF"
+   RE-14 CPF presente — SIGTAP, atributo "Obrigatório CPF"; dispensado só
+         com prd_sem_cpf = S a partir da competência 2026-07 (≈)
    RE-15 idade 0 a 130 — SIGTAP
+   RE-16 um documento por paciente: CNS e CPF juntos invalidam a linha
+         (≈ layout BPA v05.00, "se informado o CPF, não informar o CNS e
+         vice-versa"; crítica das v04.06/04.07)
+   RE-17 sexo, quando informado, ∈ {M, F, I} (≈ "I" desde a v04.11, 01/2026)
+   RE-18 prd_sem_cpf, quando informado, ∈ {S, N}; "S" só a partir da
+         competência 2026-07 (≈ layout) e nunca junto com CPF (≈ derivado)
    RC-08 registro do art. 27 completo — 11.165 art. 27
-   O CNS e os demais campos dependem do layout vigente do BPA (lacuna L1). */
+   O layout é cópia pública de terceiro (≈): docs/referencias/bpa/.
+   Na pré-remessa do ROTA-OS (regras/integracao-11165.mjs) a linha leva o
+   CNS e nenhum CPF: RE-14 lá é pendência por linha, nunca erro. */
+export const COMPETENCIA_SEM_CPF = '2026-07';   // ≈ layout BPA v05.00, prd_sem_cpf (pos. 351)
+const SEXOS_BPA = ['M', 'F', 'I'];
+const informado = v => !ausente(v) && v !== '';
 export function validarLinhaBPAI(l){
   const erros = [];
+  const semCpf = informado(l.prd_sem_cpf) ? l.prd_sem_cpf : null;
+  const semCpfVigente = semCpf === 'S' && typeof l.competencia === 'string' && l.competencia >= COMPETENCIA_SEM_CPF;
   if(!l.procedimento || l.procedimento !== PROCEDIMENTO[l.modalidade]) erros.push('RE-12');
   if(!numero(l.quantidade) || l.quantidade < 1 || l.quantidade > PARAMETROS.quantidadeMaximaBPAI) erros.push('RE-13');
-  if(l.cpf_presente !== true) erros.push('RE-14');
+  if(l.cpf_presente !== true && !semCpfVigente) erros.push('RE-14');
   if(!numero(l.idade) || l.idade < 0 || l.idade > PARAMETROS.idadeMaxima) erros.push('RE-15');
+  if(l.cns_presente === true && l.cpf_presente === true) erros.push('RE-16');
+  if(informado(l.sexo) && !SEXOS_BPA.includes(l.sexo)) erros.push('RE-17');
+  if(semCpf !== null && (!['S', 'N'].includes(semCpf) || (semCpf === 'S' && (!semCpfVigente || l.cpf_presente === true))))
+    erros.push('RE-18');
   if(l.registro_art27_completo !== true) erros.push('RC-08');
   return {valida: erros.length === 0, erros};
 }

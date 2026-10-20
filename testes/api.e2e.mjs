@@ -379,7 +379,7 @@ try{
   const ordenado = o => Object.fromEntries(Object.entries(o).sort());
   eq('e o que ficou de fora, por motivo', [conf.corpo.fora.total, ordenado(conf.corpo.fora.motivos)], [5, ordenado({
     'RE-09:excedente_semanal': 1, 'nao_comprovado': 1, 'RE-11:excedente': 1, 'pendente:RE-07': 1, 'pendente:RE-03': 1})]);
-  eq('avisa quem completa o CPF', conf.corpo.avisos.cpf_a_completar_pelo_faturamento_do_ente, 5);
+  eq('avisa que o faturamento preenche o CPF no lugar do CNS', conf.corpo.avisos['RE-14:cpf_a_preencher_pelo_faturamento'], 5);
   ok('declara que não é o leiaute oficial', /lacuna L1/.test(conf.corpo.leiaute));
   ok('a conferência não carrega dado pessoal', !/700000000|PAC-SINT/.test(JSON.stringify(conf.corpo)));
 
@@ -392,7 +392,7 @@ try{
   eq('com as contagens no cabeçalho HTTP', [rCsv.headers.get('x-rota-linhas'), rCsv.headers.get('x-rota-fora')], ['5', '5']);
   eq('cabeçalho + 5 linhas', linhasCsv.length, 6);
   ok('a coluna do CPF vem rotulada e vazia em todas as linhas',
-     linhasCsv[0].split(';')[4] === 'cpf (a completar pelo faturamento do ente)' &&
+     linhasCsv[0].split(';')[4] === 'CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00)' &&
      linhasCsv.slice(1).every(l => l.split(';')[4] === ''));
   eq('a linha da hemodiálise de 03/08: CNES do veículo, CNS só dígitos, residência',
      (linhasCsv.find(l => l.includes(';2026-08-03;') && l.includes(';hemodialise;')) || '').split(';').slice(0, 9),

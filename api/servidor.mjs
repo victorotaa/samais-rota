@@ -698,7 +698,8 @@ rota('GET', /^\/api\/conformidade$/, false, async (ctx) => {
 /* ─── pré-remessa BPA-I (conferência em JSON; arquivo em CSV) ────────
    A conferência só conta: não carrega dado pessoal. O CSV é o único
    canal nominal de saída (CNS, sem nome, sem CPF) e cada geração entra
-   na trilha. TODO (L1): leiaute oficial do BPA Magnético. */
+   na trilha. TODO (L1): gravador de largura fixa a partir do layout
+   versionado (≈) em docs/referencias/bpa/. */
 const slug = t => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -723,7 +724,7 @@ rota('GET', /^\/api\/bpa-i\/([^/]+?)(\.csv)?$/, false, async (ctx) => {
     if(!ext){
       return {corpo: {competencia, leiaute: pre.leiaute, colunas: pre.colunas,
         total_deslocamentos: pre.total_deslocamentos, linhas: pre.linhas.length, fora: pre.fora, avisos: pre.avisos,
-        pendente_de_leiaute: 'arquivo oficial do BPA Magnético a gerar quando o leiaute vigente for obtido (lacuna L1)'}};
+        pendente_de_leiaute: 'arquivo de importação do BPA Magnético: layout v05.00 versionado como cópia pública (≈) em docs/referencias/bpa/; gravador de largura fixa a escrever (lacuna L1)'}};
     }
     const {rows: b} = await cli.query('select municipio, uf from bases');
     await auditar(cli, {...s, acao: 'exportacao_bpa_i', entidade: 'competencia', entidadeId: competencia,
@@ -795,12 +796,12 @@ export function criarServidor(){
       };
 
       /* CPF em lugar nenhum (decisão do Ota, 16/10/2026): o faturamento do
-         ente completa o CPF; aqui ele não entra — nem no login, nem na
+         ente preenche o CPF, que substitui o CNS na linha final; aqui ele não entra — nem no login, nem na
          consulta. Recusa antes de qualquer leitura ou escrita, e o valor
          não é ecoado nem registrado. */
       const cpf = chaveComCpf(ctx.corpo) || chaveComCpf(Object.fromEntries(endereco.searchParams));
       if(cpf) return responder(400, {erro: `o ROTA-OS não recebe CPF (campo "${cpf}"): ` +
-        'a pré-remessa sai com a coluna vazia e o faturamento do ente a completa'});
+        'a pré-remessa sai com a coluna vazia e o faturamento do ente preenche o CPF, que substitui o CNS na linha final'});
 
       if(!achada.aberta){
         const token = tokenDe(req);

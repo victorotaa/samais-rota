@@ -478,7 +478,7 @@ function _nn(x){return x===undefined?null:x}
 /* CPF em lugar nenhum (Ota, 16/10/2026): nenhuma escrita sai com chave de
    CPF, nem para a API (que também recusa com 400) nem para a demonstração. */
 function _chaveCpf(corpo){return NORMA?NORMA.c.chaveComCpf(corpo):null}
-function _erroCpf(k){return new Error('o ROTA-OS não recebe CPF (campo "'+k+'"): a pré-remessa sai com a coluna vazia e o faturamento do ente a completa')}
+function _erroCpf(k){return new Error('o ROTA-OS não recebe CPF (campo "'+k+'"): a pré-remessa sai com a coluna vazia e o faturamento do ente preenche o CPF, que substitui o CNS na linha final')}
 function _competenciaOk(c){return !!NORMA&&NORMA.c.competenciaValida(c)}
 
 var DESTINOS={};
@@ -548,7 +548,7 @@ function rotuloMotivo(m){
   return String(m);
 }
 var ROTULO_AVISO={
-  cpf_a_completar_pelo_faturamento_do_ente:'coluna do CPF vazia: o faturamento do ente completa pelo CADSUS',
+  'RE-14:cpf_a_preencher_pelo_faturamento':'pendência por linha · CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00)',
   'RC-08:itinerario_pactuado_nao_modelado':'registro do art. 27 sem o itinerário pactuado (não modelado, M20)',
   'RC-12:a_conferir':'município abrangido pela pactuação a conferir (RC-12)'
 };
@@ -702,7 +702,7 @@ function _portariaDe(c){return {incentivo:c.incentivo,cnes:c.cnes,operacao:c.ope
 /* nascimento do seed vem DD/MM/AAAA; o modulo conta idade sobre AAAA-MM-DD */
 function _isoNasc(n){var m=String(n||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?m[3]+'-'+m[2]+'-'+m[1]:(/^\d{4}-\d{2}-\d{2}$/.test(n||'')?n:null)}
 function _slug(t){return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
-var PENDENTE_DE_LEIAUTE='arquivo oficial do BPA Magnético a gerar quando o leiaute vigente for obtido (lacuna L1)';
+var PENDENTE_DE_LEIAUTE='arquivo de importação do BPA Magnético: layout v05.00 versionado como cópia pública (≈) em docs/referencias/bpa/; gravador de largura fixa a escrever (lacuna L1)';
 var NOTA_OPERACIONAL='informação operacional: baixa interna não comprova produção; o farol conta remessas BPA-I (art. 21 §2º)';
 var CAMPOS_SERVICO=['ibge','uf','cnes','habilitacaoConferida','habilitacaoCodigo','modalidades'];
 var CAMPOS_DOACAO=['doadoMs','termoDoacao','finalidadeDoacao','dataRecebimento','prorrogacao','cnesEstabelecimento','cnesInscritoEm',
@@ -1867,7 +1867,7 @@ function htmlFaturamento(d){
         '<div class="card glass kpi"><div class="k">'+icoUsers+'Ficaram de fora</div><div class="v">'+fmt(rel.fora.total)+'</div><div class="d">contadas por motivo, abaixo</div></div></div>'+
         (fora?'<div class="tbl-wrap" style="margin-top:6px"><table class="tbl-sm"><thead><tr><th>Ficou de fora porque</th><th style="text-align:right">Deslocamentos</th></tr></thead><tbody>'+fora+'</tbody></table></div>':'')+
         (avisos?'<div class="sublbl" style="margin:14px 0 6px">Avisos</div><ul class="regras">'+avisos+'</ul>':''):'<div class="sm mut" style="margin-top:12px">conferência indisponível</div>')+
-      '<div class="between" style="margin-top:16px;align-items:flex-start"><div class="xs mut" style="max-width:640px;line-height:1.6">CSV (;) em UTF-8, uma linha por paciente-deslocamento. <b>Sem CPF:</b> a coluna sai vazia, a completar pelo faturamento do ente pelo CADSUS. Não é o leiaute oficial do BPA Magnético (lacuna L1): é insumo de conferência. Leva o CNS, sem nome: uso restrito (LGPD).'+
+      '<div class="between" style="margin-top:16px;align-items:flex-start"><div class="xs mut" style="max-width:640px;line-height:1.6">CSV (;) em UTF-8, uma linha por paciente-deslocamento. <b>Sem CPF:</b> a coluna sai vazia. CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00): o arquivo final leva o CPF ou o CNS, nunca os dois. O ROTA não declara “sem CPF” nem situação de rua por ninguém. Não é o arquivo de importação do BPA Magnético (gravador: lacuna L1): é insumo de conferência. Leva o CNS, sem nome: uso restrito (LGPD).'+
         (demo?' Na demonstração, o arquivo é gerado no navegador, a partir das baixas desta sessão, pelo mesmo código da API.':'')+'</div>'+
         '<button class="btn sm solid" data-act="baixar-pre-bpa" data-arg="'+esc(comp)+'">⇩ Pré-BPA-I da competência</button></div>'+
     '</div>'+
@@ -1895,7 +1895,7 @@ function baixarArquivo(nome,texto,tipo){
 function baixarPreBpa(c){
   executar(function(){return Dados.ler('preBpaICsv',c)},function(arq){
     baixarArquivo(arq.nome,arq.csv,'text/csv;charset=utf-8');
-    toast('Pré-BPA-I '+fmtCompetencia(c)+' · '+(arq.linhas===null?'?':arq.linhas)+' linha(s) · CPF a completar pelo faturamento');
+    toast('Pré-BPA-I '+fmtCompetencia(c)+' · '+(arq.linhas===null?'?':arq.linhas)+' linha(s) · CPF a preencher pelo faturamento, no lugar do CNS');
   });
 }
 function informarRemessa(){

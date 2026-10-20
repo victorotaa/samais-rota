@@ -11,7 +11,10 @@
    testes/integracao-11165.test.mjs.
 
    CPF em lugar nenhum (decisão do Ota, 16/10/2026): a pré-remessa sai
-   com a coluna do CPF vazia, e o faturamento do ente a completa.
+   com o CNS e a coluna do CPF vazia. O faturamento do ente preenche o
+   CPF e ele SUBSTITUI o CNS na linha final: um documento por paciente
+   (≈ layout BPA v05.00, cópia pública lida em 19/10/2026; Ota, 20/10:
+   "a troca pode ser feita para CPF"). Layout: docs/referencias/bpa/.
    ═══════════════════════════════════════════════════════════════════ */
 import {
   elegibilidade11165, validarLinhaBPAI, frequenciaHD, etapasRadioterapia, farolProducao,
@@ -111,17 +114,22 @@ export function entradaElegibilidade(r){
    na hemodiálise por semana; RE-11 na radioterapia por paciente na
    competência ≈ L4), com CNES do estabelecimento executante (L10) e com
    linha válida (RE-12, RE-13, RE-15).
-   RE-14 (CPF) é completado pelo faturamento do ente (D1); RC-08 (registro
-   do art. 27) depende do itinerário pactuado, ainda não modelado (M20):
-   os dois viram aviso, não motivo de exclusão.
-   TODO (L1): leiaute oficial do BPA Magnético. Este CSV é insumo de
-   conferência do faturamento, não arquivo de importação. */
-export const CABECALHO_CPF = 'cpf (a completar pelo faturamento do ente)';
+   RE-14 (CPF) é do faturamento do ente, que troca o CNS pelo CPF na
+   linha final (D1); RC-08 (registro do art. 27) depende do itinerário
+   pactuado, ainda não modelado (M20): os dois viram PENDÊNCIA da linha
+   (`pendencias`) e aviso no total, nunca motivo de exclusão.
+   O ROTA-OS nunca preenche prd_sem_cpf (pos. 351) nem situação de rua
+   (pos. 350): a linha é montada campo a campo, e esses campos não
+   existem nela.
+   TODO (L1): gravador de largura fixa a partir do layout versionado (≈)
+   em docs/referencias/bpa/. Este CSV é insumo de conferência do
+   faturamento, não arquivo de importação. */
+export const CABECALHO_CPF = 'CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00)';
 export const COLUNAS_PRE_BPAI = Object.freeze([
   'competencia', 'cnes_estabelecimento_executante', 'procedimento_sigtap', 'cns_paciente', CABECALHO_CPF,
   'municipio_residencia_ibge', 'data_deslocamento', 'quantidade', 'modalidade', 'viagem'
 ]);
-export const LEIAUTE = 'CSV pré-BPA-I ROTA v1 · não é o leiaute oficial do BPA Magnético (lacuna L1)';
+export const LEIAUTE = 'CSV pré-BPA-I ROTA v1 · não é o arquivo de importação do BPA Magnético (layout v05.00 versionado ≈; gravador: lacuna L1)';
 const QUANTIDADE_POR_LINHA = 1;   // 1 ida e volta = 1 (≈, lacuna L2)
 const ACEITOS_NA_LINHA = new Set(['RE-14', 'RC-08']);
 
@@ -167,28 +175,31 @@ export function preRemessaBPAI({competencia, deslocamentos, pactuacao}){
 
     if(!d.cnes_executante){ fora('cnes_executante_a_levantar'); continue }
 
+    const cns = String(d.cns || '').replace(/\D/g, '');
     const validacao = validarLinhaBPAI({modalidade: d.tratamento, procedimento: el.procedimento,
-      quantidade: QUANTIDADE_POR_LINHA, cpf_presente: false, idade: idadeEm(d.nascimento, d.data),
-      registro_art27_completo: false});
+      quantidade: QUANTIDADE_POR_LINHA, cns_presente: cns !== '', cpf_presente: false,
+      idade: idadeEm(d.nascimento, d.data), registro_art27_completo: false});
     const erros = validacao.erros.filter(e => !ACEITOS_NA_LINHA.has(e));
+    const pendencias = validacao.erros.filter(e => ACEITOS_NA_LINHA.has(e));
     if(erros.length){ fora('linha_invalida:' + erros.join('+')); continue }
 
     linhas.push({
       competencia,
       cnes_estabelecimento_executante: String(d.cnes_executante).trim(),
       procedimento_sigtap: el.procedimento,
-      cns_paciente: String(d.cns || '').replace(/\D/g, ''),
+      cns_paciente: cns,
       [CABECALHO_CPF]: '',
       municipio_residencia_ibge: d.residencia_ibge,
       data_deslocamento: d.data,
       quantidade: QUANTIDADE_POR_LINHA,
       modalidade: d.tratamento,
-      viagem: d.viagem_id
+      viagem: d.viagem_id,
+      pendencias
     });
   }
 
   if(linhas.length){
-    avisos.cpf_a_completar_pelo_faturamento_do_ente = linhas.length;
+    avisos['RE-14:cpf_a_preencher_pelo_faturamento'] = linhas.filter(l => l.pendencias.includes('RE-14')).length;
     avisos['RC-08:itinerario_pactuado_nao_modelado'] = linhas.length;
   }
   const totalFora = Object.values(motivos).reduce((a, n) => a + n, 0);

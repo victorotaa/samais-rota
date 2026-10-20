@@ -106,8 +106,9 @@ documentos.
 ## Governança & reuso (consistência entre repos Samais)
 - **Regra:** todo repositório Samais (`samais-*`) deve carregar a identidade — este `CLAUDE.md` +
   `.claude/skills/samais-html-presentation/SKILL.md` — **antes** de qualquer estudo/HTML. Sem isso, não começar.
-- **Fonte canônica:** `victorotaa/samais-rota` (branch `main`). É a referência única; ao evoluir o
-  sistema, atualizar aqui e propagar (e sincronizar a cópia do vault no Drive).
+- **Fonte canônica:** `victorotaa/samais-os` (branch `main`): `doutrina/samais.css`, `doutrina/design-system.md`
+  e a skill `samais-brand-guidelines` de lá (Ota, 20/10/2026). Este `CLAUDE.md` é espelho operacional do ROTA;
+  em conflito, vale o samais-os.
 - **Novo repo — dois caminhos:**
   1. **Template repository (recomendado):** criar o repo a partir de um GitHub *Template repository*
      (marcar em Settings → ☑ Template repository) que já contém `CLAUDE.md`, `.claude/skills/` e o `template.html`.

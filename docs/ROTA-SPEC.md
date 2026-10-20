@@ -189,8 +189,9 @@ Telas novas: Conformidade e Faturamento BPA-I (pré-BPA-I em CSV, remessas infor
 
 **Decisão do CPF (Ota, 16/10/2026): o ROTA-OS não guarda CPF em lugar nenhum.** Nenhuma coluna, campo de
 API, log ou exportação com CPF. O BPA-I exige CPF (SIGTAP, "Obrigatório CPF"); a pré-remessa sai com a
-coluna do CPF **vazia**, rotulada "a completar pelo faturamento do ente", e o faturamento do ente a
-completa no BPA Magnético/SIA. A API recusa com 400 qualquer chave com "cpf" (qualquer caixa, qualquer
+coluna do CPF **vazia**, rotulada "CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final
+(um documento por paciente, layout BPA v05.00)": o faturamento **troca** o CNS pelo CPF no BPA Magnético/SIA
+(Ota, 20/10/2026; layout ≈ em `docs/referencias/bpa/`). A API recusa com 400 qualquer chave com "cpf" (qualquer caixa, qualquer
 profundidade, inclusive na consulta e no login); o banco tem `verificar_sem_cpf()`, cobrada no CI, e a API
 não sobe se ela acusar coluna.
 

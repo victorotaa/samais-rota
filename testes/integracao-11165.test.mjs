@@ -127,10 +127,28 @@ eq('o que ficou de fora, por motivo', pre.fora, {total: 10, motivos: {
 eq('a linha da hemodiálise', pre.linhas[0], {
   competencia: '2026-08', cnes_estabelecimento_executante: '0000001', procedimento_sigtap: '08.03.01.016-8',
   cns_paciente: '700000000000001', [I.CABECALHO_CPF]: '', municipio_residencia_ibge: '9900001',
-  data_deslocamento: '2026-08-03', quantidade: 1, modalidade: 'hemodialise', viagem: 'V1'});
+  data_deslocamento: '2026-08-03', quantidade: 1, modalidade: 'hemodialise', viagem: 'V1',
+  pendencias: ['RE-14', 'RC-08']});
 eq('a da radioterapia leva o código dela', pre.linhas[3].procedimento_sigtap, '08.03.01.015-0');
 ok('nenhuma linha leva CPF', pre.linhas.every(l => l[I.CABECALHO_CPF] === ''));
-eq('o aviso diz quem completa o CPF', pre.avisos.cpf_a_completar_pelo_faturamento_do_ente, 5);
+ok('a falta de CPF é pendência POR LINHA, nunca motivo de exclusão',
+   pre.linhas.every(l => (l.pendencias || []).includes('RE-14')) && !Object.keys(pre.fora.motivos).some(m => /RE-14/.test(m)));
+eq('o aviso diz que o faturamento preenche o CPF no lugar do CNS', pre.avisos['RE-14:cpf_a_preencher_pelo_faturamento'], 5);
+ok('o aviso antigo ("completar") saiu', !('cpf_a_completar_pelo_faturamento_do_ente' in pre.avisos));
+{
+  /* O ROTA-OS nunca declara "sem CPF" nem situação de rua por ninguém: mesmo que a
+     linha do banco traga esses campos, eles não chegam à pré-remessa. */
+  const sujo = I.preRemessaBPAI({competencia: '2026-08', pactuacao: null,
+    deslocamentos: [D({prd_sem_cpf: 'S', prd_situacao_rua: 'S', sem_cpf: true, situacao_rua: true})]});
+  const chaves = sujo.linhas.flatMap(l => Object.keys(l));
+  eq('a linha suja ainda entra (o campo é ignorado, não vira erro)', sujo.linhas.length, 1);
+  ok('nenhuma linha da pré-remessa tem prd_sem_cpf nem situação de rua',
+     !chaves.some(k => /sem_cpf|situacao_rua/i.test(k)), chaves);
+  ok('nem o cabeçalho do CSV', !I.COLUNAS_PRE_BPAI.some(c => /sem_cpf|situacao_rua|sem cpf|situação de rua/i.test(c)));
+  const csvSujo = I.csvPreBPAI(sujo.linhas).split('\r\n').filter(Boolean);
+  eq('e a coluna do CPF sai vazia', csvSujo[1].split(';')[4], '');
+  ok('nenhum S solto no fim da linha do CSV', !/;S$/.test(csvSujo[1]));
+}
 {
   const sem = I.preRemessaBPAI({competencia: '2026-08', deslocamentos: [D({})], pactuacao: null});
   eq('sem pactuação, o território fica a conferir mas não derruba a linha',
@@ -143,7 +161,8 @@ const csv = I.csvPreBPAI(pre.linhas);
 const linhas = csv.split('\r\n').filter(Boolean);
 eq('cabeçalho fixo, separador ;', linhas[0],
    'competencia;cnes_estabelecimento_executante;procedimento_sigtap;cns_paciente;' +
-   'cpf (a completar pelo faturamento do ente);municipio_residencia_ibge;data_deslocamento;' +
+   'CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, ' +
+   'layout BPA v05.00);municipio_residencia_ibge;data_deslocamento;' +
    'quantidade;modalidade;viagem');
 eq('uma linha por paciente-deslocamento', linhas.length, 1 + 5);
 eq('a coluna do CPF sai vazia', linhas[1].split(';')[4], '');
