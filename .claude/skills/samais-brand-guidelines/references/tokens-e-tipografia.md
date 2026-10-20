@@ -29,11 +29,41 @@
 Os aliases de compatibilidade (`--card`, `--line`, `--gold-dim`, `--fd`, `--fb`, `--fm` e outros) existem para páginas
 anteriores à unificação. Ao reescrever, prefira os nomes canônicos.
 
+### Tema claro (Ota, 20/10/2026)
+
+O escuro acima é o padrão. O claro vale com `data-theme="light"` no `<html>` (produto com alternância) ou numa seção
+(`<section class="fold-light" data-theme="light">`, a dobra clara). Derivado da dobra light e da impressão; regra de uso,
+justificativa do fundo e contraste medido em `doutrina/design-system.md`, "Tema claro". Os dois blocos ficam entre
+`/* @tokens-inicio */` e `/* @tokens-fim */` no `samais.css`, e é essa região que vai para o CoPilot e o PEP.
+
+| Grupo | Token | Claro | Sobre `--bg` | Uso |
+|---|---|---|---:|---|
+| Base | `--bg` | `#F4F1EA` (creme da casa) | | fundo |
+| | `--s1` · `--s2` | `#FAF8F3` · `#FFFFFF` | | superfícies: clareiam com a elevação |
+| | `--divider` | `#DDD6C9` | 1,28 | divisórias |
+| Ouro | `--gold` | `#7A6230` | 5,15 | texto em ouro, número-chave |
+| | `--gold-soft` | `#6F5A2C` | 5,86 | ouro de leitura, hover, foco (o de maior contraste, como no escuro) |
+| | `--gold-deep` | `#8E7238` | 4,03 | apoio: texto grande, ícone, filete (restrito) |
+| Semânticas | `--green` · `--green-deep` | `#186B42` · `#DDEAE0` | 5,78 · — | selo; `--green-deep` é chão de selo, nunca texto |
+| | `--amber` | `#8A5A2B` | 5,20 | atenção |
+| | `--red` | `#A33044` | 6,08 | crítico |
+| Texto | `--text` · `--text-2` · `--muted` | `#0A0A0A` · `#3A352D` · `#6E675B` | 17,55 · 10,78 · 4,96 | texto corrido |
+| | `--dim` | `#8A8174` | 3,40 | restrito: texto grande, ícone, borda |
+
+- **O token guarda o papel, não o tom.** No claro, `--gold-soft` é o mais escuro dos ouros e `--gold-deep` o mais claro,
+  porque o papel de cada um (leitura e apoio) é definido pelo contraste.
+- Mudam também, por token: vidro (`--glass-bg`, `--glass-border`, `--glass-shadow`, `--glass-sutil-bg`,
+  `--glass-sutil-border`), barra fixa (`--barra-bg`, `--barra-border`, `--barra-shadow`), trilho (`--trilha-bg`),
+  brilho ambiente (`--ambiente-1..3`) e os apelidos que carregam cor (`--line`, `--line-soft`, `--gold-dim`).
+- A marca troca de arquivo sozinha (`.marca` usa a variante `primary` no claro; §4).
+- Papel e PDF: os valores do claro sobre **branco** (miolo branco, Ota, 15/10/2026), nunca sobre o creme.
+
 ## 2. Tokens abaixo do contraste para texto pequeno
 
 Medidos sobre `--bg` (`doutrina/design-system.md`): `--dim` 2,98:1, `--red` 2,89:1, `--green` 3,72:1 e
 `--gold-deep` 4,35:1. Ficam abaixo do AA (4,5:1) para texto pequeno; use em texto grande, ícone, borda ou fundo de selo,
-nunca em parágrafo.
+nunca em parágrafo. No claro, só `--gold-deep` (4,03:1) e `--dim` (3,40:1) ficam abaixo do AA, com o mesmo uso restrito;
+`--green` e `--red` passam (5,78:1 e 6,08:1).
 
 ## 3. Tipografia e medidas
 
@@ -74,6 +104,8 @@ dourada é decisão de composição e o script respeita.
   absorvida em 20/10/2026). Medido pela fórmula do WCAG sobre o `fill` dos SVGs (≈ derivado): dourada sobre `--bg`
   7,0:1; **dourada sobre creme `#F4F1EA` 2,5:1 e sobre branco 2,8:1, reprova**. Em fundo claro (dobra light, miolo de
   PDF, impressão), usar `samais-logo-primary.svg` ou `samais-monograma-primary.svg` (`#0A0A0A`, 17,6:1 sobre o creme).
+  No tema claro do `samais.css`, o `.marca` já faz a troca (`[data-theme="light"] .marca .nome`), e o build distribui os
+  dois SVGs `primary` ao lado do CSS.
 - O SVG em `<img>` ou em `background` não herda cor (`currentColor` não chega lá): a variante se troca pelo arquivo
   (`gold`, `primary`, `white`), nunca por filtro de cor.
 
@@ -82,7 +114,7 @@ dourada é decisão de composição e o script respeita.
 - Tokens: `--glass-bg`, `--glass-border`, `--glass-blur` (`blur(22px) saturate(150%)`), `--glass-shadow` (brilho
   especular interno no topo + sombra profunda), `--glass-radius` (18px). No mobile (≤720px) o raio cai para 12px e o
   blur para 16px.
-- O vidro precisa do **brilho ambiente radial** (`body::before`, ouro e verde em baixa opacidade) para ter o que
+- O vidro precisa do **brilho ambiente radial** (`body::before`, tokens `--ambiente-1..3`: ouro e verde em baixa opacidade no escuro, quase sem verde no claro) para ter o que
   refratar. Sem ele, o efeito não aparece.
 - `.glass` tem `overflow:hidden`: o material recorta o que passa por baixo.
 - `prefers-reduced-transparency: reduce` troca o vidro por superfície opaca (`--s1`); já está no CSS.
@@ -121,11 +153,15 @@ Valores de `padrao-dobras.md`; não inventar uma terceira cor.
 
 | Dobra | Fundo | Texto | Onde |
 |---|---|---|---|
-| `.fold-light` | creme `#F4F1EA` | `#0A0A0A` / `#3A352D`; ouro escuro `#8E7238` | dobra de tabela, dado denso |
+| `.fold-light` | creme `#F4F1EA` | `#0A0A0A` / `#3A352D`; ouro de texto `#7A6230` (`#8E7238` só grande ou filete) | dobra de tabela, dado denso |
 | `.fold-gold` | `linear-gradient(135deg,#C9A85A,#9B7937)` | `#3A2D12`, ênfase `#120C02` | a virada, e só ela |
 
-- Dentro de `.fold-light`, todo texto usa os tokens light; nunca `--text`, `--text-2`, `--muted` ou ouro claro.
-  O `samais-rota` usa ainda `#6E675B` (apagado) e `#6F5A2C` (ouro mais escuro) na dobra light.
+- Dentro de `.fold-light`, todo texto usa os valores light; nunca os do escuro. Desde 20/10/2026, o caminho é o tema
+  claro na seção (`<section class="fold-light" data-theme="light">`, fundo `var(--bg)`): `--text`, `--text-2`,
+  `--muted` e `--gold` já saem claros lá dentro, e o seletor do escuro deixa de vencer o override.
+  **Ouro como texto pequeno na dobra light é `--gold` (`#7A6230`, 5,15:1); o `#8E7238` dá 4,03:1 no creme e fica para
+  texto grande e filete.** O `samais-rota` usa ainda `#6E675B` (apagado) e `#6F5A2C` (ouro mais escuro), que são o
+  `--muted` e o `--gold-soft` do claro.
 - No ouro, a palavra enfatizada é a **mais escura**, nunca a mais clara.
 - Na impressão, o ouro vira filete (`border-block:2px solid #8E7238` sobre branco), não fundo chapado.
 

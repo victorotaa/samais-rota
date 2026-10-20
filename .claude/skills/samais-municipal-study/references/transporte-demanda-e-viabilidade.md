@@ -106,16 +106,19 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
   edital, e não nota de rodapé.
 - **Central:** a antiga skill usava um operador para cada 75 atendimentos por dia útil (≈ premissa sem fonte; calibrar
   quando o ROTA-OS operar).
-- **Ambulância de apoio na eletiva.** Van e micro-ônibus não levam o paciente que só se desloca em maca, nem respondem a
-  intercorrência no trajeto (hipotensão depois da hemodiálise, ≈ frequente; parar a corrida atrasa os demais
-  passageiros). A composição da eletiva prevê ambulância de apoio:
-  - **tipo B por padrão** na proposta da Samais (motorista e técnico de enfermagem; ≈ premissa da antiga skill: a tipo A
-    deita o paciente, mas não tem quem responda à intercorrência). A 11.165 prevê a tipo A, prioritariamente na
-    radioterapia, e ela não entra no custeio (`modo-transporte-sanitario.md` §2);
-  - **quantas:** ≈ 1 para cada 13 veículos operacionais, arredondando para cima (âncora: Osasco, 9 veículos e 1
-    unidade). Premissa a conferir contra os acamados do cadastro, que é o que dimensiona;
-  - **linha fixa de disponibilidade** na janela da eletiva (FC 2,57), nunca diluída no custo por atendimento: diluir
-    vende espera como se fosse produção.
+- **Sem ambulância de apoio por padrão (Ota, 20/10/2026: *"se não for padrão, não deixaremos como padrão"*).** Nenhuma
+  norma do SUS exige nem recomenda ambulância de apoio no transporte eletivo, e nenhum dos 29 instrumentos eletivos lidos
+  em 20/10/2026 a contrata (`samais-os/inteligencia/transporte-sanitario/remuneracao-e-apoio.md` §7). O eletivo serve, por
+  definição, a quem não tem risco de vida nem precisa de suporte assistencial ou de viajar deitado, em veículo tipo
+  lotação (Resolução CIT 13/2017, art. 2º §§ 1º e 2º ✓; 11.165, art. 3º I ✓).
+  - **Tipo A só com demanda medida** de pacientes que só viajam deitados (cadastro e regulação do ente), como modalidade
+    do próprio eletivo, um paciente por vez (11.165, art. 3º I c ✓; NT 153 §7.3 ✓), tripulada por condutor e técnico ou
+    auxiliar de enfermagem (Portaria 2.214/2017, art. 2º ✓; 2.048/2002 ≈ pela transcrição do Ministério) e **sem
+    incentivo federal de custeio** (11.165, art. 14 ✓).
+  - **Intercorrência no trajeto:** o protocolo do ROTA-OS aciona o SAMU 192 e registra a ocorrência; não há viatura de
+    prontidão. A tipo B é para risco de vida conhecido (2.048) e fica fora do eletivo.
+  - A antiga âncora "1 ambulância para cada ~13 veículos (Osasco)" saiu: era desenho da própria proposta da Samais para
+    Osasco, não norma nem prática medida (`HISTORICO.md` §6).
   A ambulância 24/7 da transferência inter-hospitalar é a outra frente, no mesmo instrumento, em viatura-hora e FC 4,5.
 
 ## 5. Viabilidade (interna, Artefato 1; nunca na peça)
@@ -134,8 +137,17 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
   tempo (12 a 18 meses, ≈ estimativa sem fonte da antiga skill). Preferir consórcio de saúde já constituído na região.
 - **Risco de volume.** Preço por atendimento passa à operadora o risco de ociosidade (veículo parado não fatura). O
   aproveitamento de 85% é premissa (`modo-transporte-sanitario.md` §4); recalibrar com a ocupação medida viagem a viagem
-  nos primeiros meses. A forma de pagamento (mensal global, ou parte fixa de disponibilidade mais parte por viagem) é
-  decisão do Ota (`HISTORICO.md` §6).
+  nos primeiros meses.
+- **Como o mercado paga (✓ 30 instrumentos de 18 UFs, 2024 a 2026; `samais-os/inteligencia/transporte-sanitario/`).** Por
+  km rodado 10 (≈ 33%), mensal por veículo ou global 7 (≈ 23%), por viagem ou rota 6 (≈ 20%), por paciente 3, misto 2,
+  diária 1, posto de motorista sobre a frota do ente 1. Na unidade registrada no PNCP, o km também lidera (≈ 58% das
+  unidades legíveis). Com veículo do ente, o contrato paga a mão de obra e o ente arca com combustível, manutenção,
+  emplacamento e seguro (11.165, art. 11 II ✓).
+- **Recomendação da pesquisa, a decidir pelo Ota:** Custo Operacional mensal global da operação inteira (contrato único,
+  sem faseamento), com franquia mensal de km aferida pelo ROTA-OS e preço do km excedente. Km puro paga a ineficiência e
+  anula o ganho de roteirização; por paciente, passa ao operador o risco de falta e de ocupação. Os riscos de medição e a
+  cláusula que fecha cada um estão no §6 da pesquisa. Na peça, o valor aparece só como Custo Operacional mensal, nunca por
+  veículo.
 
 ## 6. A norma citada na peça
 
@@ -154,7 +166,7 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
 - [ ] Demanda medida (SIA, SIH) e conferida pela banda (~0,09–0,15 viagem/hab/ano); eletivo geral levantado, nunca
       estimado.
 - [ ] Km por ciclo pelo tempo; depreciação por tipo; os dois cenários de frota em tabela.
-- [ ] Ambulância de apoio dimensionada pelos acamados do cadastro, como linha fixa.
+- [ ] Tipo A só com demanda medida de pacientes em decúbito; nenhuma ambulância de apoio por padrão.
 - [ ] Três testes de viabilidade e blocos contíguos (interno).
 - [ ] Premissas (≈) em tabela própria, separadas do que foi lido (✓).
 - [ ] Contrato único, sem faseamento; ROTA-OS; sem R$ por veículo na peça; valor final como Custo Operacional; nenhuma

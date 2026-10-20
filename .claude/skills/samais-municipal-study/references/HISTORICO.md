@@ -148,7 +148,22 @@ ganhou "TSE", "ROTA", "transporte eletivo" e "PAC Saúde" (999 caracteres). Depo
 1. **Forma de pagamento do transporte.** A antiga skill recomendava, no primeiro contrato, parte fixa de disponibilidade
    mais parte variável por viagem (ou preço fixo com revisão por volume apurado), porque a banda de demanda é de quase
    2×. A doutrina fixa o contrato único sem faseamento, mas não diz se o valor é global mensal ou em duas partes.
+   **Pesquisa de 20/10/2026** (30 instrumentos, 18 UFs): o km rodado é o modelo mais escrito (≈ 33%); a recomendação é
+   Custo Operacional mensal global com franquia de km aferida pelo ROTA-OS. Decisão segue com o Ota.
 2. **A regra do link** ("citação no texto antes; o ato, nunca a notícia do gov.br") nasceu na proposta ROTA e entrou no
    modo transporte. Vale para os estudos de SAMU? Hoje `peca-cliente.md` não a tem.
 3. **Ambulância de apoio na eletiva** (tipo B, ≈ 1 por 13 veículos): premissa da antiga skill, ancorada só em Osasco.
-   Confirmar se a casa a adota como padrão de composição.
+   **Conferida em 20/10/2026 e caiu:** não há norma do SUS nem prática de mercado (0 de 29 instrumentos eletivos); a
+   âncora vinha da própria proposta da Samais para Osasco (`samais-copilot`, `rota-proposta/osasco.html`). O Ota decidiu:
+   *"se não for padrão, não deixaremos como padrão"*. Tipo A só com demanda medida; intercorrência pelo SAMU 192.
+   Pesquisa: `samais-os/inteligencia/transporte-sanitario/remuneracao-e-apoio.md`.
+
+## 7. Imagem gerada de operação (Ota, 20/10/2026)
+
+- `peca-cliente.md` §7 deixa de admitir a imagem de marca gerada sem condição: *"pode admitir, mas de forma que ela pode
+  ser gerada somente quando não encontrarmos candidatos viáveis. Portanto, o fluxo seria uma pesquisa para entender a
+  localidade, quais os pontos de interesse do município ou da região, e utilizar ela como base para gerar uma nova,
+  dentro das resoluções e proporções que estabelecemos."* A ordem (banco curado e foto real → pesquisa da localidade →
+  gerada sobre a pesquisa, nos tamanhos mínimos, via grátis, selo na legenda) é a mesma de
+  `samais-os/doutrina/padrao-dobras.md` e da `samais-brand-guidelines`, e resolve a divergência registrada no histórico
+  dela.

@@ -123,9 +123,22 @@ dissolve, swirl, push, transição "de PowerPoint", efeito lupa, animação em l
 
 ## 9. Imagem
 
-- **Princípio da Realidade vale para foto:** não usar foto de operação que não se pode comprovar. Sem imagem própria
-  verificada, gerar grafismo abstrato e excluir no prompt pessoa, veículo, texto, número, bandeira, logotipo e fronteira
-  de mapa. Toda imagem gerada leva `README.md` na pasta (modelo: `samais-copilot/docs/img/README.md`).
+- **Princípio da Realidade vale para foto, numa ordem só** (Ota, 20/10/2026: *"pode admitir, mas de forma que ela pode
+  ser gerada somente quando não encontrarmos candidatos viáveis"*; regra inteira em `doutrina/padrao-dobras.md`,
+  "Imagem"). Só se passa ao degrau seguinte quando o anterior não deu candidato viável:
+  1. **Banco curado e foto documental real** (`doutrina/imagens/`; cartão-postal do território, com crédito). Stock não
+     conta.
+  2. **Pesquisa da localidade:** marcos e pontos de interesse do município ou da região (plano municipal de turismo,
+     portal da prefeitura, Wikimedia Commons, busca de imagens). Acha a foto real e, sem ela, vira a base da gerada.
+  3. **Só sem candidato viável, gerar a partir da pesquisa**, e então a imagem de operação (frota, central, equipe) é
+     admitida: hero ≥ 2400×1600 (3:2), faixa larga ≥ 2400 de largura, fechamento ≥ 1600×1000, medidos por
+     `samais-estudos/scripts/conferir-imagens.mjs` em 1440 e 390 (assunto no centro: no celular o `cover` corta as
+     laterais); via grátis (GPT ou Gemini, `doutrina/higgsfield-canon.md`); selo "imagem ilustrativa" na legenda; os
+     vetos abaixo, mais texto ou letreiro legível; uniforme SAMU só em peça de SAMU, jaleco neutro com o monograma SA+
+     no transporte.
+  Grafismo abstrato (sem pessoa, veículo, texto, número, bandeira, logotipo ou fronteira de mapa) continua admitido.
+  Toda imagem gerada leva `README.md` na pasta, com modelo, data e a referência real usada (modelo:
+  `samais-copilot/docs/img/README.md`).
 - Banco aprovado e vetos: `doutrina/imagens/README.md` (cópias WebP ≤ 1600px). Vetado: cena clínica ou dramática
   (sirene, sangue, reanimação, vítima), paciente identificável, estética policial, logo de terceiro.
 - Superfície de foto não refrata nem leva vidro por cima; overlay escuro que cai para o fundo na base; `loading="lazy"`
@@ -135,11 +148,9 @@ dissolve, swirl, push, transição "de PowerPoint", efeito lupa, animação em l
   espaço, não comunica, e o leitor registra "faltou imagem".
 - **Quando o banco documental cobre o assunto, ele vence a imagem gerada** (CoPilot, absorvida em 20/10/2026): a foto
   do ativo real *prova*; a gerada só *ilustra*. O território se mostra pelo cartão-postal com crédito (estudo:
-  `samais-municipal-study`, `references/peca-cliente.md` §7). Imagem gerada só preenche lacuna. Banco genérico de
-  terceiro (stock) não entra.
-- **Antes de gerar, buscar referência real do assunto** para orientar a direção; gerar sem referência produz o
-  genérico que denuncia a origem sintética. Imagem se gera sem crédito do Higgsfield (GPT ou Gemini,
-  `doutrina/higgsfield-canon.md`).
+  `samais-municipal-study`, `references/peca-cliente.md` §7).
+- **Gerar sem a referência real da pesquisa** produz o genérico que denuncia a origem sintética: a pesquisa da
+  localidade (degrau 2) é a base do prompt, não um passo opcional.
 - **O selo "imagem ilustrativa"** vai na `figcaption`, no mesmo componente da legenda documental (mono, maiúscula,
   ~10px, sobre o gradiente da base): discreto pela construção, nunca pelo encolhimento. Selo que ninguém lê não cumpre a
   função, e em peça que circula em ente público o aviso que parece escondido é pior que a ausência da imagem.

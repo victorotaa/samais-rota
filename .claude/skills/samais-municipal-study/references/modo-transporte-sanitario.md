@@ -6,7 +6,7 @@ SAMU**: se o alvo tem os dois, são dois estudos.
 
 **Sumário:** 1. As regras da casa · 2. A norma (11.164 + 11.165) · 3. Varredura · 4. Dimensionamento · 5. Custo ·
 6. Cenários e score · 7. Repasse federal e farol de conformidade · 8. A peça · 9. Repasses observados · 10. Fontes.
-Demanda por parâmetro, custo por ciclo, ambulância de apoio, viabilidade interna e citação da norma:
+Demanda por parâmetro, custo por ciclo, tipo A só com demanda medida, viabilidade interna, modelo de pagamento e citação da norma:
 [transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) (da antiga `samais-rota-study`).
 
 ---
@@ -77,6 +77,13 @@ lido no DOU de 12/05/2026; fatos, artigos e lacunas em `samais-os/produtos/rota/
 - Lacunas (○): layout do BPA-I, unidade da "quantidade" (máximo 12), linha do acompanhante, matriz oficial de distâncias,
   atos de habilitação por ente (nenhum achado no DOU até 16/10/2026), cota dos Termos de Doação de outubro.
 
+**Definições que vêm de fora da 11.165**
+- **Resolução CIT 13/2017**, art. 2º §§ 1º e 2º ✓: o transporte sanitário eletivo serve a quem não tem risco de vida nem
+  precisa de suporte assistencial no trajeto ou de viajar deitado, em veículo tipo lotação.
+- **Portaria GM/MS 2.214/2017**, art. 2º ✓: a ambulância tipo A no transporte sanitário, com técnico ou auxiliar de
+  enfermagem ao menos no inter-hospitalar, e custeio fixo e variável por km. Para o ente, a regra de custeio é a do
+  art. 11 II da 11.165, com o uso do incentivo previsto na alínea "a".
+
 ## 3. Varredura (além de `fontes-e-coleta.md`)
 
 1. **Qualificação:** alvo (município, consórcio, GRS/CRS estadual); contratante provável; gatilho (pregão, veículo federal
@@ -95,7 +102,9 @@ lido no DOU de 12/05/2026; fatos, artigos e lacunas em `samais-os/produtos/rota/
 4. **Frota federal e habilitação:** veículos doados (tipo, data de recebimento), CNES, prazo dos 60 dias, Termo de Doação
    e a cota (o extrato não diz: ler o termo no processo SEI). Veículo doado parado é urgência real do ente.
 5. **Contratação atual:** PNCP e portal pelo objeto (transporte de pacientes, TFD, locação de veículos com motorista),
-   pregões desertos ou anulados, cobranças do MP e do TCE; contratado, não pago.
+   pregões desertos ou anulados, cobranças do MP e do TCE; contratado, não pago. **Ler a cláusula de medição e pagamento
+   do TR**, porque a unidade do PNCP é genérica ("UN", "serviço") em ≈ 56% dos editais, e classificar o modelo (km, mês,
+   viagem, paciente, diária, misto, posto), com a origem da contagem do km e a fonte da medida (GPS ou hodômetro).
 
 ## 4. Dimensionamento
 
@@ -119,8 +128,9 @@ veículos                 = pacientes ÷ pacientes por veículo, por classe de e
 - **Lean Sizing do escopo** (micro-ônibus onde a rota é densa, posto de 12 h no pico, frota mista) muda o que se contrata
   e entra no preço; ganho de roteirização na operação é nosso e fica na remuneração.
 - Sensibilidade ancorada em **pacientes com restrição**, nunca em % de frota.
-- **Km por ciclo sai do tempo, nunca do raio**; ambulância de apoio na eletiva (maca e intercorrência) como linha fixa,
-  dimensionada pelos acamados do cadastro: [transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) §4.
+- **Km por ciclo sai do tempo, nunca do raio**; **nenhuma ambulância de apoio por padrão**: tipo A só com demanda medida
+  de pacientes que só viajam deitados, e a intercorrência aciona o SAMU 192 pelo protocolo do ROTA-OS
+  ([transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) §4).
 
 ## 5. Custo
 

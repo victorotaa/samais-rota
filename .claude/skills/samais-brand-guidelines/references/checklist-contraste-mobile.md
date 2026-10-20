@@ -55,8 +55,9 @@
 - [ ] Termos vetados de precificação: zero (`doutrina/precificacao.md`); nada de "lucro" ou "margem".
 - [ ] Nada de `interpretacao.md`, `bastidor.md` ou `doutrina/` na peça.
 - [ ] Nenhum campo de contato.
-- [ ] Imagem gerada com selo "imagem ilustrativa" e `README.md` de procedência; nenhuma imagem vetada
-      (`doutrina/imagens/README.md`).
+- [ ] Imagem na ordem da casa (banco curado e foto real → pesquisa da localidade → gerada só sem candidato viável,
+      sobre a pesquisa); gerada com selo "imagem ilustrativa" na legenda, `README.md` de procedência e o tamanho
+      aprovado por `conferir-imagens`; nenhuma imagem vetada (`doutrina/imagens/README.md`).
 
 ## Técnica
 
