@@ -207,3 +207,69 @@ Branch `claude/charming-cannon-hvmlc8`, a partir de `7f98931`. Commit e push com
 ### Para o coordenador
 
 - `git add api/integracao-11165.mjs` (o arquivo novo de reexportação; o `git mv` já está no índice).
+
+## 20/10 · layout do BPA versionado e repasse como substituição
+
+Autorização do Ota (20/10/2026): "No ROTA, a troca pode ser feita para CPF" e "vamos versionar o layout do BPA". O
+ROTA-OS continua sem CPF (D1); muda o verbo do repasse: o faturamento do ente **substitui** o CNS pelo CPF na linha
+final (um documento por paciente, layout BPA v05.00 ≈). Commit e push ficam com o coordenador; `.claude/skills/` não
+foi tocado.
+
+### Feito
+
+- **Layout versionado** em `docs/referencias/bpa/`: `Layout_Exportacao_BPA-copia-publica.pdf` (313.580 bytes, SHA-256
+  `f318bc0359b378e8455280f87dec0ad8c016bcf853d640f2f83353e5648f9f1f`), `BPA_LEIAME-copia-publica.txt` (67.204 bytes,
+  SHA-256 `0172e38945c4a9a69ec5a8385231f44e0d808de46a496e492121b0f1c3032941`), `bpa-layout.md` (cabeçalho, BPA-C e
+  BPA-I campo a campo; campo de controle; divergência 350–353) e `PROCEDENCIA.md` (URLs, hash, por que é ≈, como
+  fechar). Texto do PDF reextraído com `pdftotext -layout` e conferido igual ao de 19/10; posições recalculadas por
+  script (contíguas; 132 / 50 / 353 bytes).
+- **`validarLinhaBPAI`** valida a LINHA FINAL (lado do faturamento): RE-14 com a dispensa por `prd_sem_cpf` = S de
+  2026-07 em diante; RE-16 CNS e CPF juntos → inválida; RE-17 sexo ∈ {M, F, I}; RE-18 `prd_sem_cpf` ∈ {S, N}, "S" só
+  de 2026-07 em diante e nunca com CPF (≈ derivado).
+- **Costura**: a pré-remessa passa `cns_presente` à validação; RE-14 e RC-08 viram `pendencias` de cada linha e aviso
+  no total (`RE-14:cpf_a_preencher_pelo_faturamento`, que substitui `cpf_a_completar_pelo_faturamento_do_ente`), nunca
+  motivo de exclusão. Rótulo da coluna: "CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final
+  (um documento por paciente, layout BPA v05.00)". `LEIAUTE` e `pendente_de_leiaute` apontam para o layout versionado.
+- **Console** (`rota-app.html`, só texto): nota do Faturamento, rótulo do aviso, toast do download, mensagem da recusa
+  de CPF e `PENDENTE_DE_LEIAUTE`. `npm run csp:write` rodado (hash do script trocado no `vercel.json`).
+- **API** (`api/servidor.mjs`, só texto): mensagem da recusa de CPF e `pendente_de_leiaute`. `testes/api.e2e.mjs` com
+  o aviso e o cabeçalho novos.
+- **Casos** (as duas cópias idênticas, `cmp` sem diferença): BP-01, 02, 03, 05, 06, 07 e 08 revistos para
+  `cns_presente: false` (a linha final com CPF não leva CNS; o caso antigo tinha os dois e esperava "válida", o que o
+  layout proíbe); novos BP-09 a BP-20 com procedência "≈ layout cópia pública 19/10"; `meta.revisao` explica.
+- **Desenho** (`docs/PORTARIA-11165-INTEGRACAO.md`): diagrama, D1, D4, §4 passo 3, colunas, TODO L1, §4.1 novo
+  (substituição; lado ROTA × lado faturamento), §9 com L1 ≈ e L15–L17. `docs/ROTA-SPEC.md`: a frase do CPF.
+- **Lacunas L15–L17** (CNS e CBO do profissional; INE; `prd-org` EXT) no desenho e em
+  `samais-os/produtos/rota/portaria-11165.md` §6 (só as três linhas). Pedidas como L11–L13, mas L11–L14 já existem na
+  especificação com outro conteúdo: numeração seguiu livre.
+- **`CLAUDE.md`**, "Governança & reuso": fonte canônica da identidade = `victorotaa/samais-os`; este arquivo é espelho
+  operacional do ROTA; em conflito, vale o samais-os.
+
+### RED / GREEN
+
+| Passo | Resultado |
+|---|---|
+| RED · `portaria-11165.test.mjs` com os casos novos | 7 falhas (BP-09, 14, 15, 16, 17, 18, 20) |
+| RED · `integracao-11165.test.mjs` | `TypeError` em `l.pendencias` (sem o campo); com a guarda, 5 falhas: linha sem `pendencias`, falta de CPF por linha, aviso novo, aviso antigo presente, cabeçalho do CSV |
+| Guarda que já passava | "nenhuma linha tem `prd_sem_cpf` nem situação de rua" (mesmo com a linha do banco trazendo os dois) e "a coluna do CPF sai vazia": a linha é montada campo a campo |
+| GREEN · `npm run verificar` | CSP 5/5 em dia · regras 78 · portaria 125 · integração 54 · auth 71 · fonte-api 70 |
+| GREEN · banco (cluster `16 ci` na 5433, sequência do job, derrubado ao fim) | `assercoes.sql` ok · `assercoes_11165.sql` ok · login 38 · paridade 21 · API 122 |
+| `grep -n 'onclick=' -- *.html` | nada |
+
+### Divergências achadas (cópia × o que o código fazia)
+
+1. Os casos BP-01 a BP-08 davam como "linha completa válida" uma linha com **CNS e CPF juntos**; o layout manda um
+   documento só (crítica das v04.06/04.07). Revistos.
+2. `prd-ibge` tem **6** dígitos no layout; o ROTA-OS exporta o IBGE de 7. O gravador corta o verificador (≈); o CSV
+   de conferência segue com 7.
+3. Posições 350–353: a cópia e o `bpa-go` divergem (353 × 355 bytes). Aberta; só o importador do BPA Magnético 05.00
+   decide.
+4. A cópia não marca `prd-pa` como obrigatório e numera dois campos como 38; o sexo padrão é "M ou F", sem o "I" que o
+   LEIAME aceita desde 01/2026.
+5. O LEIAME copiado tem 67.204 bytes (65,6 KiB) contra 66,6 KB no índice e para na v04.11: defasado.
+
+### Pendente (fora deste lote)
+
+- RE-16, RE-17 e RE-18 ainda não estão na tabela §3.2 de `samais-os/produtos/rota/portaria-11165.md` (a ordem era
+  mexer só nas lacunas); a especificação e o desenho §4.1 ficam desalinhados até alguém acrescentar as três linhas.
+- Fechar o ≈: hash contra o original pelo faturamento do ente e importação de prova (`PROCEDENCIA.md` §5).

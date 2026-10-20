@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Data** | 16/10/2026 (relógio de Brasília) |
-| **Base** | Especificação `samais-os/produtos/rota/portaria-11165.md` (matriz M01…M25, regras RE/RC, lacunas L1…L14) · módulo `regras/portaria-11165.mjs` · casos `testes/casos/portaria-11165-casos.json` |
+| **Base** | Especificação `samais-os/produtos/rota/portaria-11165.md` (matriz M01…M25, regras RE/RC, lacunas L1…L17) · módulo `regras/portaria-11165.mjs` · casos `testes/casos/portaria-11165-casos.json` |
 | **Escopo** | Etapa 1: modelo de dados, banco e API. A etapa 2 (console `rota-app.html`) liga a tela ao que está aqui (§8) |
 | **Autorização** | Ota: "desenhar a mudança e fazer ela, todos os ajustes" |
 | **Uso** | Interno Samais. Especificação de produto, não peça |
@@ -20,8 +20,9 @@ Regulação / serviço           ROTA-OS (gestor local)                        F
 agenda e confirma  ─────────▶ agendamento confirmado (art. 13 §3º)
                               elegibilidade em 3 estados (módulo = banco)
                               programação · prancheta · baixa
-                              pré-BPA-I da competência (CSV, SEM CPF) ────▶ completa o CPF (CADSUS)
-                                                                            envia ao SIA (BPA Magnético)
+                              pré-BPA-I da competência (CSV, CNS, SEM CPF) ─▶ troca o CNS pelo CPF (CADSUS):
+                                                                              um documento por paciente
+                                                                            envia ao SIA (BPA Magnético 05.00)
                               remessa informada (linhas, data, setor) ◀──── informa o que enviou
                               farol por competência (art. 21 §2º)
 ```
@@ -37,10 +38,10 @@ enviado ao SIA** ✓ (11.165 art. 21 §2º). A etapa 1 troca as duas réguas no 
 
 | # | Decisão | Por quê |
 |---|---|---|
-| D1 | **O ROTA-OS não guarda CPF** (Ota, 16/10/2026, opção 1 da especificação §5). Nenhuma coluna, campo de API, log ou exportação com CPF. A pré-remessa sai com a coluna do CPF **vazia**, rotulada "a completar pelo faturamento do ente" | O BPA-I exige CPF ✓ (SIGTAP, "Obrigatório CPF"), mas quem envia ao SIA é o faturamento do ente, que tem o CADSUS. A Samais não precisa do dado para operar |
+| D1 | **O ROTA-OS não guarda CPF** (Ota, 16/10/2026, opção 1 da especificação §5). Nenhuma coluna, campo de API, log ou exportação com CPF. A pré-remessa sai com o CNS e a coluna do CPF **vazia**, rotulada "CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00)". **Revisão 20/10/2026** (Ota: "No ROTA, a troca pode ser feita para CPF"): o verbo é **substituir**, não completar (§4.1) | O BPA-I exige CPF ✓ (SIGTAP, "Obrigatório CPF") e aceita um documento só, CPF ou CNS ≈ (layout, `docs/referencias/bpa/`); quem envia ao SIA é o faturamento do ente, que tem o CADSUS. A Samais não precisa do dado para operar |
 | D2 | **Fonte única das regras: `regras/portaria-11165.mjs`.** A API importa o módulo. O banco espelha só a elegibilidade federal (`elegibilidade_federal`), com **teste de paridade** | Regra duplicada sem teste diverge em silêncio. A elegibilidade fica também no banco porque a view de deslocamentos e o relatório dependem dela |
 | D3 | **Farol de produção por competência**, calculado por `farolProducao` sobre as **remessas informadas pelo faturamento** | Quem envia é o faturamento; o ROTA registra o que foi enviado. Dias sem baixa interna passam a informação operacional |
-| D4 | **Pré-BPA-I em CSV** (UTF-8, `;`), uma linha por paciente-deslocamento elegível e financiável. **O leiaute oficial do BPA Magnético é lacuna (L1)**: não se inventa largura fixa | Sem o `Layout_Exportacao_BPA.pdf` não há arquivo oficial. O CSV é o insumo de conferência do faturamento |
+| D4 | **Pré-BPA-I em CSV** (UTF-8, `;`), uma linha por paciente-deslocamento elegível e financiável. **O gravador de largura fixa ainda é lacuna (L1)**: desde 20/10 o layout está versionado como cópia pública ≈ em `docs/referencias/bpa/` (`bpa-layout.md`, `PROCEDENCIA.md`), mas as posições 350–353 divergem entre fontes e não se congelam | Sem o original conferido por hash e sem a importação de prova no BPA Magnético 05.00 não há arquivo oficial. O CSV é o insumo de conferência do faturamento |
 | D5 | **Pactuação da base em tabela própria** (`base_pactuacao`, 1:1 com `bases`), não em colunas de `bases` | `bases` só tem política de leitura; abrir `UPDATE` nela deixaria o gestor mexer em custo/km, retenção e contratante. A tabela nova tem RLS forçada e política própria |
 | D6 | **Distância em tabela por base** (`distancias_municipais`, com fonte e data de leitura). `km` nulo = a levantar | A matriz oficial é lacuna (L5); cada base registra o que leu e de onde. A busca é **na direção residência → serviço**, sem inverter o par |
 | D7 | **Competência sem informação não vira zero.** A remessa só conta como "sem registro" quando o faturamento informou **zero linhas**. Mês sem remessa informada entra como `null` e o farol fica `a_conferir` | Princípio da Realidade; é a convenção do módulo (RC-05) |
@@ -139,7 +140,8 @@ quando há linha) · `informado_por` (setor ou instituição, ex.: "faturamento 
 2. **Ficam de fora**, contados por motivo no relatório (`GET /api/bpa-i/AAAA-MM`): inelegíveis e pendentes (com a regra),
    não comprovados, excedentes, etapa da radioterapia não informada, sem CNES do estabelecimento executante, fora dos
    municípios abrangidos, linha inválida e divergência módulo × banco.
-3. **O faturamento do ente completa o CPF** no próprio sistema (CADSUS) e envia ao SIA no BPA Magnético.
+3. **O faturamento do ente troca o CNS pelo CPF** no próprio sistema (busca o CPF pelo CNS no CADSUS, grava o CPF e
+   apaga o CNS daquela linha) e envia ao SIA no BPA Magnético. A linha final leva **um documento por paciente** (§4.1).
 4. **O gestor informa a remessa** no ROTA: `POST /api/remessas-bpa` (competência, linhas enviadas, data, setor que
    informou). Zero linhas se informa como 0; competência não informada fica nula.
 5. **Farol por competência**: `GET /api/farol-producao` aplica `farolProducao` sobre as competências fechadas desde o
@@ -148,13 +150,30 @@ quando há linha) · `informado_por` (setor ou instituição, ex.: "faturamento 
 
 **Colunas do CSV** (cabeçalho fixo, nesta ordem): `competencia` · `cnes_estabelecimento_executante` (CNES onde o veículo
 está inscrito; L10) · `procedimento_sigtap` (08.03.01.015-0 ou 08.03.01.016-8) · `cns_paciente` (só dígitos) ·
-`cpf (a completar pelo faturamento do ente)` (sempre vazia) · `municipio_residencia_ibge` · `data_deslocamento` ·
+`CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final (um documento por paciente, layout BPA v05.00)`
+(sempre vazia) · `municipio_residencia_ibge` · `data_deslocamento` ·
 `quantidade` (1 por ida e volta, ≈ L2) · `modalidade` · `viagem`. Sem nome do paciente (minimização). Cada geração entra
 na auditoria com a competência e as contagens, sem dado pessoal.
 
-> **TODO (L1):** quando o `Layout_Exportacao_BPA.pdf` vigente for obtido e versionado em `docs/`, escrever o gerador do
-> arquivo de largura fixa a partir destas mesmas linhas, com teste contra o leiaute. Até lá, o CSV é insumo de
-> conferência, não arquivo de importação.
+> **TODO (L1):** o `Layout_Exportacao_BPA.pdf` está versionado como cópia pública ≈ em `docs/referencias/bpa/` (20/10).
+> Escrever o gravador do arquivo de largura fixa a partir destas mesmas linhas, com arquivo-ouro sintético e campo de
+> controle conferido, depois que o hash for comparado com o original e o arquivo de prova for importado no BPA
+> Magnético 05.00 (`PROCEDENCIA.md`, "Como fechar"). Até lá, o CSV é insumo de conferência, não arquivo de importação.
+
+### 4.1 · O repasse é substituição: a linha final leva um documento só (20/10/2026)
+
+O layout do BPA Magnético (≈ cópia pública, `docs/referencias/bpa/bpa-layout.md`) identifica o paciente "por apenas um
+documento: ou o CPF ou o CNS". Os dois códigos do transporte exigem CPF ✓ (SIGTAP). Logo o faturamento do ente não
+acrescenta o CPF ao lado do CNS: **substitui**. O ROTA-OS continua sem CPF (D1).
+
+| Lado | Função | O que vale |
+|---|---|---|
+| **ROTA-OS** (pré-remessa) | `preRemessaBPAI` (costura) | a linha leva o CNS e a coluna do CPF vazia; a falta de CPF é **pendência da linha** (`pendencias: ['RE-14', …]`) e aviso no total (`RE-14:cpf_a_preencher_pelo_faturamento`), **nunca** motivo de exclusão. A linha não tem `prd_sem_cpf` nem situação de rua: o ROTA-OS nunca os preenche |
+| **Faturamento** (linha final) | `validarLinhaBPAI` (módulo) | RE-14 CPF presente (dispensado só com `prd_sem_cpf` = S de 2026-07 em diante) · **RE-16** CNS e CPF juntos → inválida · CPF sem CNS → válida · **RE-17** sexo, se informado, ∈ {M, F, I} · **RE-18** `prd_sem_cpf`, se informado, ∈ {S, N}; "S" só a partir da competência 2026-07 e nunca com CPF |
+
+RE-16 a RE-18 são ≈ (layout de terceiro; RE-18 com CPF é derivada). Casos BP-09 a BP-20 no JSON, com procedência
+"≈ layout cópia pública 19/10"; BP-01 a BP-08 foram revistos para a linha final sem CNS. A importação de uma
+pré-remessa como sai do ROTA-OS, sem a troca, cairia na crítica de CPF obrigatório (BP-11).
 
 ---
 
@@ -245,14 +264,21 @@ quando a API estiver ligada (hoje o padrão é a competência corrente, parcial)
 
 ## 9 · Lacunas (○) que esta etapa não fecha
 
+L15 a L17 entraram em 20/10/2026, do layout do BPA. Foram pedidas como "L11 a L13", mas esses números já existem na
+especificação (`samais-os/produtos/rota/portaria-11165.md` §6: ato complementar da SAES, fonte do recurso, Lei
+15.390/2026, retenção); seguiram a numeração livre.
+
 | # | Lacuna | Como fica no sistema |
 |---|---|---|
-| L1 | Leiaute oficial do BPA Magnético | CSV nomeado + TODO (§4); nenhum arquivo de largura fixa inventado |
+| L1 | Leiaute oficial do BPA Magnético | **≈ desde 20/10**: cópia pública versionada em `docs/referencias/bpa/` com SHA-256; CSV nomeado + TODO (§4); nenhum arquivo de largura fixa até fechar o hash e a importação de prova |
 | L2 | Unidade da "quantidade" no BPA-I | quantidade 1 por ida e volta (≈); RE-13 continua bloqueando > 12 |
 | L3 | Acompanhante gera linha no BPA-I? | a pré-remessa não gera linha de acompanhante |
 | L4 | Linhas por paciente na radioterapia | 1 planejamento e 1 tratamento por paciente **na competência** (≈) |
 | L5 | Matriz oficial de distâncias | `distancias_municipais` com fonte e data; nulo = pendente |
 | L10 | Qual CNES é o "estabelecimento" da remessa | `cnes_estabelecimento` do veículo; sem ele, a linha sai do arquivo com motivo |
+| L15 | CNS e CBO do "profissional" (`prd_cnsmed`, `prd_cbo`, obrigatórios no layout ≈) numa linha de transporte: o condutor? o responsável técnico? | não modelado; o ROTA-OS não guarda CNS de trabalhador. Perguntar ao faturamento do ente-piloto junto com L2, L3, L9 e L10 |
+| L16 | INE da equipe (`prd_ine`, obrigatório no layout ≈ desde 08/2015) no transporte sanitário | não modelado; idem |
+| L17 | Unidade e origem do arquivo: `prd-org` = `EXT` ("outros sistemas") para arquivo gerado fora do BPA Magnético? | ≈ a confirmar no importador do BPA Magnético 05.00 (`PROCEDENCIA.md`, "Como fechar") |
 | M20 | Itinerário pactuado (art. 26) | não modelado; o registro do art. 27 (RC-08) não bloqueia a pré-remessa e aparece como aviso |
 | — | Portaria de suspensão do custeio (art. 12 §2º) | não modelada; `renovacao` recebe `base_suspensa` indefinido |
 

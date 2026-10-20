@@ -1,0 +1,15 @@
+samais-brand-guidelines
+Copyright 2026 Samais Gestão em Saúde
+
+Esta skill deriva da skill "brand-guidelines" do repositório anthropics/skills
+(skills/brand-guidelines), Copyright 2026 Anthropic, PBC, licenciada sob a
+Apache License, Version 2.0 (texto integral em LICENSE.txt).
+
+Modificações da Samais: todo o conteúdo de marca foi substituído pela identidade
+visual da Samais (tokens importados de doutrina/samais.css, tipografia
+Syne/Inter/JetBrains Mono, marca pelos SVGs oficiais, liquid glass, padrão de
+dobras, PDF e impresso, dados e gráficos, checklist de contraste e mobile);
+a estrutura foi reorganizada em núcleo e references/; o texto foi traduzido e
+reescrito em português. Em 20/10/2026 absorveu a skill samais-html-presentation
+(samais-rota) e o sistema visual do samais-rota/CLAUDE.md. Histórico em
+references/HISTORICO.md.
