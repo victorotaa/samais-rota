@@ -1,0 +1,19 @@
+# O site é a raiz do repositório (index.html, transporte.html, municipios.html, monitoramento.html,
+# rota-app.html, assets/, regras/, favicon.svg) e a API em api/. Tudo o que é interno convive na
+# mesma raiz e, sem este arquivo, a Vercel servia: medido em 20/10/2026, respondiam 200 o CLAUDE.md,
+# os docs/ e as skills de .claude/, inclusive a referência de composição de preço da
+# samais-municipal-study (BDI, CDO, remuneração), que nunca vai a terceiro.
+#
+# ⚠️ Os padrões levam "/" inicial para ancorar na raiz (lição do samais-estudos, jul/2026).
+# ⚠️ regras/ fica no ar: o console importa regras/*.mjs no navegador, e a API também os lê.
+# Pasta nova na raiz: decidir aqui, explicitamente, se vai ao ar.
+
+/.claude/
+/CLAUDE.md
+/README.md
+/docs/
+/supabase/
+/testes/
+/scripts/
+/template/
+/.mcp.json

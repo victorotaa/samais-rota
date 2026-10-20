@@ -1,433 +1,186 @@
 ---
 name: samais-municipal-study
 description: >
-  Executa varredura completa e produz estudo de caso/precificação municipal para prospecção comercial da Samais Gestão em Saúde.
-  Use SEMPRE que Victor (ou outro membro da equipe Samais) sinalizar uma cidade-alvo, município, consórcio intermunicipal
-  ou região para avaliação de oportunidade de contrato SAMU, UPA, Hospital ou demais serviços. Triggers explícitos:
-  "cidade alvo", "município alvo", "estudo de caso", "estudo de precificação", "varredura", "prospecção [cidade]",
-  "oportunidade comercial [cidade/região]", ou qualquer menção a uma cidade/município seguida de contexto de negociação.
-  O output é sempre um HTML single-file completo em dark mode Samais, estruturado em Partes numeradas, com cenários
-  Mínimo/Base/Amplo, composição de preço em BDI decomposto (nunca "lucro"), e personalização visual por imagens do
-  município-alvo. Referência viva: estudo Consórcio 33 Municípios / CRU Sorriso-MT.
+  Use quando a Samais Gestão em Saúde avalia um município, consórcio intermunicipal ou região como alvo comercial e
+  precisa do estudo de caso e de precificação: "cidade alvo", "município alvo", "estudo de caso", "estudo de
+  precificação", "varredura", "prospecção [cidade]", "oportunidade comercial [cidade/região]", ou uma cidade citada em
+  contexto de negociação, para SAMU 192, UPA, hospital ou mão de obra. Vale também, como modo próprio, para TRANSPORTE
+  SANITÁRIO eletivo e inter-hospitalar: "transporte sanitário [cidade]", "TFD [cidade]", "rota alvo", "estudo de
+  transporte", "viabilidade de transporte", "frota de pacientes", "Caminhos da Saúde", hemodiálise ou radioterapia fora
+  do domicílio, veículo doado pelo Ministério da Saúde, pregão de transporte de pacientes. Também quando um estudo
+  precisa de revisão de preço, de portão ou de registro da frente. Não use para um estado inteiro
+  (samais-raio-x-estadual) nem para vídeo (samais-video).
+license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
+<!-- Espelho gerado de victorotaa/samais-os@6533b6d em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
-# Samais — Skill: Estudo Municipal / Precificação
+# Samais — Estudo de município, consórcio e transporte sanitário
 
-## Propósito
+Protocolo do estudo que antecede toda reunião ou manifestação formal: varredura, Custo Operacional construído, cenários,
+comparativo com o gasto de hoje e três artefatos publicados por merge. **A doutrina decide; esta skill roteia.** Em
+conflito, valem os não-negociáveis de `samais-os/CLAUDE.md`, `samais-os/doutrina/regras-completas.md`,
+`samais-estudos/CLAUDE.md` e `samais-estudos/FORMULA-MESTRE.md`. A forma visual é da skill `samais-brand-guidelines`.
+Unificada em 20/10/2026 (origem de cada parte: `references/HISTORICO.md`).
 
-Sempre que um município ou consórcio entra no radar comercial da Samais, produzir um **dossiê estratégico e comercial completo** antes de qualquer reunião ou manifestação formal. Este skill codifica o protocolo-padrão: varredura de dados, curadoria visual, cruzamento analítico, composição de preço em BDI decomposto, e geração de HTML de apresentação em identidade visual Samais (dark mode) estruturado em Partes numeradas.
+## Roteamento: leia só o arquivo da fase
 
-O output é **HTML single-file**, autossuficiente, funcionando como material de apresentação ao cliente e inteligência interna da equipe comercial.
+| Para | Leia |
+|---|---|
+| Raio-x da UF, briefing, coletores, varredura, TCE + PNCP, editais pelo item, carga secundária, vínculo, decisores, rede | `references/fontes-e-coleta.md` |
+| Frota disponível, equipe pela norma, custo construído, viatura-hora, faixa de 1,5 mi, normas e KPIs do SAMU | `references/calculo-custo-construido.md` |
+| Cenário A × B, trio Mínimo/Base/Ampliada, comparativo de gasto, economia, custeio federal, score, diagnóstico | `references/cenarios-e-comparativo.md` |
+| BDI decomposto, remuneração residual, gross-up, textos por linha, negociação, anexo de memória financeira | `references/composicao-e-anexo.md` |
+| Markdown interno, estrutura e conteúdo da página cliente, atestados, CoPilot/ROTA-OS, imagens, conferências | `references/peca-cliente.md` |
+| Transporte sanitário (eletivo, TFD, inter-hospitalar): norma 11.164 + 11.165, motor, repasse, farol, peça | `references/modo-transporte-sanitario.md` |
+| Checklist do portão, portão, publicação, conferência no ar, entrega, registro da frente | `references/portao-publicacao-entrega.md` |
+| Análise de edital (habilitação, cláusulas, red flags) | `references/checklist-licitacao.md` |
+| De onde veio cada regra e o que foi descartado | `references/HISTORICO.md` |
 
----
+## Entradas (FASE 1: qualificação)
 
-## Protocolo de Execução
+Confirme ou extraia do contexto; **se faltar 1, 2 ou 3, pergunte antes de pesquisar** (nada de pesquisa cega):
 
-### FASE 1 — Qualificação do Alvo
+1. **Alvo:** município, lista de municípios, consórcio (nome exato, CNPJ, UFs) ou região.
+2. **Serviço:** SAMU 192 · transporte sanitário (eletivo e inter-hospitalar) · UPA · hospital · mão de obra.
+   **Transporte sanitário é objeto e contrato próprios**, nunca rubrica do SAMU: com os dois, são **dois estudos**.
+3. **Gatilho:** edital publicado ou iminente, contato espontâneo, indicação, formação de consórcio, renovação, veículo
+   federal recebido, cobrança do MP ou do TCE.
+4. **Operador atual:** Samais, concorrente, gestão própria do ente, OS, fundação, ninguém.
+5. **Sede da central** (consórcio) e, no transporte, **qual frente** e se há **frota doada** pelo Ministério.
+6. **Modelo pretendido:** regra do CEO, nunca assumir; com OS/OSC, perguntar o caminho antes de precificar.
 
-Antes de pesquisar, confirme ou extraia do contexto:
+## Os três artefatos (repositório `samais-estudos`)
 
-1. **Alvo** — município isolado, lista de municípios, ou consórcio intermunicipal (nome exato + UFs)
-2. **Serviço de interesse** — SAMU 192 / UPA / Hospital / mão de obra / combinação
-3. **Gatilho do interesse** — licitação iminente, edital publicado, contato espontâneo, indicação política, formação de consórcio, renovação
-4. **Operador atual** — Samais já opera? Concorrente? Prefeitura direta? Não existe ainda?
-5. **CRU / Sede** — quando consórcio, qual município sedia a Central de Regulação?
+| # | Artefato | Caminho | Quem vê |
+|---|---|---|---|
+| 1 | **Markdown interno**: o cálculo completo | `estudos-internos/<slug>.md` | casa |
+| 2 | **Página cliente** + cartão na home | `estudos/<slug>.html` + `index.html` | ente (só entre interessados) |
+| 3 | **Anexo de memória financeira** | `anexos/<slug>-memoria-financeira.html` | diretoria; **nunca publicado** |
 
-Se faltar (1), (2) ou (3), **perguntar antes de prosseguir**. Não iniciar pesquisa cega.
+`<slug>` = `<municipio>-<uf>` (transporte: `<municipio>-<uf>-transporte-sanitario`). Referências vivas:
+`estudos-internos/osasco-sp.md` (estrutura), `itapevi-sp.md` §7.2 (comparativo), `estudos/ourinhos-sp.html` (página),
+`anexos/canoas-rs-memoria-financeira.html` (anexo), `estudos-internos/belem-pa-transporte-sanitario.md` (transporte).
 
----
+## As fases
 
-### FASE 2 — Varredura (web_search + image_search obrigatórios)
+### FASE 0 — Olhar antes de pesquisar
 
-Registrar fonte e data para cada bloco.
+- UF com raio-x (`samais-os/inteligencia/raio-x.json`)? Comece por `samais-os/inteligencia/<pasta>/`; releia no CNES as
+  unidades do alvo (o raio-x é foto datada). O ≈ do raio-x continua ≈.
+- Briefing respondido? `node scripts/briefing-dossie.mjs <slug> --stdout` (samais-os). Sem briefing, siga e **mande o
+  levantamento** em paralelo; as 15 perguntas `essencial` travam o cálculo.
+- Detalhe: `references/fontes-e-coleta.md` §1–2.
 
-#### 2.1 Perfil Demográfico e Geográfico
-- `[município] [UF] IBGE população 2024 censo`
-- `[município] [UF] IDH PIB per capita área`
-- Extrair: população, área (km²), densidade, IDH, PIB per capita, taxa de urbanização, distribuição rural/urbana
-- **Para consórcios:** repetir por município-membro e consolidar em tabela comparativa
+### FASE 2 — Varredura (fonte e data em cada bloco)
 
-#### 2.2 Infraestrutura de Saúde
-- `[município] hospitais UPA leitos CNES saúde`
-- `[município] [UF] rede de atenção saúde secretaria macrorregião`
-- Extrair: hospitais (público/privado/filantrópico), leitos SUS, leitos/mil hab (referência: 2,0/mil), UPAs, cobertura APS, hospital regional de referência (chave em consórcios)
+- **API antes da busca web:** `coletar-dados.mjs`, `coletar-cenario-a-tce.mjs` (SP), `coletar-cenario-a-nucleogov.mjs`
+  (GO), `conferir-dados.mjs` (samais-estudos).
+- **Gasto de hoje pelo TCE estadual (pago, nunca empenhado)** e contratos lidos **pelo objeto**: gestão própria, mista ou
+  terceirizada; pagamento recente é o que diz se o contrato está vivo.
+- **Editais publicados pelo item** do PNCP: unidade com unidade, escopo com escopo.
+- **Carga secundária** (transferência inter-hospitalar) em todo estudo de SAMU; sem dado, lacuna, nunca zero.
+- **Vínculo** (quem administra, quem opera, link ao documento) e **decisores** com fonte, data e partido.
+- Detalhe: `references/fontes-e-coleta.md` §3–10; transporte: `references/modo-transporte-sanitario.md` §3.
 
-#### 2.3 Status Atual do SAMU
-- `SAMU [município] [UF] 192 cobertura`
-- `SAMU [município] licitação contrato gestão operador`
-- `SAMU [município] [UF] frota USB USA motolância central regulação`
-- Extrair: SAMU existe? Operador (prefeitura/OS/empresa)? Frota atual? Central própria ou compartilhada? Habilitação federal?
+### FASE 3 — Cálculo e composição
 
-#### 2.4 Perfil Epidemiológico e de Urgência
-- `[município] [UF] mortalidade causas óbito SIM DATASUS`
-- `[município] acidentes trânsito rodoviário internações`
-- Extrair: principais causas de mortalidade, mortalidade por causas externas, perfil de demanda APH estimado
+- **Frota disponível do ente é o teto:** ativas no CNES (com ou sem equipe) + desativadas há até 18 meses por motivo que
+  conta; opera até o máximo da norma; parada acima dele é reserva técnica; abaixo do mínimo é lacuna; nenhuma viatura nova.
+- **Equipe pela norma** (PT 1.010/2012, FC 24/7 ≈ 4,5), nunca o quadro de hoje.
+- **Custo Operacional construído** (`samais-os/doutrina/parametros-custo.json`, `scripts/raiox/lib/custo-construido.mjs`);
+  acima de ~1,5 mi hab., **pela norma**; R$ 5,20/hab só confere.
+- **Cenário A × B** e o trio **Mínimo / Base ★ / Ampliada**; comparativo de **gasto** de hoje × Custo Operacional.
+- **Preço e composição** (BDI, remuneração residual ≥ ~5%) só nos artefatos 1 e 3.
+- Detalhe: `references/calculo-custo-construido.md`, `cenarios-e-comparativo.md`, `composicao-e-anexo.md`.
 
-#### 2.5 Contexto Político-Institucional
-- `prefeito [município] [UF] 2025 2026`
-- `secretário saúde [município] [UF]`
-- `[município] consórcio intermunicipal saúde`
-- `[UF] governador secretário estadual saúde`
-- Extrair: prefeito (partido, mandato), secretário de saúde, consórcios, alinhamento com governo estadual/federal
+### FASE 4 — Escrever os artefatos
 
-#### 2.6 Capacidade Orçamentária e Cofinanciamento
-- `[município] [UF] FPM repasse federal saúde`
-- `[município] SIOPS gasto saúde per capita`
-- `[município] CAUC situação fiscal`
-- `portaria SAMU cofinanciamento federal [ano vigente]`
-- Extrair: receita total, % gasto em saúde (mínimo 15%), gasto per capita, situação CAUC, habilitação para cofinanciamento federal SAMU (50%)
+Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `referencias/apresentacao-html.md`,
+`referencias/anexo-composicao-preco.md`, a skill `samais-brand-guidelines` e `samais-os/atestados/ARGUMENTOS.md`.
 
-#### 2.7 Análise Competitiva e Licitatória
-- `licitação SAMU [município] [UF] edital pregão PNCP`
-- `OS organização social saúde [UF] contratos`
-- Extrair: editais publicados, vencedores anteriores, valores praticados, modalidade, vigências
+- Página **resumida**: título = conclusão com o número; um dado por bloco; ~1.200 palavras (limite 1.875).
+- Estrutura Ourinhos: hero cartão-postal → sumário → diagnóstico → régua do SUS → pontos críticos → proposta →
+  precedentes documentais → viabilidade (Custo Operacional, per capita) → decisores → diferenciais → fechamento sem contato.
+- Detalhe: `references/peca-cliente.md`; anexo: `references/composicao-e-anexo.md` §8.
 
-#### 2.8 **CURADORIA VISUAL**
+### FASE 5 — Portão e publicação
 
-**Imagens de marca (frota, equipe, regulação): GERAR via MCP do Higgsfield**, sempre com os
-elements treinados da conta (`ambulancia-samu-real`, `samu-uniforme-real`, `motolancia-samu-real`,
-`ambulancha-samu-real` + personagens de equipe). Referências-fonte: pasta do Drive
-`1LJfWhToTh6Zvi4KnO6527hpC3zczd5V1` (Manual IdV SAMU + Brand Bible). Uso: `generate_image` com
-`<<<element_id>>>` no prompt; direção de arte sóbria/editorial, ouro sobre sombra, sem drama.
-Imagens embutidas no repo, nunca hotlink.
+- Checklist do autor, depois o **portão (opus, esforço `max`, por lote)**; correção volta ao portão em reenvio estreito.
+- **Publicar é mergear na `main` do samais-estudos** (commit e PR não publicam). Antes: `git fetch origin && node
+  scripts/guarda-merge.mjs`.
+- No ar, conferir **por conteúdo**: home com o valor certo, página sem `.html`, anexo dando 404, `?v=N`.
+- Detalhe: `references/portao-publicacao-entrega.md`.
 
-Para imagens **do município** (vistas, praças, hospitais), executar `image_search`:
+### FASE 6 — Entrega
 
-1. `[município] [UF] vista aérea drone` → **cover-hero** (capa)
-2. `[município] [UF] centro cidade praça` → **context-card** (seção de território)
-3. `[município] [UF] hospital saúde` → **infra-visual** (seção de infraestrutura)
-4. `[município] [UF] paisagem região` → **part-divider** (entre Partes)
+- **A URL na conversa, sempre** (`https://samais-estudos.vercel.app/estudos/<slug>` e a home), mais resumo de até 6
+  linhas: Custo Operacional mensal · per capita · escopo · o achado que decide · a maior pendência · o próximo passo.
+- Registrar a frente: `samais-os/frentes/<slug>/status.json` com o valor **saído do estudo**, `gatilho`, `estudo_url` e
+  `estudo_titulo_conferido`; nomes de contato e porta de entrada só em `bastidor.md`.
+- **Mudou o preço, mudam cinco lugares no mesmo PR:** página, cartão da home, markdown interno, anexo, `status.json`.
 
-**Para consórcios:** priorizar o município-sede da CRU. Usar vistas gerais da região para os dividers.
+## Modo transporte sanitário (resumo)
 
-**Linguagem Samais / SAMU** (imagens permanentes da marca — usar como pontuação visual):
-- `ambulância SAMU atendimento emergência` → seção de frota
-- `central de regulação médica operadores` → seção da CRU
-- `paramédicos APH atendimento cena` → seção de capacitação/diferenciais
-- `motolância SAMU urbana` → quando motolância estiver na proposta
+- **Contrato único, sem faseamento:** eletiva e inter-hospitalar num instrumento, operação plena desde o dia 1.
+- **Sistema: ROTA-OS** (não PEP-OS); **sem R$ por veículo em peça**; perguntar a frente antes de escolher o veículo.
+- **Norma: Portarias GM/MS 11.164 + 11.165/2026, nunca 11.179.** Elegível: radioterapia e hemodiálise, > 50 km de
+  município a município, ente diverso, ≤ 500 km, hemodiálise no mesmo estado, tratamento confirmado. Incentivo só para van
+  e micro-ônibus doados pelo MS, mensal, mantido pelo BPA-I; **3 meses sem registro suspende, 6 exclui**.
+- **Medir a distância antes de citar repasse.** Repasse é fato e oportunidade (custeio a habilitar, operador regional do
+  art. 25); o **farol de conformidade** é o que o ROTA-OS entrega. A pilha de financiamento fica no Artefato 1.
+- Dimensionar pelo aproveitamento real (85% ≈), capacidade efetiva = assentos ÷ ~2, FC da eletiva 2,57; inter-hospitalar
+  em viatura-hora e FC 4,5. **Sem case de transporte:** a prova é o sistema e a norma.
+- Detalhe: `references/modo-transporte-sanitario.md` (fatos da norma: `samais-os/produtos/rota/portaria-11165.md`).
 
-Selecionar **3–5 imagens principais** por estudo. Para cada uma, registrar URL da fonte. Preferência: Unsplash/Pexels (uso livre comercial) sobre imagens de portais municipais (risco de direito autoral).
+## Não-negociáveis que mais falham
 
-**Fallback obrigatório:** toda zona de imagem deve ter gradiente ouro/preto como fallback quando a busca falhar, mantendo a coesão visual.
+1. **Princípio da Realidade:** ✓ lido · ≈ derivado (regra declarada) · ○ a levantar. Lacuna nunca vira zero; premissa
+   nunca vira fato; ✓ só quando fontes independentes convergem (20/10/2026); nenhuma conclusão do silêncio da fonte.
+2. **Valor final = "Custo Operacional"** (16/10/2026); "oportunidade de mercado" fica para o conceito. R$ 5,20/hab só como
+   "Custo Operacional · ≈ estimativa Samais (cálculo sobre os contratos da Samais)".
+3. **Composição do preço nunca vai a terceiro:** BDI, CDO, margem, remuneração, fator de cobertura, **preço por viatura**,
+   "Métrica de Ouro", score, ranking. Em superfície, nunca "lucro" nem "margem": "Composição do Valor Contratual".
+4. **Custo construído, nunca régua fixa** (19/10/2026), em SAMU, transporte, hospital e estudo.
+5. **A peça não compara equipe;** compara gasto de hoje × Custo Operacional; onde hoje é maior, **economia para o
+   município, com a qualidade inteira**. Nunca "somos X% mais baratos".
+6. **Nada de suposição:** acima de ~1,5 mi hab., pela norma; **"sem contrato publicado no PNCP" ≠ sem contrato**
+   (confirmar no portal do ente); o não lido é ○.
+7. **Contratado nunca como pago.** Custeio federal pago é uma linha de fato, sem percentual, sem "quem paga", sem
+   tripartite, sem custeio ÷ 0,5; custeio a habilitar ou qualificar é oportunidade.
+8. **FC 24/7 ≈ 4,5, nunca 2,2.** Transferência inter-hospitalar em viatura-hora; a exposição dela vai ao Cenário A, não
+   ao nosso custo. Passivo trabalhista em todo cálculo CLT, sem contar a rescisão duas vezes.
+9. **Consórcio ≠ região de saúde ≠ área da central ≠ quem paga ≠ mantenedora no CNES.** Na UF com raio-x, rodar
+   `scripts/raiox/vinculo-oculto.mjs <UF>`; vínculo ativo, total ou parcial, com link ao documento oficial.
+10. **Decisores com fonte, data e partido ao lado do nome** (19/10/2026: *"é impreterível"*). CPF, dado sensível, boato e
+    contato pessoal nunca na peça; contato e porta de entrada só em `bastidor.md`.
+11. **Saúde pública:** hospital, leito e UTI só pela rede do SUS (públicos com leito SUS inteiros; filantrópicos e
+    privados contratados pela parte SUS).
+12. **Oportunidade só do território da peça;** referência de fora vai só na Fonte, como método. **Ourinhos** (recortes e
+    precedente) só em contexto paulista.
+13. **Atestados:** Ourinhos e CISNORPI, em pretérito, só o que o documento sustenta; transporte sem case.
+14. **Padrão frio, sem campo de contato,** tagline no fecho; `fatos.md` cita; `interpretacao.md` e `bastidor.md` nunca
+    entram na peça.
+15. **Nenhuma palavra órfã** nem palavra curta no fim de linha; mobile sem rolagem horizontal; hero cartão-postal em alta
+    resolução; relógio de Brasília (`scripts/lib/relogio.mjs`).
+16. **Rede:** sem `r.jina.ai` e `api.firecrawl.dev`; nunca desligar TLS; CNES e PNCP com User-Agent + Referer; bloqueio
+    medido em `$HTTPS_PROXY/__agentproxy/status` (skill `leitura-resiliente`).
+17. **Portão antes de terceiro;** portão vermelho, quem se corrige é a peça (nunca a guarda); estudo publicado fica como
+    está; publicar é mergear e conferir no ar.
 
----
+## Lições que viraram regra (o detalhe está nas references)
 
-### FASE 3 — Análise, Cruzamento e Composição Comercial
-
-#### 3.1 Score de Atratividade (0–10 por critério, ponderado)
-
-| Critério | Peso | Como avaliar |
+| Caso | O erro | A regra |
 |---|---|---|
-| Porte populacional | 20% | <50k=3 / 50–200k=7 / >200k=10 |
-| Fragilidade do SAMU atual | 25% | Sem SAMU=10 / prefeitura direta=8 / OS fraca=6 / concorrente forte=3 |
-| Capacidade orçamentária | 20% | Gasto saúde per capita + CAUC regular |
-| Janela política | 15% | 1º mandato / alinhamento federal = nota maior |
-| Licitação / edital iminente | 20% | Edital publicado=10 / previsto=7 / sem info=4 |
-
-Resultado em gauge SVG (0–10) na seção de Sumário Executivo.
-
-#### 3.2 Dimensionamento em 3 Cenários
-
-Seguir benchmarks em `/references/benchmarks-samu.md`. Sempre produzir **trio**:
-
-| Cenário | Lógica |
-|---|---|
-| **Mínimo Regulatório** | Cobertura mínima exigida pela PNAU — base de comparação |
-| **Base Operacional ★** | Recomendação Samais — equilíbrio cobertura/custo/cofinanciamento |
-| **Cobertura Ampliada** | Ideal técnico — útil para projeção de expansão futura |
-
-Cada cenário entrega: frota (USB / USA / motolância), bases, colaboradores estimados, custo operacional mensal.
-
-#### 3.3 Composição do Valor Contratual (BDI decomposto — 35%)
-
-**REGRA CRÍTICA: Nunca declarar "lucro", "margem" ou "lucratividade"** em nenhuma superfície da proposta. Sempre apresentar como **"Composição do Valor Contratual"** ou **"Encargos e Provisões Contratuais"**.
-
-Ver `/references/composicao-preco.md` para tabelas prontas, justificativas por linha e textos de apresentação.
-
-Decomposição-padrão dos 35% sobre CDO (Custo Direto Operacional):
-
-| Componente | % sobre CDO |
-|---|---|
-| Tributos sobre faturamento (PIS/COFINS + ISS + IR/CSLL) | 13,5% |
-| Despesas administrativas e de gestão corporativa | 8,0% |
-| Tecnologia, sistemas e inovação operacional (CoPilot OS) | 5,0% |
-| Reserva técnica operacional (frota, equipamentos, contingências) | 3,0% |
-| Capacitação continuada e desenvolvimento técnico | 2,0% |
-| Contingências, seguros e garantias contratuais | 2,5% |
-| Remuneração empresarial | 4,0% |
-| **Total BDI apresentado** | **38,0%** |
-| *Floor de negociação* | *37,5%* |
-
-**Fórmula:**
-```
-Valor Contratual = CDO × 1,35
-CDO = Frota + Pessoal + Insumos + Combustível + Manutenção + Overhead Operacional
-```
-
-**Cofinanciamento federal SAMU (quando aplicável):**
-- 50% federal (portaria MS vigente) + 50% local (estado + município/consórcio)
-- Apresentar o valor local líquido separadamente — é o número que fecha com o prefeito
-
-#### 3.4 Argumento de Fechamento (padrão Sorriso)
-
-Toda proposta termina com **custo per capita/mês** após cofinanciamento federal:
-```
-R$ [X],XX / habitante / mês
-```
-Esse é "o número que fecha com o prefeito". Apresentar com comparativos (café, pão francês, imposto municipal) quando couber.
-
-#### 3.5 Diagnóstico Narrativo
-
-Parágrafo síntese (5–8 linhas) com: situação atual, principal vulnerabilidade, posicionamento Samais, alertas de risco.
-
----
-
-### FASE 4 — Geração dos dois HTMLs
-
-Ler **antes de escrever qualquer código:**
-- `/references/design-system.md` — tokens, componentes, CSS base
-- `/references/composicao-preco.md` — tabelas e textos de BDI prontos
-
-**Todo estudo gera DOIS arquivos distintos, com audiências opostas.**
-
----
-
-#### OUTPUT A — Proposta Comercial Externa (`-proposta-[municipio].html`)
-
-Documento entregável ao ente público (prefeito, secretário de saúde, presidente de consórcio).
-**Linguagem propositiva, prospectiva e institucional. Zero linguagem de risco, zero análise interna.**
-
-Seções do OUTPUT A (ordem obrigatória):
-
-- **CAPA** — cover-hero com imagem do município, título em Syne, 4 cover-stats em linha, tag cyan "Proposta Técnica e Comercial"
-- **APRESENTAÇÃO SAMAIS** — quem somos, portfólio de contratos, diferenciais (CoPilot OS como destaque principal), escala nacional
-- **PARTE I — O Território e Sua Saúde** — demografia, infraestrutura hospitalar, perfil de demanda APH. Tom: "entendemos sua realidade"
-- **PARTE II — A Solução Samais para [Município/Região]** — dimensionamento proposto (Cenário Base ★ com Mínimo e Ampliado como referência), distribuição de bases, frota, equipe. Tom: "aqui está o que entregamos"
-- **PARTE III — O Financiamento que Viabiliza** — cofinanciamento federal 50%, normativas, custo efetivo para o município. Tom: "isso é mais acessível do que parece"
-- **PARTE IV — Composição do Valor Contratual** — tabela BDI decomposto, memória de cálculo, valor mensal/anual/5 anos, argumento per capita/mês
-- **PARTE V — Tecnologia e Inovação: Samais CoPilot OS** — seção dedicada ao produto de IA, diferenciais vs. operação direta ou concorrentes, impacto em tempo-resposta e qualidade regulatória
-- **PARTE VI — Por Que a Samais** — capacidade técnica, método, tecnologia (CoPilot OS) e modelo de transição, apoiada nos **atestados reais de SAMU 192, transferência inter-hospitalar e regulação** (cases Ourinhos e CISNORPI — este é o serviço que casa com esta skill). **Descrever cada case só com o que o atestado documenta — nunca fabricar operação/frota/escala não comprovada.**
-- **FECHO** — pela tese/valor. **Sem campo de contato** (nem reunião, e-mail, telefone, formulário): a Samais só é rastreável por contato de saída dela
-- **RODAPÉ** — "samais · gestão + saúde" + data + versão (SEM "confidencial")
-
-**Regras absolutas do OUTPUT A:**
-- ❌ Nenhuma menção a risco, alerta, resistência, ameaça, concorrente, desvantagem, limitação
-- ❌ Nenhuma análise política interna (mapa de influência, partido, histórico de irregularidades)
-- ❌ Nenhuma nota metodológica ou alerta de dado estimado visível ao leitor externo
-- ❌ Nenhum dado negativo sobre o ente público (déficit, inadimplência, fraqueza orçamentária)
-- ❌ Nenhuma seção de "análise competitiva" ou "contexto licitatório"
-- ✅ Tom sempre: parceiro estratégico, especialista, confiável, inovador
-- ✅ Cada seção responde à pergunta implícita do prefeito: "Por que contratar a Samais?"
-
----
-
-#### OUTPUT B — Dossiê Estratégico Interno (`-dossie-[municipio].html`)
-
-Documento de uso exclusivo interno Samais (equipe comercial, diretoria).
-Contém toda a inteligência de prospecção que **não pode ir ao cliente**.
-
-Seções do OUTPUT B (ordem obrigatória):
-
-- **CAPA** — idêntica ao OUTPUT A com tag "USO INTERNO · CONFIDENCIAL"
-- **SUMÁRIO EXECUTIVO INTERNO** — gauge de score + diagnóstico rápido em bullets + verdict Go/Atenção/No-Go + valor síntese
-- **PARTE I — Território e Contexto Regional** — completo, incluindo notas metodológicas e dados estimados sinalizados
-- **PARTE II — Infraestrutura e Diagnóstico SAMU** — completo, com alertas de dados não confirmados
-- **PARTE III — Perfil Epidemiológico** — completo
-- **PARTE IV — Dimensionamento** — completo com memória de cálculo e alertas metodológicos
-- **PARTE V — Financiamento Federal** — completo com análise de risco fiscal do município
-- **PARTE VI — Composição do Valor Contratual** — completo com BDI decomposto e estratégia de negociação
-- **PARTE VII — Contexto Político-Institucional** — completo: prefeito, partido, mandato, mapa de influência e decisão, sequência de abordagem recomendada, riscos políticos
-- **PARTE VIII — Análise Competitiva e Licitatória** — completo: operadores identificados, histórico de editais, portas de entrada, riscos competitivos
-- **PARTE IX — Recomendação Estratégica Interna** — verdict + justificativa + próximos passos táticos + riscos críticos
-- **RODAPÉ** — "USO INTERNO EXCLUSIVO SAMAIS · CONFIDENCIAL" + data + versão
-
----
-
-#### Instruções de geração (ambos os outputs)
-
-- Paleta obrigatória: `#C9A84C` / `#EAC97A` (ouro), `#16a085` (cyan institucional), `#060709` (bg), `#131620` (bg3)
-- Fontes: Syne (display), Plus Jakarta Sans (corpo), JetBrains Mono (dados e eyebrows)
-- Nav lateral fixo com scroll spy, destacando Parte ativa
-- Cover-stats em linha (4 números grandes + labels em Mono)
-- Cenários em grid de 3 colunas, **Base Operacional com badge "★ RECOMENDADO"** em dourado
-- Boxes coloridos: `box-cyan` (destaque institucional), `box-gold` (síntese estratégica), `box-green` (validação fiscal)
-- Tabelas com header em Mono dourado + linhas alternadas
-- Zonas de imagem com overlay escuro e fallback em gradiente
-- Dados ausentes: no OUTPUT A — omitir ou usar "a confirmar em diagnóstico de campo"; no OUTPUT B — marcar com `.data-missing`
-- OUTPUT A não tem nav-item "Análise Competitiva", "Contexto Político" nem "Recomendação"
-- OUTPUT B mantém estrutura completa com todas as seções
-
----
-
-### FASE 5 — Entrega
-
-1. Salvar os dois arquivos:
-   - `samais-proposta-[municipio]-[YYYY-MM].html` → OUTPUT A (externo)
-   - `samais-dossie-[municipio]-[YYYY-MM].html` → OUTPUT B (interno)
-2. Chamar `present_files` com ambos, apresentando o OUTPUT A primeiro
-3. Resumir em chat (nunca no OUTPUT A) em no máximo 6 bullets:
-   - Score de atratividade e verdict Go / Atenção / No-Go
-   - Cenário recomendado (frota + custo operacional mensal)
-   - Valor contratual (mensal + anual + 5 anos) e custo per capita pós-cofinanciamento
-   - Principal porta de entrada e sequência de abordagem
-   - 2–3 riscos críticos que a equipe comercial precisa monitorar
-   - Próximo passo sugerido (reunião com quem, via qual canal)
-
-
----
-
-### FASE 6 — Deploy Netlify e Mensagem para Diretoria
-
-#### 6.1 Preparação do nome do projeto
-
-Gerar slug Netlify a partir do nome do município/consórcio/região:
-- Apenas letras minúsculas, hífens, sem acentos ou caracteres especiais
-- Máximo 60 caracteres
-- Padrão: `samais-[regiao-ou-municipio]`
-- Exemplos: `samais-vale-do-jurumirim`, `samais-sorriso-mt`, `samais-consorcio-norte-mt`
-
-#### 6.2 Deploy via API Netlify
-
-**Requer:** `NETLIFY_AUTH_TOKEN` — solicitar ao Victor antes de executar a FASE 6, caso não esteja no contexto.
-
-Executar o seguinte fluxo em Python/bash:
-
-```python
-import requests, zipfile, os, json, time
-
-NETLIFY_TOKEN = os.environ.get("NETLIFY_AUTH_TOKEN")  # ou pegar do contexto
-SITE_SLUG = "samais-[regiao]"  # slug gerado na 6.1
-HTML_PATH = "/mnt/user-data/outputs/samais-proposta-[municipio]-[YYYY-MM].html"
-
-headers = {
-    "Authorization": f"Bearer {NETLIFY_TOKEN}",
-    "Content-Type": "application/json"
-}
-
-# 1. Criar o site com nome personalizado
-site_payload = {
-    "name": SITE_SLUG,
-    "custom_domain": None
-}
-r = requests.post("https://api.netlify.com/api/v1/sites", 
-                  json=site_payload, headers=headers)
-site = r.json()
-site_id = site["id"]
-site_url = site.get("ssl_url") or site.get("url")
-
-# Se o site já existir com esse nome, buscar pelo slug:
-# r = requests.get(f"https://api.netlify.com/api/v1/sites?name={SITE_SLUG}", headers=headers)
-# site_id = r.json()[0]["id"]
-
-# 2. Fazer o deploy do HTML como index.html
-with open(HTML_PATH, 'rb') as f:
-    html_content = f.read()
-
-# Calcular SHA1 do arquivo
-import hashlib
-sha1 = hashlib.sha1(html_content).hexdigest()
-
-# Criar deploy com file digest
-deploy_payload = {
-    "files": {"index.html": sha1},
-    "async": False
-}
-r = requests.post(f"https://api.netlify.com/api/v1/sites/{site_id}/deploys",
-                  json=deploy_payload, headers=headers)
-deploy = r.json()
-deploy_id = deploy["id"]
-
-# 3. Upload do arquivo
-upload_headers = {
-    "Authorization": f"Bearer {NETLIFY_TOKEN}",
-    "Content-Type": "text/html"
-}
-requests.put(
-    f"https://api.netlify.com/api/v1/deploys/{deploy_id}/files/index.html",
-    data=html_content,
-    headers=upload_headers
-)
-
-# 4. Aguardar processamento
-time.sleep(5)
-print(f"Deploy concluído: {site_url}")
-```
-
-Se o site_slug já estiver em uso por outro projeto da Samais, tentar `samais-[regiao]-[ano]` como fallback.
-
-**URL final esperada:** `https://samais-[regiao].netlify.app`
-
-#### 6.3 Renomear projeto existente (quando já houver site no Netlify)
-
-Quando Victor indicar que já existe um site (ex: `samais-jurimin`) e quiser renomear para o nome correto do consórcio/região:
-
-```python
-# Atualizar o nome do site existente
-SITE_ID = "[id do site existente]"
-r = requests.patch(
-    f"https://api.netlify.com/api/v1/sites/{SITE_ID}",
-    json={"name": SITE_SLUG},
-    headers=headers
-)
-```
-
-#### 6.4 Geração da mensagem para André
-
-Após o deploy bem-sucedido, gerar mensagem via `message_compose_v1` com:
-
-- **Tipo:** WhatsApp (textMessage) ou e-mail, conforme indicado por Victor
-- **Tom:** direto, confiante, institucional — entre colegas de diretoria, não entre fornecedor e cliente
-- **Estrutura obrigatória:**
-  1. Contexto em 1 linha (qual região/município)
-  2. Link do estudo (URL Netlify)
-  3. Destaque do valor contratual do Cenário Base
-  4. 1 frase sobre CoPilot OS como diferencial
-  5. Call-to-action claro (reunião, validação, próximo passo)
-
-**Template de mensagem (WhatsApp):**
-```
-André, seguem os dados da proposta [Município/Região].
-
-Estudo completo: [URL Netlify]
-
-Cenário Base: R$ [X.XXX.XXX]/mês · R$ [XX,X]M/ano
-Custo efetivo pós-cofinanciamento federal: R$ [X,XX]/habitante/mês
-
-A proposta já inclui o posicionamento do CoPilot OS como diferencial — única plataforma de IA para regulação SAMU com dataset proprietário no Brasil.
-
-Quando você tiver visto, posso agendar com a equipe para [próximo passo sugerido]?
-```
-
-**Template de e-mail (quando mais formal):**
-- Assunto: `Samais · Estudo [Região] — Proposta Técnica e Comercial`
-- Corpo: expandir o WhatsApp com introdução de 2 linhas sobre o contexto e encerrar com assinatura Samais
-
-#### 6.5 Checklist da FASE 6
-
-- [ ] Slug Netlify gerado e sem caracteres especiais
-- [ ] Site criado/renomeado com nome correto no Netlify
-- [ ] OUTPUT A (proposta externa) deployado como `index.html`
-- [ ] URL confirmada e acessível: `https://samais-[regiao].netlify.app`
-- [ ] Mensagem gerada com `message_compose_v1`
-- [ ] Link e valor contratual do Cenário Base presentes na mensagem
-- [ ] CoPilot OS mencionado na mensagem como diferencial
-
----
-
-## Notas Operacionais
-
-- **Dados ausentes:** no OUTPUT B — marcar com `.data-missing` referenciando DATASUS/CNES/SIOPS. No OUTPUT A — omitir ou usar linguagem de convite ao diagnóstico de campo (ex: "a detalhar em visita técnica"). Nunca inventar em nenhum dos dois.
-- **Markup:** **SEMPRE 35% sobre CDO**, SEMPRE decomposto em BDI. Nunca declarar "lucro".
-- **Consórcios:** dimensionamento e BDI unificados; perfis demográfico e de saúde em tabela comparativa por município-membro.
-- **Imagens:** Unsplash/Pexels prioritários. Toda zona com fallback em gradiente.
-- **Datação:** todo dado IBGE/DATASUS com data de extração. Base 2022 = "estimativa 2024".
-- **Linguagem Samais:** SAMU — a marca se comunica com imagens de ambulância, central de regulação, APH em cena. Usar com parcimônia, como pontuação visual, não decoração.
-
----
-
-## Referências Internas
-
-- `/references/design-system.md` — sistema de design dark mode Samais (tokens, componentes, image zones, CSS pronto)
-- `/references/benchmarks-samu.md` — custo/USB, custo/USA, dimensionamento por população, KPIs
-- `/references/composicao-preco.md` — BDI decomposto pronto, textos de justificativa, comparativos de mercado
-- `/references/checklist-licitacao.md` — análise de editais, habilitação, red flags
+| Canoas | BDI de 35% tido como fechado; o NEP quase ficou fora do custo | remuneração residual sempre calculada; obrigação que consome dinheiro é rubrica |
+| Taboão | FC 2,2 para 24/7 (80 contra 148 pessoas) | FC 24/7 ≈ 4,5 |
+| Itapevi | contrato parado citado como vigente; credor de OS tido como SAMU | pagamento diz se está vivo; o objeto diz o que é |
+| Manaus | cadastro do CNES lido como operação | teste de cadastro × frota tripulada; a folha é diagnóstico |
+| Belém | 3,5 mi hab. × R$ 5,20 = R$ 18,4 mi/mês; hemodiálise em ambulância tripulada | acima de ~1,5 mi, pela norma; perguntar a frente antes do veículo |
+| Osasco | estudo fora do ar por parar no push | publicar é mergear e conferir no ar |
+| Ponta Grossa | mantenedora no CNES lida como operador | consórcio, área, quem paga e mantenedora conferidos no instrumento |
+
+## Orquestração e tokens
+
+Coleta, leitura mecânica e regeração vão a modelo leve; julgamento ao opus `high`; o portão ao opus `max`, por lote.
+Script vai ao shell. Todo agente salva o andamento em disco, commita pequeno e entrega relatório curto
+(`samais-os/doutrina/orquestracao-multiagente.md`).

@@ -1,97 +1,93 @@
 ---
 name: samais-brand-guidelines
-description: Aplica a identidade visual institucional da Samais Gestão em Saúde (dark-luxury, Syne/Inter/JetBrains Mono, navy-black e dourado) a qualquer artefato visual — dossiês HTML, apresentações, PDFs, documentos, teasers, propostas, slides, gráficos e peças de marketing. Use SEMPRE que o entregável for da Samais ou mencionar Samais, SAMU, dossiê, estudo municipal, proposta comercial, teaser, apresentação institucional, ou quando Ota pedir "padrão Samais", "identidade Samais" ou "dark-luxury". Também vale para revisar/corrigir peças existentes fora do padrão.
-license: MIT (fork de anthropics/skills brand-guidelines, adaptado para Samais)
+description: Aplica a identidade visual da Samais Gestão em Saúde (dark liquid-glass, ouro sobre preto, Syne/Inter 300/JetBrains Mono, tokens importados de doutrina/samais.css) a qualquer peça visual — deck, apresentação HTML, estudo HTML, landing, template Samais, dossiê, proposta, painel, PDF, slide, documento, gráfico, teaser e peça de marketing — e revisa peças fora do padrão. Use sempre que o entregável for da Samais ou mencionar Samais, SAMU, dossiê, estudo municipal, raio-x, proposta comercial, apresentação institucional ou de investidor, ou quando o Ota pedir "padrão Samais", "identidade Samais", "dark-luxury" ou "template Samais". Vídeo segue samais-video, que importa esta identidade.
+license: Apache-2.0
 ---
+<!-- Espelho gerado de victorotaa/samais-os@6533b6d em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
-# Samais — Identidade Visual Institucional
+# Samais — identidade visual
 
-## Visão geral
+A identidade da Samais é **código, não prosa**: os tokens vivem em `doutrina/samais.css` e toda superfície os importa.
+Esta skill diz como aplicar; quem decide é o CSS. Decisão do Ota (20/10/2026): **a fonte canônica da identidade
+visual é o repositório `samais-os`**.
 
-Sistema de design institucional da Samais Gestão em Saúde. Estética
-dark-luxury editorial: profundidade, sobriedade e autoridade técnica.
-Distinta da paleta operacional de campo do SAMU (navy/vermelho/branco) —
-esta identidade é para peças INSTITUCIONAIS (dossiês, propostas,
-apresentações a secretarias e investidores), não para material operacional
-de ambulância/uniforme.
+## Precedência
 
-**Keywords**: Samais, dossiê, dark-luxury, identidade institucional,
-proposta, teaser, estudo municipal, apresentação, branding saúde.
+1. `doutrina/samais.css` (tokens, material, marca, componentes). Fonte de verdade.
+2. A produção (`samais-estudos/css/samais.css`, no repositório `samais-estudos`): se divergir do item 1, a produção
+   está certa e o item 1 é corrigido.
+3. `doutrina/design-system.md`, `doutrina/padrao-dobras.md`, `doutrina/padrao-frio.md` e as seções "Efeito e componente
+   de UI de fora" e "PDF e impresso" de `doutrina/regras-completas.md`.
+4. Esta skill e as `references/`: explicam e roteiam; não decidem.
+5. O espelho no Claude Design ([Design System "Samais"](https://claude.ai/artifact/3UCn8HRxj9au5wQgSzSvAn)): copia,
+   nunca decide. Mudou token, marca, `orfas.js` ou regra visual? Re-sincronizar o espelho no mesmo dia.
 
-## Tokens de cor
+O conteúdo (o que pode ser dito, vocabulário de preço, procedência, LGPD) é decidido pelos não-negociáveis do
+`CLAUDE.md`, por `doutrina/precificacao.md` e por `doutrina/padrao-frio.md`. Esta skill cuida da forma.
 
-**Base (fundos):**
-- Fundo primário: `#04060C` (navy-black profundo) — variável CSS `--bg`
-- Fundo elevado/cards: `#0A0E18` a `#0D1220`
-- Bordas sutis: `rgba(212,168,87,.14)` ou `rgba(255,255,255,.06)`
+## Roteamento
 
-**Acento (autoridade):**
-- Dourado Samais: `#D4A857` — variável CSS `--gold` — títulos-chave,
-  números de destaque, linhas divisórias, ícones
-- Dourado atenuado: `rgba(212,168,87,.55)` para labels e kickers
+| A tarefa é | Leia |
+|---|---|
+| Cor, fonte, marca, material, componente pronto, dobra light ou dourada | [references/tokens-e-tipografia.md](references/tokens-e-tipografia.md) |
+| Deck, apresentação, estudo, dossiê, landing ou template HTML (peça longa de rolagem) | [references/pecas-html.md](references/pecas-html.md) |
+| PDF, impressão, slide/PPTX, documento Word | [references/pdf-e-impresso.md](references/pdf-e-impresso.md) |
+| Gráfico, tabela, número, infografia, selo de procedência | [references/dados-e-graficos.md](references/dados-e-graficos.md) |
+| Conferir antes de entregar (contraste, mobile, refração, órfãs, impressão) | [references/checklist-contraste-mobile.md](references/checklist-contraste-mobile.md) |
+| De onde veio cada regra desta skill e o que foi descartado | [references/HISTORICO.md](references/HISTORICO.md) |
+| Vídeo, teaser animado, reel | skill `samais-video` |
 
-**Texto:**
-- Primário sobre escuro: `#EDEAE2` (off-white quente)
-- Secundário: `#9A968C` a `#B0AEA5`
-- Nunca branco puro `#FFFFFF` em blocos longos de texto
+## O núcleo (vale para toda peça)
 
-**Semânticas (usar com parcimônia):**
-- Alerta/risco: âmbar `#DD8D0C` (fundo `rgba(221,141,12,.12)`)
-- Crítico: `#C20D2F`
-- Positivo/validado: verde sóbrio `#5F8C6A`
+1. **Importar, nunca redeclarar cor.** `<link rel="stylesheet" href="./samais.css">` (o build distribui o arquivo) e
+   usar os tokens (`var(--gold)`, `var(--text-2)`…). Nenhuma página tem `:root` com cores; quem digita hex
+   provavelmente está errado. Os hex em `references/` servem para reconhecer a paleta, não para copiar.
+2. **Ouro é escasso: no máximo ~10% da superfície.** Número-chave, uma divisória, ícone de seção. Se tudo é dourado,
+   nada é.
+3. **Verde é selo funcional** (validado, verificado), nunca decoração. Âmbar é atenção; vermelho é crítico; os três
+   com parcimônia.
+4. **Tipografia:** Syne no display (600–800, fallback Arial Black, nunca serifa); Inter **300** no corpo;
+   JetBrains Mono em rótulo, paginação e **todo dado** (classe `.dado`, com `tabular-nums`). Dado nunca em Syne.
+5. **Hierarquia:** eyebrow mono em caixa alta dourada → título Syne → lead em Inter com entrelinha de 1,6 ou mais.
+6. **Marca só pelos SVGs oficiais** de `doutrina/marca/`, pelo componente `.marca`: wordmark dourado no desktop,
+   monograma `SA+` no mobile (colapsa, não some). Nunca "Samais" escrito em fonte genérica.
+7. **Liquid glass** é o material (`.glass`, `.glass-sutil`, `.barra-vidro`): blur 22px, saturate 150%, borda
+   `rgba(255,255,255,.12)`, brilho especular interno, cantos 18px, sobre o brilho ambiente radial do `body::before`.
+   **Superfície de dado não refrata:** `filter:url(#glassDistort)` só em `<img>` (classe `.refrata`); a refração de fundo
+   fica para peça de apresentação, sai no mobile, e ferramenta de uso diário fica no blur.
+8. **Nenhuma palavra órfã** (Ota, 17/09/2026): importar `samais.css` **e** `doutrina/orfas.js`, e conferir com
+   `node scripts/conferir-orfas.mjs <url>`. Em peça que não é HTML, a correção é manual (reescrever ou espaço
+   inquebrável).
+9. **Audiência externa = padrão frio** (`doutrina/padrao-frio.md`): a identidade fica, a linguagem persuasiva sai.
+   Camada **factual** visualmente distinta da **interpretação** (ex.: bloco com borda âmbar); nunca fundir.
+   `interpretacao.md`, `bastidor.md` e `doutrina/` nunca entram na peça.
+10. **Preço:** nunca "lucro" nem "margem"; a composição do preço não vai a terceiro (`CLAUDE.md`). Em peça interna, a
+    composição vai em tabela mono, decomposta (`doutrina/precificacao.md`). Cenários sempre **Mínimo / Base / Amplo**,
+    nesta ordem, em colunas comparáveis, Base com o selo "★ RECOMENDADO".
+11. **Sem campo de contato** em nenhum material: sem e-mail, telefone, WhatsApp, formulário, `mailto` ou "fale conosco".
+    A peça fecha com a tese ou com link para produto ou demo; a tagline *"Onde gestão se mede em vidas."* é o fecho.
+12. **Imagem obedece ao Princípio da Realidade:** nada de foto de operação que não se comprova; sem cena clínica ou
+    dramática (sirene, sangue, reanimação, vítima, paciente identificável), sem brasão municipal, sem logo de terceiro.
+    Imagem gerada leva o selo "imagem ilustrativa" e um `README.md` de procedência na pasta.
 
-## Tipografia
+## Por tipo de peça (resumo; o detalhe está nas references)
 
-- **Display/Títulos**: Syne (600–800) — headlines, números de seção,
-  dados de impacto. Fallback: Arial Black.
-- **Corpo**: Inter (400/500) — parágrafos, tabelas, UI. Fallback: Arial.
-- **Dados/Labels técnicos**: JetBrains Mono (400/500) — valores
-  monetários, métricas, códigos de lei, IDs, eixos de gráfico.
-  Fallback: Courier New.
-- Import padrão (HTML):
-  `https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap`
+- **Peça longa HTML** (deck, estudo, dossiê, landing): padrão de dobras, uma dobra uma ideia, nav fixa no topo com a
+  seção corrente em ouro, autossuficiente (fonte e imagem embutidas), zero rolagem horizontal em 390, 360 e 320 px.
+- **Painel e ferramenta do OS:** os componentes de `samais.css` (`.topbar`, `.rodape`, `.trilha`), alvo de toque de
+  44 px, vidro sem refração.
+- **PDF:** miolo branco, capa e divisórias escuras sangradas em A4, respiro mínimo de 4 mm em toda caixa, scripts de
+  `samais-estudos/scripts/pdf/`.
+- **Slide/PPTX:** fundo `--bg`, um conceito por slide, número de destaque em Syne e ouro, corpo mínimo.
+- **Documento Word ou relatório frio:** sóbrio, Inter, ouro só em elemento estrutural (linha, numeração).
+- **Efeito de UI de fora** (21st.dev e bibliotecas abertas): licença conferida por componente, portado para CSS e JS
+  puros com os tokens da casa; ver `references/pecas-html.md`.
 
-## Regras de aplicação
+## O que nunca fazer
 
-1. **Hierarquia**: kicker em caps pequenas douradas → título Syne grande
-   → deck/parágrafo de abertura em Inter com line-height generoso (1.6+).
-2. **Dados sempre em JetBrains Mono** — valores em R$, percentuais, BDI,
-   populações, frotas. Nunca dados em Syne.
-3. **Dourado é escasso**: no máximo ~10% da superfície visual. Se tudo é
-   dourado, nada é. Uso: números-chave, uma linha divisória, ícones de
-   seção.
-4. **Documentos de audiência EXTERNA** (secretarias, prefeitos, órgãos de
-   controle): aplicar padrão FRIO — neutro, factual, sem advocacy — a
-   identidade visual permanece, mas sem linguagem persuasiva interna e
-   sem expor metodologia de cálculo proprietária.
-5. **Separação de camadas em dossiês**: camada FACTUAL (edital, lei,
-   dados) visualmente distinta da camada de INTERPRETAÇÃO ESTRATÉGICA
-   (ex: blocos com borda âmbar para interpretação). Nunca fundir.
-6. **Precificação**: sempre BDI decomposto por rubrica em tabela mono;
-   nunca a palavra "lucro" ou "taxa de administração".
-7. **Cenários**: Mínimo / Base / Amplo, sempre nesta ordem, em cards ou
-   colunas comparáveis.
-8. **Gráficos** (Chart.js/Recharts): fundo transparente, grid
-   `rgba(255,255,255,.05)`, série principal em `#D4A857`, séries
-   secundárias em tons de cinza-quente; labels em JetBrains Mono.
-
-## Aplicação por tipo de artefato
-
-- **HTML single-file (dossiês/estudos)**: dark mode obrigatório,
-  navegação lateral fixa em desktop, seções numeradas (00, 01, 02...),
-  responsivo até 380px.
-- **Slides/PPTX**: fundo `#04060C`, um conceito por slide, número de
-  destaque em Syne + dourado, corpo mínimo.
-- **PDF/impresso**: manter dark-luxury em capas e divisórias; miolo pode
-  invertido (fundo claro `#FAF9F5`, texto `#141413`, acentos dourados)
-  para legibilidade de impressão.
-- **Docs Word/relatórios FRIO**: sóbrio, tipografia Inter, dourado apenas
-  em elementos estruturais (linhas, numeração).
-
-## O que NUNCA fazer
-
-- Misturar a paleta institucional com a paleta operacional SAMU
-  (vermelho vivo) na mesma peça.
-- Usar brasões municipais em peças de vídeo/institucionais.
-- Gradientes coloridos, neon, glassmorphism genérico de template.
-- Emojis em documentos institucionais.
+- Redeclarar cor, ou usar as paletas aposentadas (`#04060C` com ouro `#D4A857`; `#060709` com `#C9A84C`).
+- Misturar a paleta institucional com a operacional do SAMU (vermelho vivo, navy e branco de uniforme e viatura).
+- Gradiente colorido, neon, glassmorphism genérico de template, efeito lupa, transição "de PowerPoint".
+- Refração (`glassDistort`) em texto, número, tabela, gráfico ou painel.
+- Emoji em documento institucional (usar glifo tipográfico).
+- Brasão municipal em peça institucional ou de vídeo.
