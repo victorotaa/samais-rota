@@ -12,6 +12,11 @@
 
    Rodar: node testes/medicao-contratual.test.mjs
    ═══════════════════════════════════════════════════════════════════ */
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+
+const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 let passou = 0, falhou = 0;
 const ok = (nome, cond, d) => cond
   ? (passou++, console.log('  ok   ·', nome))
@@ -272,6 +277,11 @@ console.log('\n── configuração da API ──');
      () => M.contratoDaConfiguracao({configuracao: {bases: {x: {franquia_km_mensal: 500, banco_trimestral: 'trimestre_civil'}}},
        base_id: 'x'}), 'bases.x.inicio_contrato');
   recusa('configuração sem "bases" é recusada', () => M.contratoDaConfiguracao({configuracao: {}, base_id: 'x'}), 'configuracao');
+  const exemplo = JSON.parse(fs.readFileSync(path.join(raiz, 'docs', 'medicao-contratos.exemplo.json'), 'utf8'));
+  const doExemplo = M.contratoDaConfiguracao({configuracao: exemplo, base_id: '00000000-0000-0000-0000-000000000000'});
+  eq('o exemplo documentado em docs/ é uma configuração válida',
+     [doExemplo?.contrato.banco_trimestral, doExemplo?.contrato.inicio_contrato], ['trimestre_civil', '2026-11']);
+  ok('e não traz valor em R$', !/R\$|valor|preco|custo/i.test(JSON.stringify(exemplo.bases)));
 }
 
 /* ─────────────────────────────────────────────────── entradas inválidas */
