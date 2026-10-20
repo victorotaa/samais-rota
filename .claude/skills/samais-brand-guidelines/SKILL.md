@@ -3,7 +3,7 @@ name: samais-brand-guidelines
 description: Aplica a identidade visual da Samais Gestão em Saúde (dark liquid-glass, ouro sobre preto, Syne/Inter 300/JetBrains Mono, tokens importados de doutrina/samais.css) a qualquer peça visual — deck, apresentação HTML, estudo HTML, landing, template Samais, dossiê, proposta, painel, PDF, slide, documento, gráfico, teaser e peça de marketing — e revisa peças fora do padrão. Use sempre que o entregável for da Samais ou mencionar Samais, SAMU, dossiê, estudo municipal, raio-x, proposta comercial, apresentação institucional ou de investidor, ou quando o Ota pedir "padrão Samais", "identidade Samais", "dark-luxury" ou "template Samais". Vídeo segue samais-video, que importa esta identidade.
 license: Apache-2.0
 ---
-<!-- Espelho gerado de victorotaa/samais-os@f64d0e2 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@54369bc em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — identidade visual
 
@@ -46,8 +46,10 @@ O conteúdo (o que pode ser dito, vocabulário de preço, procedência, LGPD) é
    nada é.
 3. **Verde é selo funcional** (validado, verificado), nunca decoração. Âmbar é atenção; vermelho é crítico; os três
    com parcimônia.
-4. **Tipografia:** Syne no display (600–800, fallback Arial Black, nunca serifa); Inter **300** no corpo;
-   JetBrains Mono em rótulo, paginação e **todo dado** (classe `.dado`, com `tabular-nums`). Dado nunca em Syne.
+4. **Tipografia:** Syne no display (600–800, fallback Arial Black, nunca serifa); Inter **300** no corpo da peça e
+   **400** no corpo do produto (tela de operação); JetBrains Mono em rótulo, paginação e **todo dado** (classe `.dado`,
+   com `tabular-nums`). Dado nunca em Syne. Cor de status, alerta, risco e IA só na tela de operação, pela extensão
+   clínica (`--clinico-*`, `--manchester-*`; `tokens-e-tipografia.md` §1).
 5. **Hierarquia:** eyebrow mono em caixa alta dourada → título Syne → lead em Inter com entrelinha de 1,6 ou mais.
 6. **Marca só pelos SVGs oficiais** de `doutrina/marca/`, pelo componente `.marca`: wordmark dourado no desktop,
    monograma `SA+` no mobile (colapsa, não some). Nunca "Samais" escrito em fonte genérica.

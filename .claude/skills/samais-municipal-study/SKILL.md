@@ -13,7 +13,7 @@ description: >
   (samais-raio-x-estadual) nem para vídeo (samais-video).
 license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
-<!-- Espelho gerado de victorotaa/samais-os@f64d0e2 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@54369bc em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — Estudo de município, consórcio e transporte sanitário
 

@@ -167,3 +167,11 @@ ganhou "TSE", "ROTA", "transporte eletivo" e "PAC Saúde" (999 caracteres). Depo
   gerada sobre a pesquisa, nos tamanhos mínimos, via grátis, selo na legenda) é a mesma de
   `samais-os/doutrina/padrao-dobras.md` e da `samais-brand-guidelines`, e resolve a divergência registrada no histórico
   dela.
+
+## 20/10/2026 — o modelo de pagamento do transporte decidido
+
+Ota, sobre a recomendação da pesquisa `samais-os/inteligencia/transporte-sanitario/remuneracao-e-apoio.md`: *"siga sua
+recomendação"*. O modo transporte passa a propor Custo Operacional mensal global com franquia de km aferida pelo ROTA-OS
+e preço do km excedente (`transporte-demanda-e-viabilidade.md` §5); edital em km se precifica pelo ciclo, com o risco
+registrado.
+
