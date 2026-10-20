@@ -5,7 +5,9 @@ os mesmos do estudo; aqui está só o que é próprio do transporte. **O objeto 
 SAMU**: se o alvo tem os dois, são dois estudos.
 
 **Sumário:** 1. As regras da casa · 2. A norma (11.164 + 11.165) · 3. Varredura · 4. Dimensionamento · 5. Custo ·
-6. Cenários e score · 7. Repasse federal e farol de conformidade · 8. A peça · 9. Repasses observados · 10. Fontes
+6. Cenários e score · 7. Repasse federal e farol de conformidade · 8. A peça · 9. Repasses observados · 10. Fontes.
+Demanda por parâmetro, custo por ciclo, ambulância de apoio, viabilidade interna e citação da norma:
+[transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) (da antiga `samais-rota-study`).
 
 ---
 
@@ -79,14 +81,17 @@ lido no DOU de 12/05/2026; fatos, artigos e lacunas em `samais-os/produtos/rota/
 
 1. **Qualificação:** alvo (município, consórcio, GRS/CRS estadual); contratante provável; gatilho (pregão, veículo federal
    recebido ou anunciado, cobrança do MP, contrato vencendo, crise); frota (recebeu veículos do Caminhos da Saúde? quais,
-   quando? frota própria ou locada?); destinos de referência e distância.
+   quando? frota própria ou locada?); destinos de referência e distância. Em lista de entes, **conferência de cadastro
+   ente a ente** (UF, população, grafia oficial; divergência se reporta, nunca se corrige em silêncio).
 2. **Demanda:** SIA eletivo (hemodiálise e oncologia por residência e por atendimento; o fluxo de saída é proxy:
    residência − atendimento) e SIH (residência × internação, medido), por `samais-os/scripts/raiox/sia-eletivo.mjs` e
    `sih-fluxo.mjs`; a projeção estadual sai de `scripts/raiox/transporte-sanitario.mjs`. Cada paciente em hemodiálise faz
    ~13 sessões/mês, indefinidamente: a demanda mais previsível da saúde pública. Prevalência (~0,1% da população em
    terapia renal substitutiva) só como estimativa ≈, validada na visita; nunca como censo.
-3. **Malha de destinos:** destino por especialidade e distância **de município a município** com fonte (guardar o print);
-   classificar cada fluxo: ≤ 50 km ou > 50 e ≤ 500 km.
+3. **Malha de destinos:** destino por especialidade, pela rede **efetivamente habilitada** no CNES (serviço interditado
+   ou em implantação muda o polo), e distância **de município a município**, lida com fonte (guardar o print), nunca
+   estimada; sem leitura, ○. Classificar cada fluxo: ≤ 50 km ou > 50 e ≤ 500 km. A distância dos 50 km é fonte de
+   custeio, não medida de oportunidade: o polo entra pelo eletivo intramunicipal, pelo TFD de saída e pelo art. 25.
 4. **Frota federal e habilitação:** veículos doados (tipo, data de recebimento), CNES, prazo dos 60 dias, Termo de Doação
    e a cota (o extrato não diz: ler o termo no processo SEI). Veículo doado parado é urgência real do ente.
 5. **Contratação atual:** PNCP e portal pelo objeto (transporte de pacientes, TFD, locação de veículos com motorista),
@@ -114,6 +119,8 @@ veículos                 = pacientes ÷ pacientes por veículo, por classe de e
 - **Lean Sizing do escopo** (micro-ônibus onde a rota é densa, posto de 12 h no pico, frota mista) muda o que se contrata
   e entra no preço; ganho de roteirização na operação é nosso e fica na remuneração.
 - Sensibilidade ancorada em **pacientes com restrição**, nunca em % de frota.
+- **Km por ciclo sai do tempo, nunca do raio**; ambulância de apoio na eletiva (maca e intercorrência) como linha fixa,
+  dimensionada pelos acamados do cadastro: [transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) §4.
 
 ## 5. Custo
 
@@ -171,6 +178,8 @@ repasse é suspenso em três meses.
 - **Sem case:** a Samais tem atestados reais de SAMU, inter-hospitalar e regulação, mas **não de transporte de
   pacientes**. A prova é o sistema e a norma; proibido apresentar credencial de SAMU como experiência de transporte.
 - Sem R$ por veículo; sem campo de contato; mobile sem rolagem horizontal; sigla explicada (TRS = hemodiálise).
+- **Norma citada no texto** (número, data, o que determina) e linkada ao ato (DOU, Saúde Legis), nunca à notícia do
+  gov.br ([transporte-demanda-e-viabilidade.md](transporte-demanda-e-viabilidade.md) §6).
 - **Resumo da entrega** (FASE 6) acrescenta: a janela dos 60 dias, se houver veículo doado, e a condição do repasse
   (elegível, inelegível pela distância, ou pendente).
 - Imagem: van ou micro-ônibus na estrada, embarque digno, fachada de clínica de diálise; equipe de jaleco neutro com o

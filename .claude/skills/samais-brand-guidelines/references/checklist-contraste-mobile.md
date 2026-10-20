@@ -6,7 +6,7 @@
 ## Identidade
 
 - [ ] `samais.css` importado; nenhum `:root` com cor na página; nenhum hex de paleta aposentada (`#04060C`, `#D4A857`,
-      `#060709`, `#C9A84C`).
+      `#060709`, `#C9A84C`) nem do sistema do CoPilot e do PEP (`#070708`, `#BF9A3D`, Plus Jakarta Sans).
 - [ ] Marca pelos SVGs oficiais (`.marca`); wordmark no desktop, `SA+` no mobile.
 - [ ] Ouro em no máximo ~10% da superfície; verde só como selo.
 - [ ] Dado em JetBrains Mono (`.dado`).
@@ -18,6 +18,11 @@
 - [ ] Dobra light: todo texto com tokens light, inclusive os seletores específicos do tema escuro (override explícito
       por classe, ex.: `.fold-light .lede`); screenshot da dobra conferido.
 - [ ] Dobra dourada: a ênfase é a palavra mais escura.
+- [ ] Marca com contraste ≥ 3:1 sobre o fundo onde pousa: em fundo claro, a variante `primary` (a dourada dá 2,5:1 no
+      creme e 2,8:1 no branco; `tokens-e-tipografia.md` §4).
+- [ ] A `.fold-alt` se distingue da `.fold` **na tela** (é ela que marca a divisão). No escuro, passo abaixo de ~8
+      unidades RGB não se percebe (medição do CoPilot, ≈); `--s1` sobre `--bg` dá 9.
+- [ ] No bloco empilhado do mobile, o valor é mais forte que o rótulo.
 
 ## Mobile
 
@@ -25,6 +30,11 @@
       limpa não basta:
       `[...document.querySelectorAll('*')].filter(e => e.scrollWidth > e.clientWidth + 1)` tem de vir vazio.
       Única exceção: documento A4 absoluto, que rola dentro do próprio contêiner.
+- [ ] **Rolar a página inteira antes de medir** (CoPilot): imagem preguiçosa e revelação ao rolar só existem depois do
+      primeiro viewport e escapam da medição. Depois, conferir também o que vaza da tela:
+      `[...document.querySelectorAll('*')].filter(e => e.getBoundingClientRect().right > document.documentElement.clientWidth + 1)`
+      vazio. Varredura completa, quando a peça vai a terceiro: 1440, 1180, 1024, 900, 820, 768, 600, 480, 414, 390, 360
+      e 320px.
 - [ ] Tabela reflui (blocos com rótulo `data-l`); gráfico troca de forma (`.viz-wide` / `.viz-tall`).
 - [ ] Alvo de toque ≥ 44px; número não quebra linha; `[hidden]` vence (`samais.css` já força).
 - [ ] Refração desligada no mobile.
