@@ -39,6 +39,8 @@ jobs:
         run: node testes/auth.test.mjs
       - name: FonteAPI — a segunda implementação do contrato de dados
         run: node testes/fonte-api.test.mjs
+      - name: Medição contratual mensal — franquia, banco trimestral, excedente com e sem OS (km, sem preço)
+        run: node testes/medicao-contratual.test.mjs
       - name: Sem onclick inline (a delegação de eventos é decisão da revisão M2)
         run: |
           if grep -n 'onclick=' -- *.html; then
