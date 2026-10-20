@@ -96,3 +96,59 @@ Lista gerada dos cabeçalhos das cinco versões antes da mudança (472 linhas). 
 
 O `SKILL.md` ficou abaixo do alvo de 250–350 linhas porque o limite que manda é o de ~5.000 tokens (o que volta depois
 da compactação); as linhas são longas e o detalhe está nas references, um nível abaixo.
+
+## 6. Segunda rodada (20/10/2026): a `samais-rota-study` do `samais-copilot`
+
+Fonte: `samais-copilot/.claude/skills/samais-rota-study/` (`SKILL.md` 233 linhas, 9.970 bytes; `references/benchmarks-rota.md`
+394 linhas, 18.661 bytes; criada em 05/10/2026 com o "Memorando e Projeto de Investimento ROTA", commit `5ced612`).
+Conferida contra o modo transporte, `samais-os/produtos/rota/portaria-11165.md` (texto lido em 16/10),
+`samais-estudos/referencias/benchmark-transporte-sanitario.md` e os não-negociáveis do `CLAUDE.md`. O que entrou foi para
+o arquivo novo `transporte-demanda-e-viabilidade.md` (162 linhas), com ponteiros no modo e no `SKILL.md`; a descrição
+ganhou "TSE", "ROTA", "transporte eletivo" e "PAC Saúde" (999 caracteres). Depois da rodada: `SKILL.md` com 190 linhas e
+14.982 bytes (≈ 3.745 tokens); `references/` sem este histórico, 10 arquivos com 1.220 linhas.
+
+### O que entrou
+
+| Da antiga skill | Onde |
+|---|---|
+| Porte não ordena carteira; a distância dos 50 km é fonte de custeio, não medida de oportunidade (§1-B); o polo entra pelo eletivo intramunicipal e pelo TFD de saída | `transporte-demanda-e-viabilidade.md` §1, corrigido pelo art. 25 (operador regional) |
+| "Nunca `benchmarks-samu.md` aqui": o SAMU dimensiona pela norma, a eletiva pela geometria da demanda | §1 |
+| Atestado de cadastro (UF, população, grafia) bloqueante, divergência reportada | §2; `modo-transporte-sanitario.md` §3.1 |
+| Rede efetivamente habilitada no CNES; distância lida, nunca estimada; "a confirmar" → ○ | §2; `modo-transporte-sanitario.md` §3.3 |
+| Parâmetros de demanda (SBN, INCA), fórmulas, banda Norte/Nordeste, conferência de 0,09–0,15 viagem/hab/ano, eletivo geral sem parâmetro | §3, como ≈ (fonte única, não relida) |
+| PT 1.631/2015 como campo, não demanda; absenteísmo ~25%; compromisso de processo, nunca garantia | §3 |
+| Bloco fixo + variável, per capita como resultado; km por ciclo pelo tempo (lição de Belém, 10,6%); depreciação por tipo; os dois cenários de frota em tabela; operador de central por 75 atendimentos | §4, como ≈ e só nos artefatos 1 e 3 |
+| Ambulância de apoio na eletiva (maca, intercorrência pós-hemodiálise), tipo B por padrão, ≈ 1 por 13 veículos, linha fixa | §4, com o FC 2,57 da eletiva no lugar do 1,2 FTE |
+| Piso operacional: três testes; blocos contíguos; rateio no bloco; consórcio de transporte raro | §5, interno |
+| Link em peça: citação no texto antes; o ato (DOU, Saúde Legis), nunca a notícia do gov.br | §6; `modo-transporte-sanitario.md` §8 |
+| Checklist de encerramento (itens compatíveis) | §7 |
+
+### O que não entrou, e por quê
+
+| Da antiga skill | Motivo |
+|---|---|
+| Portaria **11.179** listada como a terceira norma "de radioterapia e TRS" | trata de CNES e nefrologia; o par é 11.164 + 11.165 (texto lido em 16/10/2026) |
+| Cofinanciamento como "reembolso por procedimento na tabela SUS" | o texto lido: incentivo mensal mantido pelo BPA-I; no SIGTAP o procedimento vale R$ 0,00 |
+| "Preço = CDO × 1,35"; "BDI 35% sobre CDO"; `composicao-preco.md` | superados pelo gross-up com remuneração residual (lição Canoas) e pelo custo construído (19/10/2026); o `composicao-preco.md` citado foi absorvido por `composicao-e-anexo.md` |
+| Blocos fixo e variável em R$ (R$ 51.970 / R$ 28.930; R$ 15.996 e R$ 12.496 por veículo; ambulância R$ 19.681 e R$ 12.898); pisos de R$ 127.563 e R$ 89.805 por mês e per capita no piso | régua fixa, superada pelo custo construído; e valor por veículo não vai a peça |
+| Encargos de 70%; motorista "com cobertura" de 1,2 FTE | os encargos saem de `parametros-custo.json`; o FC da eletiva é 2,57 (janela de 16 h × 6 dias) e o 24/7 é 4,5 |
+| Ocupação de 80% | o aproveitamento é 85% (regra do Ota, 20/08/2026) |
+| Modelo de raio com preço unitário por faixa A–D (R$ 12,84 a R$ 92,87 por atendimento) e **escada de aditivos** | o contrato é único, sem faseamento e sem "ampliação futura" (20/08/2026); o preço por faixa embutia o × 1,35. Ficou a regra do km por ciclo |
+| USA 24 h inter-hospitalar "como aditivo nomeado, fora do eletivo" | o contrato único leva eletiva e inter-hospitalar num instrumento, desde o dia 1 |
+| Dois outputs (proposta externa A e dossiê interno B) | a casa produz três artefatos e publica por merge (19/08/2026) |
+| Cross-sell com o SAMU ("mesmo decisor, mesmo orçamento") | "dois serviços, dois estudos" e "sem porta de entrada" (20/08/2026) |
+| Payback de 6–14 meses (frota cedida) contra 25–36 (própria) | sem fonte, e contradiz a própria skill ("a cessão não muda o payback, muda o preço") |
+| "Quem captura o cofinanciamento são só os vizinhos que enviam paciente" | o art. 25 da 11.165 põe o custeio com o operador regional pactuado na CIB |
+| "Receita" e "per capita" como métrica de carteira | o valor final se declara Custo Operacional (16/10/2026); receita é palavra interna |
+| Template "50% federal + 50% local não se aplica" | correto, mas a peça não fala de percentual nem de "quem paga" (FNS em uma linha) |
+| Deploy na Vercel; resumo em 6 tópicos; curadoria visual de van e estrada | já cobertos por `portao-publicacao-entrega.md` e pelo modo §8 |
+
+### Decisões que ficam com o Ota
+
+1. **Forma de pagamento do transporte.** A antiga skill recomendava, no primeiro contrato, parte fixa de disponibilidade
+   mais parte variável por viagem (ou preço fixo com revisão por volume apurado), porque a banda de demanda é de quase
+   2×. A doutrina fixa o contrato único sem faseamento, mas não diz se o valor é global mensal ou em duas partes.
+2. **A regra do link** ("citação no texto antes; o ato, nunca a notícia do gov.br") nasceu na proposta ROTA e entrou no
+   modo transporte. Vale para os estudos de SAMU? Hoje `peca-cliente.md` não a tem.
+3. **Ambulância de apoio na eletiva** (tipo B, ≈ 1 por 13 veículos): premissa da antiga skill, ancorada só em Osasco.
+   Confirmar se a casa a adota como padrão de composição.

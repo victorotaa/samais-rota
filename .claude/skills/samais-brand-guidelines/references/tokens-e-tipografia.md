@@ -70,6 +70,12 @@ dourada é decisão de composição e o script respeita.
   desktop; abaixo de 600px, monograma `SA+`. O texto fica para leitor de tela (`text-indent`).
 - Monograma `SA+` também em capa e contracapa.
 - Nunca a marca em fonte genérica, nem desenhada em tipografia.
+- **Contraste da marca ≥ 3:1 sobre o fundo onde ela pousa** (WCAG 1.4.11, elemento não textual; regra do CoPilot,
+  absorvida em 20/10/2026). Medido pela fórmula do WCAG sobre o `fill` dos SVGs (≈ derivado): dourada sobre `--bg`
+  7,0:1; **dourada sobre creme `#F4F1EA` 2,5:1 e sobre branco 2,8:1, reprova**. Em fundo claro (dobra light, miolo de
+  PDF, impressão), usar `samais-logo-primary.svg` ou `samais-monograma-primary.svg` (`#0A0A0A`, 17,6:1 sobre o creme).
+- O SVG em `<img>` ou em `background` não herda cor (`currentColor` não chega lá): a variante se troca pelo arquivo
+  (`gold`, `primary`, `white`), nunca por filtro de cor.
 
 ## 5. Material liquid glass e refração
 
@@ -80,6 +86,7 @@ dourada é decisão de composição e o script respeita.
   refratar. Sem ele, o efeito não aparece.
 - `.glass` tem `overflow:hidden`: o material recorta o que passa por baixo.
 - `prefers-reduced-transparency: reduce` troca o vidro por superfície opaca (`--s1`); já está no CSS.
+- O header é só vidro (`.topbar` + `.barra-vidro`), sem imagem.
 - **Refração (`url(#glassDistort)`)**, o filtro de `doutrina/glass-filter.html` (colar logo após `<body>`):
   - `filter:url(#glassDistort)` **só em `<img>`**, pela classe `.refrata`, desligada abaixo de 680px. A refração ondula
     letra e entorta linha reta: nunca em cartão, bloco de princípio, tabela, caixa de destaque, gráfico ou painel
@@ -87,7 +94,26 @@ dourada é decisão de composição e o script respeita.
   - A refração de fundo (`backdrop-filter: … url(#glassDistort)`, Chromium; o Firefox fica no blur) é opcional e
     reservada a peça de apresentação. Ferramenta de uso diário fica no blur. No mobile ela sai.
   - Sem brilho especular que segue o mouse (removido por preferência da diretoria, `samais-rota/CLAUDE.md`).
-- O header é só vidro (`.topbar` + `.barra-vidro`), sem imagem.
+  - **Na imagem, a refração vive na borda, nunca no miolo** (lição do CoPilot, absorvida em 20/10/2026). Aplicada à foto
+    inteira, ela ondula o assunto (rosto, veículo, letreiro) e lê como defeito de arquivo. Repor o centro limpo com uma
+    segunda camada do mesmo arquivo, mascarada (o navegador reusa o cache; a camada limpa é `aria-hidden`, sem `alt`):
+
+```html
+<div class="band">
+  <img class="refrata" src="foto.jpg" alt="...">
+  <img class="nucleo" src="foto.jpg" alt="" aria-hidden="true">
+</div>
+```
+
+```css
+/* refração só na borda: o miolo volta limpo pela camada mascarada */
+.band .nucleo{position:absolute;inset:-12% 0;width:100%;height:124%;object-fit:cover;opacity:.94;pointer-events:none;
+  -webkit-mask-image:radial-gradient(ellipse 74% 74% at 50% 50%,#000 56%,rgba(0,0,0,0) 100%);
+  mask-image:radial-gradient(ellipse 74% 74% at 50% 50%,#000 56%,rgba(0,0,0,0) 100%)}
+```
+
+Deixar o comentário ao lado do CSS: a regra some na próxima edição se não estiver escrita ali. A técnica vale só para
+peça de apresentação; as imagens do painel do OS não refratam (`doutrina/imagens/README.md`).
 
 ## 6. Dobras invertidas (light e dourada)
 

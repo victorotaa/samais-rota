@@ -5,14 +5,15 @@ description: >
   precisa do estudo de caso e de precificação: "cidade alvo", "município alvo", "estudo de caso", "estudo de
   precificação", "varredura", "prospecção [cidade]", "oportunidade comercial [cidade/região]", ou uma cidade citada em
   contexto de negociação, para SAMU 192, UPA, hospital ou mão de obra. Vale também, como modo próprio, para TRANSPORTE
-  SANITÁRIO eletivo e inter-hospitalar: "transporte sanitário [cidade]", "TFD [cidade]", "rota alvo", "estudo de
-  transporte", "viabilidade de transporte", "frota de pacientes", "Caminhos da Saúde", hemodiálise ou radioterapia fora
-  do domicílio, veículo doado pelo Ministério da Saúde, pregão de transporte de pacientes. Também quando um estudo
+  SANITÁRIO eletivo e inter-hospitalar: "transporte sanitário [cidade]", "TSE", "TFD [cidade]", "ROTA", "rota alvo",
+  "estudo de transporte", "transporte eletivo", "viabilidade de transporte", "frota de pacientes", "Caminhos da Saúde",
+  "PAC Saúde", hemodiálise ou radioterapia fora do domicílio, veículo doado pelo Ministério da Saúde, pregão de
+  transporte de pacientes. Também quando um estudo
   precisa de revisão de preço, de portão ou de registro da frente. Não use para um estado inteiro
   (samais-raio-x-estadual) nem para vídeo (samais-video).
 license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
-<!-- Espelho gerado de victorotaa/samais-os@6533b6d em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@8668e8a em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — Estudo de município, consórcio e transporte sanitário
 
@@ -32,6 +33,7 @@ Unificada em 20/10/2026 (origem de cada parte: `references/HISTORICO.md`).
 | BDI decomposto, remuneração residual, gross-up, textos por linha, negociação, anexo de memória financeira | `references/composicao-e-anexo.md` |
 | Markdown interno, estrutura e conteúdo da página cliente, atestados, CoPilot/ROTA-OS, imagens, conferências | `references/peca-cliente.md` |
 | Transporte sanitário (eletivo, TFD, inter-hospitalar): norma 11.164 + 11.165, motor, repasse, farol, peça | `references/modo-transporte-sanitario.md` |
+| Transporte: demanda por parâmetro, km por ciclo, ambulância de apoio, viabilidade interna, citação da norma | `references/transporte-demanda-e-viabilidade.md` |
 | Checklist do portão, portão, publicação, conferência no ar, entrega, registro da frente | `references/portao-publicacao-entrega.md` |
 | Análise de edital (habilitação, cláusulas, red flags) | `references/checklist-licitacao.md` |
 | De onde veio cada regra e o que foi descartado | `references/HISTORICO.md` |
@@ -130,7 +132,10 @@ Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `ref
   art. 25); o **farol de conformidade** é o que o ROTA-OS entrega. A pilha de financiamento fica no Artefato 1.
 - Dimensionar pelo aproveitamento real (85% ≈), capacidade efetiva = assentos ÷ ~2, FC da eletiva 2,57; inter-hospitalar
   em viatura-hora e FC 4,5. **Sem case de transporte:** a prova é o sistema e a norma.
-- Detalhe: `references/modo-transporte-sanitario.md` (fatos da norma: `samais-os/produtos/rota/portaria-11165.md`).
+- **A distância dos 50 km é fonte de custeio, não medida de oportunidade;** distância e rede habilitada se leem, nunca
+  se estimam; o eletivo geral se levanta na central do ente, nunca por parâmetro.
+- Detalhe: `references/modo-transporte-sanitario.md` (fatos da norma: `samais-os/produtos/rota/portaria-11165.md`) e
+  `references/transporte-demanda-e-viabilidade.md`.
 
 ## Não-negociáveis que mais falham
 

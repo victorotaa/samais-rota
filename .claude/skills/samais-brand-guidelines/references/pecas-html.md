@@ -50,8 +50,9 @@ componentes do `samais.css`).
 
 ## 3. Navegação e espaçamento
 
-- Barra **fixa no topo**, em vidro, com a marca e âncoras por seção; no mobile colapsa para `SA+` + menu. A seção
-  corrente fica em ouro, por `IntersectionObserver` com `rootMargin:'-45% 0px -50% 0px'`.
+- Barra **fixa no topo**, em vidro, com a marca e âncoras por seção; no mobile colapsa para `SA+` + menu (botão com
+  `aria-expanded` atualizado ao abrir e fechar). A seção corrente fica em ouro, por `IntersectionObserver` com
+  `rootMargin:'-45% 0px -50% 0px'`.
 - `scroll-margin-top` nas âncoras, para a barra não cobrir o eyebrow.
 - Respiro entre dobras: **104px no desktop, 60px no mobile** (`padrao-dobras.md`).
 - Armadilha conhecida (`samais-rota`): quando a classe `.wrap` zera o padding, o respiro vertical precisa de seletor
@@ -128,7 +129,20 @@ dissolve, swirl, push, transição "de PowerPoint", efeito lupa, animação em l
 - Banco aprovado e vetos: `doutrina/imagens/README.md` (cópias WebP ≤ 1600px). Vetado: cena clínica ou dramática
   (sirene, sangue, reanimação, vítima), paciente identificável, estética policial, logo de terceiro.
 - Superfície de foto não refrata nem leva vidro por cima; overlay escuro que cai para o fundo na base; `loading="lazy"`
-  fora da primeira dobra; `alt` descritivo; `width`/`height` declarados.
+  fora da primeira dobra; `alt` descritivo; `width`/`height` declarados. Exceção: a banda de peça de apresentação pode
+  refratar **só na borda** (`tokens-e-tipografia.md` §5).
+- **Overlay só o suficiente para a legenda ler** (lição do CoPilot). Escurecer além disso apaga a imagem: ela ocupa
+  espaço, não comunica, e o leitor registra "faltou imagem".
+- **Quando o banco documental cobre o assunto, ele vence a imagem gerada** (CoPilot, absorvida em 20/10/2026): a foto
+  do ativo real *prova*; a gerada só *ilustra*. O território se mostra pelo cartão-postal com crédito (estudo:
+  `samais-municipal-study`, `references/peca-cliente.md` §7). Imagem gerada só preenche lacuna. Banco genérico de
+  terceiro (stock) não entra.
+- **Antes de gerar, buscar referência real do assunto** para orientar a direção; gerar sem referência produz o
+  genérico que denuncia a origem sintética. Imagem se gera sem crédito do Higgsfield (GPT ou Gemini,
+  `doutrina/higgsfield-canon.md`).
+- **O selo "imagem ilustrativa"** vai na `figcaption`, no mesmo componente da legenda documental (mono, maiúscula,
+  ~10px, sobre o gradiente da base): discreto pela construção, nunca pelo encolhimento. Selo que ninguém lê não cumpre a
+  função, e em peça que circula em ente público o aviso que parece escondido é pior que a ausência da imagem.
 - Aperto de mãos (parceria): sutil, baixa opacidade, sob vidro escuro, reservado ao fechamento.
 - **Evidência:** print de fonte pública oficial (ex.: gov.br) junto à afirmação que embasa, em moldura de vidro com
   cabeçalho "Fonte oficial" e link.

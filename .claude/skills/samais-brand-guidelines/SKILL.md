@@ -3,7 +3,7 @@ name: samais-brand-guidelines
 description: Aplica a identidade visual da Samais Gestão em Saúde (dark liquid-glass, ouro sobre preto, Syne/Inter 300/JetBrains Mono, tokens importados de doutrina/samais.css) a qualquer peça visual — deck, apresentação HTML, estudo HTML, landing, template Samais, dossiê, proposta, painel, PDF, slide, documento, gráfico, teaser e peça de marketing — e revisa peças fora do padrão. Use sempre que o entregável for da Samais ou mencionar Samais, SAMU, dossiê, estudo municipal, raio-x, proposta comercial, apresentação institucional ou de investidor, ou quando o Ota pedir "padrão Samais", "identidade Samais", "dark-luxury" ou "template Samais". Vídeo segue samais-video, que importa esta identidade.
 license: Apache-2.0
 ---
-<!-- Espelho gerado de victorotaa/samais-os@6533b6d em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@8668e8a em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — identidade visual
 
@@ -85,9 +85,11 @@ O conteúdo (o que pode ser dito, vocabulário de preço, procedência, LGPD) é
 
 ## O que nunca fazer
 
-- Redeclarar cor, ou usar as paletas aposentadas (`#04060C` com ouro `#D4A857`; `#060709` com `#C9A84C`).
+- Redeclarar cor, ou usar as paletas aposentadas (`#04060C` com ouro `#D4A857`; `#060709` com `#C9A84C`) ou o sistema
+  do CoPilot e do PEP (`#070708` com `#BF9A3D` e Plus Jakarta Sans) em peça da casa.
 - Misturar a paleta institucional com a operacional do SAMU (vermelho vivo, navy e branco de uniforme e viatura).
 - Gradiente colorido, neon, glassmorphism genérico de template, efeito lupa, transição "de PowerPoint".
-- Refração (`glassDistort`) em texto, número, tabela, gráfico ou painel.
+- Refração (`glassDistort`) em texto, número, tabela, gráfico ou painel; na foto, refração no miolo.
+- Gráfico de eixo duplo; tons de ouro usados como paleta categórica.
 - Emoji em documento institucional (usar glifo tipográfico).
 - Brasão municipal em peça institucional ou de vídeo.
