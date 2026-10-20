@@ -154,3 +154,13 @@ linhas e 32.310 bytes.
   única, em ordem (banco curado e foto real → pesquisa da localidade → gerada sobre a pesquisa, nos tamanhos de
   `conferir-imagens`, via grátis, selo na legenda), em `doutrina/padrao-dobras.md`, `regras-completas.md`, `SKILL.md`
   item 12, `pecas-html.md` §9, o checklist e `samais-municipal-study/references/peca-cliente.md` §7.
+
+## 20/10/2026 — quarta rodada: cores clínicas e peso do corpo
+
+- **Extensão clínica no `samais.css`** (Ota: *"siga suas recomendações"*). O CoPilot e o PEP tinham cada um o seu azul de
+  informação, o seu vermelho de Manchester e o seu verde de sucesso. Agora há um bloco só, na região de tokens, com hex
+  fixo e contraste AA medido nos dois temas (`--clinico-*`, `--manchester-*`); os produtos consomem e não redeclaram.
+  Fecha também o acento de IA do CoPilot (`--clinico-ia`), que estava em aberto.
+- **Peso do corpo:** Inter 300 na peça, 400 no produto (decisão do Ota sobre a recomendação do PEP).
+- **Barra fixa:** a linha da `.topbar` passa a usar `--barra-border` (antes saía na cor do texto).
+

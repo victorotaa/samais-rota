@@ -133,7 +133,8 @@ dissolve, swirl, push, transição "de PowerPoint", efeito lupa, animação em l
   3. **Só sem candidato viável, gerar a partir da pesquisa**, e então a imagem de operação (frota, central, equipe) é
      admitida: hero ≥ 2400×1600 (3:2), faixa larga ≥ 2400 de largura, fechamento ≥ 1600×1000, medidos por
      `samais-estudos/scripts/conferir-imagens.mjs` em 1440 e 390 (assunto no centro: no celular o `cover` corta as
-     laterais); via grátis (GPT ou Gemini, `doutrina/higgsfield-canon.md`); selo "imagem ilustrativa" na legenda; os
+     laterais); via grátis (GPT ou Gemini, `doutrina/higgsfield-canon.md`; sai em ≈ 1K a 2K, então ampliar com o
+     Real-ESRGAN local até o mínimo e conferir de novo); selo "imagem ilustrativa" na legenda; os
      vetos abaixo, mais texto ou letreiro legível; uniforme SAMU só em peça de SAMU, jaleco neutro com o monograma SA+
      no transporte.
   Grafismo abstrato (sem pessoa, veículo, texto, número, bandeira, logotipo ou fronteira de mapa) continua admitido.

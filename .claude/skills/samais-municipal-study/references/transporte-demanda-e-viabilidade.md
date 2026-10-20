@@ -143,11 +143,16 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
   diária 1, posto de motorista sobre a frota do ente 1. Na unidade registrada no PNCP, o km também lidera (≈ 58% das
   unidades legíveis). Com veículo do ente, o contrato paga a mão de obra e o ente arca com combustível, manutenção,
   emplacamento e seguro (11.165, art. 11 II ✓).
-- **Recomendação da pesquisa, a decidir pelo Ota:** Custo Operacional mensal global da operação inteira (contrato único,
-  sem faseamento), com franquia mensal de km aferida pelo ROTA-OS e preço do km excedente. Km puro paga a ineficiência e
-  anula o ganho de roteirização; por paciente, passa ao operador o risco de falta e de ocupação. Os riscos de medição e a
-  cláusula que fecha cada um estão no §6 da pesquisa. Na peça, o valor aparece só como Custo Operacional mensal, nunca por
-  veículo.
+- **Modelo da Samais (Ota, 20/10/2026: *"siga sua recomendação"*):** Custo Operacional mensal global da operação inteira
+  (contrato único, sem faseamento), com franquia mensal de km aferida pelo ROTA-OS e preço do km excedente.
+  - A parcela fixa é o custo construído da disponibilidade (equipe, central, ROTA-OS, gestão, seguro, manutenção, frota
+    locada e o km até a franquia); a franquia sai da demanda medida e do aproveitamento de 85%, com banco de km
+    trimestral; o excedente só com OS autorizada no ROTA-OS e só com o que varia com o km.
+  - Km puro paga a ineficiência e anula o ganho de roteirização; por paciente, passa ao operador o risco de falta e de
+    ocupação. Os riscos de medição e a cláusula que fecha cada um estão no §6.3 da pesquisa.
+  - **Edital que já vem em km:** precificar o km pelo ciclo dimensionado, com o fixo diluído e declarado no Artefato 1, e
+    registrar como risco a perda do ganho de roteirização.
+  - Na peça, o valor aparece só como Custo Operacional mensal, nunca por veículo nem decomposto em fixo e km.
 
 ## 6. A norma citada na peça
 

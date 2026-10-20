@@ -58,6 +58,19 @@ justificativa do fundo e contraste medido em `doutrina/design-system.md`, "Tema 
 - A marca troca de arquivo sozinha (`.marca` usa a variante `primary` no claro; §4).
 - Papel e PDF: os valores do claro sobre **branco** (miolo branco, Ota, 15/10/2026), nunca sobre o creme.
 
+### Extensão clínica (Ota, 20/10/2026)
+
+Só para tela de operação (CoPilot, PEP, ROTA): status, alerta, risco e IA. Peça e estudo não usam. Fica na região de
+tokens do `samais.css`, desce aos produtos com os demais tokens e muda com o tema; tabela completa e contraste em
+`doutrina/design-system.md`, "Extensão clínica".
+
+- `--clinico-sucesso`, `--clinico-atencao`, `--clinico-critico`, `--clinico-info`, `--clinico-ia`, cada um com o seu
+  `-chao` (fundo do selo). O info é azul-acinzentado, nunca o azul do Manchester.
+- Manchester é norma, não tema: `--manchester-vermelho|laranja|amarelo|verde|azul` é o selo, igual nos dois temas, com o
+  dígito em `--manchester-tinta`; `--manchester-*-texto` é a letra e o filete sobre a superfície; no claro, o selo leva
+  `--manchester-aro`.
+- Nenhum produto redeclara essas cores: se faltar um papel, ele entra aqui, no `samais.css`.
+
 ## 2. Tokens abaixo do contraste para texto pequeno
 
 Medidos sobre `--bg` (`doutrina/design-system.md`): `--dim` 2,98:1, `--red` 2,89:1, `--green` 3,72:1 e
@@ -70,7 +83,7 @@ nunca em parágrafo. No claro, só `--gold-deep` (4,03:1) e `--dim` (3,40:1) fic
 | Papel | Família | Peso | Observação |
 |---|---|---|---|
 | Display e título | Syne (`--display`) | 600–800; `h1` 700, `h2`–`h4` 600 | fallback Arial Black, nunca serifa; `letter-spacing:-.02em` |
-| Corpo | Inter (`--body`) | **300** | entrelinha 1,6 |
+| Corpo | Inter (`--body`) | **300** na peça · **400** no produto | entrelinha 1,6; no produto, a tela de operação lê rápido e por horas, e o 300 some |
 | Dado, rótulo, paginação | JetBrains Mono (`--mono`) | 400–500 | `.dado` com `tabular-nums`; número não quebra linha (`white-space:nowrap`) |
 
 Importação em página do OS (que tem rede):
