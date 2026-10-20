@@ -13,7 +13,7 @@ description: >
   (samais-raio-x-estadual) nem para vídeo (samais-video).
 license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
-<!-- Espelho gerado de victorotaa/samais-os@8668e8a em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@f64d0e2 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — Estudo de município, consórcio e transporte sanitário
 
@@ -33,7 +33,7 @@ Unificada em 20/10/2026 (origem de cada parte: `references/HISTORICO.md`).
 | BDI decomposto, remuneração residual, gross-up, textos por linha, negociação, anexo de memória financeira | `references/composicao-e-anexo.md` |
 | Markdown interno, estrutura e conteúdo da página cliente, atestados, CoPilot/ROTA-OS, imagens, conferências | `references/peca-cliente.md` |
 | Transporte sanitário (eletivo, TFD, inter-hospitalar): norma 11.164 + 11.165, motor, repasse, farol, peça | `references/modo-transporte-sanitario.md` |
-| Transporte: demanda por parâmetro, km por ciclo, ambulância de apoio, viabilidade interna, citação da norma | `references/transporte-demanda-e-viabilidade.md` |
+| Transporte: demanda por parâmetro, km por ciclo, tipo A só com demanda medida (sem apoio por padrão), modelo de pagamento, viabilidade interna, citação da norma | `references/transporte-demanda-e-viabilidade.md` |
 | Checklist do portão, portão, publicação, conferência no ar, entrega, registro da frente | `references/portao-publicacao-entrega.md` |
 | Análise de edital (habilitação, cláusulas, red flags) | `references/checklist-licitacao.md` |
 | De onde veio cada regra e o que foi descartado | `references/HISTORICO.md` |

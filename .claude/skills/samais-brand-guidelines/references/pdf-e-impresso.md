@@ -28,12 +28,13 @@ Primeiro uso: o dossiê UMMES v3 (15/10/2026).
 ## Impressão de peça HTML (`@media print`)
 
 Toda peça longa imprime, em versão light. **Sobrescrever os tokens na raiz**, não cor por seletor: seletor esquecido
-com token sobrescrito sai legível; com cor fixa, sai invisível no branco.
+com token sobrescrito sai legível; com cor fixa, sai invisível no branco. Os valores são os do **tema claro** do
+`samais.css` (Ota, 20/10/2026), sobre papel branco; todos passam AA no branco (`doutrina/design-system.md`, "Tema claro").
 
 ```css
 @media print{
-  :root{ --text:#0A0A0A; --text-2:#3A3A3A; --muted:#565656; --dim:#8A8A8A;
-         --divider:#DCDCDC; --gold:#8E7238; --gold-soft:#8E7238; }
+  :root{ --bg:#FFFFFF; --text:#0A0A0A; --text-2:#3A352D; --muted:#6E675B; --dim:#8A8174;
+         --divider:#DDD6C9; --gold:#7A6230; --gold-soft:#6F5A2C; --gold-deep:#8E7238; }
   html{background:#fff}          /* o canvas escuro mora no html */
   body::before{display:none}     /* o brilho ambiente; sem isso sai retângulo preto no PDF */
   .glass{background:#FAFAFA;border:1px solid #E4E4E4;box-shadow:none;filter:none}

@@ -138,3 +138,19 @@ linhas e 32.310 bytes.
    "navy-black") e `anthropic-skills:samais-municipal-study` (426 linhas, com Plus Jakarta Sans) são as versões
    anteriores à unificação, e é a cópia da conta que o carregador entrega quando a sessão não tem o repositório. Atualizar
    na configuração da conta, pelo Ota (o script não alcança a conta).
+
+## 20/10/2026 — terceira rodada: as duas decisões do Ota
+
+- **Tema claro canônico, e os produtos migram** (decide o item 1 acima): *"Faz sentido migrarmos, unificarmos ela no
+  padrão SAMAIS que já temos em nossos materiais, tanto para a versão clara quanto para a versão escura."* O
+  `samais.css` ganhou `:root[data-theme="light"]` (creme `#F4F1EA`, superfícies `#FAF8F3` e `#FFFFFF`, ouro de texto
+  `#7A6230`, todo texto em AA), entre os marcadores `@tokens-inicio`/`@tokens-fim` que o `sincronizar-skills.mjs` exporta
+  para o CoPilot e o PEP; o escuro ficou idêntico (`color-scheme: dark` acrescentado). Tabela de contraste em
+  `doutrina/design-system.md`, "Tema claro"; tokens em `tokens-e-tipografia.md` §1. A linha "Tema claro alternável" de
+  "O que não entrou" (segunda rodada) fica superada.
+- **Imagem gerada de operação, só sem candidato viável** (decide o item 2 acima): *"pode admitir, mas de forma que ela
+  pode ser gerada somente quando não encontrarmos candidatos viáveis (...) uma pesquisa para entender a localidade
+  (...) e utilizar ela como base para gerar uma nova, dentro das resoluções e proporções que estabelecemos."* Regra
+  única, em ordem (banco curado e foto real → pesquisa da localidade → gerada sobre a pesquisa, nos tamanhos de
+  `conferir-imagens`, via grátis, selo na legenda), em `doutrina/padrao-dobras.md`, `regras-completas.md`, `SKILL.md`
+  item 12, `pecas-html.md` §9, o checklist e `samais-municipal-study/references/peca-cliente.md` §7.

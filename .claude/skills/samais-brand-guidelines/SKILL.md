@@ -3,7 +3,7 @@ name: samais-brand-guidelines
 description: Aplica a identidade visual da Samais Gestão em Saúde (dark liquid-glass, ouro sobre preto, Syne/Inter 300/JetBrains Mono, tokens importados de doutrina/samais.css) a qualquer peça visual — deck, apresentação HTML, estudo HTML, landing, template Samais, dossiê, proposta, painel, PDF, slide, documento, gráfico, teaser e peça de marketing — e revisa peças fora do padrão. Use sempre que o entregável for da Samais ou mencionar Samais, SAMU, dossiê, estudo municipal, raio-x, proposta comercial, apresentação institucional ou de investidor, ou quando o Ota pedir "padrão Samais", "identidade Samais", "dark-luxury" ou "template Samais". Vídeo segue samais-video, que importa esta identidade.
 license: Apache-2.0
 ---
-<!-- Espelho gerado de victorotaa/samais-os@8668e8a em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@f64d0e2 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-brand-guidelines/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — identidade visual
 
@@ -66,9 +66,12 @@ O conteúdo (o que pode ser dito, vocabulário de preço, procedência, LGPD) é
     nesta ordem, em colunas comparáveis, Base com o selo "★ RECOMENDADO".
 11. **Sem campo de contato** em nenhum material: sem e-mail, telefone, WhatsApp, formulário, `mailto` ou "fale conosco".
     A peça fecha com a tese ou com link para produto ou demo; a tagline *"Onde gestão se mede em vidas."* é o fecho.
-12. **Imagem obedece ao Princípio da Realidade:** nada de foto de operação que não se comprova; sem cena clínica ou
-    dramática (sirene, sangue, reanimação, vítima, paciente identificável), sem brasão municipal, sem logo de terceiro.
-    Imagem gerada leva o selo "imagem ilustrativa" e um `README.md` de procedência na pasta.
+12. **Imagem obedece ao Princípio da Realidade, numa ordem só** (Ota, 20/10/2026): banco curado e foto documental real;
+    depois a pesquisa da localidade (marcos e pontos de interesse do município ou da região); só sem candidato viável,
+    imagem gerada a partir dessa pesquisa, nas resoluções da casa (hero ≥ 2400×1600), pela via grátis, com o selo
+    "imagem ilustrativa" na legenda e um `README.md` de procedência. Sempre fora: cena clínica ou dramática (sirene,
+    sangue, reanimação, vítima, paciente identificável), brasão municipal, logo de terceiro. Detalhe em
+    `references/pecas-html.md` §9.
 
 ## Por tipo de peça (resumo; o detalhe está nas references)
 
@@ -86,7 +89,8 @@ O conteúdo (o que pode ser dito, vocabulário de preço, procedência, LGPD) é
 ## O que nunca fazer
 
 - Redeclarar cor, ou usar as paletas aposentadas (`#04060C` com ouro `#D4A857`; `#060709` com `#C9A84C`) ou o sistema
-  do CoPilot e do PEP (`#070708` com `#BF9A3D` e Plus Jakarta Sans) em peça da casa.
+  do CoPilot e do PEP (`#070708` com `#BF9A3D` e Plus Jakarta Sans), aposentado também nos produtos (Ota, 20/10/2026:
+  os produtos migram para os dois temas do `samais.css`).
 - Misturar a paleta institucional com a operacional do SAMU (vermelho vivo, navy e branco de uniforme e viatura).
 - Gradiente colorido, neon, glassmorphism genérico de template, efeito lupa, transição "de PowerPoint".
 - Refração (`glassDistort`) em texto, número, tabela, gráfico ou painel; na foto, refração no miolo.

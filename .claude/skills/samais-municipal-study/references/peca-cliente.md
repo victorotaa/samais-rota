@@ -86,8 +86,13 @@ Padrão frio: sem advocacy, sem nota metodológica à vista; dado ausente se omi
 - No transporte, o sistema é o **ROTA-OS**, nomeado como o CoPilot nas peças de SAMU, com captura de tela; nunca a tela
   cheia do demo (bases fictícias). O PEP-OS não entra em peça de transporte.
 
-## 7. Imagens (Ota, 06/10/2026)
+## 7. Imagens (Ota, 06/10/2026; ordem de 20/10/2026)
 
+- **A ordem é uma só** (Ota, 20/10/2026: imagem gerada de operação *"somente quando não encontrarmos candidatos
+  viáveis"*, a partir de *"uma pesquisa para entender a localidade"*; regra inteira em
+  `samais-os/doutrina/padrao-dobras.md`, "Imagem"): (1) banco curado (`samais-os/doutrina/imagens/`) e foto documental
+  real, o cartão-postal abaixo; (2) pesquisa da localidade, os marcos e pontos de interesse do município ou da região;
+  (3) só sem candidato viável (foto real do assunto no tamanho mínimo), gerar a partir dessa pesquisa.
 - **Cartão-postal da cidade ou região, em alta resolução**, desktop e celular. Pesquisar primeiro os marcos (portal de
   entrada, igreja-matriz, orla, ponte, represa, estação, teatro); depois as fotos. Google Imagens permitido (uso interno e
   comercial restrito); nesta rede `www.google.com` é recusado e o Wikimedia Commons funciona (`thumb.php?f=<arquivo>&w=3200`,
@@ -97,10 +102,13 @@ Padrão frio: sem advocacy, sem nota metodológica à vista; dado ausente se omi
 - Papéis: o cartão-postal mais forte é o hero; o segundo, a faixa de território; o terceiro, o fechamento; paisagem da
   região entre partes (consórcio: o município-sede da CRU primeiro). Três a cinco imagens, com fonte e crédito. Toda zona
   de imagem tem fallback em gradiente.
-- Imagem de marca (frota, central, equipe) é pontuação, não decoração; gerada, resolve-se grátis (GPT/Gemini), sem crédito
-  do Higgsfield, com o selo "imagem ilustrativa". Vestimenta por contexto: uniforme SAMU só em peça de SAMU; no transporte,
-  jaleco neutro com o monograma SA+.
-- Vetado: sirene, sangue, reanimação, paciente identificável, cena clínica ou dramática, brasão municipal.
+- Imagem de marca (frota, central, equipe) é pontuação, não decoração. **Gerada só no degrau 3**, sobre a pesquisa da
+  localidade (o marco, a paisagem e a luz da região como base), nos mesmos tamanhos mínimos (medidos por
+  `conferir-imagens`; gerada que não alcança o mínimo não vai ao hero), grátis (GPT/Gemini), sem crédito do Higgsfield,
+  com o selo "imagem ilustrativa" na legenda e o `README.md` de procedência (modelo, data, referência usada). Vestimenta
+  por contexto: uniforme SAMU só em peça de SAMU; no transporte, jaleco neutro com o monograma SA+.
+- Vetado: sirene, sangue, reanimação, paciente identificável, cena clínica ou dramática, brasão municipal, logo de
+  terceiro, texto ou letreiro legível na imagem gerada.
 
 ## 8. Composição e conferência
 
