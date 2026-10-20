@@ -13,6 +13,7 @@
      DATABASE_URL=postgres://... node testes/api.e2e.mjs
    ═══════════════════════════════════════════════════════════════════ */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import pg from 'pg';
@@ -463,6 +464,75 @@ try{
   ok('a trilha não copia quem informou a remessa', !JSON.stringify(trilha).includes('faturamento da SMS'));
   const {rows: cadeia11165} = await cli.query('select * from verificar_cadeia_auditoria($1)', [A.base]);
   eq('e a cadeia continua íntegra', cadeia11165[0].primeiro_id_adulterado, null);
+
+  /* ═══ Medição contratual mensal (RF-09) ═════════════════════════════
+     Floriano tem a viagem de 06/07 (504 km) e as oito de agosto (160 km
+     cada), todas com baixa e embarque. O esquema não guarda GPS nem OS:
+     a medição usa o km da baixa como hodômetro e trata o excedente como
+     sem OS (padrões declarados). Só km, nenhum valor.                  */
+  console.log('\n── medição contratual mensal ──');
+  const MED = (token, consulta) => chamar('GET', '/api/medicao?' + consulta, {token});
+  delete process.env.ROTA_MEDICAO_CONTRATOS;
+  eq('sem parâmetros do contrato configurados: 409, sem número inventado',
+     (await MED(tokenA, 'competencia=2026-08&hoje=2026-10-16')).status, 409);
+  process.env.ROTA_MEDICAO_CONTRATOS = JSON.stringify({bases: {[A.base]: {franquia_km_mensal: 600,
+    banco_trimestral: 'trimestre_civil', inicio_contrato: '2026-07', fonte: 'Contrato SINT-01, cláusula de medição'}}});
+  eq('sem sessão é 401', (await chamar('GET', '/api/medicao?competencia=2026-08')).status, 401);
+
+  const jul = (await MED(tokenA, 'competencia=2026-07&hoje=2026-10-16')).corpo;
+  eq('julho: 504 km dentro da franquia de 600, 96 ao banco',
+     [jul.km_apurado, jul.franquia.dentro_km, jul.banco.credito_km, jul.banco.segue_para_proxima_km, jul.situacao],
+     [504, 504, 96, 96, 'fechada']);
+  eq('sem GPS no esquema, o km da baixa substitui, com marcação',
+     jul.substituidas_por_hodometro.map(s => [s.km_hodometro, s.motivo]), [[504, 'gps_sem_registro']]);
+  eq('e a fonte dos parâmetros vem junto', jul.contrato_fonte, 'Contrato SINT-01, cláusula de medição');
+
+  const ago = (await MED(tokenA, 'competencia=2026-08&hoje=2026-10-16')).corpo;
+  eq('agosto: 1.280 km, usa os 96 do banco e 584 excedentes sem OS',
+     [ago.km_apurado, ago.franquia.dentro_km, ago.banco.uso_km, ago.excedente.autorizado_km, ago.excedente.sem_os_km],
+     [1280, 600, 96, 0, 584]);
+  ok('o excedente sem OS registrada diz que a OS não está no sistema',
+     ago.excedente.sem_os.length > 0 && ago.excedente.sem_os.every(x => x.os === 'os_nao_registrada'), ago.excedente.sem_os);
+  eq('o saldo vem encadeado de julho, sem digitação', ago.encadeamento.map(e => [e.competencia, e.segue_para_proxima_km]),
+     [['2026-07', 96], ['2026-08', 0]]);
+  ok('as contas fecham', Object.values(ago.totais.conferencias).every(Boolean), ago.totais.conferencias);
+  ok('os campos que faltam no esquema vêm declarados',
+     ['km_gps', 'falha_gps', 'os_excedente'].every(c => ago.campos_ausentes_no_esquema.some(x => x.campo === c)));
+  ok('a medição não carrega dado de paciente', !/700000000|PAC-SINT|Paciente de/.test(JSON.stringify(ago)));
+  ok('nem valor em R$', !/R\$/.test(JSON.stringify(ago)) && !('custoKmVariavel' in ago));
+
+  const set = (await MED(tokenA, 'competencia=2026-09&hoje=2026-10-16')).corpo;
+  eq('setembro sem viagem: a franquia inteira ao banco, e ela expira na virada do trimestre',
+     [set.km_apurado, set.banco.credito_km, set.banco.expira_na_virada_km, set.banco.segue_para_proxima_km], [0, 600, 600, 0]);
+
+  await chamar('PUT', '/api/programacao', {token: tokenA, corpo: {de: '2026-10-05', ate: '2026-10-05', viagens: [
+    viagem('med-10', '2026-10-05', A.destinoPerto, [P1])]}});
+  const out = (await MED(tokenA, 'competencia=2026-10&hoje=2026-10-16')).corpo;
+  eq('outubro, em aberto: novo trimestre, sem saldo, e a viagem sem baixa fica fora e listada',
+     [out.situacao, out.parametros.trimestre.inicio, out.banco.saldo_anterior_km, out.km_apurado, out.pendentes_de_baixa.total],
+     ['em_aberto', '2026-10', 0, 0, 1]);
+  eq('competência que ainda não começou é 422', (await MED(tokenA, 'competencia=2026-11&hoje=2026-10-16')).status, 422);
+  eq('competência anterior ao contrato é 422', (await MED(tokenA, 'competencia=2026-06&hoje=2026-10-16')).status, 422);
+  eq('competência fora do formato é 422', (await MED(tokenA, 'competencia=2026-13')).status, 422);
+  eq('sem competência é 422', (await MED(tokenA, '')).status, 422);
+
+  eq('Caicó, sem parâmetros na configuração: 409', (await MED(tokenB, 'competencia=2026-08&hoje=2026-10-16')).status, 409);
+  const dirConfig = fs.mkdtempSync(path.join(os.tmpdir(), 'rota-medicao-'));
+  const arqConfig = path.join(dirConfig, 'medicao.json');
+  fs.writeFileSync(arqConfig, JSON.stringify({bases: {
+    [A.base]: {franquia_km_mensal: 600, banco_trimestral: 'trimestre_civil', inicio_contrato: '2026-07'},
+    [B.base]: {franquia_km_mensal: 300, banco_trimestral: 'inicio_contrato', inicio_contrato: '2026-07'}}}));
+  process.env.ROTA_MEDICAO_CONTRATOS = arqConfig;
+  const agoB = (await MED(tokenB, 'competencia=2026-08&hoje=2026-10-16')).corpo;
+  eq('pelo arquivo: Caicó mede só as próprias viagens (nenhuma)', [agoB.km_apurado, agoB.totais.viagens, agoB.banco.saldo_anterior_km],
+     [0, 0, 300]);
+  eq('e Floriano continua com a mesma medição', (await MED(tokenA, 'competencia=2026-08&hoje=2026-10-16')).corpo.km_apurado, 1280);
+  fs.writeFileSync(arqConfig, JSON.stringify({bases: {[A.base]: {franquia_km_mensal: 0, banco_trimestral: 'trimestre_civil',
+    inicio_contrato: '2026-07'}}}));
+  const quebrada = await MED(tokenA, 'competencia=2026-08&hoje=2026-10-16');
+  eq('configuração inválida é erro do servidor, sem contar a estrutura', [quebrada.status, quebrada.corpo], [500, {erro: 'erro interno'}]);
+  delete process.env.ROTA_MEDICAO_CONTRATOS;
+  fs.rmSync(dirConfig, {recursive: true, force: true});
 
   /* ─── escrita falha não deixa meia-escrita ───────────────────────── */
   console.log('\n── transação ──');

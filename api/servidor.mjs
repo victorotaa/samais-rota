@@ -14,6 +14,7 @@
    Subir:  DATABASE_URL=postgres://... node api/servidor.mjs
    ═══════════════════════════════════════════════════════════════════ */
 import http from 'node:http';
+import fs from 'node:fs';
 import {
   conferirSenha, precisaRehash, hashSenha, conferirTotp, conferirRecuperacao,
   novaSessao, hashToken, bloqueadoAte
@@ -21,9 +22,10 @@ import {
 import {abrir, fechar, semSessao, comGestor, auditar, resumir, conferirConexao} from './db.mjs';
 import {elegibilidade11165} from '../regras/portaria-11165.mjs';
 import {
-  chaveComCpf, competenciaValida, dataValida, entradaElegibilidade, farolDaBase,
+  chaveComCpf, competenciaValida, competenciaDe, dataValida, entradaElegibilidade, farolDaBase,
   preRemessaBPAI, csvPreBPAI, conformidade, diasEntre
 } from './integracao-11165.mjs';
+import {medicaoDaCompetencia, contratoDaConfiguracao, trimestreDe} from '../regras/medicao-contratual.mjs';
 import {hojeBrasilia} from './relogio.mjs';
 
 const LIMITE_CORPO = 256 * 1024;     // manifesto de dia cheio cabe folgado
@@ -739,6 +741,98 @@ rota('GET', /^\/api\/bpa-i\/([^/]+?)(\.csv)?$/, false, async (ctx) => {
       }
     };
   });
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   Medição contratual mensal (RF-09) — docs/ROTA-SPEC.md
+
+   Quantidade em km para o fiscal do ente conferir: franquia, banco
+   trimestral, excedente com OS (paga) e sem OS (glosa). Nenhum valor em
+   R$: o preço não entra no sistema. A regra é a de
+   regras/medicao-contratual.mjs; aqui se lê e se costura.
+
+   Parâmetros do contrato: configuração documentada, nunca constante no
+   código nem migração. ROTA_MEDICAO_CONTRATOS traz o JSON em linha ou o
+   caminho de um arquivo no formato de docs/medicao-contratos.exemplo.json,
+   chaveado pelo id da base.
+   ═══════════════════════════════════════════════════════════════════ */
+function lerConfiguracaoMedicao(){
+  const bruto = (process.env.ROTA_MEDICAO_CONTRATOS || '').trim();
+  if(!bruto) return null;
+  try{ return JSON.parse(bruto.startsWith('{') ? bruto : fs.readFileSync(bruto, 'utf8')) }
+  catch(e){ throw Object.assign(new Error(`ROTA_MEDICAO_CONTRATOS ilegível: ${e.message}`), {status: 500}) }
+}
+
+/* O que o esquema ainda não guarda cai num padrão explícito, devolvido
+   junto da medição para o fiscal saber de onde veio cada número. */
+const CAMPOS_AUSENTES_MEDICAO = Object.freeze([
+  {campo: 'km_gps', padrao: 'nulo: toda viagem cai em "GPS sem registro" e o hodômetro substitui, com marcação',
+   falta: 'km do ciclo base → base registrado pelo GPS, por viagem'},
+  {campo: 'falha_gps', padrao: 'nulo: sem o km do GPS, a falha não se distingue da ausência de registro',
+   falta: 'falha de GPS declarada, por viagem'},
+  {campo: 'km_hodometro', padrao: 'baixas.km_rodado: o km anotado na prancheta e lançado na baixa (RF-05), tomado como hodômetro ≈',
+   falta: 'hodômetro inicial e final, por viagem'},
+  {campo: 'os_excedente', padrao: 'nulo: sem OS registrada, o excedente fica a autorizar e entra como sem OS (glosa)',
+   falta: 'OS que autoriza o trecho excedente, por viagem'},
+  {campo: 'embarque_registrado', padrao: 'embarques.presente_ida de pelo menos um paciente da viagem', falta: null},
+  {campo: 'contrato', padrao: 'ROTA_MEDICAO_CONTRATOS, por base (franquia, tolerância, banco, início do contrato)',
+   falta: 'parâmetros do contrato no banco, se a decisão for guardá-los lá'}
+]);
+
+/* Linha do banco → viagem da medição. A data é a da viagem, como no
+   relatório mensal e na pré-remessa BPA-I. */
+const paraViagemMedida = r => ({
+  id: r.id, data: r.data, hora: r.hora ?? null,
+  km_gps: null, falha_gps: null,
+  km_hodometro: r.km_rodado === null || r.km_rodado === undefined ? null : Number(r.km_rodado),
+  os_excedente: null,
+  embarque_registrado: !!r.embarque_registrado
+});
+
+rota('GET', /^\/api\/medicao$/, false, async (ctx) => {
+  const competencia = ctx.query.get('competencia');
+  if(!competenciaValida(competencia)) return {status: 422, corpo: {erro: 'competencia: esperado AAAA-MM'}};
+  const hoje = hojeDe(ctx), corrente = competenciaDe(hoje);
+  if(competencia > corrente)
+    return {status: 422, corpo: {erro: `competencia: ${competencia} ainda não começou (hoje, em Brasília, é ${hoje})`}};
+
+  const configuracao = lerConfiguracaoMedicao();
+  let doContrato = null;
+  if(configuracao){
+    try{ doContrato = contratoDaConfiguracao({configuracao, base_id: ctx.sessao.baseId}) }
+    catch(e){ throw Object.assign(new Error(`configuração da medição inválida: ${e.message}`), {status: 500}) }
+  }
+  if(!doContrato) return {status: 409, corpo: {erro: 'parâmetros do contrato a configurar para esta base ' +
+    '(franquia, banco trimestral, início do contrato): docs/ROTA-SPEC.md, RF-09'}};
+  const {contrato, fonte} = doContrato;
+  if(competencia < contrato.inicio_contrato)
+    return {status: 422, corpo: {erro: `competencia: anterior ao início do contrato (${contrato.inicio_contrato})`}};
+  const {primeiro_medido} = trimestreDe({competencia, ...contrato});
+
+  return {corpo: await comGestor(ctx.sessao, async (cli) => {
+    /* do primeiro mês medido do trimestre até a competência: o saldo do
+       banco sai das viagens, não de digitação */
+    const {rows} = await cli.query(
+      `select v.id, v.data, to_char(v.hora, 'HH24:MI') as hora, b.km_rodado,
+              exists (select 1 from embarques e where e.viagem_id = v.id and e.presente_ida) as embarque_registrado
+         from viagens v join baixas b on b.viagem_id = v.id
+        where v.status <> 'cancelada' and v.data >= $1::date and v.data < ($2::date + interval '1 month')
+        order by v.data, v.hora, v.id`, [primeiro_medido + '-01', competencia + '-01']);
+    const pendentes = await cli.query(
+      `select v.id from viagens v
+        where v.status = 'programada' and not exists (select 1 from baixas b where b.viagem_id = v.id)
+          and v.data >= $1::date and v.data < ($1::date + interval '1 month') and v.data <= $2::date
+        order by v.data, v.hora, v.id`, [competencia + '-01', hoje]);
+    const medicao = medicaoDaCompetencia({competencia, contrato, viagens: rows.map(paraViagemMedida)});
+    return {
+      ...medicao,
+      situacao: competencia === corrente ? 'em_aberto' : 'fechada',
+      hoje, contrato_fonte: fonte,
+      pendentes_de_baixa: {total: pendentes.rowCount, viagens: pendentes.rows.map(r => r.id),
+        nota: 'viagem programada até hoje sem baixa fica fora da medição até a baixa'},
+      campos_ausentes_no_esquema: CAMPOS_AUSENTES_MEDICAO
+    };
+  })};
 });
 
 /* ─── servidor ─────────────────────────────────────────────────────  */

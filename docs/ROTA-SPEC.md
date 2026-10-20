@@ -140,6 +140,9 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 - Alertas: revisão próxima, faltas na semana, **produção BPA-I por competência** (RN-08; competência sem
   remessa informada = "a conferir"), prazo CNES e de operação do veículo doado (calculados da data de
   recebimento), base não apta ao incentivo. Dias sem baixa interna: linha operacional, não farol.
+- **Ligação com a medição (RF-09):** o "km rodado" do painel soma o km da baixa da semana; a medição
+  contratual soma o mesmo km da baixa por competência (enquanto o GPS não está no esquema) e o reparte em
+  franquia, banco e excedente. Sem tela nova nesta rodada: quando houver, o painel lê `GET /api/medicao`.
 
 ### RF-07 · Relatórios
 - **Relatório mensal de comprovação** (PDF/A4): viagens totais e **deslocamentos elegíveis
@@ -152,6 +155,57 @@ secretaria recebe ◀─────────── 9. PDF de prestação de 
 - Identidade Samais integral: tokens, Syne/Inter/JetBrains Mono, liquid glass
   (refração `feDisplacementMap` no desktop, fallback blur, off no mobile),
   animações de entrada com `prefers-reduced-motion` respeitado.
+
+### RF-09 · Medição contratual mensal
+O modelo de remuneração da Samais no transporte sanitário (Ota, 20/10/2026;
+`samais-os/inteligencia/transporte-sanitario/remuneracao-e-apoio.md` §6) é um **Custo Operacional mensal global**
+com franquia mensal de km aferida pelo ROTA-OS, banco de km trimestral com prazo e km excedente pago só com OS
+autorizada no ROTA-OS. O ROTA-OS emite a **medição mensal que o fiscal do ente confere**. Ela mede quantidade,
+nunca preço: nenhum valor em R$ entra ou sai dela, porque a composição do preço não entra no sistema.
+
+- **Onde mora:** módulo puro `regras/medicao-contratual.mjs` (sem banco, sem rede, sem relógio), testes
+  `testes/medicao-contratual.test.mjs` e endpoint `GET /api/medicao?competencia=AAAA-MM` (`&hoje=` para teste).
+
+| # | Regra | Cláusula |
+|---|---|---|
+| **M-01** | O km da viagem é o do ciclo base → base registrado pelo GPS do ROTA-OS. A medição nunca usa o km previsto | §6.3 "Onde começa o km"; "Falta e cancelamento" (no excedente, só o km realizado) |
+| **M-02** | O GPS é a fonte e o hodômetro confere. Divergência = \|GPS − hodômetro\| ÷ GPS; acima da tolerância (padrão 2%, exatos 2% ficam dentro) a viagem vai à lista para justificar, e o km continua o do GPS | §6.3 "Medida divergente" |
+| **M-03** | Na falha do GPS (declarada, ou viagem sem registro), o hodômetro substitui **se o manifesto tiver embarque registrado**, com marcação; a correção se compensa na competência seguinte. Sem as duas provas, a viagem fica **a conferir**: fora do apurado e nunca zero | §6.3 "Falha do GPS" |
+| **M-04** | O km apurado entra em ordem cronológica (data, hora e código da viagem): primeiro na franquia, depois no banco, por fim no excedente | §6.1 franquia e banco |
+| **M-05** | A franquia não usada vira saldo em km no banco. O banco se usa antes do excedente e expira no último mês do trimestre, civil ou contado do início do contrato, conforme o contrato. O saldo **nunca vira crédito em dinheiro**, e a primeira competência do trimestre (ou do contrato) começa sem saldo | §6.1 banco "com prazo" |
+| **M-06** | Excedente é só o km acima de franquia + banco. Com OS no ROTA-OS, se paga; sem OS (negada ou não registrada), se glosa | §6.1 "Km excedente"; §6.3 "Desvio e percurso interno" |
+| **M-07** | A medição se faz pelo código da viagem, sem dado do paciente (nem o CNS). Chave com "cpf" é recusada | §6.3 "Dado pessoal na planilha" |
+
+- **Saída:** km apurado; franquia (dentro, não usada); banco (saldo anterior, crédito, uso, saldo final, o que
+  segue e o que expira na virada); excedente autorizado e sem OS, por viagem; divergências; viagens substituídas
+  pelo hodômetro; viagens a conferir; a alocação de cada viagem; o encadeamento do trimestre. Os totais trazem as
+  contas que o fiscal refaz: apurado = GPS + hodômetro substituto = franquia + banco + excedente autorizado +
+  excedente sem OS; saldo final = saldo anterior + crédito − uso.
+- **Na API, além disso:** situação da competência (`em_aberto` ou `fechada`, pelo relógio de Brasília; competência
+  futura ou anterior ao contrato é 422); viagens programadas até hoje sem baixa, listadas fora da medição; e os
+  padrões dos campos que o esquema ainda não guarda. O saldo do banco **não se digita**: sai das viagens com baixa
+  dos meses anteriores do trimestre, medidas pela mesma regra.
+- **Parâmetros do contrato:** configuração documentada, nunca constante no código. A variável
+  `ROTA_MEDICAO_CONTRATOS` traz o JSON em linha ou o caminho do arquivo, por id de base; o formato está em
+  [`medicao-contratos.exemplo.json`](medicao-contratos.exemplo.json). Os campos são estes:
+  - `franquia_km_mensal`: obrigatório, sem padrão;
+  - `tolerancia_gps_hodometro`: padrão 0,02;
+  - `banco_trimestral`: `trimestre_civil` ou `inicio_contrato`;
+  - `inicio_contrato`: obrigatório na API, para o banco não creditar franquia de meses sem contrato;
+  - `fonte`: o contrato e a cláusula.
+
+  Base sem parâmetros responde 409; configuração inválida é erro do servidor.
+- **O que falta no esquema** (sem migração nesta rodada; cada campo cai num padrão declarado na resposta):
+
+| Campo | Hoje (padrão declarado) | Falta no banco |
+|---|---|---|
+| km do GPS, ciclo base → base | nulo: toda viagem é "GPS sem registro" e o hodômetro substitui, com marcação | o km (ou a trilha) do GPS por viagem |
+| falha de GPS | nulo: não se distingue da falta de registro | a marca de falha por viagem |
+| hodômetro | `baixas.km_rodado`, o km anotado na prancheta e lançado na baixa (RF-05), tomado como hodômetro ≈ | hodômetro inicial e final por viagem |
+| OS do excedente | nulo: o excedente fica a autorizar e entra como sem OS (glosa) | a OS do trecho excedente (número, data, quem autorizou) |
+| embarque registrado | `embarques.presente_ida` de pelo menos um paciente | — |
+| parâmetros do contrato | `ROTA_MEDICAO_CONTRATOS` | tabela por base, se a decisão for guardá-los no banco |
+| registro da medição emitida | não se grava | número sequencial em `documentos` (o tipo `medicao` não existe no enum) |
 
 ---
 
@@ -272,7 +326,8 @@ diária/casa de apoio vinculado à viagem.
 - Export/registro nos sistemas do SUS conforme mecanismo detalhado nas Portarias
   11.164/11.165 (texto integral lido no DOU em 16/10/2026 — ver `regras/portaria-11165.mjs`).
 - Consulta CADSUS via credencial do ente público (nunca da Samais isolada).
-- Perfil leitura para secretaria; telemetria/GPS de frota (opcional).
+- Perfil leitura para secretaria; telemetria/GPS de frota (opcional). A medição contratual (RF-09) toma o GPS
+  como fonte (§6.3 da pesquisa de remuneração); até ele entrar no esquema, o hodômetro da baixa substitui, com marcação.
 
 **Fora de escopo (decisões de produto):** rastreio "ninguém fica pra trás" em tempo
 real; perfil coordenador central; acesso de motorista/assistente ao sistema;
@@ -307,6 +362,11 @@ integração CADSUS direta na fase atual.
 - **Pré-remessa BPA-I**: CSV por base e competência que o ROTA entrega ao faturamento do
   ente, sem CPF; não é o leiaute oficial do BPA Magnético (lacuna).
 - **Remessa**: o que o faturamento do ente informa ter enviado ao SIA na competência.
+- **Medição contratual**: a quantidade de km da competência, em franquia, banco e excedente, que o fiscal do ente
+  confere (RF-09). Não traz valor.
+- **Franquia de km**: km por mês incluídos no Custo Operacional mensal do contrato.
+- **Banco de km**: a franquia não usada, guardada em km até o fim do trimestre; nunca vira dinheiro.
+- **Excedente**: km acima da franquia e do banco; pago com OS do ROTA-OS, glosado sem ela.
 
 ---
 
