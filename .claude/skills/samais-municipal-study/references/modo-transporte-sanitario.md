@@ -20,7 +20,7 @@ Demanda por parâmetro, custo por ciclo, tipo A só com demanda medida, viabilid
   transporte**: o SAMU mantém o gatilho de fase 2.
 - **O sistema é o ROTA-OS** (ROTA é a frente e a tese; ROTA-OS é o sistema, console em
   `samais-rota.vercel.app/rota-app.html`). O PEP-OS não entra em peça de transporte.
-- **Sem R$ por veículo em peça.** Nem preço, nem custo, nem a faixa federal por pessoa.
+- **Sem R$ por veículo em peça.** Nem preço, nem custo, nem a faixa federal por pessoa. **Nem por frente nem por cenário**: a peça mostra só o total do contrato único (Ota, 20/10/2026).
 - **Perguntar qual frente antes de escolher o veículo:** eletiva usa van, micro-ônibus e veículo acessível com
   motorista; inter-hospitalar usa ambulância tipo B e D tripulada 24/7. Hemodiálise dimensionada com ambulância tipo B
   põe 9 CLT onde bastava motorista (erro do primeiro estudo de Belém).
