@@ -152,7 +152,12 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
     ocupação. Os riscos de medição e a cláusula que fecha cada um estão no §6.3 da pesquisa.
   - **Edital que já vem em km:** precificar o km pelo ciclo dimensionado, com o fixo diluído e declarado no Artefato 1, e
     registrar como risco a perda do ganho de roteirização.
-  - Na peça, o valor aparece só como Custo Operacional mensal, nunca por veículo nem decomposto em fixo e km.
+  - **Preço do km excedente pela tabela da casa** (Ota, 20/10/2026): custo/km com 10% de indiretos × 1,899
+    (`samais-estudos/referencias/tabela-precos-unitarios.md`). Eletiva: combustível 1,125 × 1,10 × 1,899 = R$ 2,35/km;
+    inter-hospitalar: 2,20 × 1,899 = R$ 4,18/km. A regra antiga de 1,6192 (R$ 1,82 e R$ 3,24) saiu.
+  - Na peça, o valor aparece só como **o total do contrato único** (Ota, 20/10/2026: *"coloque o total do contrato"*):
+    nunca por frente (a divisão pela frota devolve o preço por veículo), nunca por veículo, nem decomposto em fixo e km,
+    nem por cenário de cobertura; o preço do km fica no contrato.
 
 ## 6. A norma citada na peça
 

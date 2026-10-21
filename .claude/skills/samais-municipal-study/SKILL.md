@@ -13,7 +13,7 @@ description: >
   (samais-raio-x-estadual) nem para vídeo (samais-video).
 license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
-<!-- Espelho gerado de victorotaa/samais-os@54369bc em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@010bc04 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — Estudo de município, consórcio e transporte sanitário
 
@@ -156,6 +156,10 @@ Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `ref
    ao nosso custo. Passivo trabalhista em todo cálculo CLT, sem contar a rescisão duas vezes.
 9. **Consórcio ≠ região de saúde ≠ área da central ≠ quem paga ≠ mantenedora no CNES.** Na UF com raio-x, rodar
    `scripts/raiox/vinculo-oculto.mjs <UF>`; vínculo ativo, total ou parcial, com link ao documento oficial.
+   **Cadastro não é gestão** (Ota, 20/10/2026): o vínculo e a lotação do CNES desatualizam. A gestão de hoje se lê no
+   instrumento (estatuto, contrato, acordo coletivo, edital de concurso ou processo seletivo) e no gasto pago no TCE (hora
+   extra, temporário, sentenças), com os sinais (greve, inadimplência, TAC, MP) e os decisores; onde divergem, vale o lido
+   (prova: CIRUSPAR, `samais-os/inteligencia/parana/fatos.md` §13.1).
 10. **Decisores com fonte, data e partido ao lado do nome** (19/10/2026: *"é impreterível"*). CPF, dado sensível, boato e
     contato pessoal nunca na peça; contato e porta de entrada só em `bastidor.md`.
 11. **Saúde pública:** hospital, leito e UTI só pela rede do SUS (públicos com leito SUS inteiros; filantrópicos e
