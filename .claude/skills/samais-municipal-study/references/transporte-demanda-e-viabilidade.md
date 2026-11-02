@@ -157,7 +157,8 @@ km por ciclo = percurso conhecido de ida e volta + coleta           (destino fix
     inter-hospitalar: 2,20 × 1,899 = R$ 4,18/km. A regra antiga de 1,6192 (R$ 1,82 e R$ 3,24) saiu.
   - Na peça, o valor aparece só como **o total do contrato único** (Ota, 20/10/2026: *"coloque o total do contrato"*):
     nunca por frente (a divisão pela frota devolve o preço por veículo), nunca por veículo, nem decomposto em fixo e km,
-    nem por cenário de cobertura; o preço do km fica no contrato.
+    nem por cenário de cobertura; o preço do km fica no contrato. E o total **nunca ao lado da frota que o divide** (mesma
+    linha, caixa ou cartão): a contagem de veículos fica no dimensionamento (21/10/2026).
 
 ## 6. A norma citada na peça
 

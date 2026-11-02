@@ -4,6 +4,30 @@
 fundamentadas"*; *"atualize e divida as skills de estudo e raio-x"*). A versão canônica fica no `samais-os`, com o mesmo
 nome. A `samais-transporte-study` passa a ser o **modo transporte sanitário** desta skill.
 
+**Padrão raio-x, 21/10/2026** (Ota: *"Atualize protocolo de estudos de município e tudo o que for para o padrão de raio-x.
+Assim teremos os decisores e seus partidos políticos anexos, bem contratos ativos, com links para editais e valores do PNCP"*):
+- **`SKILL.md` (FASE 4, regra 10) e `peca-cliente.md` §2:** os anexos de dado ao fim da página (decisores com partido,
+  contratos ativos e editais com link e valor, gestão lida, gasto de hoje × Custo Operacional, sinais lidos), recolhidos e
+  fora do teto de palavras, gerados por `scripts/estudo-anexos-raiox.mjs` com as guardas do raio-x. As matérias e o sinal
+  de má gestão entram como contexto e oportunidade.
+- **`fontes-e-coleta.md` §8:** um dado só com o raio-x. O que o estudo lê volta à camada da UF.
+- **Primeiro estudo no padrão:** Itapevi/SP, versão 2.
+
+**Atualização de 21/10/2026** (Ota: *"a skill de estudo municipal, acho que faz sentido ela ser atualizada com base em
+tudo que já estamos atualizando e fazendo por aqui"*):
+- **`fontes-e-coleta.md` §6.1:** o pago por rubrica (hora extra, temporários, sentenças), o ritmo mensal, o rateio do
+  consórcio pelo lado de quem paga, o coletor do TCE-PR e o mapa do TCE por UF.
+- **`fontes-e-coleta.md` §6.2:** gestão lida, "cadastro não é gestão", com a prova do CIRUSPAR e a cobertura nacional de
+  21/10.
+- **`fontes-e-coleta.md` §8:** o partido pelos dados abertos do TSE (candidaturas e órgãos partidários) e o gestor de
+  consórcio.
+- **`fontes-e-coleta.md` §9:** duas leituras da mesma fonte também se cruzam (pago do PR), e nenhuma palavra vetada em
+  arquivo citável escrito à mão (DF, SP, MG, BA).
+- **`cenarios-e-comparativo.md` §3:** a jornada explica o gasto de hoje (CIRUSPAR, 12x60), como diagnóstico interno.
+- **`SKILL.md`:** FASE 2 e as lições CIRUSPAR e "palavra vetada".
+- **Origem:** `samais-os` PRs #270, #271, #272, #273 a #300, #302 e #303 (20 e 21/10/2026), e regras-completas, "CUSTO
+  OPERACIONAL, DECISORES E VÍNCULO COM DOCUMENTO", item 7.
+
 ## 1. As cinco entradas reconciliadas
 
 | Versão | Onde | Tamanho do SKILL.md | Estado |
@@ -175,3 +199,14 @@ recomendação"*. O modo transporte passa a propor Custo Operacional mensal glob
 e preço do km excedente (`transporte-demanda-e-viabilidade.md` §5); edital em km se precifica pelo ciclo, com o risco
 registrado.
 
+**Padrão ouro de Assis, 23/10/2026** (Ota: *"vamos estabelecer um bom padrão, pra ser o novo padrão ouro de estudos
+municipais/consórcio"*): modelo `estudos/assis-civap-sp.html` no lugar de Ourinhos (`SKILL.md` e `peca-cliente.md` §2).
+Diagnóstico só com números; régua do SUS e pontos críticos numa tabela só; rateio do Custo Operacional por município em
+dropdown (chave do consórcio ou população, ≈; nunca por viatura nem por item); anexos de dado dentro das seções, pelos
+marcadores `<!--ANEXO:…-->` do `estudo-anexos-raiox.mjs`; nenhuma palavra partida em largura nenhuma (conferir-orfas de 360
+a 2560 px).
+
+**Oportunidades lidas, 23/10/2026** (Ota: *"Em todos estudos vale colocarmos sempre esse campo de oportunidades, às vezes
+junto dos déficits, mas como oportunidades"*): campo obrigatório junto da régua × críticos (`peca-cliente.md` §2, item 4),
+com mídia, déficit operacional, relatos de má prestação e contas incongruentes, cada item com fato, fonte, data, link e
+selo; a conta com os valores, ≈ e o cálculo declarado. Primeiro estudo: Assis, v5.
