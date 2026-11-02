@@ -12,7 +12,9 @@ jurídico-tributária e veículos de remuneração não se registram em arquivo:
 
 ## 1. Vocabulário
 
-- ❌ Nunca, em superfície alguma: lucro, lucratividade, margem, rentabilidade, ROI, markup, comissão, fee.
+- ❌ Nunca, em superfície alguma: lucro, lucratividade, margem, rentabilidade, ROI, markup, comissão, fee (salvo a exceção
+  pontual e única de 30/10/2026: o PDF de apoio à injeção de capital; `doutrina/regras-completas.md`, "Oportunidade de mercado em
+  toda peça").
 - ✅ "Composição do Valor Contratual" · "Encargos e Provisões Contratuais" · "Remuneração Empresarial" ·
   "sustentabilidade econômico-financeira da operação".
 - O **valor final** de estudo, oportunidade ou perspectiva de contrato se rotula **Custo Operacional** (Ota, 16/10/2026);

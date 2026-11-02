@@ -6,16 +6,16 @@
 
 - [ ] Todo número com procedência (✓ · ≈ · ○); nenhuma lacuna virou zero; nenhuma premissa como fato; ✓ só com fontes
       que convergem.
-- [ ] O valor final rotulado **Custo Operacional**, construído (não régua); acima de ~1,5 mi hab., pela norma.
+- [ ] O valor final rotulado **Custo Operacional**, construído (não régua), também acima de ~1,5 mi hab.; a norma só confere.
 - [ ] Nada da composição na página (BDI, CDO, margem, remuneração, FC, preço por viatura, score, "lucro").
 - [ ] Contratado nunca como pago; contrato citado só se vigente (pagamento recente); "sem contrato publicado no PNCP"
       confirmado no portal do ente.
-- [ ] Comparativo de gasto (nunca de equipe), com a ressalva de escopo, ou fora da página.
+- [ ] Gasto atual no corpo da página, com selo, fonte e data (Ota, 29/10/2026); o que não se separa em ○ com o caminho de leitura; comparativo de gasto (nunca de equipe) só com a ressalva de escopo e sem economia declarada enquanto o gasto não fecha.
 - [ ] Decisores com fonte, data e partido; nenhum CPF, dado sensível ou contato pessoal.
 - [ ] Consórcio, região, área da central, quem paga e mantenedora conferidos no instrumento, com link.
 - [ ] Oportunidade só do território; Ourinhos só em contexto paulista; atestado só no que o documento sustenta.
 - [ ] Transporte: 11.164 + 11.165 (nunca 11.179); sem R$ por veículo; distância medida antes de citar repasse.
-- [ ] Teto de ~1.200 palavras (limite 1.875); `conferir-orfas.mjs`, `conferir-imagens.mjs` e
+- [ ] Teste do decisor (sem teto de palavras, Ota 28/10/2026): nenhum trecho que não importe ao decisor; `conferir-orfas.mjs`, `conferir-imagens.mjs` e
       `conferir-scroll-horizontal.mjs` verdes (samais-estudos).
 - [ ] Mudou o preço: o valor antigo não sobrou em nenhum dos cinco lugares (página, cartão da home, markdown interno,
       anexo, `status.json`).

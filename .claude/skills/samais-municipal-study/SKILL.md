@@ -13,7 +13,7 @@ description: >
   (samais-raio-x-estadual) nem para vídeo (samais-video).
 license: Proprietária (Samais Gestão em Saúde, uso interno)
 ---
-<!-- Espelho gerado de victorotaa/samais-os@010bc04 em 2026-10-20 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@66a6c61 em 2026-11-02 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-municipal-study/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — Estudo de município, consórcio e transporte sanitário
 
@@ -27,7 +27,7 @@ Unificada em 20/10/2026 (origem de cada parte: `references/HISTORICO.md`).
 
 | Para | Leia |
 |---|---|
-| Raio-x da UF, briefing, coletores, varredura, TCE + PNCP, editais pelo item, carga secundária, vínculo, decisores, rede | `references/fontes-e-coleta.md` |
+| Raio-x da UF, briefing, coletores, varredura, gasto pago (TCE ou portal do ente) e contratado (PNCP), editais pelo item, carga secundária, vínculo, decisores, rede | `references/fontes-e-coleta.md` |
 | Frota disponível, equipe pela norma, custo construído, viatura-hora, faixa de 1,5 mi, normas e KPIs do SAMU | `references/calculo-custo-construido.md` |
 | Cenário A × B, trio Mínimo/Base/Ampliada, comparativo de gasto, economia, custeio federal, score, diagnóstico | `references/cenarios-e-comparativo.md` |
 | BDI decomposto, remuneração residual, gross-up, textos por linha, negociação, anexo de memória financeira | `references/composicao-e-anexo.md` |
@@ -60,7 +60,7 @@ Confirme ou extraia do contexto; **se faltar 1, 2 ou 3, pergunte antes de pesqui
 | 3 | **Anexo de memória financeira** | `anexos/<slug>-memoria-financeira.html` | diretoria; **nunca publicado** |
 
 `<slug>` = `<municipio>-<uf>` (transporte: `<municipio>-<uf>-transporte-sanitario`). Referências vivas:
-`estudos-internos/osasco-sp.md` (estrutura), `itapevi-sp.md` §7.2 (comparativo), `estudos/ourinhos-sp.html` (página),
+`estudos-internos/osasco-sp.md` (estrutura), `itapevi-sp.md` §7.2 (comparativo), `estudos/assis-civap-sp.html` (página, padrão ouro de 23/10/2026), `estudos/sao-roque-sp.html` (gasto atual no corpo, 29/10/2026; Assis é anterior a essa regra),
 `anexos/canoas-rs-memoria-financeira.html` (anexo), `estudos-internos/belem-pa-transporte-sanitario.md` (transporte).
 
 ## As fases
@@ -79,6 +79,12 @@ Confirme ou extraia do contexto; **se faltar 1, 2 ou 3, pergunte antes de pesqui
   (GO), `conferir-dados.mjs` (samais-estudos).
 - **Gasto de hoje pelo TCE estadual (pago, nunca empenhado)** e contratos lidos **pelo objeto**: gestão própria, mista ou
   terceirizada; pagamento recente é o que diz se o contrato está vivo.
+  - **Pago por rubrica:** hora extra, temporários, sentenças trabalhistas.
+  - **Consórcio:** o rateio se mede do lado de quem paga.
+- **Gestão lida, cadastro não é gestão** (Ota, 20/10/2026):
+  - leia o instrumento, o pago, os sinais (greve, inadimplência, TAC, MP) e os decisores;
+  - onde o CNES diverge, vale o lido;
+  - na UF com raio-x, comece por `gestao-lida.json` e `sinais-lidos.json`.
 - **Editais publicados pelo item** do PNCP: unidade com unidade, escopo com escopo.
 - **Carga secundária** (transferência inter-hospitalar) em todo estudo de SAMU; sem dado, lacuna, nunca zero.
 - **Vínculo** (quem administra, quem opera, link ao documento) e **decisores** com fonte, data e partido.
@@ -90,8 +96,9 @@ Confirme ou extraia do contexto; **se faltar 1, 2 ou 3, pergunte antes de pesqui
   conta; opera até o máximo da norma; parada acima dele é reserva técnica; abaixo do mínimo é lacuna; nenhuma viatura nova.
 - **Equipe pela norma** (PT 1.010/2012, FC 24/7 ≈ 4,5), nunca o quadro de hoje.
 - **Custo Operacional construído** (`samais-os/doutrina/parametros-custo.json`, `scripts/raiox/lib/custo-construido.mjs`);
-  acima de ~1,5 mi hab., **pela norma**; R$ 5,20/hab só confere.
+  também acima de ~1,5 mi hab. (a norma só confere, Ota 21/10/2026); R$ 5,20/hab só confere.
 - **Cenário A × B** e o trio **Mínimo / Base ★ / Ampliada**; comparativo de **gasto** de hoje × Custo Operacional.
+- **Gasto atual no corpo da página** (Ota, 29/10/2026): pago com selo, fonte e data; o que não se separa em ○ com o caminho de leitura; sem economia declarada enquanto não fecha. O PNCP só dá o contratado; o pago vem do TCE ou do portal do ente.
 - **Preço e composição** (BDI, remuneração residual ≥ ~5%) só nos artefatos 1 e 3.
 - Detalhe: `references/calculo-custo-construido.md`, `cenarios-e-comparativo.md`, `composicao-e-anexo.md`.
 
@@ -100,9 +107,24 @@ Confirme ou extraia do contexto; **se faltar 1, 2 ou 3, pergunte antes de pesqui
 Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `referencias/apresentacao-html.md`,
 `referencias/anexo-composicao-preco.md`, a skill `samais-brand-guidelines` e `samais-os/atestados/ARGUMENTOS.md`.
 
-- Página **resumida**: título = conclusão com o número; um dado por bloco; ~1.200 palavras (limite 1.875).
-- Estrutura Ourinhos: hero cartão-postal → sumário → diagnóstico → régua do SUS → pontos críticos → proposta →
-  precedentes documentais → viabilidade (Custo Operacional, per capita) → decisores → diferenciais → fechamento sem contato.
+- Página **resumida**: título = conclusão com o número; um dado por bloco; sem teto de palavras, teste do decisor (Ota, 28/10/2026).
+- **Padrão ouro: `estudos/assis-civap-sp.html`** (Ota, 23/10/2026: *"vamos estabelecer um bom padrão, pra ser o novo
+  padrão ouro de estudos municipais/consórcio"*): hero cartão-postal → sumário → **diagnóstico só com números** (central,
+  bases, unidades, efetivo, chamados, transferências; sem "no CNES / fora dele", sem onde está cada viatura) → **régua do SUS
+  e pontos críticos numa tabela só** (regra · norma · hoje · crítico · proposta), com o campo **"Oportunidades lidas"** junto
+  (mídia, déficit operacional, má prestação, contas com valores; fonte, data, link e selo; Ota, 23/10/2026) → proposta → precedentes documentais →
+  viabilidade (Custo Operacional, per capita e o **rateio por município em dropdown**, pela chave do consórcio ou pela
+  população, ≈, nunca por viatura nem por item) → decisores → diferenciais → fechamento sem contato. Estudo publicado fica
+  como está.
+- **Padrão raio-x (Ota, 21/10/2026):** o estudo traz, como o cartão do raio-x, a gestão lida, o gasto de hoje × Custo
+  Operacional e os sinais lidos (matérias do SAMU com fonte, data e link; sinal de má gestão é oportunidade). Os **anexos de
+  dado** vão recolhidos e fora do teto de palavras, **dentro da seção do assunto** (Ota, 23/10/2026: *"separados lá ficam
+  esquecidos"*; marcadores `<!--ANEXO:decisores|contratos|gestao|sinais-->`, `references/peca-cliente.md` §2, item 12):
+  - os **decisores**, com o partido ao lado do nome;
+  - os **contratos ativos e editais**, com link e valor do PNCP, ou do portal quando o contrato não está no PNCP.
+
+  Os anexos saem do mesmo dado do raio-x: `node scripts/estudo-anexos-raiox.mjs <UF> <central> --aplicar estudos/<slug>.html`
+  (samais-estudos). O que o estudo lê a mais volta à camada do raio-x da UF, num dado só.
 - Detalhe: `references/peca-cliente.md`; anexo: `references/composicao-e-anexo.md` §8.
 
 ### FASE 5 — Portão e publicação
@@ -148,7 +170,7 @@ Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `ref
 4. **Custo construído, nunca régua fixa** (19/10/2026), em SAMU, transporte, hospital e estudo.
 5. **A peça não compara equipe;** compara gasto de hoje × Custo Operacional; onde hoje é maior, **economia para o
    município, com a qualidade inteira**. Nunca "somos X% mais baratos".
-6. **Nada de suposição:** acima de ~1,5 mi hab., pela norma; **"sem contrato publicado no PNCP" ≠ sem contrato**
+6. **Nada de suposição:** acima de ~1,5 mi hab., o construído (nunca a régua nem o teto; a norma só confere); **"sem contrato publicado no PNCP" ≠ sem contrato**
    (confirmar no portal do ente); o não lido é ○.
 7. **Contratado nunca como pago.** Custeio federal pago é uma linha de fato, sem percentual, sem "quem paga", sem
    tripartite, sem custeio ÷ 0,5; custeio a habilitar ou qualificar é oportunidade.
@@ -161,7 +183,8 @@ Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `ref
    extra, temporário, sentenças), com os sinais (greve, inadimplência, TAC, MP) e os decisores; onde divergem, vale o lido
    (prova: CIRUSPAR, `samais-os/inteligencia/parana/fatos.md` §13.1).
 10. **Decisores com fonte, data e partido ao lado do nome** (19/10/2026: *"é impreterível"*). CPF, dado sensível, boato e
-    contato pessoal nunca na peça; contato e porta de entrada só em `bastidor.md`.
+    contato pessoal nunca na peça; contato e porta de entrada só em `bastidor.md`. No estudo, decisores e contratos ativos
+    (links e valores do PNCP) também vão em anexo, no padrão do raio-x (Ota, 21/10/2026).
 11. **Saúde pública:** hospital, leito e UTI só pela rede do SUS (públicos com leito SUS inteiros; filantrópicos e
     privados contratados pela parte SUS).
 12. **Oportunidade só do território da peça;** referência de fora vai só na Fonte, como método. **Ourinhos** (recortes e
@@ -184,9 +207,12 @@ Antes de qualquer código: `samais-estudos/CLAUDE.md`, `FORMULA-MESTRE.md`, `ref
 | Taboão | FC 2,2 para 24/7 (80 contra 148 pessoas) | FC 24/7 ≈ 4,5 |
 | Itapevi | contrato parado citado como vigente; credor de OS tido como SAMU | pagamento diz se está vivo; o objeto diz o que é |
 | Manaus | cadastro do CNES lido como operação | teste de cadastro × frota tripulada; a folha é diagnóstico |
-| Belém | 3,5 mi hab. × R$ 5,20 = R$ 18,4 mi/mês; hemodiálise em ambulância tripulada | acima de ~1,5 mi, pela norma; perguntar a frente antes do veículo |
+| Belém | 3,5 mi hab. × R$ 5,20 = R$ 18,4 mi/mês; hemodiálise em ambulância tripulada | acima de ~1,5 mi, nunca a régua: o custo construído; perguntar a frente antes do veículo |
 | Osasco | estudo fora do ar por parar no push | publicar é mergear e conferir no ar |
 | Ponta Grossa | mantenedora no CNES lida como operador | consórcio, área, quem paga e mantenedora conferidos no instrumento |
+| CISNOP × CISNORPI | sítio dado como "403" (recusava só quem chegava sem navegador); gestão lida de parte da área; a 18ª RS deduzida do cadastro | reabrir com identificação de navegador antes do ○; parte não lida fica ○; quem paga o rateio cruza com a lista de consorciados; sigla se separa pelo CNPJ; `auditoria-consorcios.mjs` antes de regerar |
+| CIRUSPAR | quadro próprio lido como "estável, sem janela" pelo CNES; custeio tido como bom | cadastro não é gestão: pago no TCE por rubrica, instrumento, sinais (greve) e decisores; o gasto de hoje passava o Custo Operacional |
+| DF, SP, MG, BA | "remuneração" (salário) num arquivo citável escrito à mão; o motor recusou gravar a UF | arquivo citável não leva palavra vetada, nem em outro sentido |
 
 ## Orquestração e tokens
 

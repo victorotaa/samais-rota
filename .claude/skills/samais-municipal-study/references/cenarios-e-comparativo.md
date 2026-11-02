@@ -9,7 +9,7 @@ Os dois cenários da Fórmula Mestre, o trio de cobertura dentro da proposta, o 
 
 | | O que é | Fonte |
 |---|---|---|
-| **A, custo real atual** | o que o ente **paga** hoje (nunca empenhado), atribuído ao serviço **pelo objeto** do contrato, com os invisíveis somados: cedidos, almoxarifado central, combustível da garagem, a exposição trabalhista da transferência | TCE estadual, portal do ente, PNCP, CNES, briefing |
+| **A, custo real atual** | o que o ente **paga** hoje (nunca empenhado), atribuído ao serviço **pelo objeto** do contrato, com os invisíveis somados: cedidos, almoxarifado central, combustível da garagem, a exposição trabalhista da transferência | TCE estadual ou portal do ente (o pago); PNCP, contrato e edital (o contratado); CNES; briefing |
 | **B, proposta** | o **Custo Operacional construído** (`calculo-custo-construido.md`) | parâmetros da casa + dados do alvo |
 
 O Artefato 1 traz o Cenário A nas **cinco camadas** (modelo: `samais-estudos/estudos-internos/osasco-sp.md`).
@@ -47,13 +47,26 @@ trio é de cobertura escolhida antes de assinar (`modo-transporte-sanitario.md`)
   nunca corte de serviço, e vem junto do ganho de qualidade (cobertura, tempo-resposta, escala sem ruptura).
 - **Onde é menor** (lição Manaus: frota que não roda 24 h), o delta se explica pelo serviço a mais, não se esconde.
 - **Sem gasto de hoje lido, não há comparativo** (○).
+- **A jornada explica o gasto de hoje** (diagnóstico do Artefato 1, nunca comparativo de equipe na peça).
+  - Leia a jornada no estatuto e no acordo coletivo.
+  - No CIRUSPAR, 30 h semanais em plantões 12x60 pedem cerca de 6 pessoas por posto de 24 h, contra 4,5 da nossa conta.
+    Daí um quadro cerca de 57% maior que o da norma, e ainda 15% da despesa em hora extra.
+  - Onde a economia mora na jornada, ela também é a barreira: desfazer jornada pactuada com sindicato que fez greve é
+    decisão política do ente. Essa leitura vai ao `interpretacao.md` e à frente, nunca à página.
 - **Nunca "somos X% mais baratos".** A frase sustentável é "cabe dentro do que o município já destina", com a fonte e a
   data de captura na própria página.
+
+**Gasto atual no corpo (Ota, 29/10/2026).** Todo estudo e toda proposta traz, visível no corpo, o gasto atual do ente com o serviço,
+lido no pago (TCE ou portal do ente; o PNCP só dá o contratado), com selo, fonte e data; o que não se separa (folha própria, combustível e manutenção)
+vai como ○ com o caminho de leitura (portal por lotação ou LAI), nunca como zero. Sem unidade no CNES, a varredura das contas
+(município, consórcio, TCE) diz se o serviço é locado, contratado ou mantido por conta. Restos a pagar quitados no ano seguinte ficam fora do arquivo anual do TCE (o pago por mês subestima a parcela: dizer na nota). **Sem economia declarada enquanto o gasto
+de hoje não se fecha** (`doutrina/regras-completas.md`, "GASTO ATUAL NO CORPO DA PEÇA"). O que segue abaixo trata do
+**comparativo** (a razão e a economia): a decisão de Assis (22/10/2026) de deixá-lo fora da página é registro histórico.
 
 **Destino do comparativo.** A página cliente recebe valor público com nº de contrato e data **com a ressalva de escopo, ou
 não recebe** (Osasco: o contrato atende a diretoria de urgência inteira, com UPAs). Quando a distância decide a reunião
 contra nós (Itapevi: proposta ≈ 2,3× o custo real estimado, porque o mercado vende FC 2,1–2,5 e escala estatutária, e nós
-vendemos a norma), **não vai à página**: vai à mesa e à decisão de escopo (cenário só-norma e Smart Growth). A decisão de
+vendemos a norma), **a razão e a economia não vão à página** (o gasto atual vai, no corpo, com selo, fonte e data): a razão vai à mesa e à decisão de escopo (cenário só-norma e Smart Growth). A decisão de
 levar o número à página é do Ota, com essa leitura na mão. Bloco de página: `samais-estudos/referencias/
 apresentacao-html.md`, "Comparativo com o gasto atual".
 

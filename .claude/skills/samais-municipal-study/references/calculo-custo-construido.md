@@ -29,7 +29,11 @@ secundária em viatura-hora · 6. Faixa de validade e régua de conferência · 
 4. **Alta densidade (> 500 hab/km², ≈ critério da casa) também replica**; a motolância opera toda e o reforço de frota é
    **aditivo**, oportunidade fora do custo-base.
 5. **Abaixo do mínimo da norma** (1 USB a cada 150 mil, 1 USA a cada 450 mil) é **lacuna declarada** ("faltam X USB e Y USA;
-   inclusão só por aditivo"), nunca custo. Sem frota do ente lida, o custo fica ○.
+   inclusão só por aditivo"), nunca custo. Sem viatura do ente no CNES, a frota se lê fora do cadastro (resolução de
+   habilitação, contrato, imprensa cruzada) e, só sem nada lido, entra o mínimo da norma, ≈ declarado: nenhuma central sem
+   Custo Operacional (Ota, 22/10/2026). Conta a viatura já entregue (a prevista em plano e a alugada ficam de fora); sem
+   operação de hoje para replicar, a frota lida opera até o máximo da norma e o excedente é reserva técnica (regras-completas,
+   frota do ente, item 6a).
 6. **A folha do ente é diagnóstico** da operação de hoje (lição Manaus), nunca o teto da proposta.
 7. Frota: **recuperação das viaturas paradas do ente**, nunca "reserva locada".
 
@@ -56,13 +60,20 @@ Rodar antes dos cenários (`samais-estudos/referencias/protocolo-varredura.md`, 
 Custo Operacional = pessoas (postos da norma × FC × custo da pessoa)
                   + frota e insumos por viatura + globais da central + operação complementar
                   + custos das bases + gestão + indiretos
-custo da pessoa   = (piso × paridade da UF + insalubridade + noturno) × (1 + encargos) + benefícios + passivo
+custo da pessoa   = (base da função na UF + insalubridade + noturno) × (1 + encargos) + benefícios + passivo
+base da função    = piso CCT-PA × paridade da UF (mínimo de chão); na função com piso nacional de lei, o piso, sem paridade,
+                    salvo convenção lida maior (hoje só o PA): trava 7, parametros-base §12 (Ota, 29/10/2026)
 ```
 
 - **Parâmetros num lugar só:** `samais-os/doutrina/parametros-custo.json` (espelho de `parametros-base.md` §2–4, §9,
   §12, §13), lido por `samais-os/scripts/raiox/lib/custo-construido.mjs`. Muda o `.md`, muda o `.json` no mesmo commit.
 - **Piso por função:** CCT lida da UF; sem ela, CCT-PA × **fator de paridade** da UF (`parametros-base.md` §12), marcado ≈
-  em toda linha derivada. Nunca inventar piso; nunca usar a tabela CCT-SP (ajustada, não medida) como âncora.
+  em toda linha derivada. Nunca inventar piso; nunca usar a tabela CCT-SP (ajustada, não medida) como âncora. **Trava 7 (Ota,
+  29/10/2026):** o piso nacional não escala por UF: técnico R$ 3.325, enfermeiro R$ 4.750 e supervisão, coordenação e NEP de
+  enfermagem pelo piso do enfermeiro × razão da CCT-PA, sem paridade, salvo convenção lida maior. Salário mínimo R$ 1.621
+  (Decreto 12.797/2025). Com CCT local lida, o estudo usa `base_cct_local` e `noturno_pct` por função numa cópia dos parâmetros,
+  com o piso de lei como chão (⚠️ leitura conservadora, ADI 7.222), e precifica as obrigações dela que consomem dinheiro (as 2 folgas
+  mensais do 12×36 das convenções SindHosp de SP, por contratação ou hora extra: São Roque, 29/10/2026).
 - **Encargos 68,24%** já carregam aviso prévio, multa do FGTS e rescisão (Grupo C): **a rescisão não entra de novo**.
   Entram: rotatividade extra 2% da folha, reclamatórias 5%, horas extras de operação (fração declarada de turnos que
   estouram). **Adicional carrega encargos** (penosidade e insalubridade antes do 1,6824). A jornada escalada de 44,00 h
@@ -104,9 +115,10 @@ viaturas equivalentes = viatura-horas ÷ 730
 
 ## 6. Faixa de validade e régua de conferência (19/10/2026)
 
-- **Acima de ~1,5 milhão de habitantes na área**, o Custo Operacional é **pela norma**: custeio federal de referência
-  (habilitado e qualificado) ÷ 0,5 (PT 1.010/2012, art. 40), marcado "pela norma". Sem custeio de referência, ○.
-  Nunca o teto da régua (Belém saiu com R$ 18,4 mi/mês; pela norma, R$ 5,0 mi).
+- **Acima de ~1,5 milhão de habitantes na área**, a régua não vale e o teto nunca vai à peça (Belém saiu com R$ 18,4
+  mi/mês pela régua). O Custo Operacional é o **custo construído**, como em toda central; a norma (custeio federal de
+  referência, habilitado e qualificado, ÷ 0,5; PT 1.010/2012, art. 40) só confere (Ota, 21/10/2026: ele chegou a pedir a
+  norma e voltou ao ver Itapevi a R$ 2,07 mi pela norma × R$ 5,81 mi na proposta). Sem frota do ente no CNES, a frota lida ou o mínimo da norma (≈), nunca ○ (Ota, 22/10/2026).
 - **R$ 5,20/hab/mês é só conferência interna** (`regua_conferencia`). Se citado, só como "Custo Operacional · ≈ estimativa
   Samais (cálculo sobre os contratos da Samais)". "Métrica de Ouro" é jargão interno e não vai a terceiro.
 - Abaixo de ~200 mil habitantes a central não se divide e a régua é piso.

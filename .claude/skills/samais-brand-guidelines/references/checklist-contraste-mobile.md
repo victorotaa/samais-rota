@@ -51,6 +51,10 @@
 ## Composição e conteúdo
 
 - [ ] Nenhuma palavra órfã: `node scripts/conferir-orfas.mjs <url>` (mede largura, não conta palavra).
+- [ ] Nenhum bloco invisível depois de rolar a página inteira, no celular e no desktop:
+  `node scripts/conferir-invisivel.mjs <arquivo>` (samais-estudos). A revelação ao rolar (`.reveal`) só dispara com uma
+  fração do bloco à vista; tabela longa empilhada no celular nunca chega lá e vira um vão escuro (dossiê de contratos do
+  PR, 21/10/2026: dois vãos de 18 mil px). Superfície de dado não espera revelação.
 - [ ] Citação e referência batem nos dois sentidos: nenhuma órfã, nenhuma não citada.
 - [ ] Termos vetados de precificação: zero (`doutrina/precificacao.md`); nada de "lucro" ou "margem".
 - [ ] Nada de `interpretacao.md`, `bastidor.md` ou `doutrina/` na peça.
