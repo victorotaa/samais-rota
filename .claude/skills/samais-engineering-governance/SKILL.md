@@ -8,7 +8,7 @@ description: >
   "preparar uma mudança para integração". Não use para pesquisa de município,
   peça visual, vídeo, preço ou publicação: cada um tem sua skill e seu portão.
 ---
-<!-- Espelho gerado de victorotaa/samais-os@66a6c61 em 2026-11-02 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-engineering-governance/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@897ab4d em 2026-11-04 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-engineering-governance/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 
 # Samais — engenharia governada por evidência
 
