@@ -4,6 +4,11 @@ O **conteúdo** de cada artefato. A **forma** (tokens, componentes, dobras, cont
 `samais-brand-guidelines`; o padrão de página da casa está em `samais-estudos/referencias/apresentacao-html.md`. O
 Artefato 3 (anexo) está em `composicao-e-anexo.md` §8.
 
+> 🔴 **Valor contratual na página (Ota, 10/11/2026):** o "Custo Operacional" da página é o valor mensal que seria contratado, nunca o custo construído, e
+> nenhuma palavra, número ou atributo diz como ele se compõe (BDI, margem, fator, razão custo/preço, composição). "Economia" e qualquer ganho só com
+> o gasto de hoje fechado (pago lido completo, ✓); senão, o gasto lido com selo, o que falta e o caminho de leitura. Detalhe:
+> `doutrina/regras/valor-contratual-economia-gasto-fechado.md`.
+
 **Sumário:** 1. Artefato 1 · 2. Estrutura da página · 3. O que a página nunca leva · 4. Frases que reprovam no portão ·
 5. Atestados e cases · 6. Tecnologia (CoPilot OS, ROTA-OS) · 7. Imagens · 8. Composição e conferência
 
