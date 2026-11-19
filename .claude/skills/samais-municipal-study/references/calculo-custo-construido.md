@@ -5,6 +5,12 @@ números de estimativa dentro de um valor fixo como 5,20 ... deve ser evitado em
 transporte sanitário, de administração hospitalar"*). Método completo: `samais-estudos/FORMULA-MESTRE.md` e
 `samais-estudos/referencias/parametros-base.md`. Transporte sanitário tem conta própria: `modo-transporte-sanitario.md`.
 
+> 🔴 **O que a peça mostra é o valor contratual, não este custo (Ota, 10/11/2026).** O rótulo "Custo Operacional" é o valor mensal que seria
+> contratado: o custo construído deste arquivo ÷ (1 − tributos 16,33% − honorários 2% − residual 15%) (`doutrina/parametros-custo.json › valor_contratual`,
+> `scripts/raiox/lib/valor-contratual.mjs`). O custo construído, a razão e o multiplicador ficam só no interno e na memória financeira; nunca ao lado do
+> valor na página, no dado citável, no cartão ou na busca. Economia só com o gasto de hoje fechado (✓, completo). FC 4,5 mantido. Fatia:
+> `doutrina/regras/valor-contratual-economia-gasto-fechado.md`.
+
 **Sumário:** 1. Frota disponível (o teto) · 2. Testes de escala · 3. Equipe pela norma · 4. A conta do custo · 5. Carga
 secundária em viatura-hora · 6. Faixa de validade e régua de conferência · 7. Normas e referências do SAMU
 
@@ -88,7 +94,7 @@ base da função    = piso CCT-PA × paridade da UF (mínimo de chão); na funç
   toda linha que a página promete existe no custo (manutenção em **cada** unidade). Fora: imóvel e aquisição de frota.
 - **Tecnologia é rubrica:** a sustentação do CoPilot OS ou do ROTA-OS (equipe de TI pelo contrato inteiro) entra no custo;
   não muda o preço, muda o residual (`parametros-base.md` §5b).
-- **Indiretos:** overhead 7% + operacional 2% (1% TI, 1% imprevistos; Ota, 20/10/2026), sem contar duas vezes.
+- **Indiretos:** um número só, **5% do custo direto** (Ota, 30/10/2026; superou os 7% + 2% de 20/10/2026), sem contar duas vezes.
 - **Sem margem, BDI nem tributo:** o Custo Operacional é custo. O preço e a composição vivem no anexo
   (`composicao-e-anexo.md`).
 - Peso da folha esperado com frota e imóvel do ente: 75–79% (a faixa de 55–70% vale quando a operadora fornece a viatura).

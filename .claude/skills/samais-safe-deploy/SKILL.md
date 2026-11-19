@@ -2,7 +2,7 @@
 name: samais-safe-deploy
 description: Use para publicar com segurança uma mudança da Samais (PR de código, doutrina, painel, estudo ou espelho de skill) - guarda, build à mão, confidencialidade, merge e conferência do conteúdo no ar. Não use para a captação agendada (radar e notícias), que tem rotina própria e já merge pela guarda.
 ---
-<!-- Espelho gerado de victorotaa/samais-os@897ab4d em 2026-11-04 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-safe-deploy/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
+<!-- Espelho gerado de victorotaa/samais-os@c82514a em 2026-11-19 por scripts/sincronizar-skills.mjs. Não edite aqui: edite .claude/skills/samais-safe-deploy/ no samais-os e sincronize. Os caminhos citados são do samais-os. -->
 # Publicação segura Samais
 
 Reescrita em 04/11/2026 (Ota liberou). Substitui a versão de 26/10, que dizia "não faça merge por padrão" e contradizia as
