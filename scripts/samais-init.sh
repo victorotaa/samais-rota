@@ -1,24 +1,47 @@
 #!/usr/bin/env bash
-# Samais — instala a identidade visual (CLAUDE.md + skill) num repo novo,
-# a partir da fonte canônica. Requer 'gh' autenticado (funciona em repo privado).
+# Samais — instala a identidade visual (skill samais-brand-guidelines) num repo novo,
+# a partir da fonte canônica, o samais-os (Ota, 20/10/2026). Requer 'gh' autenticado
+# (funciona em repo privado).
 #
 # Uso (dentro do repo novo):
 #   bash scripts/samais-init.sh
 # Overrides opcionais:
-#   SAMAIS_SRC=victorotaa/samais-rota SAMAIS_REF=main bash scripts/samais-init.sh
+#   SAMAIS_SRC=victorotaa/samais-os SAMAIS_REF=main bash scripts/samais-init.sh
+#
+# Puxa a pasta inteira da skill (SKILL.md, references/, LICENSE.txt, NOTICE). A skill se
+# edita só no samais-os; para repos da casa já existentes, o caminho é
+# samais-os/scripts/sincronizar-skills.mjs, que carimba o commit de origem.
 set -euo pipefail
 
-SRC="${SAMAIS_SRC:-victorotaa/samais-rota}"
+SRC="${SAMAIS_SRC:-victorotaa/samais-os}"
 REF="${SAMAIS_REF:-main}"
+SKILL=".claude/skills/samais-brand-guidelines"
 
-echo "→ Puxando identidade Samais de ${SRC}@${REF} ..."
-mkdir -p .claude/skills/samais-html-presentation
+echo "→ Puxando ${SKILL} de ${SRC}@${REF} ..."
 
-gh api "repos/${SRC}/contents/CLAUDE.md?ref=${REF}" \
-  -H "Accept: application/vnd.github.raw" > CLAUDE.md
+baixar_pasta() {
+  local pasta="$1"
+  gh api "repos/${SRC}/contents/${pasta}?ref=${REF}" --jq '.[] | [.type, .path] | @tsv' |
+  while IFS=$'\t' read -r tipo caminho; do
+    if [ "$tipo" = "dir" ]; then
+      baixar_pasta "$caminho"
+    else
+      mkdir -p "$(dirname "$caminho")"
+      gh api "repos/${SRC}/contents/${caminho}?ref=${REF}" -H "Accept: application/vnd.github.raw" > "$caminho"
+      echo "  ✓ $caminho"
+    fi
+  done
+}
+baixar_pasta "$SKILL"
 
-gh api "repos/${SRC}/contents/.claude/skills/samais-html-presentation/SKILL.md?ref=${REF}" \
-  -H "Accept: application/vnd.github.raw" > .claude/skills/samais-html-presentation/SKILL.md
+if [ ! -f CLAUDE.md ]; then
+  cat > CLAUDE.md <<EOF
+# CLAUDE.md
 
-echo "✓ Identidade instalada: CLAUDE.md + .claude/skills/samais-html-presentation/SKILL.md"
-echo "  Agora é só pedir ao Claude um estudo HTML da Samais — ele aplica o padrão automaticamente."
+Repositório da Samais Gestão em Saúde. A identidade visual vem da skill \`samais-brand-guidelines\`
+(\`${SKILL}/\`), cópia de ${SRC}@${REF}: a fonte canônica é o samais-os, e em conflito vale ele.
+EOF
+  echo "  ✓ CLAUDE.md (ponteiro para a fonte canônica)"
+fi
+
+echo "✓ Identidade instalada. Agora é só pedir ao Claude um estudo HTML da Samais — ele aplica o padrão automaticamente."

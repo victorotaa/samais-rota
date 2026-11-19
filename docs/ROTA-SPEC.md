@@ -1,0 +1,373 @@
+# ROTA — Especificação do Sistema
+### Gestão de Transporte Sanitário · Samais Gestão em Saúde
+
+| | |
+|---|---|
+| **Versão** | 1.0 · jul/2026 |
+| **Status** | Especificação aprovada para protótipo; base para a fase 2 (backend) |
+| **Protótipo** | `rota-app.html` · https://samais-rota.vercel.app/rota-app.html |
+| **Dono do produto** | Victor (Samais) |
+| **Confidencial** | Uso interno Samais |
+
+---
+
+## 1 · Visão
+
+Sistema de gestão fina da operação de transporte sanitário eletivo (transporte de
+pacientes) operada pela Samais como **empresa privada contratada pelo ente público**
+(prefeitura, consórcio ou secretaria estadual). O ente é o dono do serviço; a Samais
+operacionaliza com gestão — mesma lógica do SAMU, porém mais simples.
+
+O sistema existe para três finalidades, nesta ordem:
+
+1. **Controle operacional** — quem viaja, em qual veículo, quem embarcou e quem
+   voltou; km, combustível, revisões, faltas e presenças.
+2. **Prova e prestação de contas** — o registro conferido é o documento que sustenta
+   o repasse federal (Portarias GM/MS 11.164/2026 e 11.165/2026) e a fatura ao
+   contratante. Elimina a "vaga fantasma".
+3. **Argumento comercial** — chegar à licitação com o mecanismo de gestão de frota
+   que a portaria **exige** já pronto e demonstrável.
+
+**Tese central:** o papel é cidadão de primeira classe. A ponta (motorista/assistente)
+trabalha com prancheta impressa; o sistema recebe a baixa depois, pelo gestor.
+A operação nunca depende de conexão no campo.
+
+---
+
+## 2 · Âncoras regulatórias
+
+| Norma | O que define | Impacto no sistema |
+|---|---|---|
+| Portaria SAS/MS **55/1999** (TFD) | Transporte + diárias p/ paciente e acompanhante; médico solicita, comissão do gestor autoriza | A lista de pacientes **nasce na regulação**, nunca na Samais; campos de nº de processo/autorização |
+| Portaria GM/MS **4.279/2010** | Transporte sanitário eletivo = sistema logístico das Redes de Atenção | Enquadramento institucional do serviço |
+| Portaria GM/MS **8.516/2025** | Financiamento de radioterapia (Agora Tem Especialistas) | Base do componente de transporte |
+| Portaria GM/MS **11.164/2026** e **11.165/2026** | Transporte p/ radioterapia e hemodiálise **>50 km** (teto 500 km), paciente + acompanhante; custeio federal fixo e variável (combustível, manutenção, seguro, RH) | Ver regras RN-05 a RN-08 abaixo — são requisitos de conformidade |
+
+**Exigências das portarias de 2026 que o sistema materializa:**
+- Veículo inscrito no **CNES** em até **60 dias** do recebimento.
+- **Mecanismo de gestão de frota obrigatório**: quilometragem, custo operacional e
+  taxa de ocupação.
+- **Comprovação de uso** nos sistemas do SUS; **3 meses sem registro → repasse suspenso**.
+
+---
+
+## 3 · Perfis e acesso
+
+**Um único perfil operador: o Gestor Local.** Cada cidade/região é um contrato (uma
+**base**); cada gestor enxerga somente a sua base. Não existe coordenador central no
+sistema — o report consolidado fica com o contratante e com a Samais por fora.
+
+| Papel | Acesso ao sistema | Função |
+|---|---|---|
+| **Gestor local Samais** | Total (na sua base) | Cadastra, programa, imprime, dá baixa, gera relatórios |
+| Motorista | **Nenhum** — prancheta | Conduz; em unidade simples faz o tique de embarque/reembarque; reporta km e abastecimento no papel |
+| Assistente local | **Nenhum** — prancheta | Em ônibus/micro-ônibus: chamada de embarque/reembarque |
+| Secretaria / auditoria | Futuro: leitura | Recebe o relatório mensal (PDF) |
+
+Autenticação (fase 2): e-mail + senha forte, 2FA; sessão por base; log de acesso.
+
+---
+
+## 4 · Fluxo operacional (esteira)
+
+```
+Regulação/Secretaria           Gestor local (sistema)           Ponta (papel)
+────────────────────           ──────────────────────           ─────────────
+autoriza paciente  ──────────▶ 1. cadastro (manual, por CNS)
+                               2. programação da semana
+                               3. imprime manifesto + folhas ──▶ 4. embarque: tique ida
+                                                                 5. reembarque: tique volta
+                                                                 6. km + abastecimento anotados
+                               7. baixa no sistema ◀──────────── prancheta devolvida
+                               8. dashboard e relatório mensal
+secretaria recebe ◀─────────── 9. PDF de prestação de contas
+```
+
+---
+
+## 5 · Requisitos funcionais
+
+### RF-01 · Pacientes
+- Cadastro **manual** pelo gestor a partir da lista autorizada pela regulação
+  (integração CADSUS: fora de escopo — fase futura, via credencial do ente).
+- Campos: nome, CNS, nascimento, município, ponto de embarque, tratamento, destino,
+  **recorrência semanal** (dias), acompanhante (S/N — ocupa assento), necessidade
+  especial (cadeirante, maca/ambulância, menor c/ responsável).
+- **Autorização vinculada** (regulatório): nº do processo TFD/regulação, validade,
+  elegibilidade calculada pelo módulo da norma (RN-05), do município de residência ao município sede do serviço.
+- **Portaria 11.165 (desde a migração 0004):** município de residência (IBGE) e UF; o
+  serviço de referência do destino (município sede, CNES, habilitação); agendamento
+  confirmado por data (art. 13 §3º). **Sem CPF** (decisão de 16/10/2026, abaixo).
+- Ficha do paciente: dados + viagens da semana.
+
+### RF-02 · Programação
+- Geração automática das viagens da semana a partir das recorrências.
+- Alocação: veículo + motorista (+ assistente quando ônibus/micro-ônibus) + assentos
+  (paciente + acompanhante contam lotação).
+- Separação automática de casos de maca → ambulância (RN-03).
+- Filtro por dia; regeneração; status por viagem (programada / hoje / concluída).
+
+### RF-03 · Frota
+- Veículos: identificação, placa, tipo, lotação, condutor fixo, hodômetro,
+  **nº CNES + data-limite de inscrição (60 dias)** com alerta (RN-07).
+- Revisões: intervalo por km; alerta ao gestor quando faltarem ≤ 2.000 km (RN-04).
+- Abastecimentos: data, litros, km desde o último, valor → consumo km/l calculado;
+  sinalização de anomalia de consumo.
+- Detalhe do veículo: consumo médio, barra até a revisão, histórico.
+
+### RF-04 · Impressos (A4)
+- **Manifesto geral semanal por veículo**: placa · rota · destino · horários; afixado
+  no ponto de guarda dos veículos; emitido pelo gestor.
+- **Folha de embarque/reembarque por viagem**: lista numerada com CNS, acompanhante,
+  ☐ embarque, ☐ reembarque, assinatura por linha; rodapé com totais, km previsto e
+  linha do conferente.
+- Formato: **A4 absoluto (210×297 mm), margens de impressão 14 mm**, sem
+  responsividade aplicada à folha (no mobile, rolagem horizontal do papel).
+  Numeração sequencial de documento (fase 2). Nota LGPD de descarte impressa.
+
+### RF-05 · Lançamentos (baixa)
+- Fila de viagens pendentes de baixa (dia corrente e anteriores).
+- Baixa por viagem: presenças/faltas por paciente, km rodado, combustível.
+- Regra "papel primeiro": a baixa é sempre posterior e assíncrona ao campo.
+
+### RF-06 · Painel (dashboard do gestor)
+- KPIs da semana: viagens (concluídas/programadas), **taxa de ocupação**, presenças/
+  faltas, **km rodado**, consumo km/l, **custo estimado** — os três em negrito são a
+  tríade exigida pela portaria (RN-06).
+- Infográficos (SVG/CSS puro, padrão Samais): donut de ocupação, curva acumulada de
+  km, medidor de consumo, barras por dia, composição por destino, split
+  presenças×faltas.
+- Alertas: revisão próxima, faltas na semana, **produção BPA-I por competência** (RN-08; competência sem
+  remessa informada = "a conferir"), prazo CNES e de operação do veículo doado (calculados da data de
+  recebimento), base não apta ao incentivo. Dias sem baixa interna: linha operacional, não farol.
+- **Ligação com a medição (RF-09):** o "km rodado" do painel soma o km da baixa da semana; a medição
+  contratual soma o mesmo km da baixa por competência (enquanto o GPS não está no esquema) e o reparte em
+  franquia, banco e excedente. Sem tela nova nesta rodada: quando houver, o painel lê `GET /api/medicao`.
+
+### RF-07 · Relatórios
+- **Relatório mensal de comprovação** (PDF/A4): viagens totais e **deslocamentos elegíveis
+  (Port. 11.164 + 11.165, de município a município)**, km, ocupação, custo, faltas — o documento que a secretaria usa para
+  manter o repasse e que a Samais usa para faturar.
+- Entregue ao contratante pelo gestor; sem acesso direto do contratante na fase 2.
+
+### RF-08 · Tema e identidade
+- Dark (padrão) e **light mode** (dobra ledger Samais), com persistência.
+- Identidade Samais integral: tokens, Syne/Inter/JetBrains Mono, liquid glass
+  (refração `feDisplacementMap` no desktop, fallback blur, off no mobile),
+  animações de entrada com `prefers-reduced-motion` respeitado.
+
+### RF-09 · Medição contratual mensal
+O modelo de remuneração da Samais no transporte sanitário (Ota, 20/10/2026;
+`samais-os/inteligencia/transporte-sanitario/remuneracao-e-apoio.md` §6) é um **Custo Operacional mensal global**
+com franquia mensal de km aferida pelo ROTA-OS, banco de km trimestral com prazo e km excedente pago só com OS
+autorizada no ROTA-OS. O ROTA-OS emite a **medição mensal que o fiscal do ente confere**. Ela mede quantidade,
+nunca preço: nenhum valor em R$ entra ou sai dela, porque a composição do preço não entra no sistema.
+
+- **Onde mora:** módulo puro `regras/medicao-contratual.mjs` (sem banco, sem rede, sem relógio), testes
+  `testes/medicao-contratual.test.mjs` e endpoint `GET /api/medicao?competencia=AAAA-MM` (`&hoje=` para teste).
+
+| # | Regra | Cláusula |
+|---|---|---|
+| **M-01** | O km da viagem é o do ciclo base → base registrado pelo GPS do ROTA-OS. A medição nunca usa o km previsto | §6.3 "Onde começa o km"; "Falta e cancelamento" (no excedente, só o km realizado) |
+| **M-02** | O GPS é a fonte e o hodômetro confere. Divergência = \|GPS − hodômetro\| ÷ GPS; acima da tolerância (padrão 2%, exatos 2% ficam dentro) a viagem vai à lista para justificar, e o km continua o do GPS | §6.3 "Medida divergente" |
+| **M-03** | Na falha do GPS (declarada, ou viagem sem registro), o hodômetro substitui **se o manifesto tiver embarque registrado**, com marcação; a correção se compensa na competência seguinte. Sem as duas provas, a viagem fica **a conferir**: fora do apurado e nunca zero | §6.3 "Falha do GPS" |
+| **M-04** | O km apurado entra em ordem cronológica (data, hora e código da viagem): primeiro na franquia, depois no banco, por fim no excedente | §6.1 franquia e banco |
+| **M-05** | A franquia não usada vira saldo em km no banco. O banco se usa antes do excedente e expira no último mês do trimestre, civil ou contado do início do contrato, conforme o contrato. O saldo **nunca vira crédito em dinheiro**, e a primeira competência do trimestre (ou do contrato) começa sem saldo | §6.1 banco "com prazo" |
+| **M-06** | Excedente é só o km acima de franquia + banco. Com OS no ROTA-OS, se paga; sem OS (negada ou não registrada), se glosa | §6.1 "Km excedente"; §6.3 "Desvio e percurso interno" |
+| **M-07** | A medição se faz pelo código da viagem, sem dado do paciente (nem o CNS). Chave com "cpf" é recusada | §6.3 "Dado pessoal na planilha" |
+
+- **Saída:** km apurado; franquia (dentro, não usada); banco (saldo anterior, crédito, uso, saldo final, o que
+  segue e o que expira na virada); excedente autorizado e sem OS, por viagem; divergências; viagens substituídas
+  pelo hodômetro; viagens a conferir; a alocação de cada viagem; o encadeamento do trimestre. Os totais trazem as
+  contas que o fiscal refaz: apurado = GPS + hodômetro substituto = franquia + banco + excedente autorizado +
+  excedente sem OS; saldo final = saldo anterior + crédito − uso.
+- **Na API, além disso:** situação da competência (`em_aberto` ou `fechada`, pelo relógio de Brasília; competência
+  futura ou anterior ao contrato é 422); viagens programadas até hoje sem baixa, listadas fora da medição; e os
+  padrões dos campos que o esquema ainda não guarda. O saldo do banco **não se digita**: sai das viagens com baixa
+  dos meses anteriores do trimestre, medidas pela mesma regra.
+- **Parâmetros do contrato:** configuração documentada, nunca constante no código. A variável
+  `ROTA_MEDICAO_CONTRATOS` traz o JSON em linha ou o caminho do arquivo, por id de base; o formato está em
+  [`medicao-contratos.exemplo.json`](medicao-contratos.exemplo.json). Os campos são estes:
+  - `franquia_km_mensal`: obrigatório, sem padrão;
+  - `tolerancia_gps_hodometro`: padrão 0,02;
+  - `banco_trimestral`: `trimestre_civil` ou `inicio_contrato`;
+  - `inicio_contrato`: obrigatório na API, para o banco não creditar franquia de meses sem contrato;
+  - `fonte`: o contrato e a cláusula.
+
+  Base sem parâmetros responde 409; configuração inválida é erro do servidor.
+- **O que falta no esquema** (sem migração nesta rodada; cada campo cai num padrão declarado na resposta):
+
+| Campo | Hoje (padrão declarado) | Falta no banco |
+|---|---|---|
+| km do GPS, ciclo base → base | nulo: toda viagem é "GPS sem registro" e o hodômetro substitui, com marcação | o km (ou a trilha) do GPS por viagem |
+| falha de GPS | nulo: não se distingue da falta de registro | a marca de falha por viagem |
+| hodômetro | `baixas.km_rodado`, o km anotado na prancheta e lançado na baixa (RF-05), tomado como hodômetro ≈ | hodômetro inicial e final por viagem |
+| OS do excedente | nulo: o excedente fica a autorizar e entra como sem OS (glosa) | a OS do trecho excedente (número, data, quem autorizou) |
+| embarque registrado | `embarques.presente_ida` de pelo menos um paciente | — |
+| parâmetros do contrato | `ROTA_MEDICAO_CONTRATOS` | tabela por base, se a decisão for guardá-los no banco |
+| registro da medição emitida | não se grava | número sequencial em `documentos` (o tipo `medicao` não existe no enum) |
+
+---
+
+## 6 · Regras de negócio
+
+| # | Regra |
+|---|---|
+| **RN-01** | Acompanhante autorizado ocupa assento e conta na lotação. |
+| **RN-02** | Nenhum paciente permanece no destino sem registro: reembarque é conferido no papel e lançado na baixa. (Sem rastreio em tempo real — decisão de produto.) |
+| **RN-03** | Necessidade "maca" → viagem separada em ambulância; nunca em veículo comum. |
+| **RN-04** | Alerta de revisão quando faltarem ≤ 2.000 km para o intervalo do veículo. |
+| **RN-05** | Elegibilidade ao transporte da Port. 11.165 (com a 11.164), **em três estados** (elegível · inelegível · pendente): radioterapia ou hemodiálise; distância **do município de residência ao município sede do serviço** **>50 km e ≤500 km**; ente federativo diverso; hemodiálise na mesma UF; serviço habilitado; agendamento confirmado. Dado ausente = **pendente**, nunca inelegível nem 0 km. No banco (`elegibilidade_federal`, migração 0004) e na API (módulo `regras/portaria-11165.mjs`), com teste de paridade. Por paciente-deslocamento. |
+| **RN-06** | Km, custo operacional e taxa de ocupação são registros obrigatórios (mecanismo de gestão de frota exigido pela portaria). |
+| **RN-07** | Veículo federal recebido deve ter CNES registrado em até 60 dias; o sistema acompanha o prazo. |
+| **RN-08** | Farol de produção **por competência** (11.165 art. 21 §2º): competências fechadas desde o início do incentivo **sem remessa BPA-I enviada ao SIA**; 1 = atenção, 2 = risco (o próximo suspende), 3 a 5 = suspenso, ≥ 6 = excluído. A remessa é **informada pelo faturamento do ente** (linhas, data, setor); competência não informada fica "a conferir", nunca zero. Só se aplica com a base apta ao incentivo (RC-04). Dias sem baixa interna ficam como informação operacional, não como farol. |
+| **RN-09** | Faltas recorrentes são reportadas à regulação para liberar a vaga. |
+| **RN-10** | Impressos com dado de saúde: uso restrito, descarte seguro após a baixa (LGPD). |
+
+**Regras da Portaria GM/MS 11.165/2026 (com a 11.164/2026), lidas no DOU:** módulo puro
+`regras/portaria-11165.mjs` (RE-01…RE-15, RC-01…RC-12), casos em
+`testes/casos/portaria-11165-casos.json`, teste `testes/portaria-11165.test.mjs`. Matriz artigo → campo,
+lacunas e ordem de trabalho: `samais-os/produtos/rota/portaria-11165.md`.
+
+**Integração, etapa 1 (banco e API) — feita em 16/10/2026.** Desenho em
+[`docs/PORTARIA-11165-INTEGRACAO.md`](PORTARIA-11165-INTEGRACAO.md): migração
+`supabase/migrations/0004_portaria_11165.sql`, endpoints novos em `api/servidor.mjs`, pré-remessa BPA-I
+em CSV, farol por competência e painel de conformidade. RN-05 e RN-08 seguem a regra certa **no banco
+e na API**.
+
+**Integração, etapa 2 (console) — feita em 16/10/2026.** O console (`rota-app.html`) não tem mais regra própria
+da norma: carrega `regras/portaria-11165.mjs` e a costura `regras/integracao-11165.mjs` (as mesmas da API) e mostra
+RN-05 em três estados com o porquê legível, RN-07 (CNES 60 dias) e o prazo de operação calculados da data de
+recebimento, e RN-08 por competência ("não aplicável" sem base apta; dias sem baixa só como informação operacional).
+Telas novas: Conformidade e Faturamento BPA-I (pré-BPA-I em CSV, remessas informadas). Desenho §8.
+
+**Decisão do CPF (Ota, 16/10/2026): o ROTA-OS não guarda CPF em lugar nenhum.** Nenhuma coluna, campo de
+API, log ou exportação com CPF. O BPA-I exige CPF (SIGTAP, "Obrigatório CPF"); a pré-remessa sai com a
+coluna do CPF **vazia**, rotulada "CPF a preencher pelo faturamento do ente, que substitui o CNS na linha final
+(um documento por paciente, layout BPA v05.00)": o faturamento **troca** o CNS pelo CPF no BPA Magnético/SIA
+(Ota, 20/10/2026; layout ≈ em `docs/referencias/bpa/`). A API recusa com 400 qualquer chave com "cpf" (qualquer caixa, qualquer
+profundidade, inclusive na consulta e no login); o banco tem `verificar_sem_cpf()`, cobrada no CI, e a API
+não sobe se ela acusar coluna.
+
+---
+
+## 7 · Modelo de dados (fase 2)
+
+Multi-tenant por `base_id` com **row-level security** — isolamento por contrato no
+banco, não na aplicação.
+
+Desde a migração 0004 (Portaria 11.165), além do abaixo: `pacientes.municipio_residencia_ibge`/
+`uf_residencia`; `destinos` como serviço de referência (`municipio_ibge`, `cnes`, `habilitacao_conferida`,
+`habilitacao_codigo`, `modalidades`); `distancias_municipais`; `agendamentos`; doação, prazos e renovação
+em `veiculos`; `base_pactuacao`; `remessas_bpa`. **Nenhuma coluna de CPF.** Detalhe em
+`docs/PORTARIA-11165-INTEGRACAO.md` §3.
+
+```
+bases          (id, municipio, uf, contratante, contrato_ref)
+gestores       (id, base_id, nome, email, hash, 2fa)
+pacientes      (id, base_id, nome, cns, nascimento, municipio, ponto_embarque,
+                tratamento, destino_id, recorrencia[], acompanhante, necessidade)
+autorizacoes   (id, paciente_id, processo_ref, origem[TFD|regulacao], validade,
+                distancia_km, elegivel_federal)
+destinos       (id, base_id, nome, municipio, km, tipo)
+veiculos       (id, base_id, ident, placa, tipo, lotacao, condutor, assistente,
+                hodometro, rev_intervalo_km, prox_rev_km, cnes_num, cnes_prazo)
+viagens        (id, base_id, data, hora, destino_id, veiculo_id, km_previsto,
+                status[programada|concluida|cancelada])
+viagem_pax     (viagem_id, paciente_id, acompanhante)
+embarques      (viagem_id, paciente_id, presente_ida, presente_volta, falta_motivo)
+abastecimentos (id, veiculo_id, data, litros, km_desde_ultimo, valor)
+manutencoes    (id, veiculo_id, data, km, tipo, valor, descricao)
+documentos     (id, base_id, tipo[manifesto|folha|relatorio], num_sequencial,
+                viagem_id?, emitido_em, emitido_por)
+audit_log      (id, base_id, gestor_id, acao, entidade, entidade_id, ts, payload)
+```
+
+---
+
+## 8 · Requisitos não-funcionais
+
+- **LGPD** (dado sensível de saúde): minimização de campos; criptografia em trânsito
+  e repouso; hospedagem **em região Brasil**; log de acesso; política de retenção e
+  descarte espelhando o descarte físico das pranchetas; encarregado nomeado antes da
+  produção; RIPD na implantação.
+- **Resiliência de campo**: nenhuma função operacional de ponta depende de conexão
+  (papel primário). Starlink entra no escopo de operação, não do software.
+- **Auditabilidade**: todo lançamento com autor, timestamp e trilha imutável
+  (`audit_log`) — dinheiro público exige.
+- **Simplicidade**: um perfil, uma base por sessão, telas diretas. O gestor local não
+  é usuário técnico.
+- **Idioma**: 100% português; sem jargão nas telas.
+- **Verificação visual**: Playwright 1440/768/390 antes de cada publicação (doutrina
+  do repo).
+
+---
+
+## 9 · Arquitetura e fases
+
+**Fase 1 — Protótipo (entregue).** `rota-app.html` single-file, dados fictícios,
+estado em memória, front completo dos módulos RF-01…RF-08 (exceto itens regulatórios
+de RF-01/RF-03/RF-06 marcados abaixo). Peça de demonstração e alinhamento.
+
+**Fase 1.5 — Conformidade na demo (próximo passo, sem backend).**
+CNES + prazo 60 dias na frota · autorização/elegibilidade no paciente · farol de
+risco de suspensão no painel · relatório mensal consolidado · registro de
+diária/casa de apoio vinculado à viagem.
+
+**Fase 2 — Backend mínimo (quando a 1ª licitação estiver próxima).**
+- PostgreSQL gerenciado em região BR (Supabase/Neon/RDS-SP) com RLS por base.
+- API fina (Next API routes no Vercel ou Supabase) + Auth (e-mail/senha + 2FA).
+- Front atual convertido de seed → API (estrutura de estado já compatível).
+- Geração de PDF server-side (manifesto, folha, relatório mensal) com numeração
+  sequencial em `documentos`.
+- `audit_log` desde o primeiro dia.
+
+**Fase 3 — Integrações (pós-contrato).**
+- Export/registro nos sistemas do SUS conforme mecanismo detalhado nas Portarias
+  11.164/11.165 (texto integral lido no DOU em 16/10/2026 — ver `regras/portaria-11165.mjs`).
+- Consulta CADSUS via credencial do ente público (nunca da Samais isolada).
+- Perfil leitura para secretaria; telemetria/GPS de frota (opcional). A medição contratual (RF-09) toma o GPS
+  como fonte (§6.3 da pesquisa de remuneração); até ele entrar no esquema, o hodômetro da baixa substitui, com marcação.
+
+**Fora de escopo (decisões de produto):** rastreio "ninguém fica pra trás" em tempo
+real; perfil coordenador central; acesso de motorista/assistente ao sistema;
+integração CADSUS direta na fase atual.
+
+---
+
+## 10 · Critérios de aceite (fase 2)
+
+1. Gestor autentica e enxerga somente a sua base (verificado por RLS, não por filtro).
+2. Fluxo completo esteira: cadastro → programação → impressão → baixa → dashboard →
+   relatório mensal, sem tocar em outra base.
+3. Impressos idênticos ao protótipo (A4 absoluto, margens 14 mm).
+4. Farol de suspensão muda de estado conforme **competências sem remessa BPA-I**
+   (teste com datas simuladas; `GET /api/farol-producao?hoje=`).
+5. Todo lançamento aparece no `audit_log` com autor e timestamp.
+6. Dados sensíveis ilegíveis em repouso (criptografia verificada).
+
+---
+
+## 11 · Glossário
+
+- **Base**: unidade de contrato (município/região) operada por um gestor local.
+- **Baixa**: lançamento no sistema, pelo gestor, do que foi conferido no papel.
+- **Manifesto**: escala impressa semanal por veículo, afixada no ponto de guarda.
+- **Folha de embarque**: lista por viagem com tique ida/volta e assinatura.
+- **TFD**: Tratamento Fora do Domicílio (Portaria SAS/MS 55/1999).
+- **Elegível federal**: paciente-deslocamento de radioterapia/hemodiálise com mais de
+  50 km e até 500 km do município de residência ao município sede do serviço, ente
+  diverso, hemodiálise na mesma UF, serviço habilitado e agendamento confirmado
+  (Portarias 11.164/11.165/2026). Três estados: elegível, inelegível, pendente.
+- **Pré-remessa BPA-I**: CSV por base e competência que o ROTA entrega ao faturamento do
+  ente, sem CPF; não é o leiaute oficial do BPA Magnético (lacuna).
+- **Remessa**: o que o faturamento do ente informa ter enviado ao SIA na competência.
+- **Medição contratual**: a quantidade de km da competência, em franquia, banco e excedente, que o fiscal do ente
+  confere (RF-09). Não traz valor.
+- **Franquia de km**: km por mês incluídos no Custo Operacional mensal do contrato.
+- **Banco de km**: a franquia não usada, guardada em km até o fim do trimestre; nunca vira dinheiro.
+- **Excedente**: km acima da franquia e do banco; pago com OS do ROTA-OS, glosado sem ela.
+
+---
+
+*Onde gestão se mede em vidas.*

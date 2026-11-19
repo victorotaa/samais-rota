@@ -69,6 +69,12 @@ documentos.
   `left:50%;margin-left:-50vw;width:100vw;z-index:-1`); conteúdo na coluna central.
   ⚠️ O `body` **não** pode ter `background` (canvas fica no `html`) e a dobra precisa de
   `z-index:0` — senão o fundo do body cobre o `::before` negativo e voltam as margens pretas.
+- **Contraste em dobra light é obrigatório e auditado.** Dentro de `.fold-light`, TODO texto usa
+  tokens light (texto `#0A0A0A`/`#3A362E`/`#6E675B`, ouro **escuro** `#8E7238`/`#6F5A2C`) — nunca
+  tokens do tema dark (`--text`, `--text-2`, `--muted`, ouro claro). ⚠️ Bug clássico: seletor mais
+  específico do tema dark (ex. `.sec-head .lede{color:var(--text-2)}`) vence o override genérico
+  `.fold-light p` — sempre criar override explícito por classe (`.fold-light .lede`) e conferir a
+  dobra em screenshot antes de publicar (AA ≥ 4.5:1).
 - **Gráficos animam ao entrar na viewport** (IntersectionObserver): linha desenha (`stroke-dashoffset`),
   donut varre, barras crescem (`scaleX`), **count-up** nos números (~2s) — em todos os boxes de stat e gráficos.
 - **Typing** na headline e no subtítulo do hero (~2s, sequencial, com caret). Dobra light com
@@ -77,21 +83,37 @@ documentos.
   (moldura glass + cabeçalho "Fonte oficial" + link). Reforça veracidade da tese.
 - Tudo sob `.js-anim` (só com JS e sem `prefers-reduced-motion`) para nunca esconder conteúdo.
 - **Liquid glass**: refração do fundo via `feDisplacementMap` em `backdrop-filter:blur() url(#glassDistort)`
-  (Chromium; fallback = blur; desligada no mobile por performance). No mobile, **tabelas roláveis**
-  (override do `overflow:hidden` do material glass — senão clipa as colunas da direita).
+  (Chromium; fallback = blur; desligada no mobile por performance).
   Sem brilho especular seguindo o mouse (removido por preferência da diretoria).
-- **Cases Samais**: usar **apenas Ourinhos e CISNORPI** como exemplos. Não usar Hospital Dr. Anísio
-  Figueiredo nem Santa Casa de Goioerê.
+- **Mobile nunca tem scroll horizontal.** Em templates/materiais, tabela que não cabe **reflowa**
+  (empilha em blocos com rótulo `data-l` via `td::before`, ou quebra de linha) — **nunca** `overflow-x:auto`.
+  Regra: `document.documentElement.scrollWidth === clientWidth` em 390px. **Única exceção:** documento
+  A4 absoluto (impresso), que fica fixo em 210mm e rola dentro do próprio contêiner (é papel, não template).
+- **Cases e atestados — reais, mas usados por contexto.** A Samais operou contratos reais e possui
+  **atestados de capacidade técnica raros** (poucas empresas os têm) em **SAMU 192, transferência
+  inter-hospitalar e regulação** — cases **Ourinhos** e **CISNORPI**. São ativos legítimos: usar em
+  materiais de **SAMU/urgência/regulação e na tese de investidor**. **NÃO** existe ainda case de
+  **transporte sanitário/transporte de pacientes** — em material desse serviço, a prova é o **sistema
+  ROTA (demo) + a lei pública** (portarias, IBGE), **não** os atestados de SAMU (não transportar a
+  credencial de um serviço para outro como se fosse experiência de transporte). **Nunca fabricar
+  narrativa operacional** além do que o atestado documenta — foi erro inventar "operou X com frota/
+  regulação/escala"; descrever case só com o que o documento sustenta. Vetado citar Hospital Dr. Anísio
+  Figueiredo e Santa Casa de Goioerê.
+- **Sem campos de contato em nenhum material.** Sem e-mail, telefone, WhatsApp, formulário, mailto ou CTA
+  "fale conosco". A Samais é rastreável **apenas por contato de saída dela** — o material fecha com a tese
+  ou com link para produto/demo (nunca pedindo que o leitor procure a Samais).
 
 ## Governança & reuso (consistência entre repos Samais)
-- **Regra:** todo repositório Samais (`samais-*`) deve carregar a identidade — este `CLAUDE.md` +
-  `.claude/skills/samais-html-presentation/SKILL.md` — **antes** de qualquer estudo/HTML. Sem isso, não começar.
-- **Fonte canônica:** `victorotaa/samais-rota` (branch `main`). É a referência única; ao evoluir o
-  sistema, atualizar aqui e propagar (e sincronizar a cópia do vault no Drive).
+- **Regra:** todo repositório Samais (`samais-*`) deve carregar a identidade — a skill
+  `.claude/skills/samais-brand-guidelines/` (cópia gerada do samais-os por `scripts/sincronizar-skills.mjs` de lá;
+  absorveu a antiga `samais-html-presentation` em 20/10/2026) — **antes** de qualquer estudo/HTML. Sem isso, não começar.
+- **Fonte canônica:** `victorotaa/samais-os` (branch `main`): `doutrina/samais.css`, `doutrina/design-system.md`
+  e a skill `samais-brand-guidelines` de lá (Ota, 20/10/2026). Este `CLAUDE.md` é espelho operacional do ROTA;
+  em conflito, vale o samais-os.
 - **Novo repo — dois caminhos:**
   1. **Template repository (recomendado):** criar o repo a partir de um GitHub *Template repository*
      (marcar em Settings → ☑ Template repository) que já contém `CLAUDE.md`, `.claude/skills/` e o `template.html`.
      "Use this template" → o repo nasce com a identidade.
   2. **Bootstrap:** num repo novo, rodar `bash scripts/samais-init.sh` (usa `gh` autenticado) para
-     puxar `CLAUDE.md` + a skill da fonte canônica. Ver `template/COMO-USAR.md`.
+     puxar a skill `samais-brand-guidelines` do samais-os (e um `CLAUDE.md` ponteiro, se faltar). Ver `template/COMO-USAR.md`.
 - Repos no padrão de nome `samais-<contexto>` (ex.: `samais-<municipio>`).

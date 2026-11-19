@@ -1,0 +1,19 @@
+{
+  "_doc": "Parâmetros da medição contratual mensal (RF-09, docs/ROTA-SPEC.md), um por base. A API lê ROTA_MEDICAO_CONTRATOS: este JSON em linha ou o caminho do arquivo. Chave de 'bases' = id (uuid) da base. Só quantidade em km: nenhum valor em R$ entra aqui. Os números abaixo são de exemplo, não de contrato.",
+  "_campos": {
+    "franquia_km_mensal": "km por mês incluídos no Custo Operacional mensal; obrigatório, sem padrão",
+    "tolerancia_gps_hodometro": "fração (0,02 = 2%); opcional, padrão 0,02 (§6.3, Medida divergente)",
+    "banco_trimestral": "'trimestre_civil' (jan–mar, abr–jun, jul–set, out–dez) ou 'inicio_contrato' (meses 1–3, 4–6… desde o início)",
+    "inicio_contrato": "AAAA-MM da primeira competência do contrato; obrigatório na API",
+    "fonte": "contrato e cláusula de onde saem os parâmetros"
+  },
+  "bases": {
+    "00000000-0000-0000-0000-000000000000": {
+      "franquia_km_mensal": 12000,
+      "tolerancia_gps_hodometro": 0.02,
+      "banco_trimestral": "trimestre_civil",
+      "inicio_contrato": "2026-11",
+      "fonte": "EXEMPLO · contrato e cláusula de medição a preencher"
+    }
+  }
+}

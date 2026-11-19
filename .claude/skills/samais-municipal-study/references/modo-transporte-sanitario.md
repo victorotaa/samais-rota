@@ -4,11 +4,6 @@ Absorve a antiga skill `samais-transporte-study` (samais-rota). As fases, os tr�
 os mesmos do estudo; aqui está só o que é próprio do transporte. **O objeto e o contrato são próprios, nunca rubrica do
 SAMU**: se o alvo tem os dois, são dois estudos.
 
-> 🔴 **Belém, refeito em 10/11/2026 (Ota, 10/11/2026):** a demanda de eletiva é a **publicada por atendimento, 1.068 pacientes, e não a por
-> residência, 904** (o §1-bis do interno fica só como conferência). O estudo foi refeito na v2 (seção V2 do interno): valor contratual R$ 2.822.659/mês, norma lida,
-> gasto de hoje no corpo, sensibilidade do ÷ 2, inter-hospitalar em viatura-hora e oncologia fora do dimensionamento; detalhe em
-> `doutrina/regras/valor-contratual-economia-gasto-fechado.md`, item 6.
-
 **Sumário:** 1. As regras da casa · 2. A norma (11.164 + 11.165) · 3. Varredura · 4. Dimensionamento · 5. Custo ·
 6. Cenários e score · 7. Repasse federal e farol de conformidade · 8. A peça · 9. Repasses observados · 10. Fontes.
 Demanda por parâmetro, custo por ciclo, tipo A só com demanda medida, viabilidade interna, modelo de pagamento e citação da norma:
