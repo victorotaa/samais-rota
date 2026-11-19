@@ -1,0 +1,72 @@
+# Checagem antes de aprovar
+
+> O que já falhou de verdade em peça nossa (`doutrina/padrao-dobras.md`, "Checagem antes de aprovar"), mais as regras de
+> contraste e mobile do `samais-rota/CLAUDE.md` e de `doutrina/design-system.md`. Conferir no navegador, não no código.
+
+## Identidade
+
+- [ ] `samais.css` importado; nenhum `:root` com cor na página; nenhum hex de paleta aposentada (`#04060C`, `#D4A857`,
+      `#060709`, `#C9A84C`) nem do sistema do CoPilot e do PEP (`#070708`, `#BF9A3D`, Plus Jakarta Sans).
+- [ ] Marca pelos SVGs oficiais (`.marca`); wordmark no desktop, `SA+` no mobile.
+- [ ] Ouro em no máximo ~10% da superfície; verde só como selo.
+- [ ] Dado em JetBrains Mono (`.dado`).
+
+## Contraste
+
+- [ ] Texto pequeno com AA ≥ 4,5:1. `--dim`, `--red`, `--green` e `--gold-deep` ficam abaixo disso sobre `--bg`: só em
+      texto grande, ícone, borda ou selo.
+- [ ] Dobra light: todo texto com tokens light, inclusive os seletores específicos do tema escuro (override explícito
+      por classe, ex.: `.fold-light .lede`); screenshot da dobra conferido.
+- [ ] Dobra dourada: a ênfase é a palavra mais escura.
+- [ ] Marca com contraste ≥ 3:1 sobre o fundo onde pousa: em fundo claro, a variante `primary` (a dourada dá 2,5:1 no
+      creme e 2,8:1 no branco; `tokens-e-tipografia.md` §4).
+- [ ] A `.fold-alt` se distingue da `.fold` **na tela** (é ela que marca a divisão). No escuro, passo abaixo de ~8
+      unidades RGB não se percebe (medição do CoPilot, ≈); `--s1` sobre `--bg` dá 9.
+- [ ] No bloco empilhado do mobile, o valor é mais forte que o rótulo.
+
+## Mobile
+
+- [ ] **Zero rolagem horizontal em 390, 360 e 320px, inclusive dentro de qualquer contêiner** (peça longa). A página
+      limpa não basta:
+      `[...document.querySelectorAll('*')].filter(e => e.scrollWidth > e.clientWidth + 1)` tem de vir vazio.
+      Única exceção: documento A4 absoluto, que rola dentro do próprio contêiner.
+- [ ] **Rolar a página inteira antes de medir** (CoPilot): imagem preguiçosa e revelação ao rolar só existem depois do
+      primeiro viewport e escapam da medição. Depois, conferir também o que vaza da tela:
+      `[...document.querySelectorAll('*')].filter(e => e.getBoundingClientRect().right > document.documentElement.clientWidth + 1)`
+      vazio. Varredura completa, quando a peça vai a terceiro: 1440, 1180, 1024, 900, 820, 768, 600, 480, 414, 390, 360
+      e 320px.
+- [ ] Tabela reflui (blocos com rótulo `data-l`); gráfico troca de forma (`.viz-wide` / `.viz-tall`).
+- [ ] Alvo de toque ≥ 44px; número não quebra linha; `[hidden]` vence (`samais.css` já força).
+- [ ] Refração desligada no mobile.
+
+## Material e movimento
+
+- [ ] **Nenhum texto refratando:**
+      `[...document.querySelectorAll('.glass,.card,.tbl,.viz')].filter(e => getComputedStyle(e).filter.includes('glassDistort')).length`
+      dá 0.
+- [ ] Animação sob `IntersectionObserver` com `unobserve`, sob classe de ativação, desligada com
+      `prefers-reduced-motion`; conteúdo visível sem JS.
+- [ ] Âncora do menu não esconde o eyebrow atrás da nav fixa (`scroll-margin-top`).
+
+## Composição e conteúdo
+
+- [ ] Nenhuma palavra órfã: `node scripts/conferir-orfas.mjs <url>` (mede largura, não conta palavra).
+- [ ] Nenhum bloco invisível depois de rolar a página inteira, no celular e no desktop:
+  `node scripts/conferir-invisivel.mjs <arquivo>` (samais-estudos). A revelação ao rolar (`.reveal`) só dispara com uma
+  fração do bloco à vista; tabela longa empilhada no celular nunca chega lá e vira um vão escuro (dossiê de contratos do
+  PR, 21/10/2026: dois vãos de 18 mil px). Superfície de dado não espera revelação.
+- [ ] Citação e referência batem nos dois sentidos: nenhuma órfã, nenhuma não citada.
+- [ ] Termos vetados de precificação: zero (`doutrina/precificacao.md`); nada de "lucro" ou "margem".
+- [ ] Nada de `interpretacao.md`, `bastidor.md` ou `doutrina/` na peça.
+- [ ] Nenhum campo de contato.
+- [ ] Imagem na ordem da casa (banco curado e foto real → pesquisa da localidade → gerada só sem candidato viável,
+      sobre a pesquisa); gerada com selo "imagem ilustrativa" na legenda, `README.md` de procedência e o tamanho
+      aprovado por `conferir-imagens`; nenhuma imagem vetada (`doutrina/imagens/README.md`).
+
+## Técnica
+
+- [ ] Zero erro de console; zero requisição externa na peça institucional (nenhum `src=`/`href=` com `http`).
+- [ ] CSP conferido com os headers reais, se hospedada.
+- [ ] Geometria de cada gráfico conferida contra o número escrito ao lado; escala declarada no SVG.
+- [ ] Imprimir em PDF e olhar: fundo branco, sem retângulo preto, texto legível, sem dobra chapada.
+- [ ] `scroll-behavior:smooth` desligado no teste antes de concluir que há defeito de revelação.
